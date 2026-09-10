@@ -1,0 +1,282 @@
+[
+  {
+    "displayName": "Advanced Filtration",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond10",
+    "internalName": "advancedfiltration",
+    "imageURL": "advancedfiltration.webp",
+    "tier": "c",
+    "index": 0
+  },
+  {
+    "displayName": "Acclimated",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond18",
+    "internalName": "acclimated",
+    "imageURL": "inflammable.webp",
+    "tier": "b",
+    "index": 1
+  },
+  {
+    "displayName": "Democracy Protects",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "none",
+    "internalName": "democracyprotects",
+    "imageURL": "democracyprotects.webp",
+    "tier": "a",
+    "index": 2
+  },
+  {
+    "displayName": "Electrical Conduit",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond5",
+    "internalName": "electricalconduit",
+    "imageURL": "electricalconduit.webp",
+    "tier": "c",
+    "index": 3
+  },
+  {
+    "displayName": "Engineering Kit",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond3",
+    "internalName": "engineeringkit",
+    "imageURL": "engineeringkit.webp",
+    "tier": "a",
+    "index": 4
+  },
+  {
+    "displayName": "Extra Padding",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "none",
+    "internalName": "extrapadding",
+    "imageURL": "extrapadding.webp",
+    "tier": "b",
+    "index": 5
+  },
+  {
+    "displayName": "Fortified",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond6",
+    "internalName": "fortified",
+    "imageURL": "fortified.webp",
+    "tier": "a",
+    "index": 6
+  },
+  {
+    "displayName": "Inflammable",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond9",
+    "internalName": "inflammable",
+    "imageURL": "inflammable.webp",
+    "tier": "b",
+    "index": 7
+  },
+  {
+    "displayName": "Med-Kit",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond3",
+    "internalName": "medkit",
+    "imageURL": "medkit.webp",
+    "tier": "a",
+    "index": 8
+  },
+  {
+    "displayName": "Peak Physique",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond8",
+    "internalName": "peakphysique",
+    "imageURL": "peakphysique.webp",
+    "tier": "a",
+    "index": 9
+  },
+  {
+    "displayName": "Scout",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond3",
+    "internalName": "scout",
+    "imageURL": "scout.webp",
+    "tier": "b",
+    "index": 10
+  },
+  {
+    "displayName": "Servo-Assisted",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond4",
+    "internalName": "servoassisted",
+    "imageURL": "servoassisted.webp",
+    "tier": "b",
+    "index": 11
+  },
+  {
+    "displayName": "Unflinching",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond11",
+    "internalName": "unflinching",
+    "imageURL": "unflinching.webp",
+    "tier": "b",
+    "index": 12
+  },
+  {
+    "displayName": "Siege Ready",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond12",
+    "internalName": "siegeready",
+    "imageURL": "siegeready.webp",
+    "tier": "s",
+    "index": 13
+  },
+  {
+    "displayName": "Integrated Explosives",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond13",
+    "internalName": "integratedexplosives",
+    "imageURL": "integratedexplosives.webp",
+    "tier": "b",
+    "index": 14
+  },
+  {
+    "displayName": "Gunslinger",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond14",
+    "internalName": "gunslinger",
+    "imageURL": "gunslinger.webp",
+    "tier": "b",
+    "index": 15
+  },
+  {
+    "displayName": "Reinforced Epaulettes",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond15",
+    "internalName": "reinforcedepaulettes",
+    "imageURL": "reinforcedepaulettes.webp",
+    "tier": "a",
+    "index": 16
+  },
+  {
+    "displayName": "Ballistic Padding",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond16",
+    "internalName": "ballisticpadding",
+    "imageURL": "ballisticpadding.webp",
+    "tier": "b",
+    "index": 17
+  },
+  {
+    "displayName": "Adreno-Defibrillator",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond17",
+    "internalName": "adrenodefibrillator",
+    "imageURL": "adrenodefibrillator.webp",
+    "tier": "b",
+    "index": 18
+  },
+  {
+    "displayName": "Feet First",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond19",
+    "internalName": "feetfirst",
+    "imageURL": "feetfirst.webp",
+    "tier": "b",
+    "index": 19
+  },
+  {
+    "displayName": "Desert Stormer",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond20",
+    "internalName": "desertstormer",
+    "imageURL": "desertstormer.webp",
+    "tier": "b",
+    "index": 20
+  },
+  {
+    "displayName": "Rock Solid",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond21",
+    "internalName": "rocksolid",
+    "imageURL": "rocksolid.webp",
+    "tier": "a",
+    "index": 21
+  },
+  {
+    "displayName": "Reduced Signature",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond22",
+    "internalName": "reducedsignature",
+    "imageURL": "reducedsignature.webp",
+    "tier": "b",
+    "index": 22
+  },
+  {
+    "displayName": "Supplementary Adrenaline",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond23",
+    "internalName": "supplementaryadrenaline",
+    "imageURL": "supplementaryadrenaline.webp",
+    "tier": "b",
+    "index": 23
+  },
+  {
+    "displayName": "Concussive Padding",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond24",
+    "internalName": "concussivepadding",
+    "imageURL": "concussivepadding.webp",
+    "tier": "b",
+    "index": 24
+  },
+  {
+    "displayName": "Oxygenator",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond25",
+    "internalName": "oxygenator",
+    "imageURL": "oxygenator.webp",
+    "tier": "b",
+    "index": 25
+  },
+  {
+    "displayName": "Kinetic Displacement Mitigation",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "none",
+    "internalName": "kineticdisplacementmitigation",
+    "imageURL": "kineticdisplacementmitigation.webp",
+    "tier": "b",
+    "index": 26
+  },
+  {
+    "displayName": "True Grit",
+    "type": "Equipment",
+    "category": "armor",
+    "warbondCode": "warbond26",
+    "internalName": "truegrit",
+    "imageURL": "truegrit.webp",
+    "tier": "a",
+    "index": 27
+  }
+]

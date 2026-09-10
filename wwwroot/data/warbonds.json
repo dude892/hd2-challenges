@@ -1,0 +1,218 @@
+[
+  {
+    "displayName": "Helldivers Mobilize",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond3",
+    "internalName": "helldiversMobilizeWB",
+    "imageURL": "helldiversMobilizeWB.webp",
+    "tier": "s"
+  },
+  {
+    "displayName": "Steeled Veterans",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond4",
+    "internalName": "steeledVeteransWB",
+    "imageURL": "steeledVeteransWB.webp",
+    "tier": "a"
+  },
+  {
+    "displayName": "Cutting Edge",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond5",
+    "internalName": "cuttingEdgeWB",
+    "imageURL": "cuttingEdgeWB.webp",
+    "tier": "a"
+  },
+  {
+    "displayName": "Democratic Detonation",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond6",
+    "internalName": "democraticDetonationWB",
+    "imageURL": "democraticDetonationWB.webp",
+    "tier": "s"
+  },
+  {
+    "displayName": "Polar Patriots",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond7",
+    "internalName": "polarPatriotsWB",
+    "imageURL": "polarPatriotsWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Viper Commandos",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond8",
+    "internalName": "viperCommandosWB",
+    "imageURL": "viperCommandosWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Freedom's Flame",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond9",
+    "internalName": "freedomsFlameWB",
+    "imageURL": "freedomsFlameWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Chemical Agents",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond10",
+    "internalName": "chemicalAgentsWB",
+    "imageURL": "chemicalAgentsWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Truth Enforcers",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond11",
+    "internalName": "truthEnforcersWB",
+    "imageURL": "truthEnforcersWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Urban Legends",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond12",
+    "internalName": "urbanLegendsWB",
+    "imageURL": "urbanLegendsWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Servants of Freedom",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond13",
+    "internalName": "servantsOfFreedomWB",
+    "imageURL": "servantsOfFreedomWB.webp",
+    "tier": "a"
+  },
+  {
+    "displayName": "Borderline Justice",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond14",
+    "internalName": "borderlineJusticeWB",
+    "imageURL": "borderlineJusticeWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Masters of Ceremony",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond15",
+    "internalName": "mastersOfCeremonyWB",
+    "imageURL": "mastersOfCeremonyWB.webp",
+    "tier": "c"
+  },
+  {
+    "displayName": "Force of Law",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond16",
+    "internalName": "forceOfLawWB",
+    "imageURL": "forceOfLawWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Control Group",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond17",
+    "internalName": "controlGroupWB",
+    "imageURL": "controlGroupWB.webp",
+    "tier": "a"
+  },
+  {
+    "displayName": "Killzone",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond18",
+    "internalName": "killzoneWB",
+    "imageURL": "killzoneWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "ODST",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond19",
+    "internalName": "odstWB",
+    "imageURL": "odstWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Dust Devils",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond20",
+    "internalName": "dustdevilsWB",
+    "imageURL": "dustdevilsWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Python Commandos",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond21",
+    "internalName": "pythoncommandosWB",
+    "imageURL": "pythoncommandosWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Redacted Regiment",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond22",
+    "internalName": "redactedregimentWB",
+    "imageURL": "redactedRegimentWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Siege Breakers",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond23",
+    "internalName": "siegebreakersWB",
+    "imageURL": "siegeBreakersWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Entrenched Division",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond24",
+    "internalName": "entrenchedDivisionWB",
+    "imageURL": "entrenchedDivisionWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Exo Experts",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond25",
+    "internalName": "exoExpertsWB",
+    "imageURL": "exoExpertsWB.webp",
+    "tier": "b"
+  },
+  {
+    "displayName": "Warhammer 40k",
+    "type": "Warbond",
+    "category": "",
+    "warbondCode": "warbond26",
+    "internalName": "40kWB",
+    "imageURL": "40kWB.webp",
+    "tier": "b"
+  }
+]

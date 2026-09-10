@@ -1,0 +1,182 @@
+[
+  {
+    "displayName": "Expert Extraction Pilot",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond6",
+    "internalName": "expertextractionpilot",
+    "imageURL": "expertextractionpilot.webp",
+    "tier": "c",
+    "index": 0
+  },
+  {
+    "displayName": "Dead Sprint",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond11",
+    "internalName": "deadsprint",
+    "imageURL": "deadsprint.webp",
+    "tier": "b",
+    "index": 1
+  },
+  {
+    "displayName": "Armed Resupply Pods",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond12",
+    "internalName": "armedresupplypods",
+    "imageURL": "armedresupplypods.webp",
+    "tier": "b",
+    "index": 2
+  },
+  {
+    "displayName": "Experimental Infusion",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond8",
+    "internalName": "experimentalinfusion",
+    "imageURL": "experimentalinfusion.webp",
+    "tier": "s",
+    "index": 3
+  },
+  {
+    "displayName": "Motivational Shocks",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond7",
+    "internalName": "motivationalshocks",
+    "imageURL": "motivationalshocks.webp",
+    "tier": "b",
+    "index": 4
+  },
+  {
+    "displayName": "Flexible Reinforcement Budget",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond4",
+    "internalName": "flexiblereinforcementbudget",
+    "imageURL": "flexiblereinforcementbudget.webp",
+    "tier": "c",
+    "index": 5
+  },
+  {
+    "displayName": "Hellpod Space Optimization",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond3",
+    "internalName": "hellpodspaceoptimization",
+    "imageURL": "hellpodspaceoptimization.webp",
+    "tier": "s",
+    "index": 6
+  },
+  {
+    "displayName": "Increased Reinforcement Budget",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond3",
+    "internalName": "increasedreinforcementbudget",
+    "imageURL": "increasedreinforcementbudget.webp",
+    "tier": "b",
+    "index": 7
+  },
+  {
+    "displayName": "Localization Confusion",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond5",
+    "internalName": "localizationconfusion",
+    "imageURL": "localizationconfusion.webp",
+    "tier": "b",
+    "index": 8
+  },
+  {
+    "displayName": "Muscle Enhancement",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond3",
+    "internalName": "muscleenhancement",
+    "imageURL": "muscleenhancement.webp",
+    "tier": "a",
+    "index": 9
+  },
+  {
+    "displayName": "Stamina Enhancement",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond3",
+    "internalName": "staminaenhancement",
+    "imageURL": "staminaenhancement.webp",
+    "tier": "s",
+    "index": 10
+  },
+  {
+    "displayName": "UAV Recon",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond3",
+    "internalName": "uavrecon",
+    "imageURL": "uavrecon.webp",
+    "tier": "b",
+    "index": 11
+  },
+  {
+    "displayName": "Vitality Enhancement",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond3",
+    "internalName": "vitalityenhancement",
+    "imageURL": "vitalityenhancement.webp",
+    "tier": "s",
+    "index": 12
+  },
+  {
+    "displayName": "Firebomb Hellpods",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond9",
+    "internalName": "firebombhellpods",
+    "imageURL": "firebombhellpods.webp",
+    "tier": "c",
+    "index": 13
+  },
+  {
+    "displayName": "Sample Extricator",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond14",
+    "internalName": "sampleextricator",
+    "imageURL": "sampleextricator.webp",
+    "tier": "c",
+    "index": 14
+  },
+  {
+    "displayName": "Sample Scanner",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond15",
+    "internalName": "samplescanner",
+    "imageURL": "samplescanner.webp",
+    "tier": "c",
+    "index": 15
+  },
+  {
+    "displayName": "Stun Pods",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond16",
+    "internalName": "stunpods",
+    "imageURL": "stunpods.webp",
+    "tier": "b",
+    "index": 16
+  },
+  {
+    "displayName": "Concealed Insertion",
+    "type": "Equipment",
+    "category": "booster",
+    "warbondCode": "warbond22",
+    "internalName": "concealedinsertion",
+    "imageURL": "concealedinsertion.webp",
+    "tier": "b",
+    "index": 17
+  }
+]
