@@ -1,0 +1,19 @@
+@using Hd2Challenges.Models
+
+<button type="button" class="item-card card border-secondary bg-dark text-light h-100 @(OnClick.HasDelegate ? "item-card-clickable" : string.Empty)" @onclick="OnClick">
+    @if (!string.IsNullOrWhiteSpace(Badge))
+    {
+        <div class="item-card-badge">@Badge</div>
+    }
+    <img class="card-img-top item-card-image" src="@($"images/{Item.ImageDirectory}/{Item.ImageURL}")" alt="@Item.DisplayName" />
+    <div class="card-body p-2 d-flex flex-column">
+        <small class="text-secondary">@Item.KindLabel</small>
+        <div class="fw-semibold">@Item.DisplayName</div>
+    </div>
+</button>
+
+@code {
+    [Parameter, EditorRequired] public GameItem Item { get; set; } = default!;
+    [Parameter] public string? Badge { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+}

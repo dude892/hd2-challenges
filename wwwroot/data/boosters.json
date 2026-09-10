@@ -1,7 +1,6 @@
 [
   {
     "displayName": "Expert Extraction Pilot",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond6",
     "internalName": "expertextractionpilot",
@@ -11,7 +10,6 @@
   },
   {
     "displayName": "Dead Sprint",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond11",
     "internalName": "deadsprint",
@@ -21,7 +19,6 @@
   },
   {
     "displayName": "Armed Resupply Pods",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond12",
     "internalName": "armedresupplypods",
@@ -31,7 +28,6 @@
   },
   {
     "displayName": "Experimental Infusion",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond8",
     "internalName": "experimentalinfusion",
@@ -41,7 +37,6 @@
   },
   {
     "displayName": "Motivational Shocks",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond7",
     "internalName": "motivationalshocks",
@@ -51,7 +46,6 @@
   },
   {
     "displayName": "Flexible Reinforcement Budget",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond4",
     "internalName": "flexiblereinforcementbudget",
@@ -61,7 +55,6 @@
   },
   {
     "displayName": "Hellpod Space Optimization",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "hellpodspaceoptimization",
@@ -71,7 +64,6 @@
   },
   {
     "displayName": "Increased Reinforcement Budget",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "increasedreinforcementbudget",
@@ -81,7 +73,6 @@
   },
   {
     "displayName": "Localization Confusion",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond5",
     "internalName": "localizationconfusion",
@@ -91,7 +82,6 @@
   },
   {
     "displayName": "Muscle Enhancement",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "muscleenhancement",
@@ -101,7 +91,6 @@
   },
   {
     "displayName": "Stamina Enhancement",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "staminaenhancement",
@@ -111,7 +100,6 @@
   },
   {
     "displayName": "UAV Recon",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "uavrecon",
@@ -121,7 +109,6 @@
   },
   {
     "displayName": "Vitality Enhancement",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "vitalityenhancement",
@@ -131,7 +118,6 @@
   },
   {
     "displayName": "Firebomb Hellpods",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond9",
     "internalName": "firebombhellpods",
@@ -141,7 +127,6 @@
   },
   {
     "displayName": "Sample Extricator",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond14",
     "internalName": "sampleextricator",
@@ -151,7 +136,6 @@
   },
   {
     "displayName": "Sample Scanner",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond15",
     "internalName": "samplescanner",
@@ -161,7 +145,6 @@
   },
   {
     "displayName": "Stun Pods",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond16",
     "internalName": "stunpods",
@@ -171,7 +154,6 @@
   },
   {
     "displayName": "Concealed Insertion",
-    "type": "Equipment",
     "category": "booster",
     "warbondCode": "warbond22",
     "internalName": "concealedinsertion",

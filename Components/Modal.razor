@@ -1,0 +1,24 @@
+@if (Open)
+{
+    <div class="app-modal-backdrop" @onclick="HandleBackdropClick">
+        <div class="app-modal card bg-dark text-light border-secondary" @onclick:stopPropagation="true">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">@Title</h5>
+                <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+            </div>
+            <div class="card-body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Open { get; set; }
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public bool CloseOnBackdrop { get; set; } = true;
+
+    private Task HandleBackdropClick() => CloseOnBackdrop ? OnClose.InvokeAsync() : Task.CompletedTask;
+}

@@ -1,7 +1,6 @@
 [
   {
     "displayName": "G-12 High Explosive",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap4",
@@ -16,7 +15,6 @@
   },
   {
     "displayName": "G-6 Frag",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap3",
@@ -31,7 +29,6 @@
   },
   {
     "displayName": "G-16 Impact",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap3",
@@ -46,7 +43,6 @@
   },
   {
     "displayName": "G-3 Smoke",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "smoke"
@@ -60,7 +56,6 @@
   },
   {
     "displayName": "G-10 Incendiary",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap3",
@@ -76,7 +71,6 @@
   },
   {
     "displayName": "G-23 Stun",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "stun"
@@ -90,7 +84,6 @@
   },
   {
     "displayName": "G-123 Thermite",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "at"
@@ -104,7 +97,6 @@
   },
   {
     "displayName": "G-13 Incendiary Impact",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "fire",
@@ -120,7 +112,6 @@
   },
   {
     "displayName": "K-2 Throwing Knife",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap3"
@@ -134,7 +125,6 @@
   },
   {
     "displayName": "G-50 Seeker",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap3",
@@ -150,7 +140,6 @@
   },
   {
     "displayName": "Dynamite",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "at",
@@ -165,7 +154,6 @@
   },
   {
     "displayName": "G-142 Pyrotech",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "fire",
@@ -181,7 +169,6 @@
   },
   {
     "displayName": "G-4 Gas",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "gas",
@@ -196,7 +183,6 @@
   },
   {
     "displayName": "G-109 Urchin",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "stun"
@@ -210,7 +196,6 @@
   },
   {
     "displayName": "G-31 Arc",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "arc"
@@ -224,7 +209,6 @@
   },
   {
     "displayName": "G-7 Pineapple",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap3",
@@ -239,7 +223,6 @@
   },
   {
     "displayName": "TM-01 Lure Mine",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "ap4",
@@ -254,7 +237,6 @@
   },
   {
     "displayName": "G-89 Smokescreen",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "smoke"
@@ -268,7 +250,6 @@
   },
   {
     "displayName": "G/SH-39 Shield",
-    "type": "Equipment",
     "category": "throwable",
     "warbondCode": "warbond23",
     "internalName": "gsh39shield",
@@ -279,7 +260,6 @@
   },
   {
     "displayName": "G-48 Giga",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "at",
@@ -294,7 +274,6 @@
   },
   {
     "displayName": "Meltamine",
-    "type": "Equipment",
     "category": "throwable",
     "tags": [
       "at",

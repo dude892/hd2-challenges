@@ -1,7 +1,6 @@
 [
   {
     "displayName": "Helldivers Mobilize",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond3",
     "internalName": "helldiversMobilizeWB",
@@ -10,7 +9,6 @@
   },
   {
     "displayName": "Steeled Veterans",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond4",
     "internalName": "steeledVeteransWB",
@@ -19,7 +17,6 @@
   },
   {
     "displayName": "Cutting Edge",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond5",
     "internalName": "cuttingEdgeWB",
@@ -28,7 +25,6 @@
   },
   {
     "displayName": "Democratic Detonation",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond6",
     "internalName": "democraticDetonationWB",
@@ -37,7 +33,6 @@
   },
   {
     "displayName": "Polar Patriots",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond7",
     "internalName": "polarPatriotsWB",
@@ -46,7 +41,6 @@
   },
   {
     "displayName": "Viper Commandos",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond8",
     "internalName": "viperCommandosWB",
@@ -55,7 +49,6 @@
   },
   {
     "displayName": "Freedom's Flame",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond9",
     "internalName": "freedomsFlameWB",
@@ -64,7 +57,6 @@
   },
   {
     "displayName": "Chemical Agents",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond10",
     "internalName": "chemicalAgentsWB",
@@ -73,7 +65,6 @@
   },
   {
     "displayName": "Truth Enforcers",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond11",
     "internalName": "truthEnforcersWB",
@@ -82,7 +73,6 @@
   },
   {
     "displayName": "Urban Legends",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond12",
     "internalName": "urbanLegendsWB",
@@ -91,7 +81,6 @@
   },
   {
     "displayName": "Servants of Freedom",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond13",
     "internalName": "servantsOfFreedomWB",
@@ -100,7 +89,6 @@
   },
   {
     "displayName": "Borderline Justice",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond14",
     "internalName": "borderlineJusticeWB",
@@ -109,7 +97,6 @@
   },
   {
     "displayName": "Masters of Ceremony",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond15",
     "internalName": "mastersOfCeremonyWB",
@@ -118,7 +105,6 @@
   },
   {
     "displayName": "Force of Law",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond16",
     "internalName": "forceOfLawWB",
@@ -127,7 +113,6 @@
   },
   {
     "displayName": "Control Group",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond17",
     "internalName": "controlGroupWB",
@@ -136,7 +121,6 @@
   },
   {
     "displayName": "Killzone",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond18",
     "internalName": "killzoneWB",
@@ -145,7 +129,6 @@
   },
   {
     "displayName": "ODST",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond19",
     "internalName": "odstWB",
@@ -154,7 +137,6 @@
   },
   {
     "displayName": "Dust Devils",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond20",
     "internalName": "dustdevilsWB",
@@ -163,7 +145,6 @@
   },
   {
     "displayName": "Python Commandos",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond21",
     "internalName": "pythoncommandosWB",
@@ -172,7 +153,6 @@
   },
   {
     "displayName": "Redacted Regiment",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond22",
     "internalName": "redactedregimentWB",
@@ -181,7 +161,6 @@
   },
   {
     "displayName": "Siege Breakers",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond23",
     "internalName": "siegebreakersWB",
@@ -190,7 +169,6 @@
   },
   {
     "displayName": "Entrenched Division",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond24",
     "internalName": "entrenchedDivisionWB",
@@ -199,7 +177,6 @@
   },
   {
     "displayName": "Exo Experts",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond25",
     "internalName": "exoExpertsWB",
@@ -208,7 +185,6 @@
   },
   {
     "displayName": "Warhammer 40k",
-    "type": "Warbond",
     "category": "",
     "warbondCode": "warbond26",
     "internalName": "40kWB",

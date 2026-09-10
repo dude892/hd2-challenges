@@ -1,0 +1,1064 @@
+@page "/penitent-crusade"
+@using System.Text
+@using System.Text.Json
+@inject CatalogService Catalog
+@inject BrowserStorageService Storage
+@inject FileExportService FileExport
+
+<PageTitle>Penitent Crusade</PageTitle>
+
+@if (!_loaded)
+{
+    <p class="text-light">Loading Penitent Crusade...</p>
+}
+else
+{
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h1 class="text-light mb-0">Penitent Crusade</h1>
+            <p class="text-secondary mb-0">Blazor WebAssembly rewrite with slot-based save import and export.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
+            <button class="btn btn-outline-primary" @onclick="ExportPenitentSummaryAsync">Download Summary</button>
+            <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Restart Run</button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_statusMessage))
+    {
+        <div class="alert alert-info">@_statusMessage</div>
+    }
+
+    <div class="row g-4">
+        <div class="col-xl-4">
+            <div class="section-card rounded p-3">
+                <h4 class="text-light">Run Settings</h4>
+                <div class="mb-3">
+                    <label class="form-label text-light">Difficulty</label>
+                    <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty" disabled="@(!CanEditPenitentSetup)" @onchange="OnPenitentDifficultyChangedAsync">
+                        @foreach (var difficulty in _penitentDifficulties)
+                        {
+                            <option value="@difficulty.Key">@difficulty.Value</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-light">Specialist</label>
+                    <select class="form-select bg-dark text-light border-secondary" value="@GetSpecialistValue()" disabled="@(!CanEditPenitentSetup)" @onchange="OnPenitentSpecialistChangedAsync">
+                        <option value="">Default</option>
+                        @foreach (var specialist in FilteredPenitentSpecialists)
+                        {
+                            <option value="@specialist.Index">@specialist.Specialist.DisplayName</option>
+                        }
+                    </select>
+                </div>
+                @if (SelectedPenitentSpecialist is not null)
+                {
+                    <div class="card bg-dark border-secondary mb-3">
+                        <img class="card-img-top specialist-image" src="@($"images/pcSpecialists/{SelectedPenitentSpecialist.ImageURL}")" alt="@SelectedPenitentSpecialist.DisplayName" />
+                        <div class="card-body">
+                            <h5 class="text-light">@SelectedPenitentSpecialist.DisplayName</h5>
+                            <ul class="compact-list text-secondary">
+                                @foreach (var item in SelectedPenitentSpecialist.StarterItems)
+                                {
+                                    <li>@item</li>
+                                }
+                            </ul>
+                            @if (SelectedPenitentSpecialist.Traits.Count > 0)
+                            {
+                                <hr />
+                                <ul class="compact-list text-secondary">
+                                    @foreach (var trait in SelectedPenitentSpecialist.Traits)
+                                    {
+                                        <li>@trait</li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                }
+                <div class="mb-3">
+                    <label class="form-label text-light">Mission stars</label>
+                    <select class="form-select bg-dark text-light border-secondary" value="@_state.SelectedStars" @onchange="OnPenitentStarsChangedAsync">
+                        @foreach (var star in Enumerable.Range(1, GetMaxStarsForMission(_state.MissionCounter)))
+                        {
+                            <option value="@star">@star</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-light">Time remaining</label>
+                    <input class="form-control bg-dark text-light border-secondary" type="number" min="0" max="100" value="@_state.TimeRemaining" @onchange="OnPenitentTimeRemainingChangedAsync" />
+                </div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" @onclick="BeginPenitentMissionCompleteAsync" disabled="@IsPenitentComplete">Mission Complete</button>
+                    <button class="btn btn-danger" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!CanRollPunishment)">Mission Failed</button>
+                </div>
+            </div>
+
+            <div class="section-card rounded p-3 mt-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="text-light mb-0">Reward Weights</h4>
+                    @if (CanEditPenitentSetup)
+                    {
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="ResetPenitentWeightsAsync">Reset</button>
+                    }
+                </div>
+                <p class="text-secondary small mt-2">Diff 3 uses fixed weights. Inputs cover S / A / B / C and may total less than 100 for wildcard rolls.</p>
+                @foreach (var weightRow in _weightRows)
+                {
+                    <div class="mb-3">
+                        <label class="form-label text-light">@weightRow.Label</label>
+                        <div class="row g-2">
+                            @for (var i = 0; i < 4; i++)
+                            {
+                                <div class="col-3">
+                                    <input class="form-control bg-dark text-light border-secondary" type="number" min="0" max="100" value="@GetWeights(weightRow.Key)[i]" disabled="@(!CanEditPenitentSetup)" @onchange="(e => OnPenitentWeightChangedAsync(weightRow.Key, i, e))" />
+                                </div>
+                            }
+                        </div>
+                        <small class="text-secondary">Total: @GetWeights(weightRow.Key).Sum()%</small>
+                    </div>
+                }
+            </div>
+
+            <div class="section-card rounded p-3 mt-4">
+                <h4 class="text-light">Warbonds</h4>
+                <div class="row g-2">
+                    @foreach (var warbond in Catalog.Warbonds)
+                    {
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="@warbond.Code" checked="@_state.SelectedWarbondCodes.Contains(warbond.Code)" disabled="@(!CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.Code, e.Value as bool? == true, warbond.AlwaysEnabled))" />
+                                <label class="form-check-label text-light" for="@warbond.Code">@warbond.Name</label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8">
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@GetMissionText(_state.MissionCounter)</div></div></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Difficulty</small><div class="fs-5">@_penitentDifficulties[_state.Difficulty]</div></div></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Specialist</small><div class="fs-6">@(SelectedPenitentSpecialist?.DisplayName ?? "Default")</div></div></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Failures</small><div class="fs-5">@_state.MissionsFailed</div></div></div>
+                </div>
+            </div>
+
+            <div class="section-card rounded p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="text-light mb-0">Starting Loadout</h4>
+                    <span class="text-secondary">@StarterItems.Count item(s)</span>
+                </div>
+                <div class="item-grid mt-3">
+                    @foreach (var item in StarterItems)
+                    {
+                        <ItemCard Item="item" Badge="Starter" />
+                    }
+                </div>
+            </div>
+
+            <div class="section-card rounded p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="text-light mb-0">Acquired Rewards</h4>
+                    <span class="text-secondary">@AcquiredItems.Count item(s)</span>
+                </div>
+                @if (AcquiredItems.Count == 0)
+                {
+                    <p class="text-secondary mt-3 mb-0">No rewards claimed yet.</p>
+                }
+                else
+                {
+                    @foreach (var group in AcquiredGroups)
+                    {
+                        <div class="mt-4">
+                            <h5 class="text-light">@group.Key</h5>
+                            <div class="item-grid">
+                                @foreach (var item in group)
+                                {
+                                    <ItemCard Item="item" />
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <Modal Title="Reward Options" Open="@_showRewardModal" OnClose="ClosePenitentRewardModal">
+        @if (CurrentRewardItems.Count == 0)
+        {
+            <p class="text-secondary mb-0">No rewards available.</p>
+        }
+        else
+        {
+            <div class="item-grid">
+                @foreach (var item in CurrentRewardItems)
+                {
+                    <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.InternalName))" />
+                }
+            </div>
+            <div class="sticky-actions d-flex justify-content-end gap-2">
+                <button class="btn btn-outline-secondary" @onclick="ClosePenitentRewardModal">Close</button>
+                <button class="btn btn-warning" @onclick="SkipAndBanPenitentRewardsAsync">Skip and Ban All</button>
+            </div>
+        }
+    </Modal>
+
+    <Modal Title="Punishment Options" Open="@_showPunishmentModal" OnClose="ClosePenitentPunishmentModal">
+        @if (CurrentPunishmentItems.Count == 0)
+        {
+            <p class="text-secondary mb-0">No punishments available.</p>
+        }
+        else
+        {
+            <div class="item-grid">
+                @foreach (var item in CurrentPunishmentItems)
+                {
+                    <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.InternalName))" />
+                }
+            </div>
+        }
+    </Modal>
+
+    <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="ClosePenitentSaveManager">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <div class="text-secondary small">Current slot</div>
+                <div class="fw-semibold">@CurrentPenitentSlot?.Name</div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm" @onclick="CreatePenitentSnapshotAsync">Create Snapshot</button>
+                <label class="btn btn-outline-light btn-sm mb-0">
+                    Import Slot
+                    <InputFile OnChange="ImportPenitentSlotAsync" class="d-none" accept=".json" />
+                </label>
+            </div>
+        </div>
+        @if (CurrentPenitentSlot is not null)
+        {
+            <div class="mb-3">
+                <label class="form-label text-light">Rename current slot</label>
+                <input class="form-control bg-dark text-light border-secondary" value="@CurrentPenitentSlot.Name" @onchange="RenamePenitentCurrentSlotAsync" />
+            </div>
+        }
+        <div class="d-grid gap-2">
+            @foreach (var slot in _penitentLibrary.Slots.OrderByDescending(slot => slot.UpdatedAt))
+            {
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <div class="fw-semibold">@slot.Name @if (slot.Id == _penitentLibrary.CurrentSlotId) { <span class="badge bg-primary ms-1">Current</span> }</div>
+                            <div class="text-secondary small">@slot.UpdatedAt.ToLocalTime()</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-light" @onclick="(() => LoadPenitentSlotAsync(slot.Id))">Load</button>
+                            <button class="btn btn-sm btn-outline-primary" @onclick="(() => ExportPenitentSlotAsync(slot.Id))">Export</button>
+                            <button class="btn btn-sm btn-outline-danger" @onclick="(() => DeletePenitentSlotAsync(slot.Id))">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </Modal>
+}
+
+@code {
+    private const string PenitentStorageKey = "blazor-penitent-crusade";
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
+    private readonly Dictionary<string, string> _penitentDifficulties = new()
+    {
+        ["normal"] = "Penitent Crusade",
+        ["solo"] = "Solo Crusade",
+        ["quick"] = "Quick Crusade",
+        ["super"] = "Super Penitent Crusade",
+        ["supersolo"] = "Solo Super Crusade"
+    };
+    private readonly (string Key, string Label)[] _weightRows = [("Diff4", "Diff 4-5"), ("Diff6", "Diff 6-7"), ("Diff8", "Diff 8-10")];
+    private SaveLibrary<PenitentState> _penitentLibrary = new();
+    private PenitentState _state = new();
+    private bool _loaded;
+    private bool _showRewardModal;
+    private bool _showPunishmentModal;
+    private bool _showSaveManager;
+    private string? _statusMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Catalog.EnsureLoadedAsync();
+        _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentState>>(PenitentStorageKey) ?? new SaveLibrary<PenitentState>();
+
+        if (_penitentLibrary.Slots.Count == 0)
+        {
+            var state = CreatePenitentState();
+            var slot = new SaveSlot<PenitentState> { Name = BuildPenitentSlotName(state), State = Clone(state) };
+            _penitentLibrary.Slots.Add(slot);
+            _penitentLibrary.CurrentSlotId = slot.Id;
+            await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+        }
+
+        EnsurePenitentCurrentSlot();
+        _loaded = true;
+    }
+
+    private SaveSlot<PenitentState>? CurrentPenitentSlot =>
+        _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
+
+    private bool CanEditPenitentSetup => _state.MissionCounter == GetPenitentStartMission(_state.Difficulty);
+    private bool IsPenitentComplete => _state.MissionCounter >= 23;
+    private bool CanRollPunishment => AcquiredItems.Count > 0 && !IsPenitentComplete;
+
+    private IEnumerable<(int Index, PenitentSpecialist Specialist)> FilteredPenitentSpecialists =>
+        Catalog.PenitentSpecialists
+            .Select((specialist, index) => (Index: index, Specialist: specialist))
+            .Where(entry => entry.Specialist.Warbonds.All(code => _state.SelectedWarbondCodes.Contains(code)));
+
+    private PenitentSpecialist? SelectedPenitentSpecialist =>
+        _state.SpecialistIndex is int index && index >= 0 && index < Catalog.PenitentSpecialists.Count
+            ? Catalog.PenitentSpecialists[index]
+            : null;
+
+    private List<GameItem> StarterItems =>
+        Catalog.AllItems
+            .Where(item => GetPenitentStarterNames(_state.Difficulty, _state.SpecialistIndex).AllNames.Contains(item.DisplayName))
+            .DistinctBy(item => item.InternalName)
+            .ToList();
+
+    private List<GameItem> AcquiredItems => Catalog.GetItems(_state.AcquiredItemInternalNames).ToList();
+    private IEnumerable<IGrouping<string, GameItem>> AcquiredGroups => AcquiredItems.GroupBy(item => item.KindLabel);
+    private List<GameItem> CurrentRewardItems => Catalog.GetItems(_state.PendingRewardInternalNames).ToList();
+    private List<GameItem> CurrentPunishmentItems => Catalog.GetItems(_state.PendingPunishmentInternalNames).ToList();
+
+    private async Task OnPenitentDifficultyChangedAsync(ChangeEventArgs args)
+    {
+        if (args.Value is string difficulty)
+        {
+            await ReplacePenitentStateAsync(CreatePenitentState(difficulty, _state.SelectedWarbondCodes, _state.SpecialistIndex));
+            _statusMessage = $"Started a new { _penitentDifficulties[difficulty] } run.";
+        }
+    }
+
+    private async Task OnPenitentSpecialistChangedAsync(ChangeEventArgs args)
+    {
+        int? specialistIndex = int.TryParse(args.Value?.ToString(), out var parsed) ? parsed : null;
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes, specialistIndex));
+        _statusMessage = specialistIndex is null ? "Specialist cleared." : $"Applied {Catalog.PenitentSpecialists[specialistIndex.Value].DisplayName}.";
+    }
+
+    private Task OnPenitentStarsChangedAsync(ChangeEventArgs args)
+    {
+        if (int.TryParse(args.Value?.ToString(), out var stars))
+        {
+            _state.SelectedStars = Math.Clamp(stars, 1, GetMaxStarsForMission(_state.MissionCounter));
+        }
+
+        return PersistPenitentAsync();
+    }
+
+    private Task OnPenitentTimeRemainingChangedAsync(ChangeEventArgs args)
+    {
+        if (int.TryParse(args.Value?.ToString(), out var value))
+        {
+            _state.TimeRemaining = Math.Clamp(value, 0, 100);
+        }
+
+        return PersistPenitentAsync();
+    }
+
+    private async Task OnPenitentWeightChangedAsync(string key, int index, ChangeEventArgs args)
+    {
+        if (!int.TryParse(args.Value?.ToString(), out var value))
+        {
+            return;
+        }
+
+        var weights = GetWeights(key);
+        var otherTotal = weights.Where((_, currentIndex) => currentIndex != index).Sum();
+        weights[index] = Math.Clamp(value, 0, Math.Max(0, 100 - otherTotal));
+        await PersistPenitentAsync();
+    }
+
+    private async Task TogglePenitentWarbondAsync(string code, bool isChecked, bool alwaysEnabled)
+    {
+        if (alwaysEnabled)
+        {
+            return;
+        }
+
+        if (isChecked)
+        {
+            if (!_state.SelectedWarbondCodes.Contains(code))
+            {
+                _state.SelectedWarbondCodes.Add(code);
+            }
+        }
+        else
+        {
+            _state.SelectedWarbondCodes.Remove(code);
+        }
+
+        if (SelectedPenitentSpecialist is not null && SelectedPenitentSpecialist.Warbonds.Any(codeToCheck => !_state.SelectedWarbondCodes.Contains(codeToCheck)))
+        {
+            _state.SpecialistIndex = null;
+        }
+
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes, _state.SpecialistIndex));
+        _statusMessage = "Warbond filters updated.";
+    }
+
+    private async Task ResetPenitentWeightsAsync()
+    {
+        _state.Weights = new WeightProfile();
+        await PersistPenitentAsync();
+    }
+
+    private async Task BeginPenitentMissionCompleteAsync()
+    {
+        ClampPenitentStars();
+        if (_state.MissionCounter >= 22)
+        {
+            RecordPenitentMissionTime();
+            _state.MissionCounter = 23;
+            _state.TimeRemaining = 0;
+            await PersistPenitentAsync();
+            _statusMessage = "Challenge complete.";
+            return;
+        }
+
+        if (_state.PendingRewardInternalNames.Count == 0)
+        {
+            _state.PendingRewardInternalNames = RollPenitentRewardItems().Select(item => item.InternalName).ToList();
+            await PersistPenitentAsync();
+        }
+
+        if (_state.PendingRewardInternalNames.Count == 0)
+        {
+            _statusMessage = "No rewards available.";
+            return;
+        }
+
+        _showRewardModal = true;
+    }
+
+    private async Task BeginPenitentMissionFailureAsync()
+    {
+        if (_state.PendingPunishmentInternalNames.Count == 0)
+        {
+            var punishmentPool = AcquiredItems.OrderBy(_ => Random.Shared.Next()).Take(Math.Min(3, AcquiredItems.Count)).Select(item => item.InternalName).ToList();
+            _state.PendingPunishmentInternalNames = punishmentPool;
+            await PersistPenitentAsync();
+        }
+
+        if (_state.PendingPunishmentInternalNames.Count == 0)
+        {
+            _statusMessage = "No acquired rewards are available for punishment.";
+            return;
+        }
+
+        _showPunishmentModal = true;
+    }
+
+    private async Task ClaimPenitentRewardAsync(string internalName)
+    {
+        _state.AcquiredItemInternalNames.Add(internalName);
+        if (!_state.BannedItemInternalNames.Contains(internalName))
+        {
+            _state.BannedItemInternalNames.Add(internalName);
+        }
+
+        _state.PendingRewardInternalNames.Clear();
+        RecordPenitentMissionTime();
+        _state.TimeRemaining = 0;
+        _state.MissionCounter++;
+        ClampPenitentStars();
+        _showRewardModal = false;
+        await PersistPenitentAsync();
+    }
+
+    private async Task SkipAndBanPenitentRewardsAsync()
+    {
+        foreach (var internalName in _state.PendingRewardInternalNames)
+        {
+            if (!_state.BannedItemInternalNames.Contains(internalName))
+            {
+                _state.BannedItemInternalNames.Add(internalName);
+            }
+        }
+
+        _state.PendingRewardInternalNames.Clear();
+        RecordPenitentMissionTime();
+        _state.TimeRemaining = 0;
+        _state.MissionCounter++;
+        ClampPenitentStars();
+        _showRewardModal = false;
+        await PersistPenitentAsync();
+    }
+
+    private async Task ClaimPenitentPunishmentAsync(string internalName)
+    {
+        _state.AcquiredItemInternalNames.Remove(internalName);
+        _state.BannedItemInternalNames.Remove(internalName);
+        _state.PendingPunishmentInternalNames.Clear();
+        _state.MissionsFailed++;
+        _state.MissionCounter = Math.Max(GetPenitentStartMission(_state.Difficulty), ReducePenitentMissionCounter(_state.MissionCounter));
+        ClampPenitentStars();
+        _showPunishmentModal = false;
+        await PersistPenitentAsync();
+    }
+
+    private async Task RestartPenitentRunAsync()
+    {
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes, _state.SpecialistIndex));
+        _statusMessage = "Run restarted.";
+    }
+
+    private Task ClosePenitentRewardModal()
+    {
+        _showRewardModal = false;
+        return Task.CompletedTask;
+    }
+
+    private Task ClosePenitentPunishmentModal()
+    {
+        _showPunishmentModal = false;
+        return Task.CompletedTask;
+    }
+
+    private Task ClosePenitentSaveManager()
+    {
+        _showSaveManager = false;
+        return Task.CompletedTask;
+    }
+
+    private async Task CreatePenitentSnapshotAsync()
+    {
+        var slot = new SaveSlot<PenitentState>
+        {
+            Name = $"{BuildPenitentSlotName(_state)} Snapshot",
+            State = Clone(_state),
+            UpdatedAt = DateTimeOffset.UtcNow
+        };
+        _penitentLibrary.Slots.Add(slot);
+        _penitentLibrary.CurrentSlotId = slot.Id;
+        _state = slot.State;
+        await PersistPenitentAsync();
+    }
+
+    private async Task RenamePenitentCurrentSlotAsync(ChangeEventArgs args)
+    {
+        if (CurrentPenitentSlot is null)
+        {
+            return;
+        }
+
+        CurrentPenitentSlot.Name = string.IsNullOrWhiteSpace(args.Value?.ToString()) ? CurrentPenitentSlot.Name : args.Value!.ToString()!;
+        CurrentPenitentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+    }
+
+    private async Task LoadPenitentSlotAsync(Guid slotId)
+    {
+        _penitentLibrary.CurrentSlotId = slotId;
+        EnsurePenitentCurrentSlot();
+        _showSaveManager = false;
+        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+    }
+
+    private async Task DeletePenitentSlotAsync(Guid slotId)
+    {
+        _penitentLibrary.Slots.RemoveAll(slot => slot.Id == slotId);
+        if (_penitentLibrary.Slots.Count == 0)
+        {
+            var state = CreatePenitentState();
+            var slot = new SaveSlot<PenitentState> { Name = BuildPenitentSlotName(state), State = Clone(state) };
+            _penitentLibrary.Slots.Add(slot);
+            _penitentLibrary.CurrentSlotId = slot.Id;
+        }
+        else if (_penitentLibrary.CurrentSlotId == slotId)
+        {
+            _penitentLibrary.CurrentSlotId = _penitentLibrary.Slots[0].Id;
+        }
+
+        EnsurePenitentCurrentSlot();
+        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+    }
+
+    private async Task ExportPenitentSlotAsync(Guid slotId)
+    {
+        var slot = _penitentLibrary.Slots.First(entry => entry.Id == slotId);
+        await FileExport.DownloadJsonAsync($"{SanitizeFileName(slot.Name)}.json", new SaveExport<PenitentState> { Mode = "penitent-crusade", Slot = slot });
+    }
+
+    private async Task ImportPenitentSlotAsync(InputFileChangeEventArgs args)
+    {
+        var file = args.File;
+        await using var stream = file.OpenReadStream(1024 * 1024);
+        using var reader = new StreamReader(stream);
+        var json = await reader.ReadToEndAsync();
+        var import = JsonSerializer.Deserialize<SaveExport<PenitentState>>(json, JsonOptions);
+        if (import?.Slot?.State is null || import.Mode != "penitent-crusade")
+        {
+            _statusMessage = "Invalid Penitent Crusade save file.";
+            return;
+        }
+
+        import.Slot.Id = Guid.NewGuid();
+        import.Slot.UpdatedAt = DateTimeOffset.UtcNow;
+        _penitentLibrary.Slots.Add(import.Slot);
+        _penitentLibrary.CurrentSlotId = import.Slot.Id;
+        EnsurePenitentCurrentSlot();
+        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+        _statusMessage = $"Imported slot {import.Slot.Name}.";
+    }
+
+    private async Task ExportPenitentSummaryAsync()
+    {
+        var specialistName = SelectedPenitentSpecialist?.DisplayName ?? "Default";
+        var difficultyModifier = _state.Difficulty.StartsWith("super", StringComparison.Ordinal) ? 250 : 0;
+        var totalTimeRemaining = _state.MissionTimes.Sum();
+        var score = difficultyModifier + totalTimeRemaining - (_state.MissionsFailed * 50);
+        var categories = AcquiredItems.GroupBy(item => item.KindLabel).OrderBy(group => group.Key);
+        var builder = new StringBuilder();
+        builder.AppendLine($"{_penitentDifficulties[_state.Difficulty]} Score Summary");
+        builder.AppendLine("=======================================");
+        builder.AppendLine();
+        builder.AppendLine($"Total Mission Time Remaining: {totalTimeRemaining}");
+        builder.AppendLine($"Difficulty Modifier: {difficultyModifier}");
+        builder.AppendLine($"Missions Failed: {_state.MissionsFailed}");
+        builder.AppendLine($"Final Score: {score}");
+        builder.AppendLine();
+        builder.AppendLine($"Specialist: {specialistName}");
+        builder.AppendLine();
+
+        foreach (var kind in new[] { "Stratagem", "Primary", "Booster", "Secondary", "Throwable", "Armor Passive" })
+        {
+            builder.AppendLine($"{kind}s:");
+            var items = categories.FirstOrDefault(group => group.Key == kind)?.ToList() ?? [];
+            if (items.Count == 0)
+            {
+                builder.AppendLine("  - None");
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    builder.AppendLine($"  - {item.DisplayName}");
+                }
+            }
+
+            builder.AppendLine();
+        }
+
+        await FileExport.DownloadTextAsync($"{SanitizeFileName(CurrentPenitentSlot?.Name ?? "penitent-crusade-summary")}.txt", builder.ToString());
+    }
+
+    private async Task ReplacePenitentStateAsync(PenitentState state)
+    {
+        _state = state;
+        ClampPenitentStars();
+        if (CurrentPenitentSlot is not null)
+        {
+            CurrentPenitentSlot.State = Clone(_state);
+        }
+
+        await PersistPenitentAsync();
+    }
+
+    private async Task PersistPenitentAsync()
+    {
+        if (CurrentPenitentSlot is null)
+        {
+            return;
+        }
+
+        CurrentPenitentSlot.State = Clone(_state);
+        CurrentPenitentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+    }
+
+    private void EnsurePenitentCurrentSlot()
+    {
+        var slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
+        _penitentLibrary.CurrentSlotId = slot.Id;
+        _state = Clone(slot.State);
+        ClampPenitentStars();
+    }
+
+    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<string>? warbondCodes = null, int? specialistIndex = null)
+    {
+        var selectedWarbonds = warbondCodes?.Distinct().ToList() ?? Catalog.Warbonds.Select(warbond => warbond.Code).ToList();
+        if (!selectedWarbonds.Contains("warbond3"))
+        {
+            selectedWarbonds.Add("warbond3");
+        }
+
+        return new PenitentState
+        {
+            Difficulty = difficulty,
+            MissionCounter = GetPenitentStartMission(difficulty),
+            SelectedStars = GetMaxStarsForMission(GetPenitentStartMission(difficulty)),
+            SelectedWarbondCodes = selectedWarbonds,
+            SpecialistIndex = specialistIndex,
+            Weights = new WeightProfile()
+        };
+    }
+
+    private (List<string> Stratagems, List<string> Primaries, List<string> Secondaries, List<string> Throwables, List<string> ArmorPassives, List<string> Boosters, HashSet<string> AllNames) GetPenitentStarterNames(string difficulty, int? specialistIndex)
+    {
+        var strats = new List<string>
+        {
+            "One True Flag",
+            "Defoliation Tool",
+            "Orbital EMS Strike",
+            "Orbital Smoke Strike",
+            "Eagle Smoke Strike",
+            "EMS Mortar Sentry",
+            "Shield Generator Relay"
+        };
+        var primaries = new List<string> { "Constitution" };
+        var secondaries = new List<string> { "Stun Lance", "Stun Baton", "Combat Hatchet", "Saber", "Machete", "Entrenchment Tool" };
+        var throwables = new List<string> { "G-3 Smoke", "K-2 Throwing Knife", "G-12 High Explosive", "G-89 Smokescreen" };
+        var armor = new List<string> { "Extra Padding" };
+        var boosters = new List<string>();
+
+        if (difficulty is "super" or "supersolo")
+        {
+            armor = ["Integrated Explosives"];
+            strats.Add("Ballistic Shield");
+        }
+
+        if (difficulty is "solo" or "supersolo")
+        {
+            strats.Add("Orbital Precision Strike");
+        }
+
+        if (difficulty == "quick")
+        {
+            strats.AddRange(["Ballistic Shield", "Orbital Precision Strike", "Grenadier Battlement", "Anti-Tank Mines", "Eagle 110mm Rocket Pods", "Orbital Gatling Barrage", "Arc Thrower"]);
+            boosters.AddRange(["UAV Recon", "Muscle Enhancement"]);
+        }
+
+        if (difficulty is not "super" and not "supersolo")
+        {
+            secondaries.Add("Peacemaker");
+        }
+
+        if (specialistIndex is int index)
+        {
+            var specialist = Catalog.PenitentSpecialists[index];
+            primaries = specialist.Primaries.Count > 0 ? [.. specialist.Primaries] : primaries;
+            strats.AddRange(specialist.Stratagems);
+            secondaries = specialist.Secondaries.Count > 0 ? [.. specialist.Secondaries] : secondaries;
+            throwables = specialist.Throwables.Count > 0 ? [.. specialist.Throwables] : throwables;
+            armor = specialist.ArmorPassives.Count > 0 ? [.. specialist.ArmorPassives] : armor;
+            boosters = specialist.Boosters.Count > 0 ? [.. specialist.Boosters] : boosters;
+
+            if (index == 22)
+            {
+                strats = ["Guard Dog Bullets", "Guard Dog Laser", "Guard Dog Breath", "Guard Dog Arc", "Guard Dog Flames"];
+            }
+        }
+
+        return (strats, primaries, secondaries, throwables, armor, boosters, new HashSet<string>(strats.Concat(primaries).Concat(secondaries).Concat(throwables).Concat(armor).Concat(boosters)));
+    }
+
+    private List<List<GameItem>> GetPenitentRewardPools()
+    {
+        var starter = GetPenitentStarterNames(_state.Difficulty, _state.SpecialistIndex);
+        var banned = _state.BannedItemInternalNames.ToHashSet();
+        var acquired = _state.AcquiredItemInternalNames.ToHashSet();
+
+        List<GameItem> Filter(IEnumerable<GameItem> source) =>
+            source
+                .Where(item =>
+                    !starter.AllNames.Contains(item.DisplayName) &&
+                    (_state.SelectedWarbondCodes.Contains(item.WarbondCode) || item.WarbondCode == "none") &&
+                    !banned.Contains(item.InternalName) &&
+                    !acquired.Contains(item.InternalName))
+                .ToList();
+
+        var strats = Filter(Catalog.Stratagems);
+        var primaries = Filter(Catalog.Primaries);
+        var secondaries = Filter(Catalog.Secondaries);
+        var throwables = Filter(Catalog.Throwables);
+        var armors = Filter(Catalog.ArmorPassives);
+        var boosters = Filter(Catalog.Boosters);
+
+        if (_state.SpecialistIndex is int specialistIndex)
+        {
+            switch (specialistIndex)
+            {
+                case 16:
+                    strats = strats.Where(item => !item.Tags.Contains("Weapons")).ToList();
+                    break;
+                case 17:
+                    strats = strats.Where(item => item.Category is not "Eagle" and not "Orbital").ToList();
+                    break;
+                case 22:
+                    strats = [];
+                    break;
+                case 30:
+                    strats = strats.Where(item => item.Category == "Eagle" && item.DisplayName != "Eagle Strafing Run").ToList();
+                    break;
+                case 31:
+                    strats = strats.Where(item => item.Category == "Orbital" && item.DisplayName != "Orbital Precision Strike").ToList();
+                    break;
+                case 32:
+                    strats = strats.Where(item => new[] { "Anti-Tank Mines", "Incendiary Mines", "Gas Mines" }.Contains(item.DisplayName)).ToList();
+                    break;
+                case 33:
+                    strats = strats.Where(item => item.Tags.Contains("Sentry") && item.DisplayName != "Machine Gun Sentry").ToList();
+                    break;
+                case 38:
+                    strats = strats.Where(item => item.Category == "Eagle" || (item.Tags.Contains("Vehicles") && item.DisplayName != "Breakthrough Exosuit")).ToList();
+                    break;
+                case 40:
+                    strats = strats.Where(item => item.Antitank && item.DisplayName != "Anti-Tank Emplacement").ToList();
+                    break;
+                case 44:
+                    strats = strats.Where(item => item.Tags.Contains("expendable") && item.DisplayName != "Bullet Storm").ToList();
+                    break;
+                case 47:
+                    primaries = primaries.Where(item => item.Tags.Contains("onehanded") && item.DisplayName != "Defender").ToList();
+                    break;
+            }
+
+            var specialist = Catalog.PenitentSpecialists[specialistIndex];
+            var pools = new List<List<GameItem>> { strats };
+            if (specialist.ArmorPassives.Count == 0) pools.Add(armors);
+            if (specialist.Boosters.Count == 0) pools.Add(boosters);
+            if (specialist.Primaries.Count == 0 || specialistIndex == 47) pools.Add(primaries);
+            if (specialist.Secondaries.Count == 0) pools.Add(secondaries);
+            if (specialist.Throwables.Count == 0) pools.Add(throwables);
+            return pools.Where(pool => pool.Count > 0).ToList();
+        }
+
+        return new List<List<GameItem>> { strats, primaries, secondaries, throwables, armors, boosters }
+            .Where(pool => pool.Count > 0)
+            .ToList();
+    }
+
+    private List<GameItem> RollPenitentRewardItems()
+    {
+        var rewardQuantity = _state.SelectedStars - 1;
+        if (_state.Difficulty is "super" or "supersolo")
+        {
+            rewardQuantity--;
+        }
+
+        if (_state.SpecialistIndex.HasValue)
+        {
+            rewardQuantity--;
+        }
+
+        rewardQuantity = Math.Max(1, rewardQuantity);
+        var pools = GetPenitentRewardPools();
+        if (pools.Count == 0)
+        {
+            return new List<GameItem>();
+        }
+
+        if (_state.MissionCounter == 7 && _state.SpecialistIndex is int specialistIndex && !_antiTankExclusions.Contains(specialistIndex))
+        {
+            var antiTankPool = pools.First().Where(item => item.Antitank).ToList();
+            if (antiTankPool.Count > 0)
+            {
+                return antiTankPool.OrderBy(_ => Random.Shared.Next()).Take(Math.Min(rewardQuantity, antiTankPool.Count)).ToList();
+            }
+        }
+
+        var forcedIndices = new HashSet<int>();
+        if (_state.MissionCounter == 1 && _state.Difficulty is "solo" or "normal") forcedIndices.Add(0);
+        if (_state.MissionCounter == 3 && _state.Difficulty is "super" or "supersolo") forcedIndices.Add(0);
+        if (_state.MissionCounter == 11 && _state.Difficulty == "quick") forcedIndices.Add(0);
+
+        var maxCategories = _state.SpecialistIndex.HasValue ? 3 : 4;
+        maxCategories = Math.Min(maxCategories, pools.Count);
+        while (forcedIndices.Count < maxCategories)
+        {
+            forcedIndices.Add(Random.Shared.Next(0, pools.Count));
+        }
+
+        var selectedIndices = forcedIndices.Take(rewardQuantity).ToList();
+        if (selectedIndices.Count < rewardQuantity)
+        {
+            selectedIndices.AddRange(Enumerable.Range(0, pools.Count).Where(index => !selectedIndices.Contains(index)).Take(rewardQuantity - selectedIndices.Count));
+        }
+
+        return selectedIndices
+            .Select(index => RollPenitentItemFromPool(pools[index]))
+            .OfType<GameItem>()
+            .DistinctBy(item => item.InternalName)
+            .ToList();
+    }
+
+    private GameItem? RollPenitentItemFromPool(List<GameItem> pool)
+    {
+        if (pool.Count == 0)
+        {
+            return null;
+        }
+
+        if (_state.MissionCounter == 7)
+        {
+            var antiTankPool = pool.Where(item => item.Antitank).ToList();
+            if (antiTankPool.Count > 0)
+            {
+                pool = antiTankPool;
+            }
+        }
+
+        var weights = GetCurrentPenitentWeights();
+        var total = weights.Sum();
+        var roll = Random.Shared.Next(1, 101);
+        if (total < 100 && roll > total)
+        {
+            return pool[Random.Shared.Next(pool.Count)];
+        }
+
+        var tierRoll = Random.Shared.Next(1, Math.Max(total, 1) + 1);
+        var running = 0;
+        var tiers = new[] { "s", "a", "b", "c" };
+        for (var index = 0; index < tiers.Length; index++)
+        {
+            running += weights[index];
+            if (tierRoll <= running)
+            {
+                var tierPool = pool.Where(item => string.Equals(item.Tier, tiers[index], StringComparison.OrdinalIgnoreCase)).ToList();
+                if (tierPool.Count > 0)
+                {
+                    return tierPool[Random.Shared.Next(tierPool.Count)];
+                }
+            }
+        }
+
+        return pool[Random.Shared.Next(pool.Count)];
+    }
+
+    private List<int> GetCurrentPenitentWeights()
+    {
+        if (_state.MissionCounter <= 2)
+        {
+            return [0, 20, 50, 30];
+        }
+
+        if (_state.MissionCounter <= 7)
+        {
+            return [.. _state.Weights.Diff4];
+        }
+
+        if (_state.MissionCounter <= 13)
+        {
+            return [.. _state.Weights.Diff6];
+        }
+
+        return [.. _state.Weights.Diff8];
+    }
+
+    private string GetMissionText(int missionCounter)
+    {
+        return missionCounter switch
+        {
+            1 => "Diff: 3, Mission: 1",
+            2 => "Diff: 3, Mission: 2",
+            3 => "Diff: 4, Mission: 1",
+            4 => "Diff: 4, Mission: 2",
+            5 => "Diff: 5, Mission: 1",
+            6 => "Diff: 5, Mission: 2",
+            7 => "Diff: 5, Mission: 3",
+            8 => "Diff: 6, Mission: 1",
+            9 => "Diff: 6, Mission: 2",
+            10 => "Diff: 6, Mission: 3",
+            11 => "Diff: 7, Mission: 1",
+            12 => "Diff: 7, Mission: 2",
+            13 => "Diff: 7, Mission: 3",
+            14 => "Diff: 8, Mission: 1",
+            15 => "Diff: 8, Mission: 2",
+            16 => "Diff: 8, Mission: 3",
+            17 => "Diff: 9, Mission: 1",
+            18 => "Diff: 9, Mission: 2",
+            19 => "Diff: 9, Mission: 3",
+            20 => "Diff: 10, Mission: 1",
+            21 => "Diff: 10, Mission: 2",
+            22 => "Diff: 10, Mission: 3",
+            _ => "Challenge Complete"
+        };
+    }
+
+    private static int GetPenitentStartMission(string difficulty) =>
+        difficulty switch
+        {
+            "quick" => 11,
+            "super" or "supersolo" => 3,
+            _ => 1
+        };
+
+    private static int GetMaxStarsForMission(int missionCounter)
+    {
+        if (missionCounter < 5) return 3;
+        if (missionCounter < 11) return 4;
+        return 5;
+    }
+
+    private static int ReducePenitentMissionCounter(int missionCounter)
+    {
+        if (new[] { 2, 4, 6, 9, 12, 15, 18, 21 }.Contains(missionCounter)) return missionCounter - 1;
+        if (new[] { 7, 10, 13, 16, 19, 22 }.Contains(missionCounter)) return missionCounter - 2;
+        return missionCounter;
+    }
+
+    private void RecordPenitentMissionTime()
+    {
+        if (_state.MissionTimes.Count < _state.MissionCounter)
+        {
+            _state.MissionTimes.Add(_state.TimeRemaining);
+        }
+    }
+
+    private void ClampPenitentStars()
+    {
+        _state.SelectedStars = Math.Clamp(_state.SelectedStars, 1, GetMaxStarsForMission(_state.MissionCounter));
+    }
+
+    private string GetSpecialistValue() => _state.SpecialistIndex?.ToString() ?? string.Empty;
+
+    private List<int> GetWeights(string key) =>
+        key switch
+        {
+            "Diff4" => _state.Weights.Diff4,
+            "Diff6" => _state.Weights.Diff6,
+            _ => _state.Weights.Diff8
+        };
+
+    private string BuildPenitentSlotName(PenitentState state)
+    {
+        var specialistName = state.SpecialistIndex is int index ? $" | {Catalog.PenitentSpecialists[index].DisplayName}" : string.Empty;
+        return $"{state.Difficulty.ToUpperInvariant()} | {GetMissionText(state.MissionCounter)} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}{specialistName}";
+    }
+
+    private static T Clone<T>(T value) =>
+        JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, JsonOptions), JsonOptions)!;
+
+    private static string SanitizeFileName(string value)
+    {
+        foreach (var invalidChar in Path.GetInvalidFileNameChars())
+        {
+            value = value.Replace(invalidChar, '-');
+        }
+
+        return value;
+    }
+
+    private static readonly HashSet<int> _antiTankExclusions = [22, 30, 31, 32, 33, 38, 40, 44];
+}

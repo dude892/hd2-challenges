@@ -1,0 +1,11 @@
+.app-shell {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    width: 90%;
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+}

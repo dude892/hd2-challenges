@@ -1,7 +1,6 @@
 [
   {
     "displayName": "Sterilizer",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -17,7 +16,6 @@
   },
   {
     "displayName": "Flamethrower",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -33,7 +31,6 @@
   },
   {
     "displayName": "Speargun",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -49,7 +46,6 @@
   },
   {
     "displayName": "Laser Cannon",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -65,7 +61,6 @@
   },
   {
     "displayName": "Stalwart",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -81,7 +76,6 @@
   },
   {
     "displayName": "Machine Gun",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -97,7 +91,6 @@
   },
   {
     "displayName": "Heavy Machine Gun",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -113,7 +106,6 @@
   },
   {
     "displayName": "Arc Thrower",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -128,7 +120,6 @@
   },
   {
     "displayName": "Grenade Launcher",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -144,7 +135,6 @@
   },
   {
     "displayName": "De-Escalator",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -159,7 +149,6 @@
   },
   {
     "displayName": "Anti-Material Rifle",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -175,7 +164,6 @@
   },
   {
     "displayName": "Railgun",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -190,7 +178,6 @@
   },
   {
     "displayName": "Quasar Cannon",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -205,7 +192,6 @@
   },
   {
     "displayName": "Epoch",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -221,7 +207,6 @@
   },
   {
     "displayName": "Expendable Anti-Tank",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -237,7 +222,6 @@
   },
   {
     "displayName": "Commando",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -253,7 +237,6 @@
   },
   {
     "displayName": "Expendable Napalm",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -269,7 +252,6 @@
   },
   {
     "displayName": "Solo Silo",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -285,7 +267,6 @@
   },
   {
     "displayName": "One True Flag",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -300,7 +281,6 @@
   },
   {
     "displayName": "Defoliation Tool",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -315,7 +295,6 @@
   },
   {
     "displayName": "Maxigun",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -332,7 +311,6 @@
   },
   {
     "displayName": "Autocannon",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -348,7 +326,6 @@
   },
   {
     "displayName": "W.A.S.P. Launcher",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -364,7 +341,6 @@
   },
   {
     "displayName": "Airburst Rocket Launcher",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -380,7 +356,6 @@
   },
   {
     "displayName": "Recoilless Rifle",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -397,7 +372,6 @@
   },
   {
     "displayName": "Spear",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -414,7 +388,6 @@
   },
   {
     "displayName": "C4 Pack",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -431,7 +404,6 @@
   },
   {
     "displayName": "Guard Dog Flames",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -446,7 +418,6 @@
   },
   {
     "displayName": "Guard Dog Breath",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -461,7 +432,6 @@
   },
   {
     "displayName": "Guard Dog Laser",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -477,7 +447,6 @@
   },
   {
     "displayName": "Guard Dog Bullets",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -493,7 +462,6 @@
   },
   {
     "displayName": "Guard Dog Arc",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -508,7 +476,6 @@
   },
   {
     "displayName": "Jump Pack",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -523,7 +490,6 @@
   },
   {
     "displayName": "Hover Pack",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -538,7 +504,6 @@
   },
   {
     "displayName": "Warp Pack",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -553,7 +518,6 @@
   },
   {
     "displayName": "Supply Pack",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks"
@@ -567,7 +531,6 @@
   },
   {
     "displayName": "Directional Shield",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks"
@@ -581,7 +544,6 @@
   },
   {
     "displayName": "Shield Generator Pack",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks"
@@ -595,7 +557,6 @@
   },
   {
     "displayName": "Ballistic Shield",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks"
@@ -609,7 +570,6 @@
   },
   {
     "displayName": "Portable Hellbomb",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Backpacks",
@@ -625,7 +585,6 @@
   },
   {
     "displayName": "Fast Recon Vehicle",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles",
@@ -641,7 +600,6 @@
   },
   {
     "displayName": "Patriot Exosuit",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles",
@@ -658,7 +616,6 @@
   },
   {
     "displayName": "Emancipator Exosuit",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles",
@@ -675,7 +632,6 @@
   },
   {
     "displayName": "Eagle Strafing Run",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle"
@@ -689,7 +645,6 @@
   },
   {
     "displayName": "Eagle Airstrike",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle"
@@ -703,7 +658,6 @@
   },
   {
     "displayName": "Eagle Cluster Bomb",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle"
@@ -717,7 +671,6 @@
   },
   {
     "displayName": "Eagle Napalm Strike",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle",
@@ -732,7 +685,6 @@
   },
   {
     "displayName": "Eagle Smoke Strike",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle",
@@ -747,7 +699,6 @@
   },
   {
     "displayName": "Eagle 110mm Rocket Pods",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle",
@@ -762,7 +713,6 @@
   },
   {
     "displayName": "Eagle 500kg Bomb",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle",
@@ -777,7 +727,6 @@
   },
   {
     "displayName": "Orbital Precision Strike",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -792,7 +741,6 @@
   },
   {
     "displayName": "Orbital Gas Strike",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -807,7 +755,6 @@
   },
   {
     "displayName": "Orbital EMS Strike",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -822,7 +769,6 @@
   },
   {
     "displayName": "Orbital Smoke Strike",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -837,7 +783,6 @@
   },
   {
     "displayName": "Orbital Airburst Strike",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital"
@@ -851,7 +796,6 @@
   },
   {
     "displayName": "Orbital Railcannon Strike",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -866,7 +810,6 @@
   },
   {
     "displayName": "Orbital Laser",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -882,7 +825,6 @@
   },
   {
     "displayName": "Orbital Gatling Barrage",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -897,7 +839,6 @@
   },
   {
     "displayName": "Orbital 120mm Barrage",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital"
@@ -911,7 +852,6 @@
   },
   {
     "displayName": "Orbital 380mm Barrage",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital"
@@ -925,7 +865,6 @@
   },
   {
     "displayName": "Orbital Walking Barrage",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital"
@@ -939,7 +878,6 @@
   },
   {
     "displayName": "Orbital Napalm Barrage",
-    "type": "Stratagem",
     "category": "Orbital",
     "tags": [
       "Orbital",
@@ -954,7 +892,6 @@
   },
   {
     "displayName": "Tesla Tower",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -969,7 +906,6 @@
   },
   {
     "displayName": "Mortar Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry"
@@ -983,7 +919,6 @@
   },
   {
     "displayName": "EMS Mortar Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -998,7 +933,6 @@
   },
   {
     "displayName": "Machine Gun Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1014,7 +948,6 @@
   },
   {
     "displayName": "Gatling Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1030,7 +963,6 @@
   },
   {
     "displayName": "Flame Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1045,7 +977,6 @@
   },
   {
     "displayName": "Laser Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1060,7 +991,6 @@
   },
   {
     "displayName": "Autocannon Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1076,7 +1006,6 @@
   },
   {
     "displayName": "Rocket Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1092,7 +1021,6 @@
   },
   {
     "displayName": "Shield Generator Relay",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement"
@@ -1106,7 +1034,6 @@
   },
   {
     "displayName": "HMG Emplacement",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement",
@@ -1123,7 +1050,6 @@
   },
   {
     "displayName": "Anti-Tank Emplacement",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement",
@@ -1139,7 +1065,6 @@
   },
   {
     "displayName": "Grenadier Battlement",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement",
@@ -1155,7 +1080,6 @@
   },
   {
     "displayName": "Anti-Tank Mines",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement",
@@ -1170,7 +1094,6 @@
   },
   {
     "displayName": "Anti-Personnel Mines",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement"
@@ -1184,7 +1107,6 @@
   },
   {
     "displayName": "Gas Mines",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement",
@@ -1199,7 +1121,6 @@
   },
   {
     "displayName": "Incendiary Mines",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Emplacement",
@@ -1214,7 +1135,6 @@
   },
   {
     "displayName": "Breaching Hammer",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -1230,7 +1150,6 @@
   },
   {
     "displayName": "Leveller",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -1247,7 +1166,6 @@
   },
   {
     "displayName": "Belt-Fed Grenade Launcher",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -1266,7 +1184,6 @@
   },
   {
     "displayName": "Bastion",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles"
@@ -1280,7 +1197,6 @@
   },
   {
     "displayName": "Gas Mortar Sentry",
-    "type": "Stratagem",
     "category": "Defense",
     "tags": [
       "Sentry",
@@ -1295,7 +1211,6 @@
   },
   {
     "displayName": "Cremator",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -1312,7 +1227,6 @@
   },
   {
     "displayName": "Lumberer Exosuit",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles",
@@ -1330,7 +1244,6 @@
   },
   {
     "displayName": "Breakthrough Exosuit",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles",
@@ -1347,7 +1260,6 @@
   },
   {
     "displayName": "Bullet Storm",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -1364,7 +1276,6 @@
   },
   {
     "displayName": "Supply FRV",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Vehicles",
@@ -1380,7 +1291,6 @@
   },
   {
     "displayName": "Meltagun",
-    "type": "Stratagem",
     "category": "Supply",
     "tags": [
       "Weapons",
@@ -1395,7 +1305,6 @@
   },
   {
     "displayName": "Eagle Gas Airstrike",
-    "type": "Stratagem",
     "category": "Eagle",
     "tags": [
       "Eagle",
