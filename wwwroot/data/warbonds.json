@@ -1,194 +1,138 @@
 [
   {
+    "displayName": "Super Citizen Edition",
+    "warbondCode": "warbond0",
+    "internalName": "superCitizenEdition"
+  },
+  {
+    "displayName": "Superstore",
+    "warbondCode": "warbond1",
+    "internalName": "superstore"
+  },
+  {
+    "displayName": "Pre-Order Bonus",
+    "warbondCode": "warbond2",
+    "internalName": "preOrderBonus"
+  },
+  {
     "displayName": "Helldivers Mobilize",
-    "category": "",
     "warbondCode": "warbond3",
-    "internalName": "helldiversMobilizeWB",
-    "imageURL": "helldiversMobilizeWB.webp",
-    "tier": "s"
+    "internalName": "helldiversMobilize",
+    "alwaysenabled": true
   },
   {
     "displayName": "Steeled Veterans",
-    "category": "",
     "warbondCode": "warbond4",
-    "internalName": "steeledVeteransWB",
-    "imageURL": "steeledVeteransWB.webp",
-    "tier": "a"
+    "internalName": "steeledVeterans"
   },
   {
     "displayName": "Cutting Edge",
-    "category": "",
     "warbondCode": "warbond5",
-    "internalName": "cuttingEdgeWB",
-    "imageURL": "cuttingEdgeWB.webp",
-    "tier": "a"
+    "internalName": "cuttingEdge"
   },
   {
     "displayName": "Democratic Detonation",
-    "category": "",
     "warbondCode": "warbond6",
-    "internalName": "democraticDetonationWB",
-    "imageURL": "democraticDetonationWB.webp",
-    "tier": "s"
+    "internalName": "democraticDetonation"
   },
   {
     "displayName": "Polar Patriots",
-    "category": "",
     "warbondCode": "warbond7",
-    "internalName": "polarPatriotsWB",
-    "imageURL": "polarPatriotsWB.webp",
-    "tier": "b"
+    "internalName": "polarPatriots"
   },
   {
     "displayName": "Viper Commandos",
-    "category": "",
     "warbondCode": "warbond8",
-    "internalName": "viperCommandosWB",
-    "imageURL": "viperCommandosWB.webp",
-    "tier": "b"
+    "internalName": "viperCommandos"
   },
   {
     "displayName": "Freedom's Flame",
-    "category": "",
     "warbondCode": "warbond9",
-    "internalName": "freedomsFlameWB",
-    "imageURL": "freedomsFlameWB.webp",
-    "tier": "b"
+    "internalName": "freedomsFlame"
   },
   {
     "displayName": "Chemical Agents",
-    "category": "",
     "warbondCode": "warbond10",
-    "internalName": "chemicalAgentsWB",
-    "imageURL": "chemicalAgentsWB.webp",
-    "tier": "b"
+    "internalName": "chemicalAgents"
   },
   {
     "displayName": "Truth Enforcers",
-    "category": "",
     "warbondCode": "warbond11",
-    "internalName": "truthEnforcersWB",
-    "imageURL": "truthEnforcersWB.webp",
-    "tier": "b"
+    "internalName": "truthEnforcers"
   },
   {
     "displayName": "Urban Legends",
-    "category": "",
     "warbondCode": "warbond12",
-    "internalName": "urbanLegendsWB",
-    "imageURL": "urbanLegendsWB.webp",
-    "tier": "b"
+    "internalName": "urbanLegends"
   },
   {
     "displayName": "Servants of Freedom",
-    "category": "",
     "warbondCode": "warbond13",
-    "internalName": "servantsOfFreedomWB",
-    "imageURL": "servantsOfFreedomWB.webp",
-    "tier": "a"
+    "internalName": "servantsOfFreedom"
   },
   {
     "displayName": "Borderline Justice",
-    "category": "",
     "warbondCode": "warbond14",
-    "internalName": "borderlineJusticeWB",
-    "imageURL": "borderlineJusticeWB.webp",
-    "tier": "b"
+    "internalName": "borderlineJustice"
   },
   {
     "displayName": "Masters of Ceremony",
-    "category": "",
     "warbondCode": "warbond15",
-    "internalName": "mastersOfCeremonyWB",
-    "imageURL": "mastersOfCeremonyWB.webp",
-    "tier": "c"
+    "internalName": "mastersOfCeremony"
   },
   {
     "displayName": "Force of Law",
-    "category": "",
     "warbondCode": "warbond16",
-    "internalName": "forceOfLawWB",
-    "imageURL": "forceOfLawWB.webp",
-    "tier": "b"
+    "internalName": "forceOfLaw"
   },
   {
     "displayName": "Control Group",
-    "category": "",
     "warbondCode": "warbond17",
-    "internalName": "controlGroupWB",
-    "imageURL": "controlGroupWB.webp",
-    "tier": "a"
+    "internalName": "controlGroup"
   },
   {
     "displayName": "Killzone",
-    "category": "",
     "warbondCode": "warbond18",
-    "internalName": "killzoneWB",
-    "imageURL": "killzoneWB.webp",
-    "tier": "b"
+    "internalName": "killzone"
   },
   {
-    "displayName": "ODST",
-    "category": "",
+    "displayName": "Halo ODST",
     "warbondCode": "warbond19",
-    "internalName": "odstWB",
-    "imageURL": "odstWB.webp",
-    "tier": "b"
+    "internalName": "haloODST"
   },
   {
     "displayName": "Dust Devils",
-    "category": "",
     "warbondCode": "warbond20",
-    "internalName": "dustdevilsWB",
-    "imageURL": "dustdevilsWB.webp",
-    "tier": "b"
+    "internalName": "dustDevils"
   },
   {
     "displayName": "Python Commandos",
-    "category": "",
     "warbondCode": "warbond21",
-    "internalName": "pythoncommandosWB",
-    "imageURL": "pythoncommandosWB.webp",
-    "tier": "b"
+    "internalName": "pythonCommandos"
   },
   {
     "displayName": "Redacted Regiment",
-    "category": "",
     "warbondCode": "warbond22",
-    "internalName": "redactedregimentWB",
-    "imageURL": "redactedRegimentWB.webp",
-    "tier": "b"
+    "internalName": "redactedRegiment"
   },
   {
     "displayName": "Siege Breakers",
-    "category": "",
     "warbondCode": "warbond23",
-    "internalName": "siegebreakersWB",
-    "imageURL": "siegeBreakersWB.webp",
-    "tier": "b"
+    "internalName": "siegeBreakers"
   },
   {
     "displayName": "Entrenched Division",
-    "category": "",
     "warbondCode": "warbond24",
-    "internalName": "entrenchedDivisionWB",
-    "imageURL": "entrenchedDivisionWB.webp",
-    "tier": "b"
+    "internalName": "entrenchedDivision"
   },
   {
     "displayName": "Exo Experts",
-    "category": "",
     "warbondCode": "warbond25",
-    "internalName": "exoExpertsWB",
-    "imageURL": "exoExpertsWB.webp",
-    "tier": "b"
+    "internalName": "exoExperts"
   },
   {
     "displayName": "Warhammer 40k",
-    "category": "",
     "warbondCode": "warbond26",
-    "internalName": "40kWB",
-    "imageURL": "40kWB.webp",
-    "tier": "b"
+    "internalName": "warhammer40k"
   }
 ]
