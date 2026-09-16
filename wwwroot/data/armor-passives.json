@@ -1,226 +1,170 @@
 [
   {
     "displayName": "Advanced Filtration",
-    "category": "armor",
     "warbondCode": "warbond10",
     "internalName": "advancedfiltration",
-    "imageURL": "advancedfiltration.webp",
-    "index": 0
+    "imageURL": "advancedfiltration.webp"
   },
   {
     "displayName": "Acclimated",
-    "category": "armor",
     "warbondCode": "warbond18",
     "internalName": "acclimated",
-    "imageURL": "inflammable.webp",
-    "index": 1
+    "imageURL": "inflammable.webp"
   },
   {
     "displayName": "Democracy Protects",
-    "category": "armor",
     "warbondCode": "none",
     "internalName": "democracyprotects",
-    "imageURL": "democracyprotects.webp",
-    "index": 2
+    "imageURL": "democracyprotects.webp"
   },
   {
     "displayName": "Electrical Conduit",
-    "category": "armor",
     "warbondCode": "warbond5",
     "internalName": "electricalconduit",
-    "imageURL": "electricalconduit.webp",
-    "index": 3
+    "imageURL": "electricalconduit.webp"
   },
   {
     "displayName": "Engineering Kit",
-    "category": "armor",
     "warbondCode": "warbond3",
     "internalName": "engineeringkit",
-    "imageURL": "engineeringkit.webp",
-    "index": 4
+    "imageURL": "engineeringkit.webp"
   },
   {
     "displayName": "Extra Padding",
-    "category": "armor",
     "warbondCode": "none",
     "internalName": "extrapadding",
-    "imageURL": "extrapadding.webp",
-    "index": 5
+    "imageURL": "extrapadding.webp"
   },
   {
     "displayName": "Fortified",
-    "category": "armor",
     "warbondCode": "warbond6",
     "internalName": "fortified",
-    "imageURL": "fortified.webp",
-    "index": 6
+    "imageURL": "fortified.webp"
   },
   {
     "displayName": "Inflammable",
-    "category": "armor",
     "warbondCode": "warbond9",
     "internalName": "inflammable",
-    "imageURL": "inflammable.webp",
-    "index": 7
+    "imageURL": "inflammable.webp"
   },
   {
     "displayName": "Med-Kit",
-    "category": "armor",
     "warbondCode": "warbond3",
     "internalName": "medkit",
-    "imageURL": "medkit.webp",
-    "index": 8
+    "imageURL": "medkit.webp"
   },
   {
     "displayName": "Peak Physique",
-    "category": "armor",
     "warbondCode": "warbond8",
     "internalName": "peakphysique",
-    "imageURL": "peakphysique.webp",
-    "index": 9
+    "imageURL": "peakphysique.webp"
   },
   {
     "displayName": "Scout",
-    "category": "armor",
     "warbondCode": "warbond3",
     "internalName": "scout",
-    "imageURL": "scout.webp",
-    "index": 10
+    "imageURL": "scout.webp"
   },
   {
     "displayName": "Servo-Assisted",
-    "category": "armor",
     "warbondCode": "warbond4",
     "internalName": "servoassisted",
-    "imageURL": "servoassisted.webp",
-    "index": 11
+    "imageURL": "servoassisted.webp"
   },
   {
     "displayName": "Unflinching",
-    "category": "armor",
     "warbondCode": "warbond11",
     "internalName": "unflinching",
-    "imageURL": "unflinching.webp",
-    "index": 12
+    "imageURL": "unflinching.webp"
   },
   {
     "displayName": "Siege Ready",
-    "category": "armor",
     "warbondCode": "warbond12",
     "internalName": "siegeready",
-    "imageURL": "siegeready.webp",
-    "index": 13
+    "imageURL": "siegeready.webp"
   },
   {
     "displayName": "Integrated Explosives",
-    "category": "armor",
     "warbondCode": "warbond13",
     "internalName": "integratedexplosives",
-    "imageURL": "integratedexplosives.webp",
-    "index": 14
+    "imageURL": "integratedexplosives.webp"
   },
   {
     "displayName": "Gunslinger",
-    "category": "armor",
     "warbondCode": "warbond14",
     "internalName": "gunslinger",
-    "imageURL": "gunslinger.webp",
-    "index": 15
+    "imageURL": "gunslinger.webp"
   },
   {
     "displayName": "Reinforced Epaulettes",
-    "category": "armor",
     "warbondCode": "warbond15",
     "internalName": "reinforcedepaulettes",
-    "imageURL": "reinforcedepaulettes.webp",
-    "index": 16
+    "imageURL": "reinforcedepaulettes.webp"
   },
   {
     "displayName": "Ballistic Padding",
-    "category": "armor",
     "warbondCode": "warbond16",
     "internalName": "ballisticpadding",
-    "imageURL": "ballisticpadding.webp",
-    "index": 17
+    "imageURL": "ballisticpadding.webp"
   },
   {
     "displayName": "Adreno-Defibrillator",
-    "category": "armor",
     "warbondCode": "warbond17",
     "internalName": "adrenodefibrillator",
-    "imageURL": "adrenodefibrillator.webp",
-    "index": 18
+    "imageURL": "adrenodefibrillator.webp"
   },
   {
     "displayName": "Feet First",
-    "category": "armor",
     "warbondCode": "warbond19",
     "internalName": "feetfirst",
-    "imageURL": "feetfirst.webp",
-    "index": 19
+    "imageURL": "feetfirst.webp"
   },
   {
     "displayName": "Desert Stormer",
-    "category": "armor",
     "warbondCode": "warbond20",
     "internalName": "desertstormer",
-    "imageURL": "desertstormer.webp",
-    "index": 20
+    "imageURL": "desertstormer.webp"
   },
   {
     "displayName": "Rock Solid",
-    "category": "armor",
     "warbondCode": "warbond21",
     "internalName": "rocksolid",
-    "imageURL": "rocksolid.webp",
-    "index": 21
+    "imageURL": "rocksolid.webp"
   },
   {
     "displayName": "Reduced Signature",
-    "category": "armor",
     "warbondCode": "warbond22",
     "internalName": "reducedsignature",
-    "imageURL": "reducedsignature.webp",
-    "index": 22
+    "imageURL": "reducedsignature.webp"
   },
   {
     "displayName": "Supplementary Adrenaline",
-    "category": "armor",
     "warbondCode": "warbond23",
     "internalName": "supplementaryadrenaline",
-    "imageURL": "supplementaryadrenaline.webp",
-    "index": 23
+    "imageURL": "supplementaryadrenaline.webp"
   },
   {
     "displayName": "Concussive Padding",
-    "category": "armor",
     "warbondCode": "warbond24",
     "internalName": "concussivepadding",
-    "imageURL": "concussivepadding.webp",
-    "index": 24
+    "imageURL": "concussivepadding.webp"
   },
   {
     "displayName": "Oxygenator",
-    "category": "armor",
     "warbondCode": "warbond25",
     "internalName": "oxygenator",
-    "imageURL": "oxygenator.webp",
-    "index": 25
+    "imageURL": "oxygenator.webp"
   },
   {
     "displayName": "Kinetic Displacement Mitigation",
-    "category": "armor",
     "warbondCode": "none",
     "internalName": "kineticdisplacementmitigation",
-    "imageURL": "kineticdisplacementmitigation.webp",
-    "index": 26
+    "imageURL": "kineticdisplacementmitigation.webp"
   },
   {
     "displayName": "True Grit",
-    "category": "armor",
     "warbondCode": "warbond26",
     "internalName": "truegrit",
-    "imageURL": "truegrit.webp",
-    "index": 27
+    "imageURL": "truegrit.webp"
   }
 ]

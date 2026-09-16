@@ -8,9 +8,7 @@
     "EMS Mortar Sentry",
     "Shield Generator Relay"
   ],
-  "primaries": [
-    "Constitution"
-  ],
+  "primaries": "Constitution",
   "secondaries": [
     "Stun Lance",
     "Stun Baton",
@@ -25,8 +23,6 @@
     "G-12 High Explosive",
     "G-89 Smokescreen"
   ],
-  "armorPassives": [
-    "Extra Padding"
-  ],
-  "boosters": []
+  "armorPassives": "Extra Padding",
+  "boosters": null
 }

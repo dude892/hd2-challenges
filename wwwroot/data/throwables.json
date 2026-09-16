@@ -1,7 +1,6 @@
 [
   {
     "displayName": "G-12 High Explosive",
-    "category": "throwable",
     "tags": [
       "ap4",
       "explosive"
@@ -9,12 +8,10 @@
     "warbondCode": "none",
     "internalName": "g12highexplosivegrenade",
     "imageURL": "g12highexplosivegrenade.webp",
-    "antitank": false,
-    "index": 0
+    "antitank": false
   },
   {
     "displayName": "G-6 Frag",
-    "category": "throwable",
     "tags": [
       "ap3",
       "explosive"
@@ -22,12 +19,10 @@
     "warbondCode": "warbond3",
     "internalName": "g6fraggrenade",
     "imageURL": "g6fraggrenade.webp",
-    "antitank": false,
-    "index": 1
+    "antitank": false
   },
   {
     "displayName": "G-16 Impact",
-    "category": "throwable",
     "tags": [
       "ap3",
       "explosive"
@@ -35,22 +30,18 @@
     "warbondCode": "warbond3",
     "internalName": "g16impactgrenade",
     "imageURL": "g16impactgrenade.webp",
-    "antitank": false,
-    "index": 2
+    "antitank": false
   },
   {
     "displayName": "G-3 Smoke",
-    "category": "throwable",
     "tags": "smoke",
     "warbondCode": "warbond3",
     "internalName": "g3smokegrenade",
     "imageURL": "g3smokegrenade.webp",
-    "antitank": false,
-    "index": 3
+    "antitank": false
   },
   {
     "displayName": "G-10 Incendiary",
-    "category": "throwable",
     "tags": [
       "ap3",
       "explosive",
@@ -59,32 +50,26 @@
     "warbondCode": "warbond4",
     "internalName": "g10incendiarygrenade",
     "imageURL": "g10incendiarygrenade.webp",
-    "antitank": false,
-    "index": 4
+    "antitank": false
   },
   {
     "displayName": "G-23 Stun",
-    "category": "throwable",
     "tags": "stun",
     "warbondCode": "warbond5",
     "internalName": "g23stungrenade",
     "imageURL": "g23stungrenade.webp",
-    "antitank": false,
-    "index": 5
+    "antitank": false
   },
   {
     "displayName": "G-123 Thermite",
-    "category": "throwable",
     "tags": "at",
     "warbondCode": "warbond6",
     "internalName": "g123thermitegrenade",
     "imageURL": "g123thermitegrenade.webp",
-    "antitank": true,
-    "index": 6
+    "antitank": true
   },
   {
     "displayName": "G-13 Incendiary Impact",
-    "category": "throwable",
     "tags": [
       "fire",
       "ap3",
@@ -93,22 +78,18 @@
     "warbondCode": "warbond7",
     "internalName": "g13incendiaryimpact",
     "imageURL": "g13incendiaryimpact.webp",
-    "antitank": false,
-    "index": 7
+    "antitank": false
   },
   {
     "displayName": "K-2 Throwing Knife",
-    "category": "throwable",
     "tags": "ap3",
     "warbondCode": "warbond8",
     "internalName": "k2throwingknife",
     "imageURL": "k2throwingknife.webp",
-    "antitank": false,
-    "index": 8
+    "antitank": false
   },
   {
     "displayName": "G-50 Seeker",
-    "category": "throwable",
     "tags": [
       "ap3",
       "explosive",
@@ -117,12 +98,10 @@
     "warbondCode": "warbond13",
     "internalName": "g50seeker",
     "imageURL": "g50seeker.webp",
-    "antitank": false,
-    "index": 9
+    "antitank": false
   },
   {
     "displayName": "Dynamite",
-    "category": "throwable",
     "tags": [
       "at",
       "explosive"
@@ -130,12 +109,10 @@
     "warbondCode": "warbond14",
     "internalName": "ted63throwabledynamite",
     "imageURL": "ted63throwabledynamite.webp",
-    "antitank": true,
-    "index": 10
+    "antitank": true
   },
   {
     "displayName": "G-142 Pyrotech",
-    "category": "throwable",
     "tags": [
       "fire",
       "ap4",
@@ -144,12 +121,10 @@
     "warbondCode": "warbond15",
     "internalName": "g142pyrotech",
     "imageURL": "g142pyrotech.webp",
-    "antitank": false,
-    "index": 11
+    "antitank": false
   },
   {
     "displayName": "G-4 Gas",
-    "category": "throwable",
     "tags": [
       "gas",
       "explosive"
@@ -157,32 +132,26 @@
     "warbondCode": "warbond10",
     "internalName": "g4gasgrenade",
     "imageURL": "g4gasgrenade.webp",
-    "antitank": false,
-    "index": 12
+    "antitank": false
   },
   {
     "displayName": "G-109 Urchin",
-    "category": "throwable",
     "tags": "stun",
     "warbondCode": "warbond16",
     "internalName": "g109urchin",
     "imageURL": "g109urchin.webp",
-    "antitank": false,
-    "index": 13
+    "antitank": false
   },
   {
     "displayName": "G-31 Arc",
-    "category": "throwable",
     "tags": "arc",
     "warbondCode": "warbond17",
     "internalName": "g31arc",
     "imageURL": "g31arc.webp",
-    "antitank": false,
-    "index": 14
+    "antitank": false
   },
   {
     "displayName": "G-7 Pineapple",
-    "category": "throwable",
     "tags": [
       "ap3",
       "explosive"
@@ -190,12 +159,10 @@
     "warbondCode": "warbond20",
     "internalName": "g7pineapple",
     "imageURL": "g7pineapple.webp",
-    "antitank": false,
-    "index": 15
+    "antitank": false
   },
   {
     "displayName": "TM-01 Lure Mine",
-    "category": "throwable",
     "tags": [
       "ap4",
       "explosive"
@@ -203,31 +170,26 @@
     "warbondCode": "warbond22",
     "internalName": "tm01luremine",
     "imageURL": "tm01luremine.webp",
-    "antitank": false,
-    "index": 16
+    "antitank": false
   },
   {
     "displayName": "G-89 Smokescreen",
-    "category": "throwable",
     "tags": "smoke",
     "warbondCode": "warbond1",
     "internalName": "g89smokescreen",
     "imageURL": "g89smokescreen.webp",
-    "antitank": false,
-    "index": 17
+    "antitank": false
   },
   {
     "displayName": "G/SH-39 Shield",
-    "category": "throwable",
+    "tags": "shield",
     "warbondCode": "warbond23",
     "internalName": "gsh39shield",
     "imageURL": "gsh39shield.webp",
-    "antitank": false,
-    "index": 18
+    "antitank": false
   },
   {
     "displayName": "G-48 Giga",
-    "category": "throwable",
     "tags": [
       "at",
       "explosive"
@@ -235,12 +197,10 @@
     "warbondCode": "warbond24",
     "internalName": "g48giga",
     "imageURL": "g48giga.webp",
-    "antitank": true,
-    "index": 19
+    "antitank": true
   },
   {
     "displayName": "Meltamine",
-    "category": "throwable",
     "tags": [
       "at",
       "explosive"
@@ -248,7 +208,6 @@
     "warbondCode": "warbond26",
     "internalName": "meltamine",
     "imageURL": "meltamine.webp",
-    "antitank": true,
-    "index": 20
+    "antitank": true
   }
 ]

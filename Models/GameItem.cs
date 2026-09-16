@@ -15,7 +15,6 @@ public enum ItemKind
 public sealed class GameItem
 {
     public string DisplayName { get; set; } = string.Empty;
-    public string Category { get; set; } = string.Empty;
     public List<string> Tags { get; set; } = [];
     public string WarbondCode { get; set; } = "none";
     public string InternalName { get; set; } = string.Empty;
@@ -35,15 +34,5 @@ public sealed class GameItem
         };
 
     [JsonIgnore]
-    public string KindLabel =>
-        Kind switch
-        {
-            ItemKind.Stratagem => "Stratagem",
-            ItemKind.Primary => "Primary",
-            ItemKind.Secondary => "Secondary",
-            ItemKind.Throwable => "Throwable",
-            ItemKind.Booster => "Booster",
-            ItemKind.ArmorPassive => "Armor Passive",
-            _ => "Item"
-        };
+    public string KindLabel => Kind.CompareTo(ItemKind.ArmorPassive) == 0 ? "Armor Passive" : Kind.ToString();
 }

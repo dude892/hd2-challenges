@@ -4,7 +4,7 @@
     "displayName": "Penitent Crusade",
     "startMission": 1,
     "loadoutAdditions": {
-      "secondaries": ["Peacemaker"]
+      "secondaries": "Peacemaker"
     }
   },
   {
@@ -12,8 +12,8 @@
     "displayName": "Solo/Duo Crusade",
     "startMission": 1,
     "loadoutAdditions": {
-      "secondaries": ["Peacemaker"],
-      "stratagems": ["Orbital Precision Strike"]
+      "secondaries": "Peacemaker",
+      "stratagems": "Orbital Precision Strike"
     }
   },
   {
@@ -21,7 +21,7 @@
     "displayName": "Quick Crusade",
     "startMission": 11,
     "loadoutAdditions": {
-      "secondaries": ["Peacemaker"],
+      "secondaries": "Peacemaker",
       "stratagems": [
         "Ballistic Shield",
         "Orbital Precision Strike",
@@ -31,7 +31,10 @@
         "Orbital Gatling Barrage",
         "Arc Thrower"
       ],
-      "boosters": ["UAV Recon", "Muscle Enhancement"]
+      "boosters": [
+        "UAV Recon",
+        "Muscle Enhancement"
+      ]
     }
   },
   {
@@ -41,10 +44,10 @@
     "scoreModifier": 250,
     "isSuper": true,
     "loadoutOverrides": {
-      "armorPassives": ["Integrated Explosives"]
+      "armorPassives": "Integrated Explosives"
     },
     "loadoutAdditions": {
-      "stratagems": ["Ballistic Shield"]
+      "stratagems": "Ballistic Shield"
     }
   },
   {
@@ -54,10 +57,13 @@
     "scoreModifier": 250,
     "isSuper": true,
     "loadoutOverrides": {
-      "armorPassives": ["Integrated Explosives"]
+      "armorPassives": "Integrated Explosives"
     },
     "loadoutAdditions": {
-      "stratagems": ["Ballistic Shield", "Orbital Precision Strike"]
+      "stratagems": [
+        "Ballistic Shield",
+        "Orbital Precision Strike"
+      ]
     }
   }
 ]

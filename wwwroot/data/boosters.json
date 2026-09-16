@@ -1,146 +1,110 @@
 [
   {
     "displayName": "Expert Extraction Pilot",
-    "category": "booster",
     "warbondCode": "warbond6",
     "internalName": "expertextractionpilot",
-    "imageURL": "expertextractionpilot.webp",
-    "index": 0
+    "imageURL": "expertextractionpilot.webp"
   },
   {
     "displayName": "Dead Sprint",
-    "category": "booster",
     "warbondCode": "warbond11",
     "internalName": "deadsprint",
-    "imageURL": "deadsprint.webp",
-    "index": 1
+    "imageURL": "deadsprint.webp"
   },
   {
     "displayName": "Armed Resupply Pods",
-    "category": "booster",
     "warbondCode": "warbond12",
     "internalName": "armedresupplypods",
-    "imageURL": "armedresupplypods.webp",
-    "index": 2
+    "imageURL": "armedresupplypods.webp"
   },
   {
     "displayName": "Experimental Infusion",
-    "category": "booster",
     "warbondCode": "warbond8",
     "internalName": "experimentalinfusion",
-    "imageURL": "experimentalinfusion.webp",
-    "index": 3
+    "imageURL": "experimentalinfusion.webp"
   },
   {
     "displayName": "Motivational Shocks",
-    "category": "booster",
     "warbondCode": "warbond7",
     "internalName": "motivationalshocks",
-    "imageURL": "motivationalshocks.webp",
-    "index": 4
+    "imageURL": "motivationalshocks.webp"
   },
   {
     "displayName": "Flexible Reinforcement Budget",
-    "category": "booster",
     "warbondCode": "warbond4",
     "internalName": "flexiblereinforcementbudget",
-    "imageURL": "flexiblereinforcementbudget.webp",
-    "index": 5
+    "imageURL": "flexiblereinforcementbudget.webp"
   },
   {
     "displayName": "Hellpod Space Optimization",
-    "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "hellpodspaceoptimization",
-    "imageURL": "hellpodspaceoptimization.webp",
-    "index": 6
+    "imageURL": "hellpodspaceoptimization.webp"
   },
   {
     "displayName": "Increased Reinforcement Budget",
-    "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "increasedreinforcementbudget",
-    "imageURL": "increasedreinforcementbudget.webp",
-    "index": 7
+    "imageURL": "increasedreinforcementbudget.webp"
   },
   {
     "displayName": "Localization Confusion",
-    "category": "booster",
     "warbondCode": "warbond5",
     "internalName": "localizationconfusion",
-    "imageURL": "localizationconfusion.webp",
-    "index": 8
+    "imageURL": "localizationconfusion.webp"
   },
   {
     "displayName": "Muscle Enhancement",
-    "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "muscleenhancement",
-    "imageURL": "muscleenhancement.webp",
-    "index": 9
+    "imageURL": "muscleenhancement.webp"
   },
   {
     "displayName": "Stamina Enhancement",
-    "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "staminaenhancement",
-    "imageURL": "staminaenhancement.webp",
-    "index": 10
+    "imageURL": "staminaenhancement.webp"
   },
   {
     "displayName": "UAV Recon",
-    "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "uavrecon",
-    "imageURL": "uavrecon.webp",
-    "index": 11
+    "imageURL": "uavrecon.webp"
   },
   {
     "displayName": "Vitality Enhancement",
-    "category": "booster",
     "warbondCode": "warbond3",
     "internalName": "vitalityenhancement",
-    "imageURL": "vitalityenhancement.webp",
-    "index": 12
+    "imageURL": "vitalityenhancement.webp"
   },
   {
     "displayName": "Firebomb Hellpods",
-    "category": "booster",
     "warbondCode": "warbond9",
     "internalName": "firebombhellpods",
-    "imageURL": "firebombhellpods.webp",
-    "index": 13
+    "imageURL": "firebombhellpods.webp"
   },
   {
     "displayName": "Sample Extricator",
-    "category": "booster",
     "warbondCode": "warbond14",
     "internalName": "sampleextricator",
-    "imageURL": "sampleextricator.webp",
-    "index": 14
+    "imageURL": "sampleextricator.webp"
   },
   {
     "displayName": "Sample Scanner",
-    "category": "booster",
     "warbondCode": "warbond15",
     "internalName": "samplescanner",
-    "imageURL": "samplescanner.webp",
-    "index": 15
+    "imageURL": "samplescanner.webp"
   },
   {
     "displayName": "Stun Pods",
-    "category": "booster",
     "warbondCode": "warbond16",
     "internalName": "stunpods",
-    "imageURL": "stunpods.webp",
-    "index": 16
+    "imageURL": "stunpods.webp"
   },
   {
     "displayName": "Concealed Insertion",
-    "category": "booster",
     "warbondCode": "warbond22",
     "internalName": "concealedinsertion",
-    "imageURL": "concealedinsertion.webp",
-    "index": 17
+    "imageURL": "concealedinsertion.webp"
   }
 ]

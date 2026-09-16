@@ -1,7 +1,6 @@
 [
   {
     "displayName": "Peacemaker",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap2"
@@ -9,12 +8,10 @@
     "warbondCode": "none",
     "internalName": "p2peacemaker",
     "imageURL": "p2peacemaker.webp",
-    "antitank": false,
-    "index": 0
+    "antitank": false
   },
   {
     "displayName": "Combat Hatchet",
-    "category": "secondary",
     "tags": [
       "melee",
       "ap3"
@@ -22,12 +19,10 @@
     "warbondCode": "warbond1",
     "internalName": "cqc5combathatchet",
     "imageURL": "cqc5combathatchet.webp",
-    "antitank": false,
-    "index": 1
+    "antitank": false
   },
   {
     "displayName": "Saber",
-    "category": "secondary",
     "tags": [
       "melee",
       "ap3"
@@ -35,12 +30,10 @@
     "warbondCode": "warbond15",
     "internalName": "cqc2saber",
     "imageURL": "cqc2saber.webp",
-    "antitank": false,
-    "index": 2
+    "antitank": false
   },
   {
     "displayName": "Machete",
-    "category": "secondary",
     "tags": [
       "melee",
       "ap3"
@@ -48,12 +41,10 @@
     "warbondCode": "warbond1",
     "internalName": "cqc42machete",
     "imageURL": "cqc42machete.webp",
-    "antitank": false,
-    "index": 3
+    "antitank": false
   },
   {
     "displayName": "Stun Lance",
-    "category": "secondary",
     "tags": [
       "melee",
       "ap3",
@@ -62,12 +53,10 @@
     "warbondCode": "warbond12",
     "internalName": "cqc19stunlance",
     "imageURL": "cqc19stunlance.webp",
-    "antitank": false,
-    "index": 4
+    "antitank": false
   },
   {
     "displayName": "Stun Baton",
-    "category": "secondary",
     "tags": [
       "melee",
       "ap3",
@@ -76,12 +65,10 @@
     "warbondCode": "warbond1",
     "internalName": "cqc30stunbaton",
     "imageURL": "cqc30stunbaton.webp",
-    "antitank": false,
-    "index": 5
+    "antitank": false
   },
   {
     "displayName": "Redeemer",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap2"
@@ -89,12 +76,10 @@
     "warbondCode": "warbond3",
     "internalName": "p19redeemer",
     "imageURL": "p19redeemer.webp",
-    "antitank": false,
-    "index": 6
+    "antitank": false
   },
   {
     "displayName": "Verdict",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap3"
@@ -102,12 +87,10 @@
     "warbondCode": "warbond7",
     "internalName": "p113verdict",
     "imageURL": "p113verdict.webp",
-    "antitank": false,
-    "index": 7
+    "antitank": false
   },
   {
     "displayName": "Senator",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap4"
@@ -115,12 +98,10 @@
     "warbondCode": "warbond4",
     "internalName": "p4senator",
     "imageURL": "p4senator.webp",
-    "antitank": false,
-    "index": 8
+    "antitank": false
   },
   {
     "displayName": "P-92 Warrant",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap3",
@@ -129,12 +110,10 @@
     "warbondCode": "warbond1",
     "internalName": "p92warrant",
     "imageURL": "p92warrant.webp",
-    "antitank": false,
-    "index": 9
+    "antitank": false
   },
   {
     "displayName": "M6C/SOCOM",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap2",
@@ -143,22 +122,18 @@
     "warbondCode": "warbond19",
     "internalName": "m6csocompistol",
     "imageURL": "m6csocompistol.webp",
-    "antitank": false,
-    "index": 10
+    "antitank": false
   },
   {
     "displayName": "Stim Pistol",
-    "category": "secondary",
     "tags": "Special",
     "warbondCode": "warbond10",
     "internalName": "p11stimpistol",
     "imageURL": "p11stimpistol.webp",
-    "antitank": false,
-    "index": 11
+    "antitank": false
   },
   {
     "displayName": "Loyalist",
-    "category": "secondary",
     "tags": [
       "plasma",
       "ap3"
@@ -166,22 +141,18 @@
     "warbondCode": "warbond11",
     "internalName": "plas15loyalist",
     "imageURL": "plas15loyalist.webp",
-    "antitank": false,
-    "index": 12
+    "antitank": false
   },
   {
     "displayName": "Bushwhacker",
-    "category": "secondary",
     "tags": "ap2",
     "warbondCode": "warbond8",
     "internalName": "sg22bushwhacker",
     "imageURL": "sg22bushwhacker.webp",
-    "antitank": false,
-    "index": 13
+    "antitank": false
   },
   {
     "displayName": "Grenade Pistol",
-    "category": "secondary",
     "tags": [
       "explosive",
       "ap3"
@@ -189,12 +160,10 @@
     "warbondCode": "warbond6",
     "internalName": "gp31grenadepistol",
     "imageURL": "gp31grenadepistol.webp",
-    "antitank": false,
-    "index": 14
+    "antitank": false
   },
   {
     "displayName": "Re-Educator",
-    "category": "secondary",
     "tags": [
       "gas",
       "ap4"
@@ -202,12 +171,10 @@
     "warbondCode": "warbond22",
     "internalName": "p35reeducator",
     "imageURL": "p35reeducator.webp",
-    "antitank": false,
-    "index": 15
+    "antitank": false
   },
   {
     "displayName": "Dagger",
-    "category": "secondary",
     "tags": [
       "laser",
       "ap2"
@@ -215,22 +182,18 @@
     "warbondCode": "warbond5",
     "internalName": "las7dagger",
     "imageURL": "las7dagger.webp",
-    "antitank": false,
-    "index": 16
+    "antitank": false
   },
   {
     "displayName": "Talon",
-    "category": "secondary",
     "tags": "ap3",
     "warbondCode": "warbond14",
     "internalName": "las58talon",
     "imageURL": "las58talon.webp",
-    "antitank": false,
-    "index": 17
+    "antitank": false
   },
   {
     "displayName": "Crisper",
-    "category": "secondary",
     "tags": [
       "fire",
       "ap4"
@@ -238,12 +201,10 @@
     "warbondCode": "warbond9",
     "internalName": "p72crisper",
     "imageURL": "p72crisper.webp",
-    "antitank": false,
-    "index": 18
+    "antitank": false
   },
   {
     "displayName": "GP-31 Ultimatum",
-    "category": "secondary",
     "tags": [
       "explosive",
       "at"
@@ -251,12 +212,10 @@
     "warbondCode": "warbond13",
     "internalName": "gp31ultimatum",
     "imageURL": "gp31ultimatum.webp",
-    "antitank": true,
-    "index": 19
+    "antitank": true
   },
   {
     "displayName": "Veto",
-    "category": "secondary",
     "tags": [
       "pistol",
       "ap3"
@@ -264,12 +223,10 @@
     "warbondCode": "warbond24",
     "internalName": "p69veto",
     "imageURL": "p69veto.webp",
-    "antitank": false,
-    "index": 20
+    "antitank": false
   },
   {
     "displayName": "Entrenchment Tool",
-    "category": "secondary",
     "tags": [
       "melee",
       "ap3"
@@ -277,12 +234,10 @@
     "warbondCode": "warbond24",
     "internalName": "cqc73entrenchmenttool",
     "imageURL": "cqc73entrenchmenttool.webp",
-    "antitank": false,
-    "index": 21
+    "antitank": false
   },
   {
     "displayName": "Missile Pistol",
-    "category": "secondary",
     "tags": [
       "explosive",
       "at",
@@ -291,12 +246,10 @@
     "warbondCode": "warbond25",
     "internalName": "p33missilepistol",
     "imageURL": "p33missilepistol.webp",
-    "antitank": true,
-    "index": 22
+    "antitank": true
   },
   {
     "displayName": "Bolt Pistol",
-    "category": "secondary",
     "tags": [
       "explosive",
       "ap4",
@@ -305,7 +258,6 @@
     "warbondCode": "warbond26",
     "internalName": "boltpistol",
     "imageURL": "boltpistol.webp",
-    "antitank": false,
-    "index": 23
+    "antitank": false
   }
 ]

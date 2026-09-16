@@ -1,7 +1,6 @@
 [
   {
     "displayName": "Liberator",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2"
@@ -9,12 +8,10 @@
     "warbondCode": "none",
     "internalName": "ar23liberator",
     "imageURL": "ar23liberator.webp",
-    "antitank": false,
-    "index": 0
+    "antitank": false
   },
   {
     "displayName": "Liberator Penetrator",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap3"
@@ -22,12 +19,10 @@
     "warbondCode": "warbond3",
     "internalName": "ar23pliberatorpenetrator",
     "imageURL": "ar23pliberatorpenetrator.webp",
-    "antitank": false,
-    "index": 1
+    "antitank": false
   },
   {
     "displayName": "Liberator Concussive",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2"
@@ -35,12 +30,10 @@
     "warbondCode": "warbond4",
     "internalName": "ar23cliberatorconcussive",
     "imageURL": "ar23cliberatorconcussive.webp",
-    "antitank": false,
-    "index": 2
+    "antitank": false
   },
   {
     "displayName": "Liberator Carbine",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2"
@@ -48,12 +41,10 @@
     "warbondCode": "warbond8",
     "internalName": "ar23aliberatorcarbine",
     "imageURL": "ar23aliberatorcarbine.webp",
-    "antitank": false,
-    "index": 3
+    "antitank": false
   },
   {
     "displayName": "Adjudicator",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap3"
@@ -61,12 +52,10 @@
     "warbondCode": "warbond6",
     "internalName": "br14adjudicator",
     "imageURL": "br14adjudicator.webp",
-    "antitank": false,
-    "index": 4
+    "antitank": false
   },
   {
     "displayName": "StA-52 Assault Rifle",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2"
@@ -74,12 +63,10 @@
     "warbondCode": "warbond18",
     "internalName": "sta52assaultrifle",
     "imageURL": "sta52assaultrifle.webp",
-    "antitank": false,
-    "index": 5
+    "antitank": false
   },
   {
     "displayName": "Pacifier",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap3",
@@ -88,12 +75,10 @@
     "warbondCode": "warbond16",
     "internalName": "ar32pacifier",
     "imageURL": "ar32pacifier.webp",
-    "antitank": false,
-    "index": 6
+    "antitank": false
   },
   {
     "displayName": "Tenderizer",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2"
@@ -101,12 +86,10 @@
     "warbondCode": "warbond7",
     "internalName": "ar61tenderizer",
     "imageURL": "ar61tenderizer.webp",
-    "antitank": false,
-    "index": 7
+    "antitank": false
   },
   {
     "displayName": "MA5C Assault Rifle",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap3"
@@ -114,12 +97,10 @@
     "warbondCode": "warbond19",
     "internalName": "ma5c",
     "imageURL": "ma5c.webp",
-    "antitank": false,
-    "index": 8
+    "antitank": false
   },
   {
     "displayName": "AR-2 Coyote",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap3",
@@ -128,12 +109,10 @@
     "warbondCode": "warbond20",
     "internalName": "ar2coyote",
     "imageURL": "ar2coyote.webp",
-    "antitank": false,
-    "index": 9
+    "antitank": false
   },
   {
     "displayName": "One Two",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2",
@@ -143,12 +122,10 @@
     "warbondCode": "warbond21",
     "internalName": "onetwo",
     "imageURL": "onetwo.webp",
-    "antitank": false,
-    "index": 10
+    "antitank": false
   },
   {
     "displayName": "Suppressor",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2",
@@ -157,12 +134,10 @@
     "warbondCode": "warbond22",
     "internalName": "ar59suppressor",
     "imageURL": "ar59suppressor.webp",
-    "antitank": false,
-    "index": 11
+    "antitank": false
   },
   {
     "displayName": "Defender",
-    "category": "primary",
     "tags": [
       "SubmachineGun",
       "ap2",
@@ -171,12 +146,10 @@
     "warbondCode": "warbond3",
     "internalName": "smg37defender",
     "imageURL": "smg37defender.webp",
-    "antitank": false,
-    "index": 12
+    "antitank": false
   },
   {
     "displayName": "Pummeler",
-    "category": "primary",
     "tags": [
       "SubmachineGun",
       "ap2",
@@ -185,12 +158,10 @@
     "warbondCode": "warbond7",
     "internalName": "smg72pummeler",
     "imageURL": "smg72pummeler.webp",
-    "antitank": false,
-    "index": 13
+    "antitank": false
   },
   {
     "displayName": "Reprimand",
-    "category": "primary",
     "tags": [
       "Submachinegun",
       "ap3"
@@ -198,12 +169,10 @@
     "warbondCode": "warbond11",
     "internalName": "smg32reprimand",
     "imageURL": "smg32reprimand.webp",
-    "antitank": false,
-    "index": 14
+    "antitank": false
   },
   {
     "displayName": "StA-11 SMG",
-    "category": "primary",
     "tags": [
       "Submachinegun",
       "ap2",
@@ -212,12 +181,10 @@
     "warbondCode": "warbond18",
     "internalName": "sta11smg",
     "imageURL": "sta11smg.webp",
-    "antitank": false,
-    "index": 15
+    "antitank": false
   },
   {
     "displayName": "Knight",
-    "category": "primary",
     "tags": [
       "SubmachineGun",
       "ap2",
@@ -226,12 +193,10 @@
     "warbondCode": "warbond0",
     "internalName": "mp98knight",
     "imageURL": "mp98knight.webp",
-    "antitank": false,
-    "index": 16
+    "antitank": false
   },
   {
     "displayName": "M7S SMG",
-    "category": "primary",
     "tags": [
       "SubmachineGun",
       "ap2",
@@ -240,12 +205,10 @@
     "warbondCode": "warbond19",
     "internalName": "m7s",
     "imageURL": "m7s.webp",
-    "antitank": false,
-    "index": 17
+    "antitank": false
   },
   {
     "displayName": "Double Freedom",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap3"
@@ -253,12 +216,10 @@
     "warbondCode": "warbond1",
     "internalName": "doublefreedom",
     "imageURL": "doublefreedom.webp",
-    "antitank": false,
-    "index": 18
+    "antitank": false
   },
   {
     "displayName": "Punisher",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2"
@@ -266,12 +227,10 @@
     "warbondCode": "warbond3",
     "internalName": "sg8punisher",
     "imageURL": "sg8punisher.webp",
-    "antitank": false,
-    "index": 19
+    "antitank": false
   },
   {
     "displayName": "Cookout",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2",
@@ -280,12 +239,10 @@
     "warbondCode": "warbond9",
     "internalName": "sg451cookout",
     "imageURL": "sg451cookout.webp",
-    "antitank": false,
-    "index": 20
+    "antitank": false
   },
   {
     "displayName": "Slugger",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap3"
@@ -293,12 +250,10 @@
     "warbondCode": "warbond3",
     "internalName": "sg8sslugger",
     "imageURL": "sg8sslugger.webp",
-    "antitank": false,
-    "index": 21
+    "antitank": false
   },
   {
     "displayName": "Breaker",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2"
@@ -306,12 +261,10 @@
     "warbondCode": "warbond3",
     "internalName": "sg225breaker",
     "imageURL": "sg225breaker.webp",
-    "antitank": false,
-    "index": 22
+    "antitank": false
   },
   {
     "displayName": "Breaker Incendiary",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2",
@@ -320,12 +273,10 @@
     "warbondCode": "warbond4",
     "internalName": "sg225iebreakerincendiary",
     "imageURL": "sg225iebreakerincendiary.webp",
-    "antitank": false,
-    "index": 23
+    "antitank": false
   },
   {
     "displayName": "Breaker Spray & Pray",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2"
@@ -333,12 +284,10 @@
     "warbondCode": "warbond3",
     "internalName": "sg225spbreakerspraynpray",
     "imageURL": "sg225spbreakerspraynpray.webp",
-    "antitank": false,
-    "index": 24
+    "antitank": false
   },
   {
     "displayName": "Halt",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2",
@@ -348,12 +297,10 @@
     "warbondCode": "warbond11",
     "internalName": "sg20halt",
     "imageURL": "sg20halt.webp",
-    "antitank": false,
-    "index": 25
+    "antitank": false
   },
   {
     "displayName": "M90A Shotgun",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap2"
@@ -361,12 +308,10 @@
     "warbondCode": "warbond19",
     "internalName": "m90a",
     "imageURL": "m90a.webp",
-    "antitank": false,
-    "index": 26
+    "antitank": false
   },
   {
     "displayName": "Diligence",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap2"
@@ -374,12 +319,10 @@
     "warbondCode": "warbond3",
     "internalName": "r63diligence",
     "imageURL": "r63diligence.webp",
-    "antitank": false,
-    "index": 27
+    "antitank": false
   },
   {
     "displayName": "Diligence Counter Sniper",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap3"
@@ -387,12 +330,10 @@
     "warbondCode": "warbond3",
     "internalName": "r63csdiligencecountersniper",
     "imageURL": "r63csdiligencecountersniper.webp",
-    "antitank": false,
-    "index": 28
+    "antitank": false
   },
   {
     "displayName": "Deadeye",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap3"
@@ -400,12 +341,10 @@
     "warbondCode": "warbond14",
     "internalName": "r6deadeye",
     "imageURL": "r6deadeye.webp",
-    "antitank": false,
-    "index": 29
+    "antitank": false
   },
   {
     "displayName": "Amendment",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap2",
@@ -414,12 +353,10 @@
     "warbondCode": "warbond15",
     "internalName": "r2amendment",
     "imageURL": "r2amendment.webp",
-    "antitank": false,
-    "index": 30
+    "antitank": false
   },
   {
     "displayName": "Censor",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap2",
@@ -428,12 +365,10 @@
     "warbondCode": "warbond22",
     "internalName": "r72censor",
     "imageURL": "r72censor.webp",
-    "antitank": false,
-    "index": 31
+    "antitank": false
   },
   {
     "displayName": "Constitution",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap3",
@@ -442,12 +377,10 @@
     "warbondCode": "none",
     "internalName": "r2124constitution",
     "imageURL": "r2124constitution.webp",
-    "antitank": false,
-    "index": 32
+    "antitank": false
   },
   {
     "displayName": "Scythe",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap2",
@@ -456,12 +389,10 @@
     "warbondCode": "warbond3",
     "internalName": "las5scythe",
     "imageURL": "las5scythe.webp",
-    "antitank": false,
-    "index": 33
+    "antitank": false
   },
   {
     "displayName": "Sickle",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap2"
@@ -469,12 +400,10 @@
     "warbondCode": "warbond5",
     "internalName": "las16sickle",
     "imageURL": "las16sickle.webp",
-    "antitank": false,
-    "index": 34
+    "antitank": false
   },
   {
     "displayName": "Scorcher",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap3",
@@ -483,12 +412,10 @@
     "warbondCode": "warbond3",
     "internalName": "plas1scorcher",
     "imageURL": "plas1scorcher.webp",
-    "antitank": false,
-    "index": 35
+    "antitank": false
   },
   {
     "displayName": "Purifier",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap3",
@@ -497,12 +424,10 @@
     "warbondCode": "warbond7",
     "internalName": "plas101purifier",
     "imageURL": "plas101purifier.webp",
-    "antitank": false,
-    "index": 36
+    "antitank": false
   },
   {
     "displayName": "Punisher Plasma",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap3",
@@ -511,12 +436,10 @@
     "warbondCode": "warbond5",
     "internalName": "sg8ppunisherplasma",
     "imageURL": "sg8ppunisherplasma.webp",
-    "antitank": false,
-    "index": 37
+    "antitank": false
   },
   {
     "displayName": "Blitzer",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap3",
@@ -525,12 +448,10 @@
     "warbondCode": "warbond5",
     "internalName": "arc12blitzer",
     "imageURL": "arc12blitzer.webp",
-    "antitank": false,
-    "index": 38
+    "antitank": false
   },
   {
     "displayName": "Double Edge Sickle",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap2",
@@ -540,12 +461,10 @@
     "warbondCode": "warbond13",
     "internalName": "las17doubleedgesickle",
     "imageURL": "las17doubleedgesickle.webp",
-    "antitank": false,
-    "index": 39
+    "antitank": false
   },
   {
     "displayName": "PLAS-39 Accelerator Rifle",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap3",
@@ -554,12 +473,10 @@
     "warbondCode": "warbond18",
     "internalName": "plas39acceleratorrifle",
     "imageURL": "plas39acceleratorrifle.webp",
-    "antitank": false,
-    "index": 40
+    "antitank": false
   },
   {
     "displayName": "Eruptor",
-    "category": "primary",
     "tags": [
       "Explosive",
       "ap4",
@@ -568,12 +485,10 @@
     "warbondCode": "warbond6",
     "internalName": "r36eruptor",
     "imageURL": "r36eruptor.webp",
-    "antitank": true,
-    "index": 41
+    "antitank": true
   },
   {
     "displayName": "Exploding Crossbow",
-    "category": "primary",
     "tags": [
       "Explosive",
       "ap3",
@@ -583,12 +498,10 @@
     "warbondCode": "warbond6",
     "internalName": "cb9explodingcrossbow",
     "imageURL": "cb9explodingcrossbow.webp",
-    "antitank": false,
-    "index": 42
+    "antitank": false
   },
   {
     "displayName": "Variable",
-    "category": "primary",
     "tags": [
       "AssaultRifle",
       "ap2"
@@ -596,12 +509,10 @@
     "warbondCode": "warbond17",
     "internalName": "variable",
     "imageURL": "variable.webp",
-    "antitank": false,
-    "index": 43
+    "antitank": false
   },
   {
     "displayName": "Dominator",
-    "category": "primary",
     "tags": [
       "Explosive",
       "ap3"
@@ -609,12 +520,10 @@
     "warbondCode": "warbond4",
     "internalName": "jar5dominator",
     "imageURL": "jar5dominator.webp",
-    "antitank": false,
-    "index": 44
+    "antitank": false
   },
   {
     "displayName": "Torcher",
-    "category": "primary",
     "tags": [
       "Special",
       "ap4",
@@ -623,12 +532,10 @@
     "warbondCode": "warbond9",
     "internalName": "flam66torcher",
     "imageURL": "flam66torcher.webp",
-    "antitank": false,
-    "index": 45
+    "antitank": false
   },
   {
     "displayName": "Trident",
-    "category": "primary",
     "tags": [
       "EnergyWeapon",
       "ap2"
@@ -636,12 +543,10 @@
     "warbondCode": "warbond23",
     "internalName": "las16trident",
     "imageURL": "las16trident.webp",
-    "antitank": false,
-    "index": 46
+    "antitank": false
   },
   {
     "displayName": "Stoker",
-    "category": "primary",
     "tags": [
       "SubmachineGun",
       "ap2",
@@ -652,12 +557,10 @@
     "warbondCode": "warbond24",
     "internalName": "smgflam34stoker",
     "imageURL": "smgflam34stoker.webp",
-    "antitank": false,
-    "index": 47
+    "antitank": false
   },
   {
     "displayName": "Sweeper",
-    "category": "primary",
     "tags": [
       "Shotgun",
       "ap3",
@@ -666,12 +569,10 @@
     "warbondCode": "warbond1",
     "internalName": "sg97sweeper",
     "imageURL": "sg97sweeper.webp",
-    "antitank": false,
-    "index": 48
+    "antitank": false
   },
   {
     "displayName": "Gallant",
-    "category": "primary",
     "tags": [
       "SubmachineGun",
       "ap3",
@@ -680,12 +581,10 @@
     "warbondCode": "warbond25",
     "internalName": "smg203gallant",
     "imageURL": "smg203gallant.webp",
-    "antitank": false,
-    "index": 49
+    "antitank": false
   },
   {
     "displayName": "Hyena",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap3"
@@ -693,12 +592,10 @@
     "warbondCode": "none",
     "internalName": "r4hyena",
     "imageURL": "r4hyena.webp",
-    "antitank": false,
-    "index": 50
+    "antitank": false
   },
   {
     "displayName": "Hot Shot Marksman Rifle",
-    "category": "primary",
     "tags": [
       "MarksmanRifle",
       "ap3"
@@ -706,7 +603,6 @@
     "warbondCode": "warbond26",
     "internalName": "hotshotmarksmanrifle",
     "imageURL": "hotshotmarksmanrifle.webp",
-    "antitank": false,
-    "index": 51
+    "antitank": false
   }
 ]
