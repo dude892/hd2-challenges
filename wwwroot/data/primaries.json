@@ -1,10 +1,7 @@
 [
   {
     "displayName": "Liberator",
-    "tags": [
-      "AssaultRifle",
-      "ap2"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "none",
     "internalName": "ar23liberator",
     "imageURL": "ar23liberator.webp",
@@ -12,10 +9,7 @@
   },
   {
     "displayName": "Liberator Penetrator",
-    "tags": [
-      "AssaultRifle",
-      "ap3"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond3",
     "internalName": "ar23pliberatorpenetrator",
     "imageURL": "ar23pliberatorpenetrator.webp",
@@ -23,10 +17,7 @@
   },
   {
     "displayName": "Liberator Concussive",
-    "tags": [
-      "AssaultRifle",
-      "ap2"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond4",
     "internalName": "ar23cliberatorconcussive",
     "imageURL": "ar23cliberatorconcussive.webp",
@@ -34,10 +25,7 @@
   },
   {
     "displayName": "Liberator Carbine",
-    "tags": [
-      "AssaultRifle",
-      "ap2"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond8",
     "internalName": "ar23aliberatorcarbine",
     "imageURL": "ar23aliberatorcarbine.webp",
@@ -45,10 +33,7 @@
   },
   {
     "displayName": "Adjudicator",
-    "tags": [
-      "AssaultRifle",
-      "ap3"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond6",
     "internalName": "br14adjudicator",
     "imageURL": "br14adjudicator.webp",
@@ -56,10 +41,7 @@
   },
   {
     "displayName": "StA-52 Assault Rifle",
-    "tags": [
-      "AssaultRifle",
-      "ap2"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond18",
     "internalName": "sta52assaultrifle",
     "imageURL": "sta52assaultrifle.webp",
@@ -67,11 +49,7 @@
   },
   {
     "displayName": "Pacifier",
-    "tags": [
-      "AssaultRifle",
-      "ap3",
-      "stun"
-    ],
+    "tags": ["AssaultRifle", "Stun"],
     "warbondCode": "warbond16",
     "internalName": "ar32pacifier",
     "imageURL": "ar32pacifier.webp",
@@ -79,10 +57,7 @@
   },
   {
     "displayName": "Tenderizer",
-    "tags": [
-      "AssaultRifle",
-      "ap2"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond7",
     "internalName": "ar61tenderizer",
     "imageURL": "ar61tenderizer.webp",
@@ -90,10 +65,7 @@
   },
   {
     "displayName": "MA5C Assault Rifle",
-    "tags": [
-      "AssaultRifle",
-      "ap3"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond19",
     "internalName": "ma5c",
     "imageURL": "ma5c.webp",
@@ -101,11 +73,7 @@
   },
   {
     "displayName": "AR-2 Coyote",
-    "tags": [
-      "AssaultRifle",
-      "ap3",
-      "fire"
-    ],
+    "tags": ["AssaultRifle", "Fire"],
     "warbondCode": "warbond20",
     "internalName": "ar2coyote",
     "imageURL": "ar2coyote.webp",
@@ -113,12 +81,7 @@
   },
   {
     "displayName": "One Two",
-    "tags": [
-      "AssaultRifle",
-      "ap2",
-      "ap3",
-      "explosive"
-    ],
+    "tags": ["AssaultRifle", "Explosive"],
     "warbondCode": "warbond21",
     "internalName": "onetwo",
     "imageURL": "onetwo.webp",
@@ -126,11 +89,7 @@
   },
   {
     "displayName": "Suppressor",
-    "tags": [
-      "AssaultRifle",
-      "ap2",
-      "suppressed"
-    ],
+    "tags": ["AssaultRifle", "Suppressed"],
     "warbondCode": "warbond22",
     "internalName": "ar59suppressor",
     "imageURL": "ar59suppressor.webp",
@@ -138,11 +97,7 @@
   },
   {
     "displayName": "Defender",
-    "tags": [
-      "SubmachineGun",
-      "ap2",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "One-Handed"],
     "warbondCode": "warbond3",
     "internalName": "smg37defender",
     "imageURL": "smg37defender.webp",
@@ -150,11 +105,7 @@
   },
   {
     "displayName": "Pummeler",
-    "tags": [
-      "SubmachineGun",
-      "ap2",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "One-Handed"],
     "warbondCode": "warbond7",
     "internalName": "smg72pummeler",
     "imageURL": "smg72pummeler.webp",
@@ -162,10 +113,7 @@
   },
   {
     "displayName": "Reprimand",
-    "tags": [
-      "Submachinegun",
-      "ap3"
-    ],
+    "tags": ["SubmachineGun"],
     "warbondCode": "warbond11",
     "internalName": "smg32reprimand",
     "imageURL": "smg32reprimand.webp",
@@ -173,11 +121,7 @@
   },
   {
     "displayName": "StA-11 SMG",
-    "tags": [
-      "Submachinegun",
-      "ap2",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "One-Handed"],
     "warbondCode": "warbond18",
     "internalName": "sta11smg",
     "imageURL": "sta11smg.webp",
@@ -185,11 +129,7 @@
   },
   {
     "displayName": "Knight",
-    "tags": [
-      "SubmachineGun",
-      "ap2",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "One-Handed"],
     "warbondCode": "warbond0",
     "internalName": "mp98knight",
     "imageURL": "mp98knight.webp",
@@ -197,11 +137,7 @@
   },
   {
     "displayName": "M7S SMG",
-    "tags": [
-      "SubmachineGun",
-      "ap2",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "One-Handed"],
     "warbondCode": "warbond19",
     "internalName": "m7s",
     "imageURL": "m7s.webp",
@@ -209,10 +145,7 @@
   },
   {
     "displayName": "Double Freedom",
-    "tags": [
-      "Shotgun",
-      "ap3"
-    ],
+    "tags": ["Shotgun"],
     "warbondCode": "warbond1",
     "internalName": "doublefreedom",
     "imageURL": "doublefreedom.webp",
@@ -220,10 +153,7 @@
   },
   {
     "displayName": "Punisher",
-    "tags": [
-      "Shotgun",
-      "ap2"
-    ],
+    "tags": ["Shotgun"],
     "warbondCode": "warbond3",
     "internalName": "sg8punisher",
     "imageURL": "sg8punisher.webp",
@@ -231,11 +161,7 @@
   },
   {
     "displayName": "Cookout",
-    "tags": [
-      "Shotgun",
-      "ap2",
-      "fire"
-    ],
+    "tags": ["Shotgun", "Fire"],
     "warbondCode": "warbond9",
     "internalName": "sg451cookout",
     "imageURL": "sg451cookout.webp",
@@ -243,10 +169,7 @@
   },
   {
     "displayName": "Slugger",
-    "tags": [
-      "Shotgun",
-      "ap3"
-    ],
+    "tags": ["Shotgun"],
     "warbondCode": "warbond3",
     "internalName": "sg8sslugger",
     "imageURL": "sg8sslugger.webp",
@@ -254,10 +177,7 @@
   },
   {
     "displayName": "Breaker",
-    "tags": [
-      "Shotgun",
-      "ap2"
-    ],
+    "tags": ["Shotgun"],
     "warbondCode": "warbond3",
     "internalName": "sg225breaker",
     "imageURL": "sg225breaker.webp",
@@ -265,11 +185,7 @@
   },
   {
     "displayName": "Breaker Incendiary",
-    "tags": [
-      "Shotgun",
-      "ap2",
-      "fire"
-    ],
+    "tags": ["Shotgun", "Fire"],
     "warbondCode": "warbond4",
     "internalName": "sg225iebreakerincendiary",
     "imageURL": "sg225iebreakerincendiary.webp",
@@ -277,10 +193,7 @@
   },
   {
     "displayName": "Breaker Spray & Pray",
-    "tags": [
-      "Shotgun",
-      "ap2"
-    ],
+    "tags": ["Shotgun"],
     "warbondCode": "warbond3",
     "internalName": "sg225spbreakerspraynpray",
     "imageURL": "sg225spbreakerspraynpray.webp",
@@ -288,12 +201,7 @@
   },
   {
     "displayName": "Halt",
-    "tags": [
-      "Shotgun",
-      "ap2",
-      "ap3",
-      "stun"
-    ],
+    "tags": ["Shotgun", "Stun"],
     "warbondCode": "warbond11",
     "internalName": "sg20halt",
     "imageURL": "sg20halt.webp",
@@ -301,10 +209,7 @@
   },
   {
     "displayName": "M90A Shotgun",
-    "tags": [
-      "Shotgun",
-      "ap2"
-    ],
+    "tags": ["Shotgun"],
     "warbondCode": "warbond19",
     "internalName": "m90a",
     "imageURL": "m90a.webp",
@@ -312,10 +217,7 @@
   },
   {
     "displayName": "Diligence",
-    "tags": [
-      "MarksmanRifle",
-      "ap2"
-    ],
+    "tags": ["MarksmanRifle"],
     "warbondCode": "warbond3",
     "internalName": "r63diligence",
     "imageURL": "r63diligence.webp",
@@ -323,10 +225,7 @@
   },
   {
     "displayName": "Diligence Counter Sniper",
-    "tags": [
-      "MarksmanRifle",
-      "ap3"
-    ],
+    "tags": ["MarksmanRifle"],
     "warbondCode": "warbond3",
     "internalName": "r63csdiligencecountersniper",
     "imageURL": "r63csdiligencecountersniper.webp",
@@ -334,10 +233,7 @@
   },
   {
     "displayName": "Deadeye",
-    "tags": [
-      "MarksmanRifle",
-      "ap3"
-    ],
+    "tags": ["MarksmanRifle"],
     "warbondCode": "warbond14",
     "internalName": "r6deadeye",
     "imageURL": "r6deadeye.webp",
@@ -345,11 +241,7 @@
   },
   {
     "displayName": "Amendment",
-    "tags": [
-      "MarksmanRifle",
-      "ap2",
-      "melee"
-    ],
+    "tags": ["MarksmanRifle", "Melee"],
     "warbondCode": "warbond15",
     "internalName": "r2amendment",
     "imageURL": "r2amendment.webp",
@@ -357,11 +249,7 @@
   },
   {
     "displayName": "Censor",
-    "tags": [
-      "MarksmanRifle",
-      "ap2",
-      "suppressed"
-    ],
+    "tags": ["MarksmanRifle", "Suppressed"],
     "warbondCode": "warbond22",
     "internalName": "r72censor",
     "imageURL": "r72censor.webp",
@@ -369,11 +257,7 @@
   },
   {
     "displayName": "Constitution",
-    "tags": [
-      "MarksmanRifle",
-      "ap3",
-      "melee"
-    ],
+    "tags": ["MarksmanRifle", "Melee"],
     "warbondCode": "none",
     "internalName": "r2124constitution",
     "imageURL": "r2124constitution.webp",
@@ -381,11 +265,7 @@
   },
   {
     "displayName": "Scythe",
-    "tags": [
-      "EnergyWeapon",
-      "ap2",
-      "laser"
-    ],
+    "tags": ["EnergyWeapon", "Laser"],
     "warbondCode": "warbond3",
     "internalName": "las5scythe",
     "imageURL": "las5scythe.webp",
@@ -393,10 +273,7 @@
   },
   {
     "displayName": "Sickle",
-    "tags": [
-      "EnergyWeapon",
-      "ap2"
-    ],
+    "tags": ["EnergyWeapon"],
     "warbondCode": "warbond5",
     "internalName": "las16sickle",
     "imageURL": "las16sickle.webp",
@@ -404,11 +281,7 @@
   },
   {
     "displayName": "Scorcher",
-    "tags": [
-      "EnergyWeapon",
-      "ap3",
-      "plasma"
-    ],
+    "tags": ["EnergyWeapon", "Plasma"],
     "warbondCode": "warbond3",
     "internalName": "plas1scorcher",
     "imageURL": "plas1scorcher.webp",
@@ -416,11 +289,7 @@
   },
   {
     "displayName": "Purifier",
-    "tags": [
-      "EnergyWeapon",
-      "ap3",
-      "plasma"
-    ],
+    "tags": ["EnergyWeapon", "Plasma"],
     "warbondCode": "warbond7",
     "internalName": "plas101purifier",
     "imageURL": "plas101purifier.webp",
@@ -428,11 +297,7 @@
   },
   {
     "displayName": "Punisher Plasma",
-    "tags": [
-      "EnergyWeapon",
-      "ap3",
-      "plasma"
-    ],
+    "tags": ["EnergyWeapon", "Plasma"],
     "warbondCode": "warbond5",
     "internalName": "sg8ppunisherplasma",
     "imageURL": "sg8ppunisherplasma.webp",
@@ -440,11 +305,7 @@
   },
   {
     "displayName": "Blitzer",
-    "tags": [
-      "EnergyWeapon",
-      "ap3",
-      "arc"
-    ],
+    "tags": ["EnergyWeapon", "Arc"],
     "warbondCode": "warbond5",
     "internalName": "arc12blitzer",
     "imageURL": "arc12blitzer.webp",
@@ -452,12 +313,7 @@
   },
   {
     "displayName": "Double Edge Sickle",
-    "tags": [
-      "EnergyWeapon",
-      "ap2",
-      "ap3",
-      "ap4"
-    ],
+    "tags": ["EnergyWeapon"],
     "warbondCode": "warbond13",
     "internalName": "las17doubleedgesickle",
     "imageURL": "las17doubleedgesickle.webp",
@@ -465,11 +321,7 @@
   },
   {
     "displayName": "PLAS-39 Accelerator Rifle",
-    "tags": [
-      "MarksmanRifle",
-      "ap3",
-      "plasma"
-    ],
+    "tags": ["MarksmanRifle", "Plasma"],
     "warbondCode": "warbond18",
     "internalName": "plas39acceleratorrifle",
     "imageURL": "plas39acceleratorrifle.webp",
@@ -477,11 +329,7 @@
   },
   {
     "displayName": "Eruptor",
-    "tags": [
-      "Explosive",
-      "ap4",
-      "explosive"
-    ],
+    "tags": ["Explosive"],
     "warbondCode": "warbond6",
     "internalName": "r36eruptor",
     "imageURL": "r36eruptor.webp",
@@ -489,12 +337,7 @@
   },
   {
     "displayName": "Exploding Crossbow",
-    "tags": [
-      "Explosive",
-      "ap3",
-      "explosive",
-      "onehanded"
-    ],
+    "tags": ["Explosive", "One-Handed"],
     "warbondCode": "warbond6",
     "internalName": "cb9explodingcrossbow",
     "imageURL": "cb9explodingcrossbow.webp",
@@ -502,10 +345,7 @@
   },
   {
     "displayName": "Variable",
-    "tags": [
-      "AssaultRifle",
-      "ap2"
-    ],
+    "tags": ["AssaultRifle"],
     "warbondCode": "warbond17",
     "internalName": "variable",
     "imageURL": "variable.webp",
@@ -513,10 +353,7 @@
   },
   {
     "displayName": "Dominator",
-    "tags": [
-      "Explosive",
-      "ap3"
-    ],
+    "tags": ["Explosive"],
     "warbondCode": "warbond4",
     "internalName": "jar5dominator",
     "imageURL": "jar5dominator.webp",
@@ -524,11 +361,7 @@
   },
   {
     "displayName": "Torcher",
-    "tags": [
-      "Special",
-      "ap4",
-      "fire"
-    ],
+    "tags": ["Special", "Fire"],
     "warbondCode": "warbond9",
     "internalName": "flam66torcher",
     "imageURL": "flam66torcher.webp",
@@ -536,10 +369,7 @@
   },
   {
     "displayName": "Trident",
-    "tags": [
-      "EnergyWeapon",
-      "ap2"
-    ],
+    "tags": ["EnergyWeapon"],
     "warbondCode": "warbond23",
     "internalName": "las16trident",
     "imageURL": "las16trident.webp",
@@ -547,13 +377,7 @@
   },
   {
     "displayName": "Stoker",
-    "tags": [
-      "SubmachineGun",
-      "ap2",
-      "ap4",
-      "fire",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "Fire", "One-Handed"],
     "warbondCode": "warbond24",
     "internalName": "smgflam34stoker",
     "imageURL": "smgflam34stoker.webp",
@@ -561,11 +385,7 @@
   },
   {
     "displayName": "Sweeper",
-    "tags": [
-      "Shotgun",
-      "ap3",
-      "melee"
-    ],
+    "tags": ["Shotgun", "Melee"],
     "warbondCode": "warbond1",
     "internalName": "sg97sweeper",
     "imageURL": "sg97sweeper.webp",
@@ -573,11 +393,7 @@
   },
   {
     "displayName": "Gallant",
-    "tags": [
-      "SubmachineGun",
-      "ap3",
-      "onehanded"
-    ],
+    "tags": ["SubmachineGun", "One-Handed"],
     "warbondCode": "warbond25",
     "internalName": "smg203gallant",
     "imageURL": "smg203gallant.webp",
@@ -585,10 +401,7 @@
   },
   {
     "displayName": "Hyena",
-    "tags": [
-      "MarksmanRifle",
-      "ap3"
-    ],
+    "tags": ["MarksmanRifle"],
     "warbondCode": "none",
     "internalName": "r4hyena",
     "imageURL": "r4hyena.webp",
@@ -596,10 +409,7 @@
   },
   {
     "displayName": "Hot Shot Marksman Rifle",
-    "tags": [
-      "MarksmanRifle",
-      "ap3"
-    ],
+    "tags": ["MarksmanRifle"],
     "warbondCode": "warbond26",
     "internalName": "hotshotmarksmanrifle",
     "imageURL": "hotshotmarksmanrifle.webp",

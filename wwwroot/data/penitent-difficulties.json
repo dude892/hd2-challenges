@@ -31,10 +31,7 @@
         "Orbital Gatling Barrage",
         "Arc Thrower"
       ],
-      "boosters": [
-        "UAV Recon",
-        "Muscle Enhancement"
-      ]
+      "boosters": ["UAV Recon", "Muscle Enhancement"]
     }
   },
   {
@@ -60,10 +57,7 @@
       "armorPassives": "Integrated Explosives"
     },
     "loadoutAdditions": {
-      "stratagems": [
-        "Ballistic Shield",
-        "Orbital Precision Strike"
-      ]
+      "stratagems": ["Ballistic Shield", "Orbital Precision Strike"]
     }
   }
 ]
