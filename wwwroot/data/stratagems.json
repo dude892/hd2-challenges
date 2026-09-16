@@ -10,7 +10,6 @@
     "internalName": "tx41sterilizer",
     "imageURL": "tx41sterilizer.svg",
     "antitank": false,
-    "tier": "c",
     "index": 0
   },
   {
@@ -24,7 +23,6 @@
     "internalName": "flam40flamethrower",
     "imageURL": "flam40flamethrower.svg",
     "antitank": false,
-    "tier": "b",
     "index": 1
   },
   {
@@ -38,7 +36,6 @@
     "internalName": "speargun",
     "imageURL": "speargun.svg",
     "antitank": false,
-    "tier": "a",
     "index": 2
   },
   {
@@ -52,7 +49,6 @@
     "internalName": "las98lasercannon",
     "imageURL": "las98lasercannon.svg",
     "antitank": true,
-    "tier": "b",
     "index": 3
   },
   {
@@ -66,7 +62,6 @@
     "internalName": "m105stalwart",
     "imageURL": "m105stalwart.svg",
     "antitank": false,
-    "tier": "a",
     "index": 4
   },
   {
@@ -80,7 +75,6 @@
     "internalName": "mg43machinegun",
     "imageURL": "mg43machinegun.svg",
     "antitank": false,
-    "tier": "b",
     "index": 5
   },
   {
@@ -94,7 +88,6 @@
     "internalName": "mg206heavymachinegun",
     "imageURL": "mg206heavymachinegun.svg",
     "antitank": true,
-    "tier": "b",
     "index": 6
   },
   {
@@ -108,7 +101,6 @@
     "internalName": "arc3arcthrower",
     "imageURL": "arc3arcthrower.svg",
     "antitank": false,
-    "tier": "b",
     "index": 7
   },
   {
@@ -122,7 +114,6 @@
     "internalName": "gl21grenadelauncher",
     "imageURL": "gl21grenadelauncher.svg",
     "antitank": false,
-    "tier": "a",
     "index": 8
   },
   {
@@ -136,7 +127,6 @@
     "internalName": "gl52deescalator",
     "imageURL": "gl52deescalator.svg",
     "antitank": true,
-    "tier": "a",
     "index": 9
   },
   {
@@ -150,7 +140,6 @@
     "internalName": "apw1antimaterielrifle",
     "imageURL": "apw1antimaterielrifle.svg",
     "antitank": true,
-    "tier": "a",
     "index": 10
   },
   {
@@ -164,7 +153,6 @@
     "internalName": "rs422railgun",
     "imageURL": "rs422railgun.svg",
     "antitank": true,
-    "tier": "b",
     "index": 11
   },
   {
@@ -178,7 +166,6 @@
     "internalName": "las99quasarcannon",
     "imageURL": "las99quasarcannon.svg",
     "antitank": true,
-    "tier": "s",
     "index": 12
   },
   {
@@ -193,7 +180,6 @@
     "internalName": "epoch",
     "imageURL": "epoch.svg",
     "antitank": true,
-    "tier": "a",
     "index": 13
   },
   {
@@ -208,7 +194,6 @@
     "internalName": "eat17expendableantitank",
     "imageURL": "eat17expendableantitank.svg",
     "antitank": true,
-    "tier": "a",
     "index": 14
   },
   {
@@ -223,7 +208,6 @@
     "internalName": "mls4xcommandorocketlauncher",
     "imageURL": "mls4xcommandorocketlauncher.svg",
     "antitank": true,
-    "tier": "a",
     "index": 15
   },
   {
@@ -238,7 +222,6 @@
     "internalName": "eat700expendablenapalm",
     "imageURL": "eat700expendablenapalm.svg",
     "antitank": false,
-    "tier": "b",
     "index": 16
   },
   {
@@ -253,7 +236,6 @@
     "internalName": "solosilo",
     "imageURL": "solosilo.svg",
     "antitank": true,
-    "tier": "a",
     "index": 17
   },
   {
@@ -267,7 +249,6 @@
     "internalName": "onetrueflag",
     "imageURL": "onetrueflag.svg",
     "antitank": false,
-    "tier": "c",
     "index": 18
   },
   {
@@ -281,7 +262,6 @@
     "internalName": "defoliationtool",
     "imageURL": "defoliationtool.svg",
     "antitank": false,
-    "tier": "c",
     "index": 19
   },
   {
@@ -296,7 +276,6 @@
     "internalName": "maxigun",
     "imageURL": "maxigun.svg",
     "antitank": false,
-    "tier": "a",
     "index": 20
   },
   {
@@ -311,7 +290,6 @@
     "internalName": "ac8autocannon",
     "imageURL": "ac8autocannon.svg",
     "antitank": true,
-    "tier": "a",
     "index": 21
   },
   {
@@ -326,7 +304,6 @@
     "internalName": "wasplauncher",
     "imageURL": "wasplauncher.svg",
     "antitank": true,
-    "tier": "a",
     "index": 22
   },
   {
@@ -341,7 +318,6 @@
     "internalName": "rl77airburstrocketlauncher",
     "imageURL": "rl77airburstrocketlauncher.svg",
     "antitank": false,
-    "tier": "b",
     "index": 23
   },
   {
@@ -357,7 +333,6 @@
     "internalName": "gr8recoillessrifle",
     "imageURL": "gr8recoillessrifle.svg",
     "antitank": true,
-    "tier": "s",
     "index": 24
   },
   {
@@ -373,7 +348,6 @@
     "internalName": "faf14spear",
     "imageURL": "faf14spear.svg",
     "antitank": true,
-    "tier": "b",
     "index": 25
   },
   {
@@ -389,7 +363,6 @@
     "internalName": "c4pack",
     "imageURL": "c4pack.svg",
     "antitank": true,
-    "tier": "b",
     "index": 26
   },
   {
@@ -403,7 +376,6 @@
     "internalName": "guarddogflames",
     "imageURL": "guarddogflames.svg",
     "antitank": false,
-    "tier": "b",
     "index": 27
   },
   {
@@ -417,7 +389,6 @@
     "internalName": "axtx13guarddogdogbreath",
     "imageURL": "axtx13guarddogdogbreath.svg",
     "antitank": false,
-    "tier": "a",
     "index": 28
   },
   {
@@ -431,7 +402,6 @@
     "internalName": "axlas5guarddogrover",
     "imageURL": "axlas5guarddogrover.svg",
     "antitank": false,
-    "tier": "b",
     "index": 29
   },
   {
@@ -445,7 +415,6 @@
     "internalName": "ad334guarddog",
     "imageURL": "ad334guarddog.svg",
     "antitank": false,
-    "tier": "a",
     "index": 30
   },
   {
@@ -459,7 +428,6 @@
     "internalName": "guarddogarc",
     "imageURL": "guarddogarc.svg",
     "antitank": false,
-    "tier": "a",
     "index": 31
   },
   {
@@ -473,7 +441,6 @@
     "internalName": "lift850jumppack",
     "imageURL": "lift850jumppack.svg",
     "antitank": false,
-    "tier": "s",
     "index": 32
   },
   {
@@ -487,7 +454,6 @@
     "internalName": "lift860hoverpack",
     "imageURL": "lift860hoverpack.svg",
     "antitank": false,
-    "tier": "b",
     "index": 33
   },
   {
@@ -501,59 +467,46 @@
     "internalName": "warppack",
     "imageURL": "warppack.svg",
     "antitank": false,
-    "tier": "s",
     "index": 34
   },
   {
     "displayName": "Supply Pack",
     "category": "Supply",
-    "tags": [
-      "Backpack"
-    ],
+    "tags": "Backpack",
     "warbondCode": "none",
     "internalName": "b1supplypack",
     "imageURL": "b1supplypack.svg",
     "antitank": false,
-    "tier": "s",
     "index": 35
   },
   {
     "displayName": "Directional Shield",
     "category": "Supply",
-    "tags": [
-      "Backpack"
-    ],
+    "tags": "Backpack",
     "warbondCode": "warbond12",
     "internalName": "sh51directionalshield",
     "imageURL": "sh51directionalshield.svg",
     "antitank": false,
-    "tier": "c",
     "index": 36
   },
   {
     "displayName": "Shield Generator Pack",
     "category": "Supply",
-    "tags": [
-      "Backpack"
-    ],
+    "tags": "Backpack",
     "warbondCode": "none",
     "internalName": "sh20shieldgeneratorpack",
     "imageURL": "sh20shieldgeneratorpack.svg",
     "antitank": false,
-    "tier": "a",
     "index": 37
   },
   {
     "displayName": "Ballistic Shield",
     "category": "Supply",
-    "tags": [
-      "Backpack"
-    ],
+    "tags": "Backpack",
     "warbondCode": "none",
     "internalName": "sh20ballisticshieldbackpack",
     "imageURL": "sh20ballisticshieldbackpack.svg",
     "antitank": false,
-    "tier": "b",
     "index": 38
   },
   {
@@ -568,7 +521,6 @@
     "internalName": "portablehellbomb",
     "imageURL": "portablehellbomb.svg",
     "antitank": true,
-    "tier": "a",
     "index": 39
   },
   {
@@ -582,7 +534,6 @@
     "internalName": "fastreconvehicle",
     "imageURL": "fastreconvehicle.svg",
     "antitank": false,
-    "tier": "a",
     "index": 40
   },
   {
@@ -598,7 +549,6 @@
     "internalName": "exo45patriotexosuit",
     "imageURL": "exo45patriotexosuit.svg",
     "antitank": true,
-    "tier": "s",
     "index": 41
   },
   {
@@ -614,46 +564,36 @@
     "internalName": "exo49emancipatorexosuit",
     "imageURL": "exo49emancipatorexosuit.svg",
     "antitank": true,
-    "tier": "s",
     "index": 42
   },
   {
     "displayName": "Eagle Strafing Run",
     "category": "Offensive",
-    "tags": [
-      "Eagle"
-    ],
+    "tags": "Eagle",
     "warbondCode": "none",
     "internalName": "eaglestrafingrun",
     "imageURL": "eaglestrafingrun.svg",
     "antitank": false,
-    "tier": "s",
     "index": 43
   },
   {
     "displayName": "Eagle Airstrike",
     "category": "Offensive",
-    "tags": [
-      "Eagle"
-    ],
+    "tags": "Eagle",
     "warbondCode": "none",
     "internalName": "eagleairstrike",
     "imageURL": "eagleairstrike.svg",
     "antitank": true,
-    "tier": "a",
     "index": 44
   },
   {
     "displayName": "Eagle Cluster Bomb",
     "category": "Offensive",
-    "tags": [
-      "Eagle"
-    ],
+    "tags": "Eagle",
     "warbondCode": "none",
     "internalName": "eagleclusterbomb",
     "imageURL": "eagleclusterbomb.svg",
     "antitank": false,
-    "tier": "b",
     "index": 45
   },
   {
@@ -667,7 +607,6 @@
     "internalName": "eaglenapalmstrike",
     "imageURL": "eaglenapalmstrike.svg",
     "antitank": false,
-    "tier": "b",
     "index": 46
   },
   {
@@ -681,7 +620,6 @@
     "internalName": "eaglesmokestrike",
     "imageURL": "eaglesmokestrike.svg",
     "antitank": false,
-    "tier": "c",
     "index": 47
   },
   {
@@ -695,7 +633,6 @@
     "internalName": "eagle110mmrocketpods",
     "imageURL": "eagle110mmrocketpods.svg",
     "antitank": true,
-    "tier": "c",
     "index": 48
   },
   {
@@ -709,7 +646,6 @@
     "internalName": "eagle500kgbomb",
     "imageURL": "eagle500kgbomb.svg",
     "antitank": true,
-    "tier": "s",
     "index": 49
   },
   {
@@ -723,7 +659,6 @@
     "internalName": "orbitalprecisionstrike",
     "imageURL": "orbitalprecisionstrike.svg",
     "antitank": true,
-    "tier": "b",
     "index": 50
   },
   {
@@ -737,7 +672,6 @@
     "internalName": "orbitalgasstrike",
     "imageURL": "orbitalgasstrike.svg",
     "antitank": false,
-    "tier": "a",
     "index": 51
   },
   {
@@ -751,7 +685,6 @@
     "internalName": "orbitalemsstrike",
     "imageURL": "orbitalemsstrike.svg",
     "antitank": false,
-    "tier": "c",
     "index": 52
   },
   {
@@ -765,20 +698,16 @@
     "internalName": "orbitalsmokestrike",
     "imageURL": "orbitalsmokestrike.svg",
     "antitank": false,
-    "tier": "c",
     "index": 53
   },
   {
     "displayName": "Orbital Airburst Strike",
     "category": "Offensive",
-    "tags": [
-      "Orbital"
-    ],
+    "tags": "Orbital",
     "warbondCode": "none",
     "internalName": "orbitalairburststrike",
     "imageURL": "orbitalairburststrike.svg",
     "antitank": false,
-    "tier": "b",
     "index": 54
   },
   {
@@ -792,7 +721,6 @@
     "internalName": "orbitalrailcannonstrike",
     "imageURL": "orbitalrailcannonstrike.svg",
     "antitank": true,
-    "tier": "b",
     "index": 55
   },
   {
@@ -807,7 +735,6 @@
     "internalName": "orbitallaser",
     "imageURL": "orbitallaser.svg",
     "antitank": true,
-    "tier": "a",
     "index": 56
   },
   {
@@ -821,46 +748,36 @@
     "internalName": "orbitalgatlingbarrage",
     "imageURL": "orbitalgatlingbarrage.svg",
     "antitank": false,
-    "tier": "b",
     "index": 57
   },
   {
     "displayName": "Orbital 120mm Barrage",
     "category": "Offensive",
-    "tags": [
-      "Orbital"
-    ],
+    "tags": "Orbital",
     "warbondCode": "none",
     "internalName": "orbital120mmhebarrage",
     "imageURL": "orbital120mmhebarrage.svg",
     "antitank": true,
-    "tier": "a",
     "index": 58
   },
   {
     "displayName": "Orbital 380mm Barrage",
     "category": "Offensive",
-    "tags": [
-      "Orbital"
-    ],
+    "tags": "Orbital",
     "warbondCode": "none",
     "internalName": "orbital380mmhebarrage",
     "imageURL": "orbital380mmhebarrage.svg",
     "antitank": true,
-    "tier": "a",
     "index": 59
   },
   {
     "displayName": "Orbital Walking Barrage",
     "category": "Offensive",
-    "tags": [
-      "Orbital"
-    ],
+    "tags": "Orbital",
     "warbondCode": "none",
     "internalName": "orbitalwalkingbarrage",
     "imageURL": "orbitalwalkingbarrage.svg",
     "antitank": true,
-    "tier": "a",
     "index": 60
   },
   {
@@ -874,7 +791,6 @@
     "internalName": "orbitalnapalmbarrage",
     "imageURL": "orbitalnapalmbarrage.svg",
     "antitank": false,
-    "tier": "s",
     "index": 61
   },
   {
@@ -888,20 +804,16 @@
     "internalName": "teslatower",
     "imageURL": "teslatower.svg",
     "antitank": false,
-    "tier": "b",
     "index": 62
   },
   {
     "displayName": "Mortar Sentry",
     "category": "Defensive",
-    "tags": [
-      "Sentry"
-    ],
+    "tags": "Sentry",
     "warbondCode": "none",
     "internalName": "mortarsentry",
     "imageURL": "mortarsentry.svg",
     "antitank": false,
-    "tier": "b",
     "index": 63
   },
   {
@@ -915,7 +827,6 @@
     "internalName": "emsmortarsentry",
     "imageURL": "emsmortarsentry.svg",
     "antitank": false,
-    "tier": "c",
     "index": 64
   },
   {
@@ -929,7 +840,6 @@
     "internalName": "machinegunsentry",
     "imageURL": "machinegunsentry.svg",
     "antitank": false,
-    "tier": "a",
     "index": 65
   },
   {
@@ -943,7 +853,6 @@
     "internalName": "gatlingsentry",
     "imageURL": "gatlingsentry.svg",
     "antitank": false,
-    "tier": "a",
     "index": 66
   },
   {
@@ -957,7 +866,6 @@
     "internalName": "aflam40flamesentry",
     "imageURL": "aflam40flamesentry.svg",
     "antitank": false,
-    "tier": "c",
     "index": 67
   },
   {
@@ -971,7 +879,6 @@
     "internalName": "lasersentry",
     "imageURL": "lasersentry.svg",
     "antitank": true,
-    "tier": "b",
     "index": 68
   },
   {
@@ -986,7 +893,6 @@
     "internalName": "autocannonsentry",
     "imageURL": "autocannonsentry.svg",
     "antitank": true,
-    "tier": "a",
     "index": 69
   },
   {
@@ -1001,20 +907,16 @@
     "internalName": "rocketsentry",
     "imageURL": "rocketsentry.svg",
     "antitank": true,
-    "tier": "a",
     "index": 70
   },
   {
     "displayName": "Shield Generator Relay",
     "category": "Defensive",
-    "tags": [
-      "Emplacement"
-    ],
+    "tags": "Emplacement",
     "warbondCode": "none",
     "internalName": "shieldgeneratorrelay",
     "imageURL": "shieldgeneratorrelay.svg",
     "antitank": false,
-    "tier": "c",
     "index": 71
   },
   {
@@ -1028,7 +930,6 @@
     "internalName": "hmgemplacement",
     "imageURL": "hmgemplacement.svg",
     "antitank": true,
-    "tier": "a",
     "index": 72
   },
   {
@@ -1043,7 +944,6 @@
     "internalName": "eat12antitankemplacement",
     "imageURL": "eat12antitankemplacement.svg",
     "antitank": true,
-    "tier": "b",
     "index": 73
   },
   {
@@ -1057,7 +957,6 @@
     "internalName": "grenadierbattlement",
     "imageURL": "grenadierbattlement.svg",
     "antitank": false,
-    "tier": "b",
     "index": 74
   },
   {
@@ -1071,20 +970,16 @@
     "internalName": "antitankmines",
     "imageURL": "antitankmines.svg",
     "antitank": true,
-    "tier": "c",
     "index": 75
   },
   {
     "displayName": "Anti-Personnel Mines",
     "category": "Defensive",
-    "tags": [
-      "Emplacement"
-    ],
+    "tags": "Emplacement",
     "warbondCode": "none",
     "internalName": "antipersonnelminefield",
     "imageURL": "antipersonnelminefield.svg",
     "antitank": false,
-    "tier": "b",
     "index": 76
   },
   {
@@ -1098,7 +993,6 @@
     "internalName": "gasmines",
     "imageURL": "gasmines.svg",
     "antitank": false,
-    "tier": "s",
     "index": 77
   },
   {
@@ -1112,7 +1006,6 @@
     "internalName": "incendiarymines",
     "imageURL": "incendiarymines.svg",
     "antitank": false,
-    "tier": "b",
     "index": 78
   },
   {
@@ -1127,7 +1020,6 @@
     "internalName": "breachinghammer",
     "imageURL": "breachinghammer.svg",
     "antitank": true,
-    "tier": "b",
     "index": 79
   },
   {
@@ -1143,7 +1035,6 @@
     "internalName": "leveller",
     "imageURL": "eat411leveller.svg",
     "antitank": true,
-    "tier": "a",
     "index": 80
   },
   {
@@ -1159,20 +1050,16 @@
     "internalName": "beltfedgrenadelauncher",
     "imageURL": "beltfedgrenadelauncher.svg",
     "antitank": true,
-    "tier": "a",
     "index": 81
   },
   {
     "displayName": "Bastion",
     "category": "Supply",
-    "tags": [
-      "Vehicle"
-    ],
+    "tags": "Vehicle",
     "warbondCode": "none",
     "internalName": "bastiontank",
     "imageURL": "bastiontank.svg",
     "antitank": true,
-    "tier": "s",
     "index": 82
   },
   {
@@ -1186,7 +1073,6 @@
     "internalName": "gasmortarsentry",
     "imageURL": "gasmortarsentry.svg",
     "antitank": false,
-    "tier": "a",
     "index": 83
   },
   {
@@ -1202,7 +1088,6 @@
     "internalName": "cremator",
     "imageURL": "cremator.svg",
     "antitank": true,
-    "tier": "a",
     "index": 84
   },
   {
@@ -1219,7 +1104,6 @@
     "internalName": "exo51lumbererexosuit",
     "imageURL": "exo51lumbererexosuit.svg",
     "antitank": true,
-    "tier": "s",
     "index": 85
   },
   {
@@ -1235,7 +1119,6 @@
     "internalName": "exo55breakthroughexosuit",
     "imageURL": "exo55breakthroughexosuit.svg",
     "antitank": true,
-    "tier": "a",
     "index": 86
   },
   {
@@ -1250,7 +1133,6 @@
     "internalName": "mgx42bulletstorm",
     "imageURL": "mgx42bulletstorm.svg",
     "antitank": false,
-    "tier": "a",
     "index": 87
   },
   {
@@ -1264,7 +1146,6 @@
     "internalName": "supplyfrv",
     "imageURL": "supplyfrv.svg",
     "antitank": false,
-    "tier": "s",
     "index": 88
   },
   {
@@ -1278,7 +1159,6 @@
     "internalName": "meltagun",
     "imageURL": "meltagun.svg",
     "antitank": true,
-    "tier": "b",
     "index": 89
   },
   {
@@ -1292,7 +1172,6 @@
     "internalName": "eaglegasstrike",
     "imageURL": "eaglegasstrike.svg",
     "antitank": true,
-    "tier": "a",
     "index": 90
   }
 ]

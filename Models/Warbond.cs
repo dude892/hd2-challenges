@@ -5,4 +5,3 @@ public sealed record Warbond(
     string DisplayName,
     bool AlwaysEnabled = false
 );
-

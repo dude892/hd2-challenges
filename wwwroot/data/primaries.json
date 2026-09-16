@@ -10,7 +10,6 @@
     "internalName": "ar23liberator",
     "imageURL": "ar23liberator.webp",
     "antitank": false,
-    "tier": "b",
     "index": 0
   },
   {
@@ -24,7 +23,6 @@
     "internalName": "ar23pliberatorpenetrator",
     "imageURL": "ar23pliberatorpenetrator.webp",
     "antitank": false,
-    "tier": "a",
     "index": 1
   },
   {
@@ -38,7 +36,6 @@
     "internalName": "ar23cliberatorconcussive",
     "imageURL": "ar23cliberatorconcussive.webp",
     "antitank": false,
-    "tier": "b",
     "index": 2
   },
   {
@@ -52,7 +49,6 @@
     "internalName": "ar23aliberatorcarbine",
     "imageURL": "ar23aliberatorcarbine.webp",
     "antitank": false,
-    "tier": "a",
     "index": 3
   },
   {
@@ -66,7 +62,6 @@
     "internalName": "br14adjudicator",
     "imageURL": "br14adjudicator.webp",
     "antitank": false,
-    "tier": "a",
     "index": 4
   },
   {
@@ -80,7 +75,6 @@
     "internalName": "sta52assaultrifle",
     "imageURL": "sta52assaultrifle.webp",
     "antitank": false,
-    "tier": "b",
     "index": 5
   },
   {
@@ -95,7 +89,6 @@
     "internalName": "ar32pacifier",
     "imageURL": "ar32pacifier.webp",
     "antitank": false,
-    "tier": "b",
     "index": 6
   },
   {
@@ -109,7 +102,6 @@
     "internalName": "ar61tenderizer",
     "imageURL": "ar61tenderizer.webp",
     "antitank": false,
-    "tier": "a",
     "index": 7
   },
   {
@@ -123,7 +115,6 @@
     "internalName": "ma5c",
     "imageURL": "ma5c.webp",
     "antitank": false,
-    "tier": "b",
     "index": 8
   },
   {
@@ -138,7 +129,6 @@
     "internalName": "ar2coyote",
     "imageURL": "ar2coyote.webp",
     "antitank": false,
-    "tier": "s",
     "index": 9
   },
   {
@@ -154,7 +144,6 @@
     "internalName": "onetwo",
     "imageURL": "onetwo.webp",
     "antitank": false,
-    "tier": "b",
     "index": 10
   },
   {
@@ -169,7 +158,6 @@
     "internalName": "ar59suppressor",
     "imageURL": "ar59suppressor.webp",
     "antitank": false,
-    "tier": "b",
     "index": 11
   },
   {
@@ -184,7 +172,6 @@
     "internalName": "smg37defender",
     "imageURL": "smg37defender.webp",
     "antitank": false,
-    "tier": "b",
     "index": 12
   },
   {
@@ -199,7 +186,6 @@
     "internalName": "smg72pummeler",
     "imageURL": "smg72pummeler.webp",
     "antitank": false,
-    "tier": "b",
     "index": 13
   },
   {
@@ -213,7 +199,6 @@
     "internalName": "smg32reprimand",
     "imageURL": "smg32reprimand.webp",
     "antitank": false,
-    "tier": "a",
     "index": 14
   },
   {
@@ -228,7 +213,6 @@
     "internalName": "sta11smg",
     "imageURL": "sta11smg.webp",
     "antitank": false,
-    "tier": "b",
     "index": 15
   },
   {
@@ -243,7 +227,6 @@
     "internalName": "mp98knight",
     "imageURL": "mp98knight.webp",
     "antitank": false,
-    "tier": "b",
     "index": 16
   },
   {
@@ -258,7 +241,6 @@
     "internalName": "m7s",
     "imageURL": "m7s.webp",
     "antitank": false,
-    "tier": "b",
     "index": 17
   },
   {
@@ -272,7 +254,6 @@
     "internalName": "doublefreedom",
     "imageURL": "doublefreedom.webp",
     "antitank": false,
-    "tier": "b",
     "index": 18
   },
   {
@@ -286,7 +267,6 @@
     "internalName": "sg8punisher",
     "imageURL": "sg8punisher.webp",
     "antitank": false,
-    "tier": "b",
     "index": 19
   },
   {
@@ -301,7 +281,6 @@
     "internalName": "sg451cookout",
     "imageURL": "sg451cookout.webp",
     "antitank": false,
-    "tier": "a",
     "index": 20
   },
   {
@@ -315,7 +294,6 @@
     "internalName": "sg8sslugger",
     "imageURL": "sg8sslugger.webp",
     "antitank": false,
-    "tier": "b",
     "index": 21
   },
   {
@@ -329,7 +307,6 @@
     "internalName": "sg225breaker",
     "imageURL": "sg225breaker.webp",
     "antitank": false,
-    "tier": "b",
     "index": 22
   },
   {
@@ -344,7 +321,6 @@
     "internalName": "sg225iebreakerincendiary",
     "imageURL": "sg225iebreakerincendiary.webp",
     "antitank": false,
-    "tier": "a",
     "index": 23
   },
   {
@@ -358,7 +334,6 @@
     "internalName": "sg225spbreakerspraynpray",
     "imageURL": "sg225spbreakerspraynpray.webp",
     "antitank": false,
-    "tier": "b",
     "index": 24
   },
   {
@@ -374,7 +349,6 @@
     "internalName": "sg20halt",
     "imageURL": "sg20halt.webp",
     "antitank": false,
-    "tier": "a",
     "index": 25
   },
   {
@@ -388,7 +362,6 @@
     "internalName": "m90a",
     "imageURL": "m90a.webp",
     "antitank": false,
-    "tier": "a",
     "index": 26
   },
   {
@@ -402,7 +375,6 @@
     "internalName": "r63diligence",
     "imageURL": "r63diligence.webp",
     "antitank": false,
-    "tier": "b",
     "index": 27
   },
   {
@@ -416,7 +388,6 @@
     "internalName": "r63csdiligencecountersniper",
     "imageURL": "r63csdiligencecountersniper.webp",
     "antitank": false,
-    "tier": "b",
     "index": 28
   },
   {
@@ -430,7 +401,6 @@
     "internalName": "r6deadeye",
     "imageURL": "r6deadeye.webp",
     "antitank": false,
-    "tier": "a",
     "index": 29
   },
   {
@@ -445,7 +415,6 @@
     "internalName": "r2amendment",
     "imageURL": "r2amendment.webp",
     "antitank": false,
-    "tier": "a",
     "index": 30
   },
   {
@@ -460,7 +429,6 @@
     "internalName": "r72censor",
     "imageURL": "r72censor.webp",
     "antitank": false,
-    "tier": "a",
     "index": 31
   },
   {
@@ -475,7 +443,6 @@
     "internalName": "r2124constitution",
     "imageURL": "r2124constitution.webp",
     "antitank": false,
-    "tier": "c",
     "index": 32
   },
   {
@@ -490,7 +457,6 @@
     "internalName": "las5scythe",
     "imageURL": "las5scythe.webp",
     "antitank": false,
-    "tier": "b",
     "index": 33
   },
   {
@@ -504,7 +470,6 @@
     "internalName": "las16sickle",
     "imageURL": "las16sickle.webp",
     "antitank": false,
-    "tier": "a",
     "index": 34
   },
   {
@@ -519,7 +484,6 @@
     "internalName": "plas1scorcher",
     "imageURL": "plas1scorcher.webp",
     "antitank": false,
-    "tier": "s",
     "index": 35
   },
   {
@@ -534,7 +498,6 @@
     "internalName": "plas101purifier",
     "imageURL": "plas101purifier.webp",
     "antitank": false,
-    "tier": "s",
     "index": 36
   },
   {
@@ -549,7 +512,6 @@
     "internalName": "sg8ppunisherplasma",
     "imageURL": "sg8ppunisherplasma.webp",
     "antitank": false,
-    "tier": "s",
     "index": 37
   },
   {
@@ -564,7 +526,6 @@
     "internalName": "arc12blitzer",
     "imageURL": "arc12blitzer.webp",
     "antitank": false,
-    "tier": "s",
     "index": 38
   },
   {
@@ -580,7 +541,6 @@
     "internalName": "las17doubleedgesickle",
     "imageURL": "las17doubleedgesickle.webp",
     "antitank": false,
-    "tier": "a",
     "index": 39
   },
   {
@@ -595,7 +555,6 @@
     "internalName": "plas39acceleratorrifle",
     "imageURL": "plas39acceleratorrifle.webp",
     "antitank": false,
-    "tier": "b",
     "index": 40
   },
   {
@@ -610,7 +569,6 @@
     "internalName": "r36eruptor",
     "imageURL": "r36eruptor.webp",
     "antitank": true,
-    "tier": "s",
     "index": 41
   },
   {
@@ -626,7 +584,6 @@
     "internalName": "cb9explodingcrossbow",
     "imageURL": "cb9explodingcrossbow.webp",
     "antitank": false,
-    "tier": "s",
     "index": 42
   },
   {
@@ -640,7 +597,6 @@
     "internalName": "variable",
     "imageURL": "variable.webp",
     "antitank": false,
-    "tier": "b",
     "index": 43
   },
   {
@@ -654,7 +610,6 @@
     "internalName": "jar5dominator",
     "imageURL": "jar5dominator.webp",
     "antitank": false,
-    "tier": "b",
     "index": 44
   },
   {
@@ -669,7 +624,6 @@
     "internalName": "flam66torcher",
     "imageURL": "flam66torcher.webp",
     "antitank": false,
-    "tier": "b",
     "index": 45
   },
   {
@@ -683,7 +637,6 @@
     "internalName": "las16trident",
     "imageURL": "las16trident.webp",
     "antitank": false,
-    "tier": "b",
     "index": 46
   },
   {
@@ -700,7 +653,6 @@
     "internalName": "smgflam34stoker",
     "imageURL": "smgflam34stoker.webp",
     "antitank": false,
-    "tier": "b",
     "index": 47
   },
   {
@@ -715,7 +667,6 @@
     "internalName": "sg97sweeper",
     "imageURL": "sg97sweeper.webp",
     "antitank": false,
-    "tier": "a",
     "index": 48
   },
   {
@@ -730,7 +681,6 @@
     "internalName": "smg203gallant",
     "imageURL": "smg203gallant.webp",
     "antitank": false,
-    "tier": "a",
     "index": 49
   },
   {
@@ -744,7 +694,6 @@
     "internalName": "r4hyena",
     "imageURL": "r4hyena.webp",
     "antitank": false,
-    "tier": "a",
     "index": 50
   },
   {
@@ -758,7 +707,6 @@
     "internalName": "hotshotmarksmanrifle",
     "imageURL": "hotshotmarksmanrifle.webp",
     "antitank": false,
-    "tier": "a",
     "index": 51
   }
 ]

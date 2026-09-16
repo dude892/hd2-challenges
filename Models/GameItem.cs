@@ -20,7 +20,6 @@ public sealed class GameItem
     public string WarbondCode { get; set; } = "none";
     public string InternalName { get; set; } = string.Empty;
     public string ImageURL { get; set; } = string.Empty;
-    public string Tier { get; set; } = "b";
     public bool Antitank { get; set; }
 
     [JsonIgnore]

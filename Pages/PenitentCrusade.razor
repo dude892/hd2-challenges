@@ -51,10 +51,6 @@ else
                         }
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label text-light">Time remaining</label>
-                    <input class="form-control bg-dark text-light border-secondary" type="number" min="0" max="100" value="@_state.TimeRemaining" @onchange="OnPenitentTimeRemainingChangedAsync" />
-                </div>
                 <div class="d-grid gap-2">
                     <button class="btn btn-success" @onclick="BeginPenitentMissionCompleteAsync" disabled="@IsPenitentComplete">Mission Complete</button>
                     <button class="btn btn-danger" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!CanRollPunishment)">Mission Failed</button>
@@ -274,16 +270,6 @@ else
         return PersistPenitentAsync();
     }
 
-    private Task OnPenitentTimeRemainingChangedAsync(ChangeEventArgs args)
-    {
-        if (int.TryParse(args.Value?.ToString(), out var value))
-        {
-            _state.TimeRemaining = Math.Clamp(value, 0, 100);
-        }
-
-        return PersistPenitentAsync();
-    }
-
     private async Task TogglePenitentWarbondAsync(string code, bool isChecked, bool alwaysEnabled)
     {
         if (alwaysEnabled)
@@ -312,9 +298,7 @@ else
         ClampPenitentStars();
         if (_state.MissionCounter >= 22)
         {
-            RecordPenitentMissionTime();
             _state.MissionCounter = 23;
-            _state.TimeRemaining = 0;
             await PersistPenitentAsync();
             _statusMessage = "Challenge complete.";
             return;
@@ -362,8 +346,6 @@ else
         }
 
         _state.PendingRewardInternalNames.Clear();
-        RecordPenitentMissionTime();
-        _state.TimeRemaining = 0;
         _state.MissionCounter++;
         ClampPenitentStars();
         _showRewardModal = false;
@@ -381,8 +363,6 @@ else
         }
 
         _state.PendingRewardInternalNames.Clear();
-        RecordPenitentMissionTime();
-        _state.TimeRemaining = 0;
         _state.MissionCounter++;
         ClampPenitentStars();
         _showRewardModal = false;
@@ -591,7 +571,6 @@ else
             MissionCounter = GetPenitentDifficulty(difficulty).StartMission,
             SelectedStars = GetMaxStarsForMission(GetPenitentDifficulty(difficulty).StartMission),
             SelectedWarbondCodes = selectedWarbonds,
-            Weights = new WeightProfile()
         };
     }
 
@@ -715,57 +694,14 @@ else
         if (_state.MissionCounter == 7)
         {
             List<GameItem>? antiTankPool = pool.Where(item => item.Antitank).ToList();
+            
             if (antiTankPool.Count > 0)
             {
                 pool = antiTankPool;
             }
         }
 
-        List<int>? weights = GetCurrentPenitentWeights();
-        int total = weights.Sum();
-        int roll = Random.Shared.Next(1, 101);
-        if (total < 100 && roll > total)
-        {
-            return pool[Random.Shared.Next(pool.Count)];
-        }
-
-        int tierRoll = Random.Shared.Next(1, Math.Max(total, 1) + 1);
-        int running = 0;
-        string[]? tiers = new[] { "s", "a", "b", "c" };
-        for (int index = 0; index < tiers.Length; index++)
-        {
-            running += weights[index];
-            if (tierRoll <= running)
-            {
-                List<GameItem>? tierPool = pool.Where(item => string.Equals(item.Tier, tiers[index], StringComparison.OrdinalIgnoreCase)).ToList();
-                if (tierPool.Count > 0)
-                {
-                    return tierPool[Random.Shared.Next(tierPool.Count)];
-                }
-            }
-        }
-
         return pool[Random.Shared.Next(pool.Count)];
-    }
-
-    private List<int> GetCurrentPenitentWeights()
-    {
-        if (_state.MissionCounter <= 2)
-        {
-            return [0, 20, 50, 30];
-        }
-
-        if (_state.MissionCounter <= 7)
-        {
-            return [.. _state.Weights.Diff4];
-        }
-
-        if (_state.MissionCounter <= 13)
-        {
-            return [.. _state.Weights.Diff6];
-        }
-
-        return [.. _state.Weights.Diff8];
     }
 
     private string GetMissionText(int missionCounter)
@@ -810,14 +746,6 @@ else
         if (new[] { 2, 4, 6, 9, 12, 15, 18, 21 }.Contains(missionCounter)) return missionCounter - 1;
         if (new[] { 7, 10, 13, 16, 19, 22 }.Contains(missionCounter)) return missionCounter - 2;
         return missionCounter;
-    }
-
-    private void RecordPenitentMissionTime()
-    {
-        if (_state.MissionTimes.Count < _state.MissionCounter)
-        {
-            _state.MissionTimes.Add(_state.TimeRemaining);
-        }
     }
 
     private void ClampPenitentStars()

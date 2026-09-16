@@ -10,8 +10,7 @@
     "internalName": "p2peacemaker",
     "imageURL": "p2peacemaker.webp",
     "antitank": false,
-    "index": 0,
-    "tier": "c"
+    "index": 0
   },
   {
     "displayName": "Combat Hatchet",
@@ -24,8 +23,7 @@
     "internalName": "cqc5combathatchet",
     "imageURL": "cqc5combathatchet.webp",
     "antitank": false,
-    "index": 1,
-    "tier": "c"
+    "index": 1
   },
   {
     "displayName": "Saber",
@@ -38,8 +36,7 @@
     "internalName": "cqc2saber",
     "imageURL": "cqc2saber.webp",
     "antitank": false,
-    "index": 2,
-    "tier": "c"
+    "index": 2
   },
   {
     "displayName": "Machete",
@@ -52,8 +49,7 @@
     "internalName": "cqc42machete",
     "imageURL": "cqc42machete.webp",
     "antitank": false,
-    "index": 3,
-    "tier": "c"
+    "index": 3
   },
   {
     "displayName": "Stun Lance",
@@ -67,8 +63,7 @@
     "internalName": "cqc19stunlance",
     "imageURL": "cqc19stunlance.webp",
     "antitank": false,
-    "index": 4,
-    "tier": "c"
+    "index": 4
   },
   {
     "displayName": "Stun Baton",
@@ -82,8 +77,7 @@
     "internalName": "cqc30stunbaton",
     "imageURL": "cqc30stunbaton.webp",
     "antitank": false,
-    "index": 5,
-    "tier": "c"
+    "index": 5
   },
   {
     "displayName": "Redeemer",
@@ -96,8 +90,7 @@
     "internalName": "p19redeemer",
     "imageURL": "p19redeemer.webp",
     "antitank": false,
-    "index": 6,
-    "tier": "b"
+    "index": 6
   },
   {
     "displayName": "Verdict",
@@ -110,8 +103,7 @@
     "internalName": "p113verdict",
     "imageURL": "p113verdict.webp",
     "antitank": false,
-    "index": 7,
-    "tier": "b"
+    "index": 7
   },
   {
     "displayName": "Senator",
@@ -124,8 +116,7 @@
     "internalName": "p4senator",
     "imageURL": "p4senator.webp",
     "antitank": false,
-    "index": 8,
-    "tier": "a"
+    "index": 8
   },
   {
     "displayName": "P-92 Warrant",
@@ -139,8 +130,7 @@
     "internalName": "p92warrant",
     "imageURL": "p92warrant.webp",
     "antitank": false,
-    "index": 9,
-    "tier": "b"
+    "index": 9
   },
   {
     "displayName": "M6C/SOCOM",
@@ -154,21 +144,17 @@
     "internalName": "m6csocompistol",
     "imageURL": "m6csocompistol.webp",
     "antitank": false,
-    "index": 10,
-    "tier": "b"
+    "index": 10
   },
   {
     "displayName": "Stim Pistol",
     "category": "secondary",
-    "tags": [
-      "Special"
-    ],
+    "tags": "Special",
     "warbondCode": "warbond10",
     "internalName": "p11stimpistol",
     "imageURL": "p11stimpistol.webp",
     "antitank": false,
-    "index": 11,
-    "tier": "b"
+    "index": 11
   },
   {
     "displayName": "Loyalist",
@@ -181,21 +167,17 @@
     "internalName": "plas15loyalist",
     "imageURL": "plas15loyalist.webp",
     "antitank": false,
-    "index": 12,
-    "tier": "a"
+    "index": 12
   },
   {
     "displayName": "Bushwhacker",
     "category": "secondary",
-    "tags": [
-      "ap2"
-    ],
+    "tags": "ap2",
     "warbondCode": "warbond8",
     "internalName": "sg22bushwhacker",
     "imageURL": "sg22bushwhacker.webp",
     "antitank": false,
-    "index": 13,
-    "tier": "b"
+    "index": 13
   },
   {
     "displayName": "Grenade Pistol",
@@ -208,8 +190,7 @@
     "internalName": "gp31grenadepistol",
     "imageURL": "gp31grenadepistol.webp",
     "antitank": false,
-    "index": 14,
-    "tier": "a"
+    "index": 14
   },
   {
     "displayName": "Re-Educator",
@@ -222,8 +203,7 @@
     "internalName": "p35reeducator",
     "imageURL": "p35reeducator.webp",
     "antitank": false,
-    "index": 15,
-    "tier": "c"
+    "index": 15
   },
   {
     "displayName": "Dagger",
@@ -236,21 +216,17 @@
     "internalName": "las7dagger",
     "imageURL": "las7dagger.webp",
     "antitank": false,
-    "index": 16,
-    "tier": "c"
+    "index": 16
   },
   {
     "displayName": "Talon",
     "category": "secondary",
-    "tags": [
-      "ap3"
-    ],
+    "tags": "ap3",
     "warbondCode": "warbond14",
     "internalName": "las58talon",
     "imageURL": "las58talon.webp",
     "antitank": false,
-    "index": 17,
-    "tier": "a"
+    "index": 17
   },
   {
     "displayName": "Crisper",
@@ -263,8 +239,7 @@
     "internalName": "p72crisper",
     "imageURL": "p72crisper.webp",
     "antitank": false,
-    "index": 18,
-    "tier": "b"
+    "index": 18
   },
   {
     "displayName": "GP-31 Ultimatum",
@@ -277,8 +252,7 @@
     "internalName": "gp31ultimatum",
     "imageURL": "gp31ultimatum.webp",
     "antitank": true,
-    "index": 19,
-    "tier": "s"
+    "index": 19
   },
   {
     "displayName": "Veto",
@@ -291,8 +265,7 @@
     "internalName": "p69veto",
     "imageURL": "p69veto.webp",
     "antitank": false,
-    "index": 20,
-    "tier": "b"
+    "index": 20
   },
   {
     "displayName": "Entrenchment Tool",
@@ -305,8 +278,7 @@
     "internalName": "cqc73entrenchmenttool",
     "imageURL": "cqc73entrenchmenttool.webp",
     "antitank": false,
-    "index": 21,
-    "tier": "c"
+    "index": 21
   },
   {
     "displayName": "Missile Pistol",
@@ -320,8 +292,7 @@
     "internalName": "p33missilepistol",
     "imageURL": "p33missilepistol.webp",
     "antitank": true,
-    "index": 22,
-    "tier": "a"
+    "index": 22
   },
   {
     "displayName": "Bolt Pistol",
@@ -335,7 +306,6 @@
     "internalName": "boltpistol",
     "imageURL": "boltpistol.webp",
     "antitank": false,
-    "index": 23,
-    "tier": "a"
+    "index": 23
   }
 ]
