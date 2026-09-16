@@ -7,7 +7,6 @@ public sealed class PenitentState
     public int SelectedStars { get; set; } = 3;
     public int TimeRemaining { get; set; }
     public int MissionsFailed { get; set; }
-    public string? SpecialistId { get; set; }
     public List<string> SelectedWarbondCodes { get; set; } = [];
     public List<string> AcquiredItemInternalNames { get; set; } = [];
     public List<string> BannedItemInternalNames { get; set; } = [];
@@ -15,5 +14,4 @@ public sealed class PenitentState
     public List<string> PendingPunishmentInternalNames { get; set; } = [];
     public List<int> MissionTimes { get; set; } = [];
     public WeightProfile Weights { get; set; } = new();
-    public bool IsSpecialistSelected => !string.IsNullOrWhiteSpace(SpecialistId);
 }

@@ -15,7 +15,6 @@ public sealed class CatalogService(HttpClient httpClient)
     public IReadOnlyList<GameItem> Stratagems { get; private set; } = [];
     public IReadOnlyList<GameItem> ArmorPassives { get; private set; } = [];
     public IReadOnlyList<PenitentDifficultyOption> PenitentDifficulties { get; private set; } = [];
-    public IReadOnlyList<PenitentSpecialist> PenitentSpecialists { get; private set; } = [];
     public PenitentStarterLoadout PenitentStarterLoadout { get; private set; } = new();
 
     public IReadOnlyList<GameItem> AllItems => [.. Stratagems, .. Primaries, .. Secondaries, .. Throwables, .. ArmorPassives, .. Boosters];
@@ -34,7 +33,6 @@ public sealed class CatalogService(HttpClient httpClient)
         Boosters = await LoadItemsAsync("data/boosters.json", ItemKind.Booster);
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
-        PenitentSpecialists = await httpClient.GetFromJsonAsync<List<PenitentSpecialist>>("data/penitent-specialists.json") ?? [];
         PenitentStarterLoadout = await httpClient.GetFromJsonAsync<PenitentStarterLoadout>("data/penitent-starter-loadout.json") ?? new();
         PenitentDifficulties = await httpClient.GetFromJsonAsync<List<PenitentDifficultyOption>>("data/penitent-difficulties.json") ?? [];
         _loaded = true;

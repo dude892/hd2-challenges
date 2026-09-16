@@ -43,41 +43,6 @@ else
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-light">Specialist</label>
-                    <select class="form-select bg-dark text-light border-secondary" value="@GetSpecialistValue()" disabled="@(!CanEditPenitentSetup)" @onchange="OnPenitentSpecialistChangedAsync">
-                        <option value="">Default</option>
-                        @foreach (var specialist in FilteredPenitentSpecialists)
-                        {
-                            <option value="@specialist.Id">@specialist.DisplayName</option>
-                        }
-                    </select>
-                </div>
-                @if (SelectedPenitentSpecialist is not null)
-                {
-                    <div class="card bg-dark border-secondary mb-3">
-                        <img class="card-img-top specialist-image" src="@($"images/pcSpecialists/{SelectedPenitentSpecialist.ImageURL}")" alt="@SelectedPenitentSpecialist.DisplayName" />
-                        <div class="card-body">
-                            <h5 class="text-light">@SelectedPenitentSpecialist.DisplayName</h5>
-                            <ul class="compact-list text-secondary">
-                                @foreach (var item in SelectedPenitentSpecialist.StarterItems)
-                                {
-                                    <li>@item</li>
-                                }
-                            </ul>
-                            @if (SelectedPenitentSpecialist.Traits.Count > 0)
-                            {
-                                <hr />
-                                <ul class="compact-list text-secondary">
-                                    @foreach (var trait in SelectedPenitentSpecialist.Traits)
-                                    {
-                                        <li>@trait</li>
-                                    }
-                                </ul>
-                            }
-                        </div>
-                    </div>
-                }
-                <div class="mb-3">
                     <label class="form-label text-light">Mission stars</label>
                     <select class="form-select bg-dark text-light border-secondary" value="@_state.SelectedStars" @onchange="OnPenitentStarsChangedAsync">
                         @foreach (var star in Enumerable.Range(1, GetMaxStarsForMission(_state.MissionCounter)))
@@ -119,9 +84,6 @@ else
                 </div>
                 <div class="col-md-3">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Difficulty</small><div class="fs-5">@CurrentPenitentDifficulty.DisplayName</div></div></div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Specialist</small><div class="fs-6">@(SelectedPenitentSpecialist?.DisplayName ?? "Default")</div></div></div>
                 </div>
                 <div class="col-md-3">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Failures</small><div class="fs-5">@_state.MissionsFailed</div></div></div>
@@ -283,16 +245,8 @@ else
     private bool CanEditPenitentSetup => _state.MissionCounter == CurrentPenitentDifficulty.StartMission;
     private bool IsPenitentComplete => _state.MissionCounter >= 23;
     private bool CanRollPunishment => AcquiredItems.Count > 0 && !IsPenitentComplete;
-
-    private IEnumerable<PenitentSpecialist> FilteredPenitentSpecialists =>
-        Catalog.PenitentSpecialists
-            .Where(specialist => specialist.Warbonds.All(code => _state.SelectedWarbondCodes.Contains(code)));
-
-    private PenitentSpecialist? SelectedPenitentSpecialist =>
-        Catalog.PenitentSpecialists.FirstOrDefault(specialist => specialist.Id == _state.SpecialistId);
-
     private List<GameItem> StarterItems =>
-        GetPenitentStarterItems(_state.Difficulty, _state.SpecialistId).AllItems
+        GetPenitentStarterItems(_state.Difficulty).AllItems
             .DistinctBy(item => item.InternalName)
             .ToList();
 
@@ -305,16 +259,9 @@ else
     {
         if (args.Value is string difficulty)
         {
-            await ReplacePenitentStateAsync(CreatePenitentState(difficulty, _state.SelectedWarbondCodes, _state.SpecialistId));
+            await ReplacePenitentStateAsync(CreatePenitentState(difficulty, _state.SelectedWarbondCodes));
             _statusMessage = $"Started a new { GetPenitentDifficulty(difficulty).DisplayName } run.";
         }
-    }
-
-    private async Task OnPenitentSpecialistChangedAsync(ChangeEventArgs args)
-    {
-        string? specialistId = args.Value?.ToString();
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes, specialistId));
-        _statusMessage = string.IsNullOrWhiteSpace(specialistId) ? "Specialist cleared." : $"Applied {SelectedPenitentSpecialist?.DisplayName}.";
     }
 
     private Task OnPenitentStarsChangedAsync(ChangeEventArgs args)
@@ -356,19 +303,8 @@ else
             _state.SelectedWarbondCodes.Remove(code);
         }
 
-        if (SelectedPenitentSpecialist is not null && SelectedPenitentSpecialist.Warbonds.Any(codeToCheck => !_state.SelectedWarbondCodes.Contains(codeToCheck)))
-        {
-            _state.SpecialistId = null;
-        }
-
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes, _state.SpecialistId));
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes));
         _statusMessage = "Warbond filters updated.";
-    }
-
-    private async Task ResetPenitentWeightsAsync()
-    {
-        _state.Weights = new WeightProfile();
-        await PersistPenitentAsync();
     }
 
     private async Task BeginPenitentMissionCompleteAsync()
@@ -467,7 +403,7 @@ else
 
     private async Task RestartPenitentRunAsync()
     {
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes, _state.SpecialistId));
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes));
         _statusMessage = "Run restarted.";
     }
 
@@ -572,7 +508,6 @@ else
 
     private async Task ExportPenitentSummaryAsync()
     {
-        string? specialistName = SelectedPenitentSpecialist?.DisplayName ?? "Default";
         int difficultyModifier = CurrentPenitentDifficulty.ScoreModifier;
         int totalTimeRemaining = _state.MissionTimes.Sum();
         int score = difficultyModifier + totalTimeRemaining - (_state.MissionsFailed * 50);
@@ -585,8 +520,6 @@ else
         builder.AppendLine($"Difficulty Modifier: {difficultyModifier}");
         builder.AppendLine($"Missions Failed: {_state.MissionsFailed}");
         builder.AppendLine($"Final Score: {score}");
-        builder.AppendLine();
-        builder.AppendLine($"Specialist: {specialistName}");
         builder.AppendLine();
 
         foreach (string kind in new[] { "Stratagem", "Primary", "Booster", "Secondary", "Throwable", "Armor Passive" })
@@ -644,7 +577,7 @@ else
         ClampPenitentStars();
     }
 
-    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<string>? warbondCodes = null, string? specialistId = null)
+    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<string>? warbondCodes = null)
     {
         List<string>? selectedWarbonds = warbondCodes?.Distinct().ToList() ?? Catalog.Warbonds.Select(warbond => warbond.WarbondCode).ToList();
         if (!selectedWarbonds.Contains("warbond3"))
@@ -658,12 +591,11 @@ else
             MissionCounter = GetPenitentDifficulty(difficulty).StartMission,
             SelectedStars = GetMaxStarsForMission(GetPenitentDifficulty(difficulty).StartMission),
             SelectedWarbondCodes = selectedWarbonds,
-            SpecialistId = specialistId,
             Weights = new WeightProfile()
         };
     }
 
-    private PenitentStarterItems GetPenitentStarterItems(string difficulty, string? specialistId)
+    private PenitentStarterItems GetPenitentStarterItems(string difficulty)
     {
         PenitentStarterItems starter = Catalog.ResolveLoadout(Catalog.PenitentStarterLoadout);
         PenitentDifficultyOption difficultyOption = GetPenitentDifficulty(difficulty);
@@ -671,22 +603,7 @@ else
         ApplyDifficultyOverrides(starter, difficultyOption.LoadoutOverrides);
         ApplyDifficultyAdditions(starter, difficultyOption.LoadoutAdditions);
 
-        if (specialistId is not null && SelectedSpecialistForId(specialistId) is PenitentSpecialist specialist && specialist.StarterLoadout is not null)
-        {
-            ApplySpecialistLoadout(starter, specialist.StarterLoadout);
-        }
-
         return starter;
-    }
-
-    private void ApplySpecialistLoadout(PenitentStarterItems starter, PenitentStarterLoadout specialistLoadout)
-    {
-        if (specialistLoadout.Stratagems.Count > 0) starter.Stratagems.AddRange(Catalog.GetItems(specialistLoadout.Stratagems));
-        if (specialistLoadout.Primaries.Count > 0) starter.Primaries = Catalog.GetItems(specialistLoadout.Primaries).ToList();
-        if (specialistLoadout.Secondaries.Count > 0) starter.Secondaries = Catalog.GetItems(specialistLoadout.Secondaries).ToList();
-        if (specialistLoadout.Throwables.Count > 0) starter.Throwables = Catalog.GetItems(specialistLoadout.Throwables).ToList();
-        if (specialistLoadout.ArmorPassives.Count > 0) starter.ArmorPassives = Catalog.GetItems(specialistLoadout.ArmorPassives).ToList();
-        if (specialistLoadout.Boosters.Count > 0) starter.Boosters = Catalog.GetItems(specialistLoadout.Boosters).ToList();
     }
 
     private void ApplyDifficultyOverrides(PenitentStarterItems starter, PenitentStarterLoadout? overrides)
@@ -713,7 +630,7 @@ else
 
     private List<List<GameItem>> GetPenitentRewardPools()
     {
-        PenitentStarterItems? starter = GetPenitentStarterItems(_state.Difficulty, _state.SpecialistId);
+        PenitentStarterItems? starter = GetPenitentStarterItems(_state.Difficulty);
         HashSet<string> starterInternalNames = starter.AllInternalNames;
         HashSet<string>? banned = _state.BannedItemInternalNames.ToHashSet();
         HashSet<string>? acquired = _state.AcquiredItemInternalNames.ToHashSet();
@@ -734,59 +651,6 @@ else
         List<GameItem>? armors = Filter(Catalog.ArmorPassives);
         List<GameItem>? boosters = Filter(Catalog.Boosters);
 
-        if (_state.SpecialistId is string specialistId && SelectedSpecialistForId(specialistId) is PenitentSpecialist specialist)
-        {
-            switch (specialist.Id)
-            {
-                case "preacher":
-                    strats = strats.Where(item => !item.Tags.Contains("Weapon")).ToList();
-                    break;
-                case "hellpod-enthusiast":
-                    strats = strats.Where(item => item.Category is not "Offensive").ToList();
-                    break;
-                case "k9-handler":
-                    strats = [];
-                    break;
-                case "eagle-ground-coordinator":
-                    strats = strats.Where(item => item.Tags.Contains("Eagle") && item.DisplayName != "Eagle Strafing Run").ToList();
-                    break;
-                case "orbital-bombardment-ground-coordinator":
-                    strats = strats.Where(item => item.Tags.Contains("Orbital") && item.DisplayName != "Orbital Precision Strike").ToList();
-                    break;
-                case "minesweeper":
-                    strats = strats.Where(item => new[] { "Anti-Tank Mines", "Incendiary Mines", "Gas Mines" }.Contains(item.DisplayName)).ToList();
-                    break;
-                case "combat-engineer":
-                    strats = strats.Where(item => item.Tags.Contains("Sentry") && item.DisplayName != "Machine Gun Sentry").ToList();
-                    break;
-                case "pilot":
-                    strats = strats.Where(item => item.Tags.Contains("Eagle") || (item.Tags.Contains("Vehicle") && item.DisplayName != "Breakthrough Exosuit")).ToList();
-                    break;
-                case "tank-hunter":
-                    strats = strats.Where(item => item.Antitank && item.DisplayName != "Anti-Tank Emplacement").ToList();
-                    break;
-                case "expendable":
-                    strats = strats.Where(item => item.Tags.Contains("Expendable") && item.DisplayName != "Bullet Storm").ToList();
-                    break;
-                case "athlete":
-                    primaries = primaries.Where(item => item.Tags.Contains("onehanded") && item.DisplayName != "Defender").ToList();
-                    break;
-            }
-
-            List<List<GameItem>>? pools = new List<List<GameItem>> { strats };
-            
-            if (specialist.StarterLoadout is not null)
-            {
-                if (!specialist.StarterLoadout.ArmorPassives.Any()) pools.Add(armors);
-                if (!specialist.StarterLoadout.Boosters.Any()) pools.Add(boosters);
-                if (!specialist.StarterLoadout.Primaries.Any() || specialist.Id == "athlete") pools.Add(primaries);
-                if (!specialist.StarterLoadout.Secondaries.Any()) pools.Add(secondaries);
-                if (!specialist.StarterLoadout.Throwables.Any()) pools.Add(throwables);
-            }
-
-            return pools.Where(pool => pool.Count > 0).ToList();
-        }
-
         return new List<List<GameItem>> { strats, primaries, secondaries, throwables, armors, boosters }
             .Where(pool => pool.Count > 0)
             .ToList();
@@ -800,11 +664,6 @@ else
             rewardQuantity--;
         }
 
-        if (_state.IsSpecialistSelected)
-        {
-            rewardQuantity--;
-        }
-
         rewardQuantity = Math.Max(1, rewardQuantity);
         List<List<GameItem>>? pools = GetPenitentRewardPools();
         if (pools.Count == 0)
@@ -812,7 +671,7 @@ else
             return new List<GameItem>();
         }
 
-        if (_state.MissionCounter == 7 && _state.SpecialistId is string specialistId && !_antiTankExclusions.Contains(specialistId))
+        if (_state.MissionCounter == 7)
         {
             List<GameItem>? antiTankPool = pools.First().Where(item => item.Antitank).ToList();
             if (antiTankPool.Count > 0)
@@ -826,7 +685,7 @@ else
         if (_state.MissionCounter == 3 && CurrentPenitentDifficulty.IsSuper) forcedIndices.Add(0);
         if (_state.MissionCounter == 11 && _state.Difficulty == "quick") forcedIndices.Add(0);
 
-        int maxCategories = _state.IsSpecialistSelected ? 3 : 4;
+        int maxCategories = 4;
         maxCategories = Math.Min(maxCategories, pools.Count);
         while (forcedIndices.Count < maxCategories)
         {
@@ -966,20 +825,9 @@ else
         _state.SelectedStars = Math.Clamp(_state.SelectedStars, 1, GetMaxStarsForMission(_state.MissionCounter));
     }
 
-    private string GetSpecialistValue() => _state.SpecialistId ?? string.Empty;
-
-    private List<int> GetWeights(string key) =>
-        key switch
-        {
-            "Diff4" => _state.Weights.Diff4,
-            "Diff6" => _state.Weights.Diff6,
-            _ => _state.Weights.Diff8
-        };
-
     private string BuildPenitentSlotName(PenitentState state)
     {
-        var specialistName = state.SpecialistId is string specialistId && SelectedSpecialistForId(specialistId) is PenitentSpecialist specialist ? $" | {specialist.DisplayName}" : string.Empty;
-        return $"{state.Difficulty.ToUpperInvariant()} | {GetMissionText(state.MissionCounter)} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}{specialistName}";
+        return $"{state.Difficulty.ToUpperInvariant()} | {GetMissionText(state.MissionCounter)} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
     }
 
     private static T Clone<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, JsonOptions), JsonOptions)!;
@@ -995,8 +843,4 @@ else
     }
 
     private PenitentDifficultyOption GetPenitentDifficulty(string id) => Catalog.PenitentDifficulties.First(option => option.Id == id);
-
-    private PenitentSpecialist? SelectedSpecialistForId(string id) => Catalog.PenitentSpecialists.FirstOrDefault(specialist => specialist.Id == id);
-
-    private static readonly HashSet<string> _antiTankExclusions = ["k9-handler", "eagle-ground-coordinator", "orbital-bombardment-ground-coordinator", "minesweeper", "combat-engineer", "pilot", "tank-hunter", "expendable"];
 }
