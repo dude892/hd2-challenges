@@ -14,11 +14,11 @@ public sealed class CatalogService(HttpClient httpClient)
     public IReadOnlyList<GameItem> Boosters { get; private set; } = [];
     public IReadOnlyList<GameItem> Stratagems { get; private set; } = [];
     public IReadOnlyList<GameItem> ArmorPassives { get; private set; } = [];
+    public IReadOnlyList<PenitentDifficultyOption> PenitentDifficulties { get; private set; } = [];
     public IReadOnlyList<PenitentSpecialist> PenitentSpecialists { get; private set; } = [];
+    public PenitentStarterLoadout PenitentStarterLoadout { get; private set; } = new();
 
-
-    public IReadOnlyList<GameItem> AllItems =>
-        [.. Stratagems, .. Primaries, .. Secondaries, .. Throwables, .. ArmorPassives, .. Boosters];
+    public IReadOnlyList<GameItem> AllItems => [.. Stratagems, .. Primaries, .. Secondaries, .. Throwables, .. ArmorPassives, .. Boosters];
 
     public async Task EnsureLoadedAsync()
     {
@@ -35,17 +35,27 @@ public sealed class CatalogService(HttpClient httpClient)
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
         PenitentSpecialists = await httpClient.GetFromJsonAsync<List<PenitentSpecialist>>("data/penitent-specialists.json") ?? [];
+        PenitentStarterLoadout = await httpClient.GetFromJsonAsync<PenitentStarterLoadout>("data/penitent-starter-loadout.json") ?? new();
+        PenitentDifficulties = await httpClient.GetFromJsonAsync<List<PenitentDifficultyOption>>("data/penitent-difficulties.json") ?? [];
         _loaded = true;
     }
 
-    public GameItem? GetItem(string internalName) =>
-        AllItems.FirstOrDefault(item => string.Equals(item.InternalName, internalName, StringComparison.Ordinal));
+    public GameItem? GetItem(string identifier) =>
+        AllItems.FirstOrDefault(item =>
+            string.Equals(item.InternalName, identifier, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(item.DisplayName, identifier, StringComparison.OrdinalIgnoreCase));
 
-    public IReadOnlyList<GameItem> GetItems(IEnumerable<string> internalNames) =>
-        internalNames
-            .Select(GetItem)
-            .OfType<GameItem>()
-            .ToList();
+    public IReadOnlyList<GameItem> GetItems(IEnumerable<string> identifiers) => identifiers.Select(GetItem).OfType<GameItem>().ToList();
+
+    public PenitentStarterItems ResolveLoadout(PenitentStarterLoadout loadout) => new()
+    {
+        Stratagems = GetItems(loadout.Stratagems).ToList(),
+        Primaries = GetItems(loadout.Primaries).ToList(),
+        Secondaries = GetItems(loadout.Secondaries).ToList(),
+        Throwables = GetItems(loadout.Throwables).ToList(),
+        ArmorPassives = GetItems(loadout.ArmorPassives).ToList(),
+        Boosters = GetItems(loadout.Boosters).ToList()
+    };
 
     private async Task<IReadOnlyList<GameItem>> LoadItemsAsync(string path, ItemKind kind)
     {

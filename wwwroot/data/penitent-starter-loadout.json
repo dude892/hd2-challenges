@@ -1,0 +1,32 @@
+{
+  "stratagems": [
+    "One True Flag",
+    "Defoliation Tool",
+    "Orbital EMS Strike",
+    "Orbital Smoke Strike",
+    "Eagle Smoke Strike",
+    "EMS Mortar Sentry",
+    "Shield Generator Relay"
+  ],
+  "primaries": [
+    "Constitution"
+  ],
+  "secondaries": [
+    "Stun Lance",
+    "Stun Baton",
+    "Combat Hatchet",
+    "Saber",
+    "Machete",
+    "Entrenchment Tool"
+  ],
+  "throwables": [
+    "G-3 Smoke",
+    "K-2 Throwing Knife",
+    "G-12 High Explosive",
+    "G-89 Smokescreen"
+  ],
+  "armorPassives": [
+    "Extra Padding"
+  ],
+  "boosters": []
+}

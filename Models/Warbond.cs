@@ -1,8 +1,8 @@
 namespace Hd2Challenges.Models;
 
 public sealed record Warbond(
-    string Code,
-    string Name,
+    string WarbondCode,
+    string DisplayName,
     bool AlwaysEnabled = false
 );
 

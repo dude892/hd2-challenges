@@ -3,9 +3,8 @@
     "displayName": "Sterilizer",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "gas",
-      "ap4"
+      "Weapon",
+      "Gas"
     ],
     "warbondCode": "warbond10",
     "internalName": "tx41sterilizer",
@@ -18,9 +17,8 @@
     "displayName": "Flamethrower",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "fire",
-      "ap4"
+      "Weapon",
+      "Fire"
     ],
     "warbondCode": "none",
     "internalName": "flam40flamethrower",
@@ -33,9 +31,8 @@
     "displayName": "Speargun",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "gas",
-      "ap4"
+      "Weapon",
+      "Gas"
     ],
     "warbondCode": "warbond20",
     "internalName": "speargun",
@@ -48,9 +45,8 @@
     "displayName": "Laser Cannon",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "laser",
-      "ap4"
+      "Weapon",
+      "Laser"
     ],
     "warbondCode": "none",
     "internalName": "las98lasercannon",
@@ -63,9 +59,8 @@
     "displayName": "Stalwart",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "bullets",
-      "ap2"
+      "Weapon",
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "m105stalwart",
@@ -78,9 +73,8 @@
     "displayName": "Machine Gun",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "bullets",
-      "ap3"
+      "Weapon",
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "mg43machinegun",
@@ -93,9 +87,8 @@
     "displayName": "Heavy Machine Gun",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "bullets",
-      "ap4"
+      "Weapon",
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "mg206heavymachinegun",
@@ -108,8 +101,8 @@
     "displayName": "Arc Thrower",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "arc"
+      "Weapon",
+      "Arc"
     ],
     "warbondCode": "none",
     "internalName": "arc3arcthrower",
@@ -122,9 +115,8 @@
     "displayName": "Grenade Launcher",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "explosive",
-      "ap3"
+      "Weapon",
+      "Explosive"
     ],
     "warbondCode": "none",
     "internalName": "gl21grenadelauncher",
@@ -137,8 +129,8 @@
     "displayName": "De-Escalator",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "arc"
+      "Weapon",
+      "Arc"
     ],
     "warbondCode": "warbond16",
     "internalName": "gl52deescalator",
@@ -151,9 +143,8 @@
     "displayName": "Anti-Material Rifle",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "bullets",
-      "ap4"
+      "Weapon",
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "apw1antimaterielrifle",
@@ -166,8 +157,8 @@
     "displayName": "Railgun",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "at"
+      "Weapon",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "rs422railgun",
@@ -180,8 +171,8 @@
     "displayName": "Quasar Cannon",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "at"
+      "Weapon",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "las99quasarcannon",
@@ -194,9 +185,9 @@
     "displayName": "Epoch",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "plasma",
-      "at"
+      "Weapon",
+      "Plasma",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond17",
     "internalName": "epoch",
@@ -209,9 +200,9 @@
     "displayName": "Expendable Anti-Tank",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "expendable",
-      "at"
+      "Weapon",
+      "Expendable",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "eat17expendableantitank",
@@ -224,9 +215,9 @@
     "displayName": "Commando",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "expendable",
-      "at"
+      "Weapon",
+      "Expendable",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "mls4xcommandorocketlauncher",
@@ -239,9 +230,9 @@
     "displayName": "Expendable Napalm",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "expendable",
-      "fire"
+      "Weapon",
+      "Expendable",
+      "Fire"
     ],
     "warbondCode": "warbond20",
     "internalName": "eat700expendablenapalm",
@@ -254,9 +245,9 @@
     "displayName": "Solo Silo",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "expendable",
-      "at"
+      "Weapon",
+      "Expendable",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond20",
     "internalName": "solosilo",
@@ -269,8 +260,8 @@
     "displayName": "One True Flag",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "melee"
+      "Weapon",
+      "Melee"
     ],
     "warbondCode": "warbond15",
     "internalName": "onetrueflag",
@@ -283,8 +274,8 @@
     "displayName": "Defoliation Tool",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "melee"
+      "Weapon",
+      "Melee"
     ],
     "warbondCode": "warbond21",
     "internalName": "defoliationtool",
@@ -297,10 +288,9 @@
     "displayName": "Maxigun",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "bullets",
-      "ap3"
+      "Weapon",
+      "Backpack",
+      "Bullet"
     ],
     "warbondCode": "warbond21",
     "internalName": "maxigun",
@@ -313,9 +303,9 @@
     "displayName": "Autocannon",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "explosive"
+      "Weapon",
+      "Backpack",
+      "Explosive"
     ],
     "warbondCode": "none",
     "internalName": "ac8autocannon",
@@ -328,9 +318,9 @@
     "displayName": "W.A.S.P. Launcher",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "explosive"
+      "Weapon",
+      "Backpack",
+      "Explosive"
     ],
     "warbondCode": "none",
     "internalName": "wasplauncher",
@@ -343,9 +333,9 @@
     "displayName": "Airburst Rocket Launcher",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "explosive"
+      "Weapon",
+      "Backpack",
+      "Explosive"
     ],
     "warbondCode": "none",
     "internalName": "rl77airburstrocketlauncher",
@@ -358,10 +348,10 @@
     "displayName": "Recoilless Rifle",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "explosive",
-      "at"
+      "Weapon",
+      "Backpack",
+      "Explosive",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "gr8recoillessrifle",
@@ -374,10 +364,10 @@
     "displayName": "Spear",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "explosive",
-      "at"
+      "Weapon",
+      "Backpack",
+      "Explosive",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "faf14spear",
@@ -390,10 +380,10 @@
     "displayName": "C4 Pack",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "explosive",
-      "at"
+      "Weapon",
+      "Backpack",
+      "Explosive",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond22",
     "internalName": "c4pack",
@@ -406,8 +396,8 @@
     "displayName": "Guard Dog Flames",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "fire"
+      "Backpack",
+      "Fire"
     ],
     "warbondCode": "warbond21",
     "internalName": "guarddogflames",
@@ -420,8 +410,8 @@
     "displayName": "Guard Dog Breath",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "gas"
+      "Backpack",
+      "Gas"
     ],
     "warbondCode": "warbond10",
     "internalName": "axtx13guarddogdogbreath",
@@ -434,9 +424,8 @@
     "displayName": "Guard Dog Laser",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "laser",
-      "ap2"
+      "Backpack",
+      "Laser"
     ],
     "warbondCode": "none",
     "internalName": "axlas5guarddogrover",
@@ -449,9 +438,8 @@
     "displayName": "Guard Dog Bullets",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "bullets",
-      "ap3"
+      "Backpack",
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "ad334guarddog",
@@ -464,8 +452,8 @@
     "displayName": "Guard Dog Arc",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "arc"
+      "Backpack",
+      "Arc"
     ],
     "warbondCode": "warbond16",
     "internalName": "guarddogarc",
@@ -478,8 +466,8 @@
     "displayName": "Jump Pack",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "movement"
+      "Backpack",
+      "Movement"
     ],
     "warbondCode": "none",
     "internalName": "lift850jumppack",
@@ -492,8 +480,8 @@
     "displayName": "Hover Pack",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "movement"
+      "Backpack",
+      "Movement"
     ],
     "warbondCode": "warbond14",
     "internalName": "lift860hoverpack",
@@ -506,8 +494,8 @@
     "displayName": "Warp Pack",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "movement"
+      "Backpack",
+      "Movement"
     ],
     "warbondCode": "warbond17",
     "internalName": "warppack",
@@ -520,7 +508,7 @@
     "displayName": "Supply Pack",
     "category": "Supply",
     "tags": [
-      "Backpacks"
+      "Backpack"
     ],
     "warbondCode": "none",
     "internalName": "b1supplypack",
@@ -533,7 +521,7 @@
     "displayName": "Directional Shield",
     "category": "Supply",
     "tags": [
-      "Backpacks"
+      "Backpack"
     ],
     "warbondCode": "warbond12",
     "internalName": "sh51directionalshield",
@@ -546,7 +534,7 @@
     "displayName": "Shield Generator Pack",
     "category": "Supply",
     "tags": [
-      "Backpacks"
+      "Backpack"
     ],
     "warbondCode": "none",
     "internalName": "sh20shieldgeneratorpack",
@@ -559,7 +547,7 @@
     "displayName": "Ballistic Shield",
     "category": "Supply",
     "tags": [
-      "Backpacks"
+      "Backpack"
     ],
     "warbondCode": "none",
     "internalName": "sh20ballisticshieldbackpack",
@@ -572,9 +560,9 @@
     "displayName": "Portable Hellbomb",
     "category": "Supply",
     "tags": [
-      "Backpacks",
-      "at",
-      "explosive"
+      "Backpack",
+      "Anti-Tank",
+      "Explosive"
     ],
     "warbondCode": "warbond13",
     "internalName": "portablehellbomb",
@@ -587,9 +575,8 @@
     "displayName": "Fast Recon Vehicle",
     "category": "Supply",
     "tags": [
-      "Vehicles",
-      "movement",
-      "frv"
+      "Vehicle",
+      "Movement"
     ],
     "warbondCode": "none",
     "internalName": "fastreconvehicle",
@@ -602,10 +589,10 @@
     "displayName": "Patriot Exosuit",
     "category": "Supply",
     "tags": [
-      "Vehicles",
-      "at",
-      "exosuit",
-      "expendable"
+      "Vehicle",
+      "Anti-Tank",
+      "Exosuit",
+      "Expendable"
     ],
     "warbondCode": "none",
     "internalName": "exo45patriotexosuit",
@@ -618,10 +605,10 @@
     "displayName": "Emancipator Exosuit",
     "category": "Supply",
     "tags": [
-      "Vehicles",
-      "at",
-      "exosuit",
-      "expendable"
+      "Vehicle",
+      "Anti-Tank",
+      "Exosuit",
+      "Expendable"
     ],
     "warbondCode": "none",
     "internalName": "exo49emancipatorexosuit",
@@ -632,7 +619,7 @@
   },
   {
     "displayName": "Eagle Strafing Run",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle"
     ],
@@ -645,7 +632,7 @@
   },
   {
     "displayName": "Eagle Airstrike",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle"
     ],
@@ -658,7 +645,7 @@
   },
   {
     "displayName": "Eagle Cluster Bomb",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle"
     ],
@@ -671,10 +658,10 @@
   },
   {
     "displayName": "Eagle Napalm Strike",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle",
-      "fire"
+      "Fire"
     ],
     "warbondCode": "none",
     "internalName": "eaglenapalmstrike",
@@ -685,10 +672,10 @@
   },
   {
     "displayName": "Eagle Smoke Strike",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle",
-      "smoke"
+      "Smoke"
     ],
     "warbondCode": "none",
     "internalName": "eaglesmokestrike",
@@ -699,10 +686,10 @@
   },
   {
     "displayName": "Eagle 110mm Rocket Pods",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle",
-      "at"
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "eagle110mmrocketpods",
@@ -713,10 +700,10 @@
   },
   {
     "displayName": "Eagle 500kg Bomb",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle",
-      "at"
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "eagle500kgbomb",
@@ -727,10 +714,10 @@
   },
   {
     "displayName": "Orbital Precision Strike",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "at"
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "orbitalprecisionstrike",
@@ -741,10 +728,10 @@
   },
   {
     "displayName": "Orbital Gas Strike",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "gas"
+      "Gas"
     ],
     "warbondCode": "none",
     "internalName": "orbitalgasstrike",
@@ -755,10 +742,10 @@
   },
   {
     "displayName": "Orbital EMS Strike",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "stun"
+      "Stun"
     ],
     "warbondCode": "none",
     "internalName": "orbitalemsstrike",
@@ -769,10 +756,10 @@
   },
   {
     "displayName": "Orbital Smoke Strike",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "smoke"
+      "Smoke"
     ],
     "warbondCode": "none",
     "internalName": "orbitalsmokestrike",
@@ -783,7 +770,7 @@
   },
   {
     "displayName": "Orbital Airburst Strike",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital"
     ],
@@ -796,10 +783,10 @@
   },
   {
     "displayName": "Orbital Railcannon Strike",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "at"
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "orbitalrailcannonstrike",
@@ -810,11 +797,11 @@
   },
   {
     "displayName": "Orbital Laser",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "laser",
-      "at"
+      "Laser",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "orbitallaser",
@@ -825,10 +812,10 @@
   },
   {
     "displayName": "Orbital Gatling Barrage",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "bullets"
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "orbitalgatlingbarrage",
@@ -839,7 +826,7 @@
   },
   {
     "displayName": "Orbital 120mm Barrage",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital"
     ],
@@ -852,7 +839,7 @@
   },
   {
     "displayName": "Orbital 380mm Barrage",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital"
     ],
@@ -865,7 +852,7 @@
   },
   {
     "displayName": "Orbital Walking Barrage",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital"
     ],
@@ -878,10 +865,10 @@
   },
   {
     "displayName": "Orbital Napalm Barrage",
-    "category": "Orbital",
+    "category": "Offensive",
     "tags": [
       "Orbital",
-      "fire"
+      "Fire"
     ],
     "warbondCode": "none",
     "internalName": "orbitalnapalmbarrage",
@@ -892,10 +879,10 @@
   },
   {
     "displayName": "Tesla Tower",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "arc"
+      "Arc"
     ],
     "warbondCode": "none",
     "internalName": "teslatower",
@@ -906,7 +893,7 @@
   },
   {
     "displayName": "Mortar Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry"
     ],
@@ -919,10 +906,10 @@
   },
   {
     "displayName": "EMS Mortar Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "stun"
+      "Stun"
     ],
     "warbondCode": "none",
     "internalName": "emsmortarsentry",
@@ -933,11 +920,10 @@
   },
   {
     "displayName": "Machine Gun Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "bullets",
-      "ap3"
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "machinegunsentry",
@@ -948,11 +934,10 @@
   },
   {
     "displayName": "Gatling Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "bullets",
-      "ap3"
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "gatlingsentry",
@@ -963,10 +948,10 @@
   },
   {
     "displayName": "Flame Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "fire"
+      "Fire"
     ],
     "warbondCode": "warbond12",
     "internalName": "aflam40flamesentry",
@@ -977,10 +962,10 @@
   },
   {
     "displayName": "Laser Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "laser"
+      "Laser"
     ],
     "warbondCode": "warbond17",
     "internalName": "lasersentry",
@@ -991,11 +976,11 @@
   },
   {
     "displayName": "Autocannon Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "explosive",
-      "at"
+      "Explosive",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "autocannonsentry",
@@ -1006,11 +991,11 @@
   },
   {
     "displayName": "Rocket Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "explosive",
-      "at"
+      "Explosive",
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "rocketsentry",
@@ -1021,7 +1006,7 @@
   },
   {
     "displayName": "Shield Generator Relay",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement"
     ],
@@ -1034,12 +1019,10 @@
   },
   {
     "displayName": "HMG Emplacement",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement",
-      "bullets",
-      null,
-      "ap4"
+      "Bullet"
     ],
     "warbondCode": "none",
     "internalName": "hmgemplacement",
@@ -1050,11 +1033,11 @@
   },
   {
     "displayName": "Anti-Tank Emplacement",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement",
-      "explosive",
-      "at"
+      "Explosive",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond12",
     "internalName": "eat12antitankemplacement",
@@ -1065,11 +1048,10 @@
   },
   {
     "displayName": "Grenadier Battlement",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement",
-      "explosive",
-      "ap3"
+      "Explosive"
     ],
     "warbondCode": "none",
     "internalName": "grenadierbattlement",
@@ -1080,10 +1062,10 @@
   },
   {
     "displayName": "Anti-Tank Mines",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement",
-      "at"
+      "Anti-Tank"
     ],
     "warbondCode": "none",
     "internalName": "antitankmines",
@@ -1094,7 +1076,7 @@
   },
   {
     "displayName": "Anti-Personnel Mines",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement"
     ],
@@ -1107,10 +1089,10 @@
   },
   {
     "displayName": "Gas Mines",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement",
-      "gas"
+      "Gas"
     ],
     "warbondCode": "none",
     "internalName": "gasmines",
@@ -1121,10 +1103,10 @@
   },
   {
     "displayName": "Incendiary Mines",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Emplacement",
-      "fire"
+      "Fire"
     ],
     "warbondCode": "none",
     "internalName": "incendiarymines",
@@ -1137,9 +1119,9 @@
     "displayName": "Breaching Hammer",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "melee",
-      "at"
+      "Weapon",
+      "Melee",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond23",
     "internalName": "breachinghammer",
@@ -1152,10 +1134,10 @@
     "displayName": "Leveller",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "at",
-      "expendable",
-      "explosive"
+      "Weapon",
+      "Anti-Tank",
+      "Expendable",
+      "Explosive"
     ],
     "warbondCode": "warbond23",
     "internalName": "leveller",
@@ -1168,12 +1150,10 @@
     "displayName": "Belt-Fed Grenade Launcher",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "at",
-      "explosive",
-      null,
-      "ap4"
+      "Weapon",
+      "Backpack",
+      "Anti-Tank",
+      "Explosive"
     ],
     "warbondCode": "warbond23",
     "internalName": "beltfedgrenadelauncher",
@@ -1186,7 +1166,7 @@
     "displayName": "Bastion",
     "category": "Supply",
     "tags": [
-      "Vehicles"
+      "Vehicle"
     ],
     "warbondCode": "none",
     "internalName": "bastiontank",
@@ -1197,10 +1177,10 @@
   },
   {
     "displayName": "Gas Mortar Sentry",
-    "category": "Defense",
+    "category": "Defensive",
     "tags": [
       "Sentry",
-      "gas"
+      "Gas"
     ],
     "warbondCode": "warbond24",
     "internalName": "gasmortarsentry",
@@ -1213,10 +1193,10 @@
     "displayName": "Cremator",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "Backpacks",
-      "fire",
-      "at"
+      "Weapon",
+      "Backpack",
+      "Fire",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond24",
     "internalName": "cremator",
@@ -1229,11 +1209,11 @@
     "displayName": "Lumberer Exosuit",
     "category": "Supply",
     "tags": [
-      "Vehicles",
-      "fire",
-      "at",
-      "expendable",
-      "exosuit"
+      "Vehicle",
+      "Fire",
+      "Anti-Tank",
+      "Expendable",
+      "Exosuit"
     ],
     "warbondCode": "warbond25",
     "internalName": "exo51lumbererexosuit",
@@ -1246,10 +1226,10 @@
     "displayName": "Breakthrough Exosuit",
     "category": "Supply",
     "tags": [
-      "Vehicles",
-      "expendable",
-      "at",
-      "exosuit"
+      "Vehicle",
+      "Expendable",
+      "Anti-Tank",
+      "Exosuit"
     ],
     "warbondCode": "warbond25",
     "internalName": "exo55breakthroughexosuit",
@@ -1262,10 +1242,9 @@
     "displayName": "Bullet Storm",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "expendable",
-      "bullets",
-      "ap2"
+      "Weapon",
+      "Expendable",
+      "Bullet"
     ],
     "warbondCode": "warbond25",
     "internalName": "mgx42bulletstorm",
@@ -1278,9 +1257,8 @@
     "displayName": "Supply FRV",
     "category": "Supply",
     "tags": [
-      "Vehicles",
-      "movement",
-      "frv"
+      "Vehicle",
+      "Movement"
     ],
     "warbondCode": "none",
     "internalName": "supplyfrv",
@@ -1293,8 +1271,8 @@
     "displayName": "Meltagun",
     "category": "Supply",
     "tags": [
-      "Weapons",
-      "at"
+      "Weapon",
+      "Anti-Tank"
     ],
     "warbondCode": "warbond26",
     "internalName": "meltagun",
@@ -1305,10 +1283,10 @@
   },
   {
     "displayName": "Eagle Gas Airstrike",
-    "category": "Eagle",
+    "category": "Offensive",
     "tags": [
       "Eagle",
-      "gas"
+      "Gas"
     ],
     "warbondCode": "none",
     "internalName": "eaglegasstrike",
