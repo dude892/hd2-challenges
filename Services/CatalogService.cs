@@ -27,14 +27,17 @@ public sealed class CatalogService(HttpClient httpClient)
         }
 
         Warbonds = await httpClient.GetFromJsonAsync<List<Warbond>>("data/warbonds.json") ?? [];
+
         Primaries = await LoadItemsAsync("data/primaries.json", ItemKind.Primary);
         Secondaries = await LoadItemsAsync("data/secondaries.json", ItemKind.Secondary);
         Throwables = await LoadItemsAsync("data/throwables.json", ItemKind.Throwable);
         Boosters = await LoadItemsAsync("data/boosters.json", ItemKind.Booster);
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
+
         PenitentStarterLoadout = await httpClient.GetFromJsonAsync<PenitentStarterLoadout>("data/penitent-starter-loadout.json") ?? new();
         PenitentDifficulties = await httpClient.GetFromJsonAsync<List<PenitentDifficultyOption>>("data/penitent-difficulties.json") ?? [];
+
         _loaded = true;
     }
 
@@ -58,10 +61,12 @@ public sealed class CatalogService(HttpClient httpClient)
     private async Task<IReadOnlyList<GameItem>> LoadItemsAsync(string path, ItemKind kind)
     {
         var items = await httpClient.GetFromJsonAsync<List<GameItem>>(path) ?? [];
+
         foreach (var item in items)
         {
             item.Kind = kind;
             item.Tags ??= [];
+            item.ResolveWarbond(Warbonds);
         }
 
         return items;

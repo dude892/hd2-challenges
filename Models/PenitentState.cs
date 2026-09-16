@@ -6,7 +6,7 @@ public sealed class PenitentState
     public int MissionCounter { get; set; } = 1;
     public int SelectedStars { get; set; } = 3;
     public int MissionsFailed { get; set; }
-    public List<string> SelectedWarbondCodes { get; set; } = [];
+    public List<string> SelectedWarbonds { get; set; } = [];
     public List<string> AcquiredItemInternalNames { get; set; } = [];
     public List<string> BannedItemInternalNames { get; set; } = [];
     public List<string> PendingRewardInternalNames { get; set; } = [];

@@ -64,8 +64,8 @@ else
                     {
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@warbond.WarbondCode" checked="@_state.SelectedWarbondCodes.Contains(warbond.WarbondCode)" disabled="@(!CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.WarbondCode, e.Value as bool? == true, warbond.AlwaysEnabled))" />
-                                <label class="form-check-label text-light" for="@warbond.WarbondCode">@warbond.DisplayName</label>
+                                <input class="form-check-input" type="checkbox" id="@warbond.InternalName" checked="@_state.SelectedWarbonds.Contains(warbond.InternalName)" disabled="@(!CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.InternalName, e.Value as bool? == true, warbond.AlwaysEnabled))" />
+                                <label class="form-check-label text-light" for="@warbond.InternalName">@warbond.DisplayName</label>
                             </div>
                         </div>
                     }
@@ -255,7 +255,7 @@ else
     {
         if (args.Value is string difficulty)
         {
-            await ReplacePenitentStateAsync(CreatePenitentState(difficulty, _state.SelectedWarbondCodes));
+            await ReplacePenitentStateAsync(CreatePenitentState(difficulty, _state.SelectedWarbonds));
             _statusMessage = $"Started a new { GetPenitentDifficulty(difficulty).DisplayName } run.";
         }
     }
@@ -270,7 +270,7 @@ else
         return PersistPenitentAsync();
     }
 
-    private async Task TogglePenitentWarbondAsync(string code, bool isChecked, bool alwaysEnabled)
+    private async Task TogglePenitentWarbondAsync(string internalName, bool isChecked, bool alwaysEnabled)
     {
         if (alwaysEnabled)
         {
@@ -279,17 +279,17 @@ else
 
         if (isChecked)
         {
-            if (!_state.SelectedWarbondCodes.Contains(code))
+            if (!_state.SelectedWarbonds.Contains(internalName))
             {
-                _state.SelectedWarbondCodes.Add(code);
+                _state.SelectedWarbonds.Add(internalName);
             }
         }
         else
         {
-            _state.SelectedWarbondCodes.Remove(code);
+            _state.SelectedWarbonds.Remove(internalName);
         }
 
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes));
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbonds));
         _statusMessage = "Warbond filters updated.";
     }
 
@@ -383,7 +383,7 @@ else
 
     private async Task RestartPenitentRunAsync()
     {
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbondCodes));
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbonds));
         _statusMessage = "Run restarted.";
     }
 
@@ -557,12 +557,12 @@ else
         ClampPenitentStars();
     }
 
-    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<string>? warbondCodes = null)
+    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<string>? warbondInternalNames = null)
     {
-        List<string>? selectedWarbonds = warbondCodes?.Distinct().ToList() ?? Catalog.Warbonds.Select(warbond => warbond.WarbondCode).ToList();
-        if (!selectedWarbonds.Contains("warbond3"))
+        List<string>? selectedWarbonds = warbondInternalNames?.Distinct().ToList() ?? Catalog.Warbonds.Select(warbond => warbond.InternalName).ToList();
+        if (!selectedWarbonds.Contains("helldiversMobilize"))
         {
-            selectedWarbonds.Add("warbond3");
+            selectedWarbonds.Add("helldiversMobilize");
         }
 
         return new PenitentState
@@ -570,12 +570,12 @@ else
             Difficulty = difficulty,
             MissionCounter = GetPenitentDifficulty(difficulty).StartMission,
             SelectedStars = GetMaxStarsForMission(GetPenitentDifficulty(difficulty).StartMission),
-            SelectedWarbondCodes = selectedWarbonds,
+            SelectedWarbonds = selectedWarbonds,
         };
     }
 
     private PenitentStarterItems GetPenitentStarterItems(string difficulty)
-    {
+    {   
         PenitentStarterItems starter = Catalog.ResolveLoadout(Catalog.PenitentStarterLoadout);
         PenitentDifficultyOption difficultyOption = GetPenitentDifficulty(difficulty);
 
@@ -618,7 +618,7 @@ else
             source
                 .Where(item =>
                     !starterInternalNames.Contains(item.InternalName) &&
-                    (_state.SelectedWarbondCodes.Contains(item.WarbondCode) || item.WarbondCode == "none") &&
+                    (item.Warbond == null || item.Warbond.InternalName is null || _state.SelectedWarbonds.Contains(item.Warbond.InternalName)) &&
                     !banned.Contains(item.InternalName) &&
                     !acquired.Contains(item.InternalName))
                 .ToList();

@@ -1,138 +1,111 @@
 [
   {
     "displayName": "Super Citizen Edition",
-    "warbondCode": "warbond0",
     "internalName": "superCitizenEdition"
   },
   {
     "displayName": "Superstore",
-    "warbondCode": "warbond1",
     "internalName": "superstore"
   },
   {
     "displayName": "Pre-Order Bonus",
-    "warbondCode": "warbond2",
     "internalName": "preOrderBonus"
   },
   {
     "displayName": "Helldivers Mobilize",
-    "warbondCode": "warbond3",
     "internalName": "helldiversMobilize",
     "alwaysenabled": true
   },
   {
     "displayName": "Steeled Veterans",
-    "warbondCode": "warbond4",
     "internalName": "steeledVeterans"
   },
   {
     "displayName": "Cutting Edge",
-    "warbondCode": "warbond5",
     "internalName": "cuttingEdge"
   },
   {
     "displayName": "Democratic Detonation",
-    "warbondCode": "warbond6",
     "internalName": "democraticDetonation"
   },
   {
     "displayName": "Polar Patriots",
-    "warbondCode": "warbond7",
     "internalName": "polarPatriots"
   },
   {
     "displayName": "Viper Commandos",
-    "warbondCode": "warbond8",
     "internalName": "viperCommandos"
   },
   {
     "displayName": "Freedom's Flame",
-    "warbondCode": "warbond9",
     "internalName": "freedomsFlame"
   },
   {
     "displayName": "Chemical Agents",
-    "warbondCode": "warbond10",
     "internalName": "chemicalAgents"
   },
   {
     "displayName": "Truth Enforcers",
-    "warbondCode": "warbond11",
     "internalName": "truthEnforcers"
   },
   {
     "displayName": "Urban Legends",
-    "warbondCode": "warbond12",
     "internalName": "urbanLegends"
   },
   {
     "displayName": "Servants of Freedom",
-    "warbondCode": "warbond13",
     "internalName": "servantsOfFreedom"
   },
   {
     "displayName": "Borderline Justice",
-    "warbondCode": "warbond14",
     "internalName": "borderlineJustice"
   },
   {
     "displayName": "Masters of Ceremony",
-    "warbondCode": "warbond15",
     "internalName": "mastersOfCeremony"
   },
   {
     "displayName": "Force of Law",
-    "warbondCode": "warbond16",
     "internalName": "forceOfLaw"
   },
   {
     "displayName": "Control Group",
-    "warbondCode": "warbond17",
     "internalName": "controlGroup"
   },
   {
     "displayName": "Killzone",
-    "warbondCode": "warbond18",
     "internalName": "killzone"
   },
   {
     "displayName": "Halo ODST",
-    "warbondCode": "warbond19",
     "internalName": "haloODST"
   },
   {
     "displayName": "Dust Devils",
-    "warbondCode": "warbond20",
     "internalName": "dustDevils"
   },
   {
     "displayName": "Python Commandos",
-    "warbondCode": "warbond21",
     "internalName": "pythonCommandos"
   },
   {
     "displayName": "Redacted Regiment",
-    "warbondCode": "warbond22",
     "internalName": "redactedRegiment"
   },
   {
     "displayName": "Siege Breakers",
-    "warbondCode": "warbond23",
     "internalName": "siegeBreakers"
   },
   {
     "displayName": "Entrenched Division",
-    "warbondCode": "warbond24",
     "internalName": "entrenchedDivision"
   },
   {
     "displayName": "Exo Experts",
-    "warbondCode": "warbond25",
     "internalName": "exoExperts"
   },
   {
     "displayName": "Warhammer 40k",
-    "warbondCode": "warbond26",
     "internalName": "warhammer40k"
   }
 ]
