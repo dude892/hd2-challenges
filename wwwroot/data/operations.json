@@ -1,0 +1,62 @@
+[
+  {
+    "id": "trivial",
+    "displayName": "Trivial",
+    "maxStars": 1,
+    "missionCount": 1
+  },
+  {
+    "id": "easy",
+    "displayName": "Easy",
+    "maxStars": 2,
+    "missionCount": 1
+  },
+  {
+    "id": "medium",
+    "displayName": "Medium",
+    "maxStars": 3,
+    "missionCount": 2
+  },
+  {
+    "id": "challenging",
+    "displayName": "Challenging",
+    "maxStars": 3,
+    "missionCount": 3
+  },
+  {
+    "id": "hard",
+    "displayName": "Hard",
+    "maxStars": 4,
+    "missionCount": 3
+  },
+  {
+    "id": "extreme",
+    "displayName": "Extreme",
+    "maxStars": 4,
+    "missionCount": 3
+  },
+  {
+    "id": "suicide-mission",
+    "displayName": "Suicide Mission",
+    "maxStars": 5,
+    "missionCount": 3
+  },
+  {
+    "id": "impossible",
+    "displayName": "Impossible",
+    "maxStars": 5,
+    "missionCount": 3
+  },
+  {
+    "id": "helldive",
+    "displayName": "Helldive",
+    "maxStars": 5,
+    "missionCount": 3
+  },
+  {
+    "id": "super-helldive",
+    "displayName": "Super Helldive",
+    "maxStars": 5,
+    "missionCount": 3
+  }
+]

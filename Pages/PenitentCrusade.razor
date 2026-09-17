@@ -44,8 +44,8 @@ else
                 </div>
                 <div class="mb-3">
                     <label class="form-label text-light">Mission stars</label>
-                    <select class="form-select bg-dark text-light border-secondary" value="@_state.SelectedStars" @onchange="OnPenitentStarsChangedAsync">
-                        @foreach (var star in Enumerable.Range(1, GetMaxStarsForMission(_state.MissionCounter)))
+                    <select class="form-select bg-dark text-light border-secondary" value="@_selectedStars" @onchange="OnPenitentStarsChangedAsync" disabled="@(!CanRollPunishment)">
+                        @foreach (var star in Enumerable.Range(1, GetMaxStarsForMission(CurrentMissionNumber)))
                         {
                             <option value="@star">@star</option>
                         }
@@ -64,7 +64,7 @@ else
                     {
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@warbond.InternalName" checked="@_state.SelectedWarbonds.Contains(warbond.InternalName)" disabled="@(!CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.InternalName, e.Value as bool? == true, warbond.AlwaysEnabled))" />
+                                <input class="form-check-input" type="checkbox" id="@warbond.InternalName" checked="@_state.SelectedWarbonds.Any(item => item.InternalName == warbond.InternalName)" disabled="@(!CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.InternalName, e.Value as bool? == true, warbond.AlwaysEnabled))" />
                                 <label class="form-check-label text-light" for="@warbond.InternalName">@warbond.DisplayName</label>
                             </div>
                         </div>
@@ -76,7 +76,7 @@ else
         <div class="col-xl-8">
             <div class="row g-3 mb-3">
                 <div class="col-md-3">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@GetMissionText(_state.MissionCounter)</div></div></div>
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@GetMissionText(CurrentMissionNumber)</div></div></div>
                 </div>
                 <div class="col-md-3">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Difficulty</small><div class="fs-5">@CurrentPenitentDifficulty.DisplayName</div></div></div>
@@ -92,7 +92,7 @@ else
                     <span class="text-secondary">@StarterItems.Count item(s)</span>
                 </div>
                 <div class="item-grid mt-3">
-                    @foreach (var item in StarterItems)
+                    @foreach (var item in StarterItems.AllItems)
                     {
                         <ItemCard Item="item" Badge="Starter" />
                     }
@@ -110,12 +110,12 @@ else
                 }
                 else
                 {
-                    @foreach (var group in AcquiredGroups)
+                    @foreach (var group in AcquiredItems.Categories)
                     {
                         <div class="mt-4">
-                            <h5 class="text-light">@group.Key</h5>
+                            <h5 class="text-light">@group.FirstOrDefault()?.Kind</h5>
                             <div class="item-grid">
-                                @foreach (var item in group)
+                                @foreach (GameItem item in group)
                                 {
                                     <ItemCard Item="item" />
                                 }
@@ -135,9 +135,12 @@ else
         else
         {
             <div class="item-grid">
-                @foreach (var item in CurrentRewardItems)
+                @foreach (var group in CurrentRewardItems.Categories)
                 {
-                    <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.InternalName))" />
+                    @foreach (GameItem item in group)
+                    {
+                        <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.InternalName))" />
+                    }
                 }
             </div>
             <div class="sticky-actions d-flex justify-content-end gap-2">
@@ -208,9 +211,9 @@ else
 @code {
     private const string PenitentStorageKey = "blazor-penitent-crusade";
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
-    private readonly (string Key, string Label)[] _weightRows = [("Diff4", "Diff 4-5"), ("Diff6", "Diff 6-7"), ("Diff8", "Diff 8-10")];
-    private SaveLibrary<PenitentState> _penitentLibrary = new();
-    private PenitentState _state = new();
+    private SaveLibrary<PenitentStateDefinition> _penitentLibrary = new();
+    private PenitentState _state = default!;
+    private int _selectedStars = 1;
     private bool _loaded;
     private bool _showRewardModal;
     private bool _showPunishmentModal;
@@ -220,12 +223,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         await Catalog.EnsureLoadedAsync();
-        _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentState>>(PenitentStorageKey) ?? new SaveLibrary<PenitentState>();
+        _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentStateDefinition>>(PenitentStorageKey) ?? new SaveLibrary<PenitentStateDefinition>();
 
         if (_penitentLibrary.Slots.Count == 0)
         {
             var state = CreatePenitentState();
-            var slot = new SaveSlot<PenitentState> { Name = BuildPenitentSlotName(state), State = Clone(state) };
+            var slot = new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
             _penitentLibrary.Slots.Add(slot);
             _penitentLibrary.CurrentSlotId = slot.Id;
             await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
@@ -235,21 +239,13 @@ else
         _loaded = true;
     }
 
-    private SaveSlot<PenitentState>? CurrentPenitentSlot => _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
+    private SaveSlot<PenitentStateDefinition>? CurrentPenitentSlot => _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
 
-    private PenitentDifficultyOption CurrentPenitentDifficulty => GetPenitentDifficulty(_state.Difficulty);
-    private bool CanEditPenitentSetup => _state.MissionCounter == CurrentPenitentDifficulty.StartMission;
-    private bool IsPenitentComplete => _state.MissionCounter >= 23;
-    private bool CanRollPunishment => AcquiredItems.Count > 0 && !IsPenitentComplete;
-    private List<GameItem> StarterItems =>
-        GetPenitentStarterItems(_state.Difficulty).AllItems
-            .DistinctBy(item => item.InternalName)
-            .ToList();
-
-    private List<GameItem> AcquiredItems => Catalog.GetItems(_state.AcquiredItemInternalNames).ToList();
-    private IEnumerable<IGrouping<string, GameItem>> AcquiredGroups => AcquiredItems.GroupBy(item => item.KindLabel);
-    private List<GameItem> CurrentRewardItems => Catalog.GetItems(_state.PendingRewardInternalNames).ToList();
-    private List<GameItem> CurrentPunishmentItems => Catalog.GetItems(_state.PendingPunishmentInternalNames).ToList();
+    private PenitentDifficulty CurrentPenitentDifficulty => _state.Difficulty;
+    private int CurrentMissionNumber => GetMissionNumber(_state.CurrentOperation.Id, _state.CurrentOperation.MissionNumber);
+    private bool CanEditPenitentSetup => _state.CurrentOperation.Id == CurrentPenitentDifficulty.StartOperation.Id && _state.CurrentOperation.MissionNumber == 0;
+    private bool IsPenitentComplete => CurrentMissionNumber > GetTotalPenitentMissionCount();
+    private bool CanRollPunishment => _state.AcquiredItems.AllItems.Count > 0 && !IsPenitentComplete;
 
     private async Task OnPenitentDifficultyChangedAsync(ChangeEventArgs args)
     {
@@ -264,10 +260,10 @@ else
     {
         if (int.TryParse(args.Value?.ToString(), out var stars))
         {
-            _state.SelectedStars = Math.Clamp(stars, 1, GetMaxStarsForMission(_state.MissionCounter));
+            _selectedStars = Math.Clamp(stars, 1, GetMaxStarsForMission(CurrentMissionNumber));
         }
 
-        return PersistPenitentAsync();
+        return Task.CompletedTask;
     }
 
     private async Task TogglePenitentWarbondAsync(string internalName, bool isChecked, bool alwaysEnabled)
@@ -279,26 +275,28 @@ else
 
         if (isChecked)
         {
-            if (!_state.SelectedWarbonds.Contains(internalName))
+            if (!_state.SelectedWarbonds.Any(item => item.InternalName == internalName))
             {
-                _state.SelectedWarbonds.Add(internalName);
+                var warbond = Catalog.Warbonds.First(item => item.InternalName == internalName);
+                _state.SelectedWarbonds.Add(warbond);
             }
         }
         else
         {
-            _state.SelectedWarbonds.Remove(internalName);
+            _state.SelectedWarbonds.RemoveAll(item => item.InternalName == internalName);
         }
 
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbonds));
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.DifficultyId, _state.SelectedWarbonds));
         _statusMessage = "Warbond filters updated.";
     }
 
     private async Task BeginPenitentMissionCompleteAsync()
     {
         ClampPenitentStars();
-        if (_state.MissionCounter >= 22)
+        int totalMissionCount = GetTotalPenitentMissionCount();
+        if (CurrentMissionNumber >= totalMissionCount)
         {
-            _state.MissionCounter = 23;
+            SetMissionProgressFromCounter(totalMissionCount + 1);
             await PersistPenitentAsync();
             _statusMessage = "Challenge complete.";
             return;
@@ -307,6 +305,7 @@ else
         if (_state.PendingRewardInternalNames.Count == 0)
         {
             _state.PendingRewardInternalNames = RollPenitentRewardItems().Select(item => item.InternalName).ToList();
+            _selectedStars = GetMaxStarsForMission(CurrentMissionNumber);
             await PersistPenitentAsync();
         }
 
@@ -339,15 +338,15 @@ else
 
     private async Task ClaimPenitentRewardAsync(string internalName)
     {
-        _state.AcquiredItemInternalNames.Add(internalName);
+        _state.AcquiredItems.Add(internalName);
         if (!_state.BannedItemInternalNames.Contains(internalName))
         {
             _state.BannedItemInternalNames.Add(internalName);
         }
 
         _state.PendingRewardInternalNames.Clear();
-        _state.MissionCounter++;
-        ClampPenitentStars();
+        _selectedStars = 1;
+        AdvancePenitentMission();
         _showRewardModal = false;
         await PersistPenitentAsync();
     }
@@ -363,7 +362,7 @@ else
         }
 
         _state.PendingRewardInternalNames.Clear();
-        _state.MissionCounter++;
+        AdvancePenitentMission();
         ClampPenitentStars();
         _showRewardModal = false;
         await PersistPenitentAsync();
@@ -371,19 +370,20 @@ else
 
     private async Task ClaimPenitentPunishmentAsync(string internalName)
     {
-        _state.AcquiredItemInternalNames.Remove(internalName);
+        _state.AcquiredItems.Remove(internalName);
         _state.BannedItemInternalNames.Remove(internalName);
         _state.PendingPunishmentInternalNames.Clear();
         _state.MissionsFailed++;
-        _state.MissionCounter = Math.Max(CurrentPenitentDifficulty.StartMission, ReducePenitentMissionCounter(_state.MissionCounter));
-        ClampPenitentStars();
+        _selectedStars = 1;
+        var startMission = GetMissionNumberFromOperationId(CurrentPenitentDifficulty.StartOperation.Id);
+        SetMissionProgressFromCounter(Math.Max(startMission, ReducePenitentMissionCounter(CurrentMissionNumber)));
         _showPunishmentModal = false;
         await PersistPenitentAsync();
     }
 
     private async Task RestartPenitentRunAsync()
     {
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty, _state.SelectedWarbonds));
+        await ReplacePenitentStateAsync(CreatePenitentState(_state.DifficultyId, _state.SelectedWarbonds));
         _statusMessage = "Run restarted.";
     }
 
@@ -407,15 +407,14 @@ else
 
     private async Task CreatePenitentSnapshotAsync()
     {
-        SaveSlot<PenitentState>? slot = new SaveSlot<PenitentState>
+        SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition>
         {
             Name = $"{BuildPenitentSlotName(_state)} Snapshot",
-            State = Clone(_state),
+            State = _state.ToDefinition(),
             UpdatedAt = DateTimeOffset.UtcNow
         };
         _penitentLibrary.Slots.Add(slot);
         _penitentLibrary.CurrentSlotId = slot.Id;
-        _state = slot.State;
         await PersistPenitentAsync();
     }
 
@@ -445,7 +444,7 @@ else
         if (_penitentLibrary.Slots.Count == 0)
         {
             PenitentState? state = CreatePenitentState();
-            SaveSlot<PenitentState>? slot = new SaveSlot<PenitentState> { Name = BuildPenitentSlotName(state), State = Clone(state) };
+            SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
             _penitentLibrary.Slots.Add(slot);
             _penitentLibrary.CurrentSlotId = slot.Id;
         }
@@ -460,8 +459,8 @@ else
 
     private async Task ExportPenitentSlotAsync(Guid slotId)
     {
-        SaveSlot<PenitentState>? slot = _penitentLibrary.Slots.First(entry => entry.Id == slotId);
-        await FileExport.DownloadJsonAsync($"{SanitizeFileName(slot.Name)}.json", new SaveExport<PenitentState> { Mode = "penitent-crusade", Slot = slot });
+        SaveSlot<PenitentStateDefinition>? slot = _penitentLibrary.Slots.First(entry => entry.Id == slotId);
+        await FileExport.DownloadJsonAsync($"{SanitizeFileName(slot.Name)}.json", new SaveExport<PenitentStateDefinition> { Mode = "penitent-crusade", Slot = slot });
     }
 
     private async Task ImportPenitentSlotAsync(InputFileChangeEventArgs args)
@@ -470,7 +469,7 @@ else
         await using Stream? stream = file.OpenReadStream(1024 * 1024);
         using StreamReader? reader = new StreamReader(stream);
         string? json = await reader.ReadToEndAsync();
-        SaveExport<PenitentState>? import = JsonSerializer.Deserialize<SaveExport<PenitentState>>(json, JsonOptions);
+        SaveExport<PenitentStateDefinition>? import = JsonSerializer.Deserialize<SaveExport<PenitentStateDefinition>>(json, JsonOptions);
         if (import?.Slot?.State is null || import.Mode != "penitent-crusade")
         {
             _statusMessage = "Invalid Penitent Crusade save file.";
@@ -489,14 +488,12 @@ else
     private async Task ExportPenitentSummaryAsync()
     {
         int difficultyModifier = CurrentPenitentDifficulty.ScoreModifier;
-        int totalTimeRemaining = _state.MissionTimes.Sum();
-        int score = difficultyModifier + totalTimeRemaining - (_state.MissionsFailed * 50);
+        int score = difficultyModifier - (_state.MissionsFailed * 50);
         IOrderedEnumerable<IGrouping<string, GameItem>>? categories = AcquiredItems.GroupBy(item => item.KindLabel).OrderBy(group => group.Key);
         StringBuilder? builder = new StringBuilder();
         builder.AppendLine($"{CurrentPenitentDifficulty.DisplayName} Score Summary");
         builder.AppendLine("=======================================");
         builder.AppendLine();
-        builder.AppendLine($"Total Mission Time Remaining: {totalTimeRemaining}");
         builder.AppendLine($"Difficulty Modifier: {difficultyModifier}");
         builder.AppendLine($"Missions Failed: {_state.MissionsFailed}");
         builder.AppendLine($"Final Score: {score}");
@@ -527,13 +524,107 @@ else
     private async Task ReplacePenitentStateAsync(PenitentState state)
     {
         _state = state;
-        ClampPenitentStars();
+        _selectedStars = GetMaxStarsForMission(CurrentMissionNumber);
         if (CurrentPenitentSlot is not null)
         {
-            CurrentPenitentSlot.State = Clone(_state);
+            CurrentPenitentSlot.State = _state.ToDefinition();
         }
 
         await PersistPenitentAsync();
+    }
+
+    private int GetTotalPenitentMissionCount() => Catalog.Operations.Sum(operation => operation.MissionCount);
+
+    private int GetMissionNumberFromOperationId(string operationId)
+    {
+        int missionNumber = 1;
+        foreach (var operation in Catalog.Operations)
+        {
+            if (operation.Id == operationId)
+            {
+                return missionNumber;
+            }
+
+            missionNumber += operation.MissionCount;
+        }
+
+        return 1;
+    }
+
+    private int GetOperationIndexForId(string operationId)
+    {
+        for (int i = 0; i < Catalog.Operations.Count; i++)
+        {
+            if (Catalog.Operations[i].Id == operationId)
+            {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private int GetMissionNumber(string operationId, int missionIndex)
+    {
+        int missionNumber = 1;
+
+        var operationIndex = Catalog.Operations.IndexOf(Catalog.Operations.First(op => op.Id == operationId));
+
+        for (int i = 0; i < Catalog.Operations.Count; i++)
+        {
+            if (Catalog.Operations[i].Id == operationId)
+            {
+                break;
+            }
+            missionNumber += Catalog.Operations[i].MissionCount;
+        }
+
+        return missionNumber + missionIndex;
+    }
+
+    private void SetMissionProgressFromCounter(int missionCounter)
+    {
+        SetMissionProgressFromCounter(missionCounter, _state);
+    }
+
+    private void SetMissionProgressFromCounter(int missionCounter, PenitentState state)
+    {
+        if (missionCounter <= 0)
+        {
+            missionCounter = 1;
+        }
+
+        int runningTotal = 1;
+        for (int i = 0; i < Catalog.Operations.Count; i++)
+        {
+            int operationMissionCount = Catalog.Operations[i].MissionCount;
+            int endOfOperation = runningTotal + operationMissionCount - 1;
+
+            if (missionCounter <= endOfOperation)
+            {
+                state.OperationIndex = i;
+                state.MissionIndex = missionCounter - runningTotal;
+                return;
+            }
+
+            runningTotal += operationMissionCount;
+        }
+
+        state.OperationIndex = Math.Max(0, Catalog.Operations.Count - 1);
+        state.MissionIndex = Math.Max(0, Catalog.Operations.Last().MissionCount - 1);
+    }
+
+    private void AdvancePenitentMission()
+    {
+        int currentMissionNumber = CurrentMissionNumber;
+        int totalMissionCount = GetTotalPenitentMissionCount();
+        if (currentMissionNumber >= totalMissionCount)
+        {
+            SetMissionProgressFromCounter(totalMissionCount + 1);
+            return;
+        }
+
+        SetMissionProgressFromCounter(currentMissionNumber + 1);
     }
 
     private async Task PersistPenitentAsync()
@@ -543,127 +634,94 @@ else
             return;
         }
 
-        CurrentPenitentSlot.State = Clone(_state);
+        CurrentPenitentSlot.State = _state.ToDefinition();
         CurrentPenitentSlot.UpdatedAt = DateTimeOffset.UtcNow;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
     private void EnsurePenitentCurrentSlot()
     {
-        SaveSlot<PenitentState>? slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
+        SaveSlot<PenitentStateDefinition>? slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
         _penitentLibrary.CurrentSlotId = slot.Id;
-        _state = Clone(slot.State);
-
-        ClampPenitentStars();
+        _state = PenitentState.FromDefinition(slot.State, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        _selectedStars = Math.Clamp(_selectedStars, 1, GetMaxStarsForMission(CurrentMissionNumber));
     }
 
-    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<string>? warbondInternalNames = null)
+    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<Warbond>? selectedWarbonds = null)
     {
-        List<string>? selectedWarbonds = warbondInternalNames?.Distinct().ToList() ?? Catalog.Warbonds.Select(warbond => warbond.InternalName).ToList();
-        if (!selectedWarbonds.Contains("helldiversMobilize"))
+        List<Warbond> warbonds = selectedWarbonds?.DistinctBy(item => item.InternalName).ToList() ?? Catalog.Warbonds.ToList();
+        if (!warbonds.Any(item => item.InternalName == "helldiversMobilize"))
         {
-            selectedWarbonds.Add("helldiversMobilize");
+            warbonds.Add(Catalog.Warbonds.First(item => item.InternalName == "helldiversMobilize"));
         }
 
-        return new PenitentState
+        int startMission = GetMissionNumberFromOperationId(GetPenitentDifficulty(difficulty).StartOperation.Id);
+        var definition = new PenitentStateDefinition
         {
-            Difficulty = difficulty,
-            MissionCounter = GetPenitentDifficulty(difficulty).StartMission,
-            SelectedStars = GetMaxStarsForMission(GetPenitentDifficulty(difficulty).StartMission),
-            SelectedWarbonds = selectedWarbonds,
+            DifficultyId = difficulty,
+            SelectedWarbonds = warbonds.Select(item => item.InternalName).ToList(),
         };
+
+        var state = PenitentState.FromDefinition(definition, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        SetMissionProgressFromCounter(startMission, state);
+        _selectedStars = GetMaxStarsForMission(startMission);
+        return state;
     }
 
-    private ItemCategorySet GetPenitentStarterItems(string difficulty)
+    private ItemSet GetPenitentStarterItems(string difficulty)
     {
-        ItemCategorySet starterSet = Catalog.ResolveLoadout(Catalog.PenitentStarterLoadout);
-        PenitentDifficultyOption difficultyOption = GetPenitentDifficulty(difficulty);
+        ItemSet starterSet = Catalog.PenitentStarterLoadout.Clone();
+        PenitentDifficulty difficultyOption = GetPenitentDifficulty(difficulty);
 
-        if (difficultyOption.LoadoutOverrides is PenitentStarterLoadoutDefinition && Catalog.ResolveLoadout(difficultyOption.LoadoutOverrides) is ItemCategorySet resolvedOverrides)
-        {
-            starterSet.ApplyOverrides(resolvedOverrides);
-        }
-
-        if (difficultyOption.LoadoutAdditions is PenitentStarterLoadoutDefinition && Catalog.ResolveLoadout(difficultyOption.LoadoutAdditions) is ItemCategorySet resolvedAdditions)
-        {
-            starterSet.ApplyAdditions(resolvedAdditions);
-        }
+        starterSet.ApplyOverrides(difficultyOption.LoadoutOverrides);
+        starterSet.ApplyAdditions(difficultyOption.LoadoutAdditions);
 
         return starterSet;
     }
 
-    private List<List<GameItem>> GetPenitentRewardPools()
+    private ItemSet GetPenitentRewardPools()
     {
-        ItemCategorySet? starter = GetPenitentStarterItems(_state.Difficulty);
-        HashSet<string> starterInternalNames = starter.AllInternalNames;
-        HashSet<string>? banned = _state.BannedItemInternalNames.ToHashSet();
-        HashSet<string>? acquired = _state.AcquiredItemInternalNames.ToHashSet();
+        ItemSet? starter = GetPenitentStarterItems(_state.DifficultyId);
+        ItemSet? bannedPool = Catalog.GetItemSet(_state.BannedItemInternalNames);
+        ItemSet? acquiredPool = Catalog.GetItemSet(_state.AcquiredItems);
 
-        List<GameItem> Filter(IEnumerable<GameItem> source) =>
-            source
-                .Where(item =>
-                    !starterInternalNames.Contains(item.InternalName) &&
-                    (item.Warbond == null || item.Warbond.InternalName is null || _state.SelectedWarbonds.Contains(item.Warbond.InternalName)) &&
-                    !banned.Contains(item.InternalName) &&
-                    !acquired.Contains(item.InternalName))
-                .ToList();
+        ItemSet pool = Catalog.AllItemsSet.Clone();
 
-        List<GameItem>? strats = Filter(Catalog.Stratagems);
-        List<GameItem>? primaries = Filter(Catalog.Primaries);
-        List<GameItem>? secondaries = Filter(Catalog.Secondaries);
-        List<GameItem>? throwables = Filter(Catalog.Throwables);
-        List<GameItem>? armors = Filter(Catalog.ArmorPassives);
-        List<GameItem>? boosters = Filter(Catalog.Boosters);
+        pool.RemoveItems(starter);
+        pool.RemoveItems(bannedPool);
+        pool.RemoveItems(acquiredPool);
 
-        return new List<List<GameItem>> { strats, primaries, secondaries, throwables, armors, boosters }
-            .Where(pool => pool.Count > 0)
-            .ToList();
+        return pool;
     }
 
     private List<GameItem> RollPenitentRewardItems()
     {
-        int rewardQuantity = _state.SelectedStars - 1;
+        int rewardQuantity = _selectedStars - 1;
         if (CurrentPenitentDifficulty.IsSuper)
         {
             rewardQuantity--;
         }
 
         rewardQuantity = Math.Max(1, rewardQuantity);
-        List<List<GameItem>>? pools = GetPenitentRewardPools();
+        ItemSet? pools = GetPenitentRewardPools();
         if (pools.Count == 0)
         {
             return new List<GameItem>();
         }
 
-        if (_state.MissionCounter == 7)
+        if (CurrentMissionNumber == 7)
         {
-            List<GameItem>? antiTankPool = pools.First().Where(item => item.Antitank).ToList();
+            List<GameItem>? antiTankPool = pools.AllItems.Where(item => item.Antitank).ToList();
             if (antiTankPool.Count > 0)
             {
                 return antiTankPool.OrderBy(_ => Random.Shared.Next()).Take(Math.Min(rewardQuantity, antiTankPool.Count)).ToList();
             }
         }
 
-        HashSet<int>? forcedIndices = new HashSet<int>();
-        if (_state.MissionCounter == 1 && _state.Difficulty is "solo" or "normal") forcedIndices.Add(0);
-        if (_state.MissionCounter == 3 && CurrentPenitentDifficulty.IsSuper) forcedIndices.Add(0);
-        if (_state.MissionCounter == 11 && _state.Difficulty == "quick") forcedIndices.Add(0);
-
-        int maxCategories = 4;
-        maxCategories = Math.Min(maxCategories, pools.Count);
-        while (forcedIndices.Count < maxCategories)
-        {
-            forcedIndices.Add(Random.Shared.Next(0, pools.Count));
-        }
-
-        List<int>? selectedIndices = forcedIndices.Take(rewardQuantity).ToList();
-        if (selectedIndices.Count < rewardQuantity)
-        {
-            selectedIndices.AddRange(Enumerable.Range(0, pools.Count).Where(index => !selectedIndices.Contains(index)).Take(rewardQuantity - selectedIndices.Count));
-        }
-
-        return selectedIndices
-            .Select(index => RollPenitentItemFromPool(pools[index]))
+        return pools.AllItems
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(rewardQuantity)
+            .Select(item => RollPenitentItemFromPool([item]))
             .OfType<GameItem>()
             .DistinctBy(item => item.InternalName)
             .ToList();
@@ -676,7 +734,7 @@ else
             return null;
         }
 
-        if (_state.MissionCounter == 7)
+        if (CurrentMissionNumber == 7)
         {
             List<GameItem>? antiTankPool = pool.Where(item => item.Antitank).ToList();
             
@@ -691,56 +749,68 @@ else
 
     private string GetMissionText(int missionCounter)
     {
-        return missionCounter switch
+        if (missionCounter > GetTotalPenitentMissionCount())
         {
-            1 => "Diff: 3, Mission: 1",
-            2 => "Diff: 3, Mission: 2",
-            3 => "Diff: 4, Mission: 1",
-            4 => "Diff: 4, Mission: 2",
-            5 => "Diff: 5, Mission: 1",
-            6 => "Diff: 5, Mission: 2",
-            7 => "Diff: 5, Mission: 3",
-            8 => "Diff: 6, Mission: 1",
-            9 => "Diff: 6, Mission: 2",
-            10 => "Diff: 6, Mission: 3",
-            11 => "Diff: 7, Mission: 1",
-            12 => "Diff: 7, Mission: 2",
-            13 => "Diff: 7, Mission: 3",
-            14 => "Diff: 8, Mission: 1",
-            15 => "Diff: 8, Mission: 2",
-            16 => "Diff: 8, Mission: 3",
-            17 => "Diff: 9, Mission: 1",
-            18 => "Diff: 9, Mission: 2",
-            19 => "Diff: 9, Mission: 3",
-            20 => "Diff: 10, Mission: 1",
-            21 => "Diff: 10, Mission: 2",
-            22 => "Diff: 10, Mission: 3",
-            _ => "Challenge Complete"
-        };
+            return "Challenge Complete";
+        }
+
+        var currentOperation = Catalog.Operations[Math.Clamp(GetOperationIndexForMission(missionCounter), 0, Catalog.Operations.Count - 1)];
+        return $"{currentOperation.DisplayName}: Mission {missionCounter - GetOperationMissionOffset(GetOperationIndexForMission(missionCounter))}";
     }
 
-    private static int GetMaxStarsForMission(int missionCounter)
+    private int GetOperationIndexForMission(int missionCounter)
     {
-        if (missionCounter < 5) return 3;
-        if (missionCounter < 11) return 4;
-        return 5;
+        int runningTotal = 1;
+        for (int i = 0; i < Catalog.Operations.Count; i++)
+        {
+            int operationMissionCount = Catalog.Operations[i].MissionCount;
+            int endOfOperation = runningTotal + operationMissionCount - 1;
+            if (missionCounter <= endOfOperation)
+            {
+                return i;
+            }
+
+            runningTotal += operationMissionCount;
+        }
+
+        return Catalog.Operations.Count - 1;
     }
 
-    private static int ReducePenitentMissionCounter(int missionCounter)
+    private int GetOperationMissionOffset(int operationIndex)
     {
-        if (new[] { 2, 4, 6, 9, 12, 15, 18, 21 }.Contains(missionCounter)) return missionCounter - 1;
-        if (new[] { 7, 10, 13, 16, 19, 22 }.Contains(missionCounter)) return missionCounter - 2;
-        return missionCounter;
+        int offset = 1;
+        for (int i = 0; i < operationIndex; i++)
+        {
+            offset += Catalog.Operations[i].MissionCount;
+        }
+
+        return offset;
+    }
+
+    private int GetMaxStarsForMission(int missionCounter)
+    {
+        if (missionCounter > GetTotalPenitentMissionCount())
+        {
+            return Catalog.Operations.Last().MaxStars;
+        }
+
+        var operationIndex = GetOperationIndexForMission(missionCounter);
+        return Catalog.Operations[operationIndex].MaxStars;
+    }
+
+    private int ReducePenitentMissionCounter(int missionCounter)
+    {
+        return Math.Max(1, missionCounter - 1);
     }
 
     private void ClampPenitentStars()
     {
-        _state.SelectedStars = Math.Clamp(_state.SelectedStars, 1, GetMaxStarsForMission(_state.MissionCounter));
+        _selectedStars = Math.Clamp(_selectedStars, 1, GetMaxStarsForMission(CurrentMissionNumber));
     }
 
     private string BuildPenitentSlotName(PenitentState state)
     {
-        return $"{state.Difficulty.ToUpperInvariant()} | {GetMissionText(state.MissionCounter)} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
+        return $"{state.DifficultyId.ToUpperInvariant()} | {GetMissionText(GetMissionNumber(state.OperationIndex, state.MissionIndex))} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
     }
 
     private static T Clone<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, JsonOptions), JsonOptions)!;
@@ -755,5 +825,14 @@ else
         return value;
     }
 
-    private PenitentDifficultyOption GetPenitentDifficulty(string id) => Catalog.PenitentDifficulties.First(option => option.Id == id);
+    private PenitentDifficulty GetPenitentDifficulty(string id) => Catalog.PenitentDifficulties.First(option => option.Id == id);
+
+    private List<Warbond> ResolveSelectedWarbonds(IEnumerable<string> internalNames) =>
+        Catalog.Warbonds.Where(warbond => internalNames.Contains(warbond.InternalName)).ToList();
+
+    private Operation GetPenitentOperation(string operationIndex, int missionIndex)
+    {
+        var definition = Catalog.Operations.First(op => op.Id == operationIndex);
+        return new Operation(definition, missionIndex + 1);
+    }
 }

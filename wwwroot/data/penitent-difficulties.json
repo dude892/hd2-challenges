@@ -2,67 +2,67 @@
   {
     "id": "normal",
     "displayName": "Penitent Crusade",
-    "startMission": 1,
+    "startOperation": "medium",
     "loadoutAdditions": {
-      "secondaries": ["Peacemaker"]
+      "secondaries": ["p2peacemaker"]
     }
   },
   {
     "id": "solo",
     "displayName": "Solo/Duo Crusade",
-    "startMission": 1,
+    "startOperation": "medium",
     "loadoutAdditions": {
-      "secondaries": ["Peacemaker"],
-      "stratagems": ["Orbital Precision Strike"]
+      "secondaries": ["p2peacemaker"],
+      "stratagems": ["orbitalprecisionstrike"]
     }
   },
   {
     "id": "quick",
     "displayName": "Quick Crusade",
-    "startMission": 11,
+    "startOperation": "suicide-mission",
     "loadoutAdditions": {
-      "secondaries": ["Peacemaker"],
+      "secondaries": ["p2peacemaker"],
       "stratagems": [
-        "Ballistic Shield",
-        "Orbital Precision Strike",
-        "Grenadier Battlement",
-        "Anti-Tank Mines",
-        "Eagle 110mm Rocket Pods",
-        "Orbital Gatling Barrage",
-        "Arc Thrower"
+        "sh20ballisticshieldbackpack",
+        "orbitalprecisionstrike",
+        "grenadierbattlement",
+        "antitankmines",
+        "eagle110mmrocketpods",
+        "orbitalgatlingbarrage",
+        "arc3arcthrower"
       ],
       "boosters": [
-        "UAV Recon",
-        "Muscle Enhancement"
+        "uavrecon",
+        "muscleenhancement"
       ]
     }
   },
   {
     "id": "super",
     "displayName": "Super Penitent Crusade",
-    "startMission": 3,
+    "startOperation": "challenging",
     "scoreModifier": 250,
     "isSuper": true,
     "loadoutOverrides": {
-      "armorPassives": ["Integrated Explosives"]
+      "armorPassives": ["integratedexplosives"]
     },
     "loadoutAdditions": {
-      "stratagems": ["Ballistic Shield"]
+      "stratagems": ["sh20ballisticshieldbackpack"]
     }
   },
   {
     "id": "supersolo",
     "displayName": "Solo/Duo Super Crusade",
-    "startMission": 3,
+    "startOperation": "challenging",
     "scoreModifier": 250,
     "isSuper": true,
     "loadoutOverrides": {
-      "armorPassives": ["Integrated Explosives"]
+      "armorPassives": ["integratedexplosives"]
     },
     "loadoutAdditions": {
       "stratagems": [
-        "Ballistic Shield",
-        "Orbital Precision Strike"
+        "sh20ballisticshieldbackpack",
+        "orbitalprecisionstrike"
       ]
     }
   }

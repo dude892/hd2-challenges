@@ -1,28 +1,28 @@
 {
   "stratagems": [
-    "One True Flag",
-    "Defoliation Tool",
-    "Orbital EMS Strike",
-    "Orbital Smoke Strike",
-    "Eagle Smoke Strike",
-    "EMS Mortar Sentry",
-    "Shield Generator Relay"
+    "onetrueflag",
+    "defoliationtool",
+    "orbitalemsstrike",
+    "orbitalsmokestrike",
+    "eaglesmokestrike",
+    "emsmortarsentry",
+    "shieldgeneratorrelay"
   ],
-  "primaries": ["Constitution"],
+  "primaries": ["r2124constitution"],
   "secondaries": [
-    "Stun Lance",
-    "Stun Baton",
-    "Combat Hatchet",
-    "Saber",
-    "Machete",
-    "Entrenchment Tool"
+    "cqc19stunlance",
+    "cqc30stunbaton",
+    "cqc5combathatchet",
+    "cqc2saber",
+    "cqc42machete",
+    "cqc73entrenchmenttool"
   ],
   "throwables": [
-    "G-3 Smoke",
-    "K-2 Throwing Knife",
-    "G-12 High Explosive",
-    "G-89 Smokescreen"
+    "g3smokegrenade",
+    "k2throwingknife",
+    "g12highexplosivegrenade",
+    "g89smokescreen"
   ],
-  "armorPassives": ["Extra Padding"],
+  "armorPassives": ["extrapadding"],
   "boosters": []
 }

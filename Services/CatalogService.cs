@@ -7,17 +7,19 @@ public sealed class CatalogService(HttpClient httpClient)
 {
     private bool _loaded;
 
-    public IReadOnlyList<Warbond> Warbonds { get; private set; } = [];
-    public IReadOnlyList<GameItem> Primaries { get; private set; } = [];
-    public IReadOnlyList<GameItem> Secondaries { get; private set; } = [];
-    public IReadOnlyList<GameItem> Throwables { get; private set; } = [];
-    public IReadOnlyList<GameItem> Boosters { get; private set; } = [];
-    public IReadOnlyList<GameItem> Stratagems { get; private set; } = [];
-    public IReadOnlyList<GameItem> ArmorPassives { get; private set; } = [];
-    public IReadOnlyList<PenitentDifficultyOption> PenitentDifficulties { get; private set; } = [];
-    public PenitentStarterLoadoutDefinition PenitentStarterLoadout { get; private set; } = new();
-
-    public IReadOnlyList<GameItem> AllItems => [.. Stratagems, .. Primaries, .. Secondaries, .. Throwables, .. ArmorPassives, .. Boosters];
+    private IReadOnlyList<GameItem> Primaries { get; set; } = [];
+    private IReadOnlyList<GameItem> Secondaries { get; set; } = [];
+    private IReadOnlyList<GameItem> Throwables { get; set; } = [];
+    private IReadOnlyList<GameItem> Boosters { get; set; } = [];
+    private IReadOnlyList<GameItem> Stratagems { get; set; } = [];
+    private IReadOnlyList<GameItem> ArmorPassives { get; set; } = [];
+    private PenitentStarterLoadoutDefinition _penitentStarterLoadout = new();
+    
+    public readonly ItemSet AllItemsSet = new();
+    public IReadOnlyList<OperationDefinition> Operations { get; private set; } = [];
+    public IReadOnlyList<Warbond> Warbonds { get; set; } = [];
+    public IReadOnlyList<PenitentDifficulty> PenitentDifficulties { get; private set; } = [];
+    public ItemSet PenitentStarterLoadout { get; private set; } = new();
 
     public async Task EnsureLoadedAsync()
     {
@@ -35,27 +37,51 @@ public sealed class CatalogService(HttpClient httpClient)
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
 
-        PenitentStarterLoadout = await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new();
-        PenitentDifficulties = await httpClient.GetFromJsonAsync<List<PenitentDifficultyOption>>("data/penitent-difficulties.json") ?? [];
+        _penitentStarterLoadout = await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new();
+        AllItemsSet.Stratagems = [.. Stratagems];
+        AllItemsSet.Primaries = [.. Primaries];
+        AllItemsSet.Secondaries = [.. Secondaries];
+        AllItemsSet.Throwables = [.. Throwables];
+        AllItemsSet.ArmorPassives = [.. ArmorPassives];
+        AllItemsSet.Boosters = [.. Boosters];
+
+        PenitentStarterLoadout = ResolveLoadout(_penitentStarterLoadout);
+
+        var operationDefinitions = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
+        Operations = operationDefinitions;
+
+        var difficultyDefinitions = await httpClient.GetFromJsonAsync<List<PenitentDifficultyDefinition>>("data/penitent-difficulties.json") ?? [];
+        PenitentDifficulties = difficultyDefinitions
+            .Select(definition => new PenitentDifficulty(definition, GetItemSet, GetOperation))
+            .ToList();
 
         _loaded = true;
     }
 
-    public GameItem? GetItem(string identifier) =>
-        AllItems.FirstOrDefault(item =>
-            string.Equals(item.InternalName, identifier, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(item.DisplayName, identifier, StringComparison.OrdinalIgnoreCase));
-
-    public IReadOnlyList<GameItem> GetItems(IEnumerable<string> identifiers) => identifiers.Select(GetItem).OfType<GameItem>().ToList();
-
-    public ItemCategorySet ResolveLoadout(PenitentStarterLoadoutDefinition loadout) => new()
+    public Operation GetOperation(string id)
     {
-        Stratagems = GetItems(loadout.Stratagems).ToList(),
-        Primaries = GetItems(loadout.Primaries).ToList(),
-        Secondaries = GetItems(loadout.Secondaries).ToList(),
-        Throwables = GetItems(loadout.Throwables).ToList(),
-        ArmorPassives = GetItems(loadout.ArmorPassives).ToList(),
-        Boosters = GetItems(loadout.Boosters).ToList()
+        var definition = Operations.First(option => option.Id == id);
+        return new Operation(definition);
+    }
+
+    public ItemSet GetItemSet(IEnumerable<string> internalNames) => new()
+    {
+        Stratagems = [.. AllItemsSet.Stratagems.Where(item => internalNames.Contains(item.InternalName))],
+        Primaries = [.. AllItemsSet.Primaries.Where(item => internalNames.Contains(item.InternalName))],
+        Secondaries = [.. AllItemsSet.Secondaries.Where(item => internalNames.Contains(item.InternalName))],
+        Throwables = [.. AllItemsSet.Throwables.Where(item => internalNames.Contains(item.InternalName))],
+        ArmorPassives = [.. AllItemsSet.ArmorPassives.Where(item => internalNames.Contains(item.InternalName))],
+        Boosters = [.. AllItemsSet.Boosters.Where(item => internalNames.Contains(item.InternalName))]
+    };
+
+    public ItemSet ResolveLoadout(PenitentStarterLoadoutDefinition definition) => new()
+    {
+        Stratagems = GetItemSet(definition.Stratagems).Stratagems,
+        Primaries = GetItemSet(definition.Primaries).Primaries,
+        Secondaries = GetItemSet(definition.Secondaries).Secondaries,
+        Throwables = GetItemSet(definition.Throwables).Throwables,
+        ArmorPassives = GetItemSet(definition.ArmorPassives).ArmorPassives,
+        Boosters = GetItemSet(definition.Boosters).Boosters
     };
 
     private async Task<IReadOnlyList<GameItem>> LoadItemsAsync(string path, ItemKind kind)
@@ -64,9 +90,7 @@ public sealed class CatalogService(HttpClient httpClient)
 
         foreach (var item in items)
         {
-            item.Kind = kind;
-            item.Tags ??= [];
-            item.ResolveWarbond(Warbonds);
+            item.PostInitSetup(kind, Warbonds);
         }
 
         return items;
