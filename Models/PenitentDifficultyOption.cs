@@ -7,6 +7,6 @@ public sealed class PenitentDifficultyOption
     public int StartMission { get; set; } = 1;
     public int ScoreModifier { get; set; }
     public bool IsSuper { get; set; }
-    public PenitentStarterLoadout? LoadoutOverrides { get; set; }
-    public PenitentStarterLoadout? LoadoutAdditions { get; set; }
+    public PenitentStarterLoadoutDefinition? LoadoutOverrides { get; set; }
+    public PenitentStarterLoadoutDefinition? LoadoutAdditions { get; set; }
 }

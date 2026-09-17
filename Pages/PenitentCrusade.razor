@@ -574,42 +574,27 @@ else
         };
     }
 
-    private PenitentStarterItems GetPenitentStarterItems(string difficulty)
-    {   
-        PenitentStarterItems starter = Catalog.ResolveLoadout(Catalog.PenitentStarterLoadout);
+    private ItemCategorySet GetPenitentStarterItems(string difficulty)
+    {
+        ItemCategorySet starterSet = Catalog.ResolveLoadout(Catalog.PenitentStarterLoadout);
         PenitentDifficultyOption difficultyOption = GetPenitentDifficulty(difficulty);
 
-        ApplyDifficultyOverrides(starter, difficultyOption.LoadoutOverrides);
-        ApplyDifficultyAdditions(starter, difficultyOption.LoadoutAdditions);
+        if (difficultyOption.LoadoutOverrides is PenitentStarterLoadoutDefinition && Catalog.ResolveLoadout(difficultyOption.LoadoutOverrides) is ItemCategorySet resolvedOverrides)
+        {
+            starterSet.ApplyOverrides(resolvedOverrides);
+        }
 
-        return starter;
-    }
+        if (difficultyOption.LoadoutAdditions is PenitentStarterLoadoutDefinition && Catalog.ResolveLoadout(difficultyOption.LoadoutAdditions) is ItemCategorySet resolvedAdditions)
+        {
+            starterSet.ApplyAdditions(resolvedAdditions);
+        }
 
-    private void ApplyDifficultyOverrides(PenitentStarterItems starter, PenitentStarterLoadout? overrides)
-    {
-        if (overrides is null) return;
-        if (overrides.Stratagems.Count > 0) starter.Stratagems = Catalog.GetItems(overrides.Stratagems).ToList();
-        if (overrides.Primaries.Count > 0) starter.Primaries = Catalog.GetItems(overrides.Primaries).ToList();
-        if (overrides.Secondaries.Count > 0) starter.Secondaries = Catalog.GetItems(overrides.Secondaries).ToList();
-        if (overrides.Throwables.Count > 0) starter.Throwables = Catalog.GetItems(overrides.Throwables).ToList();
-        if (overrides.ArmorPassives.Count > 0) starter.ArmorPassives = Catalog.GetItems(overrides.ArmorPassives).ToList();
-        if (overrides.Boosters.Count > 0) starter.Boosters = Catalog.GetItems(overrides.Boosters).ToList();
-    }
-
-    private void ApplyDifficultyAdditions(PenitentStarterItems starter, PenitentStarterLoadout? additions)
-    {
-        if (additions is null) return;
-        starter.Stratagems.AddRange(Catalog.GetItems(additions.Stratagems));
-        starter.Primaries.AddRange(Catalog.GetItems(additions.Primaries));
-        starter.Secondaries.AddRange(Catalog.GetItems(additions.Secondaries));
-        starter.Throwables.AddRange(Catalog.GetItems(additions.Throwables));
-        starter.ArmorPassives.AddRange(Catalog.GetItems(additions.ArmorPassives));
-        starter.Boosters.AddRange(Catalog.GetItems(additions.Boosters));
+        return starterSet;
     }
 
     private List<List<GameItem>> GetPenitentRewardPools()
     {
-        PenitentStarterItems? starter = GetPenitentStarterItems(_state.Difficulty);
+        ItemCategorySet? starter = GetPenitentStarterItems(_state.Difficulty);
         HashSet<string> starterInternalNames = starter.AllInternalNames;
         HashSet<string>? banned = _state.BannedItemInternalNames.ToHashSet();
         HashSet<string>? acquired = _state.AcquiredItemInternalNames.ToHashSet();
