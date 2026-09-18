@@ -2,109 +2,109 @@
   {
     "displayName": "Expert Extraction Pilot",
     "warbond": "democraticDetonation",
-    "internalName": "expertextractionpilot",
+    "id": "expertextractionpilot",
     "imageURL": "expertextractionpilot.webp"
   },
   {
     "displayName": "Dead Sprint",
     "warbond": "truthEnforcers",
-    "internalName": "deadsprint",
+    "id": "deadsprint",
     "imageURL": "deadsprint.webp"
   },
   {
     "displayName": "Armed Resupply Pods",
     "warbond": "urbanLegends",
-    "internalName": "armedresupplypods",
+    "id": "armedresupplypods",
     "imageURL": "armedresupplypods.webp"
   },
   {
     "displayName": "Experimental Infusion",
     "warbond": "viperCommandos",
-    "internalName": "experimentalinfusion",
+    "id": "experimentalinfusion",
     "imageURL": "experimentalinfusion.webp"
   },
   {
     "displayName": "Motivational Shocks",
     "warbond": "polarPatriots",
-    "internalName": "motivationalshocks",
+    "id": "motivationalshocks",
     "imageURL": "motivationalshocks.webp"
   },
   {
     "displayName": "Flexible Reinforcement Budget",
     "warbond": "steeledVeterans",
-    "internalName": "flexiblereinforcementbudget",
+    "id": "flexiblereinforcementbudget",
     "imageURL": "flexiblereinforcementbudget.webp"
   },
   {
     "displayName": "Hellpod Space Optimization",
     "warbond": "helldiversMobilize",
-    "internalName": "hellpodspaceoptimization",
+    "id": "hellpodspaceoptimization",
     "imageURL": "hellpodspaceoptimization.webp"
   },
   {
     "displayName": "Increased Reinforcement Budget",
     "warbond": "helldiversMobilize",
-    "internalName": "increasedreinforcementbudget",
+    "id": "increasedreinforcementbudget",
     "imageURL": "increasedreinforcementbudget.webp"
   },
   {
     "displayName": "Localization Confusion",
     "warbond": "cuttingEdge",
-    "internalName": "localizationconfusion",
+    "id": "localizationconfusion",
     "imageURL": "localizationconfusion.webp"
   },
   {
     "displayName": "Muscle Enhancement",
     "warbond": "helldiversMobilize",
-    "internalName": "muscleenhancement",
+    "id": "muscleenhancement",
     "imageURL": "muscleenhancement.webp"
   },
   {
     "displayName": "Stamina Enhancement",
     "warbond": "helldiversMobilize",
-    "internalName": "staminaenhancement",
+    "id": "staminaenhancement",
     "imageURL": "staminaenhancement.webp"
   },
   {
     "displayName": "UAV Recon",
     "warbond": "helldiversMobilize",
-    "internalName": "uavrecon",
+    "id": "uavrecon",
     "imageURL": "uavrecon.webp"
   },
   {
     "displayName": "Vitality Enhancement",
     "warbond": "helldiversMobilize",
-    "internalName": "vitalityenhancement",
+    "id": "vitalityenhancement",
     "imageURL": "vitalityenhancement.webp"
   },
   {
     "displayName": "Firebomb Hellpods",
     "warbond": "freedomsFlame",
-    "internalName": "firebombhellpods",
+    "id": "firebombhellpods",
     "imageURL": "firebombhellpods.webp"
   },
   {
     "displayName": "Sample Extricator",
     "warbond": "borderlineJustice",
-    "internalName": "sampleextricator",
+    "id": "sampleextricator",
     "imageURL": "sampleextricator.webp"
   },
   {
     "displayName": "Sample Scanner",
     "warbond": "mastersOfCeremony",
-    "internalName": "samplescanner",
+    "id": "samplescanner",
     "imageURL": "samplescanner.webp"
   },
   {
     "displayName": "Stun Pods",
     "warbond": "forceOfLaw",
-    "internalName": "stunpods",
+    "id": "stunpods",
     "imageURL": "stunpods.webp"
   },
   {
     "displayName": "Concealed Insertion",
     "warbond": "redactedRegiment",
-    "internalName": "concealedinsertion",
+    "id": "concealedinsertion",
     "imageURL": "concealedinsertion.webp"
   }
 ]

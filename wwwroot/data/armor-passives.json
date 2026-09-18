@@ -2,169 +2,169 @@
   {
     "displayName": "Advanced Filtration",
     "warbond": "chemicalAgents",
-    "internalName": "advancedfiltration",
+    "id": "advancedfiltration",
     "imageURL": "advancedfiltration.webp"
   },
   {
     "displayName": "Acclimated",
     "warbond": "killzone",
-    "internalName": "acclimated",
+    "id": "acclimated",
     "imageURL": "inflammable.webp"
   },
   {
     "displayName": "Democracy Protects",
     "warbond": "none",
-    "internalName": "democracyprotects",
+    "id": "democracyprotects",
     "imageURL": "democracyprotects.webp"
   },
   {
     "displayName": "Electrical Conduit",
     "warbond": "cuttingEdge",
-    "internalName": "electricalconduit",
+    "id": "electricalconduit",
     "imageURL": "electricalconduit.webp"
   },
   {
     "displayName": "Engineering Kit",
     "warbond": "helldiversMobilize",
-    "internalName": "engineeringkit",
+    "id": "engineeringkit",
     "imageURL": "engineeringkit.webp"
   },
   {
     "displayName": "Extra Padding",
     "warbond": "none",
-    "internalName": "extrapadding",
+    "id": "extrapadding",
     "imageURL": "extrapadding.webp"
   },
   {
     "displayName": "Fortified",
     "warbond": "democraticDetonation",
-    "internalName": "fortified",
+    "id": "fortified",
     "imageURL": "fortified.webp"
   },
   {
     "displayName": "Inflammable",
     "warbond": "freedomsFlame",
-    "internalName": "inflammable",
+    "id": "inflammable",
     "imageURL": "inflammable.webp"
   },
   {
     "displayName": "Med-Kit",
     "warbond": "helldiversMobilize",
-    "internalName": "medkit",
+    "id": "medkit",
     "imageURL": "medkit.webp"
   },
   {
     "displayName": "Peak Physique",
     "warbond": "viperCommandos",
-    "internalName": "peakphysique",
+    "id": "peakphysique",
     "imageURL": "peakphysique.webp"
   },
   {
     "displayName": "Scout",
     "warbond": "helldiversMobilize",
-    "internalName": "scout",
+    "id": "scout",
     "imageURL": "scout.webp"
   },
   {
     "displayName": "Servo-Assisted",
     "warbond": "steeledVeterans",
-    "internalName": "servoassisted",
+    "id": "servoassisted",
     "imageURL": "servoassisted.webp"
   },
   {
     "displayName": "Unflinching",
     "warbond": "truthEnforcers",
-    "internalName": "unflinching",
+    "id": "unflinching",
     "imageURL": "unflinching.webp"
   },
   {
     "displayName": "Siege Ready",
     "warbond": "urbanLegends",
-    "internalName": "siegeready",
+    "id": "siegeready",
     "imageURL": "siegeready.webp"
   },
   {
     "displayName": "Integrated Explosives",
     "warbond": "servantsOfFreedom",
-    "internalName": "integratedexplosives",
+    "id": "integratedexplosives",
     "imageURL": "integratedexplosives.webp"
   },
   {
     "displayName": "Gunslinger",
     "warbond": "borderlineJustice",
-    "internalName": "gunslinger",
+    "id": "gunslinger",
     "imageURL": "gunslinger.webp"
   },
   {
     "displayName": "Reinforced Epaulettes",
     "warbond": "mastersOfCeremony",
-    "internalName": "reinforcedepaulettes",
+    "id": "reinforcedepaulettes",
     "imageURL": "reinforcedepaulettes.webp"
   },
   {
     "displayName": "Ballistic Padding",
     "warbond": "forceOfLaw",
-    "internalName": "ballisticpadding",
+    "id": "ballisticpadding",
     "imageURL": "ballisticpadding.webp"
   },
   {
     "displayName": "Adreno-Defibrillator",
     "warbond": "controlGroup",
-    "internalName": "adrenodefibrillator",
+    "id": "adrenodefibrillator",
     "imageURL": "adrenodefibrillator.webp"
   },
   {
     "displayName": "Feet First",
     "warbond": "haloODST",
-    "internalName": "feetfirst",
+    "id": "feetfirst",
     "imageURL": "feetfirst.webp"
   },
   {
     "displayName": "Desert Stormer",
     "warbond": "dustDevils",
-    "internalName": "desertstormer",
+    "id": "desertstormer",
     "imageURL": "desertstormer.webp"
   },
   {
     "displayName": "Rock Solid",
     "warbond": "pythonCommandos",
-    "internalName": "rocksolid",
+    "id": "rocksolid",
     "imageURL": "rocksolid.webp"
   },
   {
     "displayName": "Reduced Signature",
     "warbond": "redactedRegiment",
-    "internalName": "reducedsignature",
+    "id": "reducedsignature",
     "imageURL": "reducedsignature.webp"
   },
   {
     "displayName": "Supplementary Adrenaline",
     "warbond": "siegeBreakers",
-    "internalName": "supplementaryadrenaline",
+    "id": "supplementaryadrenaline",
     "imageURL": "supplementaryadrenaline.webp"
   },
   {
     "displayName": "Concussive Padding",
     "warbond": "entrenchedDivision",
-    "internalName": "concussivepadding",
+    "id": "concussivepadding",
     "imageURL": "concussivepadding.webp"
   },
   {
     "displayName": "Oxygenator",
     "warbond": "exoExperts",
-    "internalName": "oxygenator",
+    "id": "oxygenator",
     "imageURL": "oxygenator.webp"
   },
   {
     "displayName": "Kinetic Displacement Mitigation",
     "warbond": "none",
-    "internalName": "kineticdisplacementmitigation",
+    "id": "kineticdisplacementmitigation",
     "imageURL": "kineticdisplacementmitigation.webp"
   },
   {
     "displayName": "True Grit",
     "warbond": "warhammer40k",
-    "internalName": "truegrit",
+    "id": "truegrit",
     "imageURL": "truegrit.webp"
   }
 ]

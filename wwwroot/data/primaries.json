@@ -3,7 +3,7 @@
     "displayName": "Liberator",
     "tags": ["AssaultRifle"],
     "warbond": "none",
-    "internalName": "ar23liberator",
+    "id": "ar23liberator",
     "imageURL": "ar23liberator.webp",
     "antitank": false
   },
@@ -11,7 +11,7 @@
     "displayName": "Liberator Penetrator",
     "tags": ["AssaultRifle"],
     "warbond": "helldiversMobilize",
-    "internalName": "ar23pliberatorpenetrator",
+    "id": "ar23pliberatorpenetrator",
     "imageURL": "ar23pliberatorpenetrator.webp",
     "antitank": false
   },
@@ -19,7 +19,7 @@
     "displayName": "Liberator Concussive",
     "tags": ["AssaultRifle"],
     "warbond": "steeledVeterans",
-    "internalName": "ar23cliberatorconcussive",
+    "id": "ar23cliberatorconcussive",
     "imageURL": "ar23cliberatorconcussive.webp",
     "antitank": false
   },
@@ -27,7 +27,7 @@
     "displayName": "Liberator Carbine",
     "tags": ["AssaultRifle"],
     "warbond": "viperCommandos",
-    "internalName": "ar23aliberatorcarbine",
+    "id": "ar23aliberatorcarbine",
     "imageURL": "ar23aliberatorcarbine.webp",
     "antitank": false
   },
@@ -35,7 +35,7 @@
     "displayName": "Adjudicator",
     "tags": ["AssaultRifle"],
     "warbond": "democraticDetonation",
-    "internalName": "br14adjudicator",
+    "id": "br14adjudicator",
     "imageURL": "br14adjudicator.webp",
     "antitank": false
   },
@@ -43,7 +43,7 @@
     "displayName": "StA-52 Assault Rifle",
     "tags": ["AssaultRifle"],
     "warbond": "killzone",
-    "internalName": "sta52assaultrifle",
+    "id": "sta52assaultrifle",
     "imageURL": "sta52assaultrifle.webp",
     "antitank": false
   },
@@ -51,7 +51,7 @@
     "displayName": "Pacifier",
     "tags": ["AssaultRifle", "Stun"],
     "warbond": "forceOfLaw",
-    "internalName": "ar32pacifier",
+    "id": "ar32pacifier",
     "imageURL": "ar32pacifier.webp",
     "antitank": false
   },
@@ -59,7 +59,7 @@
     "displayName": "Tenderizer",
     "tags": ["AssaultRifle"],
     "warbond": "polarPatriots",
-    "internalName": "ar61tenderizer",
+    "id": "ar61tenderizer",
     "imageURL": "ar61tenderizer.webp",
     "antitank": false
   },
@@ -67,7 +67,7 @@
     "displayName": "MA5C Assault Rifle",
     "tags": ["AssaultRifle"],
     "warbond": "haloODST",
-    "internalName": "ma5c",
+    "id": "ma5c",
     "imageURL": "ma5c.webp",
     "antitank": false
   },
@@ -75,7 +75,7 @@
     "displayName": "AR-2 Coyote",
     "tags": ["AssaultRifle", "Fire"],
     "warbond": "dustDevils",
-    "internalName": "ar2coyote",
+    "id": "ar2coyote",
     "imageURL": "ar2coyote.webp",
     "antitank": false
   },
@@ -83,7 +83,7 @@
     "displayName": "One Two",
     "tags": ["AssaultRifle", "Explosive"],
     "warbond": "pythonCommandos",
-    "internalName": "onetwo",
+    "id": "onetwo",
     "imageURL": "onetwo.webp",
     "antitank": false
   },
@@ -91,7 +91,7 @@
     "displayName": "Suppressor",
     "tags": ["AssaultRifle", "Suppressed"],
     "warbond": "redactedRegiment",
-    "internalName": "ar59suppressor",
+    "id": "ar59suppressor",
     "imageURL": "ar59suppressor.webp",
     "antitank": false
   },
@@ -99,7 +99,7 @@
     "displayName": "Defender",
     "tags": ["SubmachineGun", "One-Handed"],
     "warbond": "helldiversMobilize",
-    "internalName": "smg37defender",
+    "id": "smg37defender",
     "imageURL": "smg37defender.webp",
     "antitank": false
   },
@@ -107,7 +107,7 @@
     "displayName": "Pummeler",
     "tags": ["SubmachineGun", "One-Handed"],
     "warbond": "polarPatriots",
-    "internalName": "smg72pummeler",
+    "id": "smg72pummeler",
     "imageURL": "smg72pummeler.webp",
     "antitank": false
   },
@@ -115,7 +115,7 @@
     "displayName": "Reprimand",
     "tags": ["SubmachineGun"],
     "warbond": "truthEnforcers",
-    "internalName": "smg32reprimand",
+    "id": "smg32reprimand",
     "imageURL": "smg32reprimand.webp",
     "antitank": false
   },
@@ -123,7 +123,7 @@
     "displayName": "StA-11 SMG",
     "tags": ["SubmachineGun", "One-Handed"],
     "warbond": "killzone",
-    "internalName": "sta11smg",
+    "id": "sta11smg",
     "imageURL": "sta11smg.webp",
     "antitank": false
   },
@@ -131,7 +131,7 @@
     "displayName": "Knight",
     "tags": ["SubmachineGun", "One-Handed"],
     "warbond": "superCitizenEdition",
-    "internalName": "mp98knight",
+    "id": "mp98knight",
     "imageURL": "mp98knight.webp",
     "antitank": false
   },
@@ -139,7 +139,7 @@
     "displayName": "M7S SMG",
     "tags": ["SubmachineGun", "One-Handed"],
     "warbond": "haloODST",
-    "internalName": "m7s",
+    "id": "m7s",
     "imageURL": "m7s.webp",
     "antitank": false
   },
@@ -147,7 +147,7 @@
     "displayName": "Double Freedom",
     "tags": ["Shotgun"],
     "warbond": "superstore",
-    "internalName": "doublefreedom",
+    "id": "doublefreedom",
     "imageURL": "doublefreedom.webp",
     "antitank": false
   },
@@ -155,7 +155,7 @@
     "displayName": "Punisher",
     "tags": ["Shotgun"],
     "warbond": "helldiversMobilize",
-    "internalName": "sg8punisher",
+    "id": "sg8punisher",
     "imageURL": "sg8punisher.webp",
     "antitank": false
   },
@@ -163,7 +163,7 @@
     "displayName": "Cookout",
     "tags": ["Shotgun", "Fire"],
     "warbond": "freedomsFlame",
-    "internalName": "sg451cookout",
+    "id": "sg451cookout",
     "imageURL": "sg451cookout.webp",
     "antitank": false
   },
@@ -171,7 +171,7 @@
     "displayName": "Slugger",
     "tags": ["Shotgun"],
     "warbond": "helldiversMobilize",
-    "internalName": "sg8sslugger",
+    "id": "sg8sslugger",
     "imageURL": "sg8sslugger.webp",
     "antitank": false
   },
@@ -179,7 +179,7 @@
     "displayName": "Breaker",
     "tags": ["Shotgun"],
     "warbond": "helldiversMobilize",
-    "internalName": "sg225breaker",
+    "id": "sg225breaker",
     "imageURL": "sg225breaker.webp",
     "antitank": false
   },
@@ -187,7 +187,7 @@
     "displayName": "Breaker Incendiary",
     "tags": ["Shotgun", "Fire"],
     "warbond": "steeledVeterans",
-    "internalName": "sg225iebreakerincendiary",
+    "id": "sg225iebreakerincendiary",
     "imageURL": "sg225iebreakerincendiary.webp",
     "antitank": false
   },
@@ -195,7 +195,7 @@
     "displayName": "Breaker Spray & Pray",
     "tags": ["Shotgun"],
     "warbond": "helldiversMobilize",
-    "internalName": "sg225spbreakerspraynpray",
+    "id": "sg225spbreakerspraynpray",
     "imageURL": "sg225spbreakerspraynpray.webp",
     "antitank": false
   },
@@ -203,7 +203,7 @@
     "displayName": "Halt",
     "tags": ["Shotgun", "Stun"],
     "warbond": "truthEnforcers",
-    "internalName": "sg20halt",
+    "id": "sg20halt",
     "imageURL": "sg20halt.webp",
     "antitank": false
   },
@@ -211,7 +211,7 @@
     "displayName": "M90A Shotgun",
     "tags": ["Shotgun"],
     "warbond": "haloODST",
-    "internalName": "m90a",
+    "id": "m90a",
     "imageURL": "m90a.webp",
     "antitank": false
   },
@@ -219,7 +219,7 @@
     "displayName": "Diligence",
     "tags": ["MarksmanRifle"],
     "warbond": "helldiversMobilize",
-    "internalName": "r63diligence",
+    "id": "r63diligence",
     "imageURL": "r63diligence.webp",
     "antitank": false
   },
@@ -227,7 +227,7 @@
     "displayName": "Diligence Counter Sniper",
     "tags": ["MarksmanRifle"],
     "warbond": "helldiversMobilize",
-    "internalName": "r63csdiligencecountersniper",
+    "id": "r63csdiligencecountersniper",
     "imageURL": "r63csdiligencecountersniper.webp",
     "antitank": false
   },
@@ -235,7 +235,7 @@
     "displayName": "Deadeye",
     "tags": ["MarksmanRifle"],
     "warbond": "borderlineJustice",
-    "internalName": "r6deadeye",
+    "id": "r6deadeye",
     "imageURL": "r6deadeye.webp",
     "antitank": false
   },
@@ -243,7 +243,7 @@
     "displayName": "Amendment",
     "tags": ["MarksmanRifle", "Melee"],
     "warbond": "mastersOfCeremony",
-    "internalName": "r2amendment",
+    "id": "r2amendment",
     "imageURL": "r2amendment.webp",
     "antitank": false
   },
@@ -251,7 +251,7 @@
     "displayName": "Censor",
     "tags": ["MarksmanRifle", "Suppressed"],
     "warbond": "redactedRegiment",
-    "internalName": "r72censor",
+    "id": "r72censor",
     "imageURL": "r72censor.webp",
     "antitank": false
   },
@@ -259,7 +259,7 @@
     "displayName": "Constitution",
     "tags": ["MarksmanRifle", "Melee"],
     "warbond": "none",
-    "internalName": "r2124constitution",
+    "id": "r2124constitution",
     "imageURL": "r2124constitution.webp",
     "antitank": false
   },
@@ -267,7 +267,7 @@
     "displayName": "Scythe",
     "tags": ["EnergyWeapon", "Laser"],
     "warbond": "helldiversMobilize",
-    "internalName": "las5scythe",
+    "id": "las5scythe",
     "imageURL": "las5scythe.webp",
     "antitank": false
   },
@@ -275,7 +275,7 @@
     "displayName": "Sickle",
     "tags": ["EnergyWeapon"],
     "warbond": "cuttingEdge",
-    "internalName": "las16sickle",
+    "id": "las16sickle",
     "imageURL": "las16sickle.webp",
     "antitank": false
   },
@@ -283,7 +283,7 @@
     "displayName": "Scorcher",
     "tags": ["EnergyWeapon", "Plasma"],
     "warbond": "helldiversMobilize",
-    "internalName": "plas1scorcher",
+    "id": "plas1scorcher",
     "imageURL": "plas1scorcher.webp",
     "antitank": false
   },
@@ -291,7 +291,7 @@
     "displayName": "Purifier",
     "tags": ["EnergyWeapon", "Plasma"],
     "warbond": "polarPatriots",
-    "internalName": "plas101purifier",
+    "id": "plas101purifier",
     "imageURL": "plas101purifier.webp",
     "antitank": false
   },
@@ -299,7 +299,7 @@
     "displayName": "Punisher Plasma",
     "tags": ["EnergyWeapon", "Plasma"],
     "warbond": "cuttingEdge",
-    "internalName": "sg8ppunisherplasma",
+    "id": "sg8ppunisherplasma",
     "imageURL": "sg8ppunisherplasma.webp",
     "antitank": false
   },
@@ -307,7 +307,7 @@
     "displayName": "Blitzer",
     "tags": ["EnergyWeapon", "Arc"],
     "warbond": "cuttingEdge",
-    "internalName": "arc12blitzer",
+    "id": "arc12blitzer",
     "imageURL": "arc12blitzer.webp",
     "antitank": false
   },
@@ -315,7 +315,7 @@
     "displayName": "Double Edge Sickle",
     "tags": ["EnergyWeapon"],
     "warbond": "servantsOfFreedom",
-    "internalName": "las17doubleedgesickle",
+    "id": "las17doubleedgesickle",
     "imageURL": "las17doubleedgesickle.webp",
     "antitank": false
   },
@@ -323,7 +323,7 @@
     "displayName": "PLAS-39 Accelerator Rifle",
     "tags": ["MarksmanRifle", "Plasma"],
     "warbond": "killzone",
-    "internalName": "plas39acceleratorrifle",
+    "id": "plas39acceleratorrifle",
     "imageURL": "plas39acceleratorrifle.webp",
     "antitank": false
   },
@@ -331,7 +331,7 @@
     "displayName": "Eruptor",
     "tags": ["Explosive"],
     "warbond": "democraticDetonation",
-    "internalName": "r36eruptor",
+    "id": "r36eruptor",
     "imageURL": "r36eruptor.webp",
     "antitank": true
   },
@@ -339,7 +339,7 @@
     "displayName": "Exploding Crossbow",
     "tags": ["Explosive", "One-Handed"],
     "warbond": "democraticDetonation",
-    "internalName": "cb9explodingcrossbow",
+    "id": "cb9explodingcrossbow",
     "imageURL": "cb9explodingcrossbow.webp",
     "antitank": false
   },
@@ -347,7 +347,7 @@
     "displayName": "Variable",
     "tags": ["AssaultRifle"],
     "warbond": "controlGroup",
-    "internalName": "variable",
+    "id": "variable",
     "imageURL": "variable.webp",
     "antitank": false
   },
@@ -355,7 +355,7 @@
     "displayName": "Dominator",
     "tags": ["Explosive"],
     "warbond": "steeledVeterans",
-    "internalName": "jar5dominator",
+    "id": "jar5dominator",
     "imageURL": "jar5dominator.webp",
     "antitank": false
   },
@@ -363,7 +363,7 @@
     "displayName": "Torcher",
     "tags": ["Special", "Fire"],
     "warbond": "freedomsFlame",
-    "internalName": "flam66torcher",
+    "id": "flam66torcher",
     "imageURL": "flam66torcher.webp",
     "antitank": false
   },
@@ -371,7 +371,7 @@
     "displayName": "Trident",
     "tags": ["EnergyWeapon"],
     "warbond": "siegeBreakers",
-    "internalName": "las16trident",
+    "id": "las16trident",
     "imageURL": "las16trident.webp",
     "antitank": false
   },
@@ -379,7 +379,7 @@
     "displayName": "Stoker",
     "tags": ["SubmachineGun", "Fire", "One-Handed"],
     "warbond": "entrenchedDivision",
-    "internalName": "smgflam34stoker",
+    "id": "smgflam34stoker",
     "imageURL": "smgflam34stoker.webp",
     "antitank": false
   },
@@ -387,7 +387,7 @@
     "displayName": "Sweeper",
     "tags": ["Shotgun", "Melee"],
     "warbond": "superstore",
-    "internalName": "sg97sweeper",
+    "id": "sg97sweeper",
     "imageURL": "sg97sweeper.webp",
     "antitank": false
   },
@@ -395,7 +395,7 @@
     "displayName": "Gallant",
     "tags": ["SubmachineGun", "One-Handed"],
     "warbond": "exoExperts",
-    "internalName": "smg203gallant",
+    "id": "smg203gallant",
     "imageURL": "smg203gallant.webp",
     "antitank": false
   },
@@ -403,7 +403,7 @@
     "displayName": "Hyena",
     "tags": ["MarksmanRifle"],
     "warbond": "none",
-    "internalName": "r4hyena",
+    "id": "r4hyena",
     "imageURL": "r4hyena.webp",
     "antitank": false
   },
@@ -411,7 +411,7 @@
     "displayName": "Hot Shot Marksman Rifle",
     "tags": ["MarksmanRifle"],
     "warbond": "warhammer40k",
-    "internalName": "hotshotmarksmanrifle",
+    "id": "hotshotmarksmanrifle",
     "imageURL": "hotshotmarksmanrifle.webp",
     "antitank": false
   }

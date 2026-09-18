@@ -66,8 +66,8 @@ else
                     {
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@warbond.InternalName" checked="@_state.SelectedWarbonds.Any(item => item.InternalName == warbond.InternalName)" disabled="@(!_state.CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.InternalName, e.Value as bool? == true, warbond.AlwaysEnabled))" />
-                                <label class="form-check-label text-light" for="@warbond.InternalName">@warbond.DisplayName</label>
+                                <input class="form-check-input" type="checkbox" id="@warbond.Id" checked="@_state.SelectedWarbonds.Any(item => item.Id == warbond.Id)" disabled="@(!_state.CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.Id, e.Value as bool? == true, warbond.AlwaysEnabled))" />
+                                <label class="form-check-label text-light" for="@warbond.Id">@warbond.DisplayName</label>
                             </div>
                         </div>
                     }
@@ -141,7 +141,7 @@ else
                 {
                     @foreach (GameItem item in group)
                     {
-                        <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.InternalName))" />
+                        <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.Id))" />
                     }
                 }
             </div>
@@ -162,7 +162,7 @@ else
             <div class="item-grid">
                 @foreach (var item in _state.PendingPunishmentItems)
                 {
-                    <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.InternalName))" />
+                    <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.Id))" />
                 }
             </div>
         }
@@ -266,7 +266,7 @@ else
         return Task.CompletedTask;
     }
 
-    private async Task TogglePenitentWarbondAsync(string internalName, bool isChecked, bool alwaysEnabled)
+    private async Task TogglePenitentWarbondAsync(string id, bool isChecked, bool alwaysEnabled)
     {
         if (alwaysEnabled)
         {
@@ -275,15 +275,15 @@ else
 
         if (isChecked)
         {
-            if (!_state.SelectedWarbonds.Any(item => item.InternalName == internalName))
+            if (!_state.SelectedWarbonds.Any(item => item.Id == id))
             {
-                var warbond = Catalog.Warbonds.First(item => item.InternalName == internalName);
+                var warbond = Catalog.Warbonds.First(item => item.Id == id);
                 _state.SelectedWarbonds.Add(warbond);
             }
         }
         else
         {
-            _state.SelectedWarbonds.RemoveAll(item => item.InternalName == internalName);
+            _state.SelectedWarbonds.RemoveAll(item => item.Id == id);
         }
 
         await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty.Id, _state.SelectedWarbonds));
@@ -343,9 +343,9 @@ else
         _showPunishmentModal = true;
     }
 
-    private async Task ClaimPenitentRewardAsync(string internalName)
+    private async Task ClaimPenitentRewardAsync(string id)
     {
-        if (RewardService.ClaimReward(_state, internalName))
+        if (RewardService.ClaimReward(_state, id))
         {
             _selectedStars = 1;
             AdvancePenitentMission();
@@ -365,9 +365,9 @@ else
         }
     }
 
-    private async Task ClaimPenitentPunishmentAsync(string internalName)
+    private async Task ClaimPenitentPunishmentAsync(string id)
     {
-        if (RewardService.ClaimPunishment(_state, internalName))
+        if (RewardService.ClaimPunishment(_state, id))
         {
             MissionService.ApplyMissionFailure(_state);
             _selectedStars = 1;
@@ -524,6 +524,7 @@ else
         {
             CurrentPenitentSlot.State = _state.ToDefinition();
         }
+        
 
         await PersistPenitentAsync();
     }
@@ -555,17 +556,17 @@ else
 
     private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<Warbond>? selectedWarbonds = null)
     {
-        List<Warbond> warbonds = selectedWarbonds?.DistinctBy(item => item.InternalName).ToList() ?? Catalog.Warbonds.ToList();
-        if (!warbonds.Any(item => item.InternalName == "helldiversMobilize"))
+        List<Warbond> warbonds = selectedWarbonds?.DistinctBy(item => item.Id).ToList() ?? Catalog.Warbonds.ToList();
+        if (!warbonds.Any(item => item.Id == "helldiversMobilize"))
         {
-            warbonds.Add(Catalog.Warbonds.First(item => item.InternalName == "helldiversMobilize"));
+            warbonds.Add(Catalog.Warbonds.First(item => item.Id == "helldiversMobilize"));
         }
 
         var startOperation = GetPenitentDifficulty(difficulty).StartOperation;
         var definition = new PenitentStateDefinition
         {
             DifficultyId = difficulty,
-            SelectedWarbonds = warbonds.Select(item => item.InternalName).ToList(),
+            SelectedWarbonds = warbonds.Select(item => item.Id).ToList(),
         };
 
         var state = new PenitentState(definition, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
@@ -606,8 +607,8 @@ else
 
     private PenitentDifficulty GetPenitentDifficulty(string id) => Catalog.PenitentDifficulties.First(option => option.Id == id);
 
-    private List<Warbond> ResolveSelectedWarbonds(IEnumerable<string> internalNames) =>
-        Catalog.Warbonds.Where(warbond => internalNames.Contains(warbond.InternalName)).ToList();
+    private List<Warbond> ResolveSelectedWarbonds(IEnumerable<string> ids) =>
+        Catalog.Warbonds.Where(warbond => ids.Contains(warbond.Id)).ToList();
 
     private Operation GetPenitentOperation(string operationIndex, int missionIndex)
     {

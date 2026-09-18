@@ -16,7 +16,7 @@ public sealed class GameItem : IEquatable<GameItem>
 {
     public string DisplayName { get; init; } = string.Empty;
     public List<string> Tags { get; init; } = [];
-    public string InternalName { get; init; } = string.Empty;
+    public string Id { get; init; } = string.Empty;
     public string ImageURL { get; init; } = string.Empty;
     public bool Antitank { get; init; } = false;
 
@@ -44,7 +44,7 @@ public sealed class GameItem : IEquatable<GameItem>
 
     private void ResolveWarbond(IReadOnlyList<Warbond> warbonds)
     {
-        Warbond = warbonds.FirstOrDefault(w => string.Equals(w.InternalName, _warbond, StringComparison.OrdinalIgnoreCase));
+        Warbond = warbonds.FirstOrDefault(w => string.Equals(w.Id, _warbond, StringComparison.OrdinalIgnoreCase));
     }
 
     public void PostInitSetup(ItemKind kind, IReadOnlyList<Warbond> warbonds)
@@ -53,9 +53,9 @@ public sealed class GameItem : IEquatable<GameItem>
         ResolveWarbond(warbonds);
     }
 
-    public bool Equals(GameItem? other) => other is GameItem gi && string.Equals(InternalName, gi.InternalName, StringComparison.OrdinalIgnoreCase);
+    public bool Equals(GameItem? other) => other is GameItem gi && string.Equals(Id, gi.Id, StringComparison.OrdinalIgnoreCase);
 
     public override bool Equals(object? obj) => Equals(obj as GameItem);
 
-    public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(InternalName);
+    public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(Id);
 }

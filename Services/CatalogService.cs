@@ -73,14 +73,14 @@ public sealed class CatalogService(HttpClient httpClient)
         return null;
     }
 
-    public ItemSet GetItemSet(IEnumerable<string> internalNames) => new()
+    public ItemSet GetItemSet(IEnumerable<string> ids) => new()
     {
-        Stratagems = [.. AllItemsSet.Stratagems.Where(item => internalNames.Contains(item.InternalName))],
-        Primaries = [.. AllItemsSet.Primaries.Where(item => internalNames.Contains(item.InternalName))],
-        Secondaries = [.. AllItemsSet.Secondaries.Where(item => internalNames.Contains(item.InternalName))],
-        Throwables = [.. AllItemsSet.Throwables.Where(item => internalNames.Contains(item.InternalName))],
-        ArmorPassives = [.. AllItemsSet.ArmorPassives.Where(item => internalNames.Contains(item.InternalName))],
-        Boosters = [.. AllItemsSet.Boosters.Where(item => internalNames.Contains(item.InternalName))]
+        Stratagems = [.. AllItemsSet.Stratagems.Where(item => ids.Contains(item.Id))],
+        Primaries = [.. AllItemsSet.Primaries.Where(item => ids.Contains(item.Id))],
+        Secondaries = [.. AllItemsSet.Secondaries.Where(item => ids.Contains(item.Id))],
+        Throwables = [.. AllItemsSet.Throwables.Where(item => ids.Contains(item.Id))],
+        ArmorPassives = [.. AllItemsSet.ArmorPassives.Where(item => ids.Contains(item.Id))],
+        Boosters = [.. AllItemsSet.Boosters.Where(item => ids.Contains(item.Id))]
     };
 
     public ItemSet ResolveLoadout(PenitentStarterLoadoutDefinition definition) => new()

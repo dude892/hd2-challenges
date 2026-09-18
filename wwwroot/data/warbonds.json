@@ -1,111 +1,111 @@
 [
   {
     "displayName": "Super Citizen Edition",
-    "internalName": "superCitizenEdition"
+    "id": "superCitizenEdition"
   },
   {
     "displayName": "Superstore",
-    "internalName": "superstore"
+    "id": "superstore"
   },
   {
     "displayName": "Pre-Order Bonus",
-    "internalName": "preOrderBonus"
+    "id": "preOrderBonus"
   },
   {
     "displayName": "Helldivers Mobilize",
-    "internalName": "helldiversMobilize",
+    "id": "helldiversMobilize",
     "alwaysenabled": true
   },
   {
     "displayName": "Steeled Veterans",
-    "internalName": "steeledVeterans"
+    "id": "steeledVeterans"
   },
   {
     "displayName": "Cutting Edge",
-    "internalName": "cuttingEdge"
+    "id": "cuttingEdge"
   },
   {
     "displayName": "Democratic Detonation",
-    "internalName": "democraticDetonation"
+    "id": "democraticDetonation"
   },
   {
     "displayName": "Polar Patriots",
-    "internalName": "polarPatriots"
+    "id": "polarPatriots"
   },
   {
     "displayName": "Viper Commandos",
-    "internalName": "viperCommandos"
+    "id": "viperCommandos"
   },
   {
     "displayName": "Freedom's Flame",
-    "internalName": "freedomsFlame"
+    "id": "freedomsFlame"
   },
   {
     "displayName": "Chemical Agents",
-    "internalName": "chemicalAgents"
+    "id": "chemicalAgents"
   },
   {
     "displayName": "Truth Enforcers",
-    "internalName": "truthEnforcers"
+    "id": "truthEnforcers"
   },
   {
     "displayName": "Urban Legends",
-    "internalName": "urbanLegends"
+    "id": "urbanLegends"
   },
   {
     "displayName": "Servants of Freedom",
-    "internalName": "servantsOfFreedom"
+    "id": "servantsOfFreedom"
   },
   {
     "displayName": "Borderline Justice",
-    "internalName": "borderlineJustice"
+    "id": "borderlineJustice"
   },
   {
     "displayName": "Masters of Ceremony",
-    "internalName": "mastersOfCeremony"
+    "id": "mastersOfCeremony"
   },
   {
     "displayName": "Force of Law",
-    "internalName": "forceOfLaw"
+    "id": "forceOfLaw"
   },
   {
     "displayName": "Control Group",
-    "internalName": "controlGroup"
+    "id": "controlGroup"
   },
   {
     "displayName": "Killzone",
-    "internalName": "killzone"
+    "id": "killzone"
   },
   {
     "displayName": "Halo ODST",
-    "internalName": "haloODST"
+    "id": "haloODST"
   },
   {
     "displayName": "Dust Devils",
-    "internalName": "dustDevils"
+    "id": "dustDevils"
   },
   {
     "displayName": "Python Commandos",
-    "internalName": "pythonCommandos"
+    "id": "pythonCommandos"
   },
   {
     "displayName": "Redacted Regiment",
-    "internalName": "redactedRegiment"
+    "id": "redactedRegiment"
   },
   {
     "displayName": "Siege Breakers",
-    "internalName": "siegeBreakers"
+    "id": "siegeBreakers"
   },
   {
     "displayName": "Entrenched Division",
-    "internalName": "entrenchedDivision"
+    "id": "entrenchedDivision"
   },
   {
     "displayName": "Exo Experts",
-    "internalName": "exoExperts"
+    "id": "exoExperts"
   },
   {
     "displayName": "Warhammer 40k",
-    "internalName": "warhammer40k"
+    "id": "warhammer40k"
   }
 ]

@@ -20,9 +20,9 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public bool ClaimReward(PenitentState state, string internalName)
+    public bool ClaimReward(PenitentState state, string id)
     {
-        GameItem? reward = state.PendingRewardItems.FirstOrDefault(item => item.InternalName == internalName);
+        GameItem? reward = state.PendingRewardItems.FirstOrDefault(item => item.Id == id);
         if (reward is null)
         {
             return false;
@@ -59,9 +59,9 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public bool ClaimPunishment(PenitentState state, string internalName)
+    public bool ClaimPunishment(PenitentState state, string id)
     {
-        GameItem? punishment = state.PendingPunishmentItems.FirstOrDefault(item => item.InternalName == internalName);
+        GameItem? punishment = state.PendingPunishmentItems.FirstOrDefault(item => item.Id == id);
         if (punishment is null)
         {
             return false;
@@ -96,7 +96,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
             rewardPool.AllItems
                 .OrderBy(_ => Random.Shared.Next())
                 .Take(Math.Min(rewardQuantity, rewardPool.Count))
-                .DistinctBy(item => item.InternalName)
+                .DistinctBy(item => item.Id)
                 .ToList());
     }
 }
