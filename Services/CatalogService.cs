@@ -53,10 +53,24 @@ public sealed class CatalogService(HttpClient httpClient)
         _loaded = true;
     }
 
-    public Operation GetOperation(string id)
+    public Operation GetOperation(string id) => new(Operations.First(option => option.Id == id));
+
+    public OperationDefinition? GetNextOperationDefinition(string operationId)
     {
-        var definition = Operations.First(option => option.Id == id);
-        return new Operation(definition);
+        for (int i = 0; i < Operations.Count; i++)
+        {
+            if (Operations[i].Id == operationId)
+            {
+                if (i + 1 < Operations.Count)
+                {
+                    return Operations[i + 1];
+                }
+
+                return null;
+            }
+        }
+
+        return null;
     }
 
     public ItemSet GetItemSet(IEnumerable<string> internalNames) => new()

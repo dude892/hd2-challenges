@@ -12,5 +12,6 @@ builder.Services.AddScoped<CatalogService>();
 builder.Services.AddScoped<BrowserStorageService>();
 builder.Services.AddScoped<FileExportService>();
 builder.Services.AddScoped<PenitentRewardService>();
+builder.Services.AddScoped<PenitentMissionService>();
 
 await builder.Build().RunAsync();

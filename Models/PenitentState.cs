@@ -19,8 +19,7 @@ public sealed class PenitentState(
     public ItemSet PendingRewardItems { get; set; } = resolveItemSet(definition.PendingRewardInternalNames);
     public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentInternalNames);
 
-    public bool CanEditPenitentSetup => CurrentOperation.Id == Difficulty.StartOperation.Id && CurrentOperation.MissionNumber == 0;
-
+    public bool CanEditPenitentSetup => CurrentOperation.Id == Difficulty.StartOperation.Id && CurrentOperation.IsFirstMission;
 
     public PenitentStateDefinition ToDefinition() => new()
     {

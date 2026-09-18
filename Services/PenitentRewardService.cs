@@ -7,8 +7,73 @@ public sealed class PenitentRewardService(CatalogService catalogService)
     private CatalogService Catalog { get; } = catalogService;
 
     public ItemSet GetRewardPool(PenitentState state) => Catalog.FilterAllItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
+    private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.Id == "hard" && state.CurrentOperation.IsLastMission;
 
-    public ItemSet RollRewardItems(PenitentState state, int selectedStars, int currentMissionNumber)
+    public bool EnsurePendingRewards(PenitentState state, int selectedStars)
+    {
+        if (state.PendingRewardItems.Count != 0)
+        {
+            return false;
+        }
+
+        state.PendingRewardItems = RollRewardItems(state, selectedStars);
+        return true;
+    }
+
+    public bool ClaimReward(PenitentState state, string internalName)
+    {
+        GameItem? reward = state.PendingRewardItems.FirstOrDefault(item => item.InternalName == internalName);
+        if (reward is null)
+        {
+            return false;
+        }
+
+        state.AcquiredItems.AddItem(reward);
+        state.PendingRewardItems.Clear();
+        return true;
+    }
+
+    public bool BanPendingRewards(PenitentState state)
+    {
+        if (state.PendingRewardItems.Count == 0)
+        {
+            return false;
+        }
+
+        state.BannedItems.AddItems(state.PendingRewardItems);
+        state.PendingRewardItems.Clear();
+        return true;
+    }
+
+    public bool EnsurePendingPunishments(PenitentState state)
+    {
+        if (state.PendingPunishmentItems.Count != 0)
+        {
+            return false;
+        }
+
+        var punishmentPool = state.AcquiredItems
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(Math.Min(3, state.AcquiredItems.Count));
+        state.PendingPunishmentItems = new ItemSet(punishmentPool);
+        return true;
+    }
+
+    public bool ClaimPunishment(PenitentState state, string internalName)
+    {
+        GameItem? punishment = state.PendingPunishmentItems.FirstOrDefault(item => item.InternalName == internalName);
+        if (punishment is null)
+        {
+            return false;
+        }
+
+        state.AcquiredItems.RemoveItem(punishment);
+        state.BannedItems.RemoveItem(punishment);
+        state.PendingPunishmentItems.Clear();
+        return true;
+    }
+
+    public ItemSet RollRewardItems(PenitentState state, int selectedStars)
     {
         int rewardQuantity = Math.Max(1, selectedStars - 1);
         if (state.Difficulty.IsSuper)
@@ -19,46 +84,19 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         rewardQuantity = Math.Max(1, rewardQuantity);
 
         var rewardPool = GetRewardPool(state);
+
+        rewardPool = IsHardFinale(state) ? new ItemSet(rewardPool.Where(item => item.Antitank)) : rewardPool;
+    
         if (rewardPool.Count == 0)
         {
             return new ItemSet();
         }
 
-        if (currentMissionNumber == 7)
-        {
-            var antiTankPool = new ItemSet(rewardPool.Where(item => item.Antitank));
-            if (antiTankPool.Count > 0)
-            {
-                return new ItemSet(antiTankPool.OrderBy(_ => Random.Shared.Next()).Take(Math.Min(rewardQuantity, antiTankPool.Count)));
-            }
-        }
-
         return new ItemSet(
             rewardPool.AllItems
                 .OrderBy(_ => Random.Shared.Next())
-                .Take(rewardQuantity)
-                .Select(item => RollItemFromPool(new List<GameItem> { item }, currentMissionNumber))
-                .OfType<GameItem>()
+                .Take(Math.Min(rewardQuantity, rewardPool.Count))
                 .DistinctBy(item => item.InternalName)
                 .ToList());
-    }
-
-    public GameItem? RollItemFromPool(List<GameItem> pool, int currentMissionNumber)
-    {
-        if (pool.Count == 0)
-        {
-            return null;
-        }
-
-        if (currentMissionNumber == 7)
-        {
-            var antiTankPool = pool.Where(item => item.Antitank).ToList();
-            if (antiTankPool.Count > 0)
-            {
-                pool = antiTankPool;
-            }
-        }
-
-        return pool[Random.Shared.Next(pool.Count)];
     }
 }
