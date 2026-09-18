@@ -36,8 +36,6 @@ public sealed class CatalogService(HttpClient httpClient)
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
 
-        PenitentStarterLoadout = ResolveLoadout(await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new());
-
         AllItemsSet.Stratagems = [.. Stratagems];
         AllItemsSet.Primaries = [.. Primaries];
         AllItemsSet.Secondaries = [.. Secondaries];
@@ -45,6 +43,7 @@ public sealed class CatalogService(HttpClient httpClient)
         AllItemsSet.ArmorPassives = [.. ArmorPassives];
         AllItemsSet.Boosters = [.. Boosters];
 
+        PenitentStarterLoadout = ResolveLoadout(await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new());
 
         Operations = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
 

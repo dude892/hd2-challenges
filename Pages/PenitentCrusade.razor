@@ -36,7 +36,7 @@ else
                 <h4 class="text-light">Run Settings</h4>
                 <div class="mb-3">
                     <label class="form-label text-light">Difficulty</label>
-                    <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty" disabled="@(!_state.CanEditPenitentSetup)" @onchange="OnPenitentDifficultyChangedAsync">
+                    <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" disabled="@(!_state.CanEditPenitentSetup)" @onchange="OnPenitentDifficultyChangedAsync">
                         @foreach (var difficulty in Catalog.PenitentDifficulties)
                         {
                             <option value="@difficulty.Id">@difficulty.DisplayName</option>
@@ -757,7 +757,12 @@ else
 
     private Operation GetPenitentOperation(string operationIndex, int missionIndex)
     {
-        var definition = Catalog.Operations.First(op => op.Id == operationIndex);
-        return new Operation(definition, missionIndex + 1);
+        var definition = Catalog.Operations.FirstOrDefault(op => string.Equals(op.Id, operationIndex, StringComparison.OrdinalIgnoreCase));
+        if (definition is null)
+        {
+            definition = Catalog.Operations.FirstOrDefault() ?? new OperationDefinition { Id = "medium", DisplayName = "Medium" };
+        }
+
+        return new Operation(definition, Math.Max(1, missionIndex + 1));
     }
 }
