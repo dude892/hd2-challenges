@@ -2,11 +2,12 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class PenitentRewardService(CatalogService catalogService)
+public sealed class PenitentRewardService
 {
-    private CatalogService Catalog { get; } = catalogService;
-
-    public ItemSet GetRewardPool(PenitentState state) => Catalog.FilterAllItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
+    public ItemSet GetRewardPool(PenitentState state)
+    {
+        return state.AvailableItems.RemoveItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
+    }
     private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.Id == "hard" && state.CurrentOperation.IsLastMission;
 
     public bool EnsurePendingRewards(PenitentState state, int selectedStars)

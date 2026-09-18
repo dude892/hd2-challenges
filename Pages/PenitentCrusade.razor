@@ -2,6 +2,7 @@
 @using System.Text
 @using System.Text.Json
 @inject CatalogService Catalog
+@inject PenitentCatalogService PenitentCatalog
 @inject BrowserStorageService Storage
 @inject FileExportService FileExport
 @inject PenitentRewardService RewardService
@@ -21,8 +22,11 @@ else
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
-            <button class="btn btn-outline-primary" @onclick="ExportPenitentSummaryAsync">Download Summary</button>
-            <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Restart Run</button>
+            @if (_state.RunStarted)
+            {
+                <button class="btn btn-outline-primary" @onclick="ExportPenitentSummaryAsync">Download Summary</button>
+                <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Restart Run</button>
+            }
         </div>
     </div>
 
@@ -31,14 +35,69 @@ else
         <div class="alert alert-info">@_statusMessage</div>
     }
 
+    @if (!_state.RunStarted)
+    {
+        <div class="row g-4">
+            <div class="col-xl-4">
+                <div class="section-card rounded p-3">
+                    <h4 class="text-light">Run Settings</h4>
+                    <div class="mb-3">
+                        <label class="form-label text-light">Difficulty</label>
+                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnPenitentDifficultyChangedAsync">
+                            @foreach (var difficulty in PenitentCatalog.Difficulties)
+                            {
+                                <option value="@difficulty.Id">@difficulty.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                    <p class="text-secondary mb-0">Configure your crusade before committing to the first mission.</p>
+                </div>
+
+                <div class="section-card rounded p-3 mt-4">
+                    <h4 class="text-light">Warbonds</h4>
+                    <div class="row g-2">
+                        @foreach (var warbond in Catalog.Warbonds)
+                        {
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="setup-@warbond.Id" checked="@_state.SelectedWarbonds.Contains(warbond)" disabled="@warbond.AlwaysEnabled" @onchange="(e => TogglePenitentWarbondAsync(warbond, e.Value as bool? == true))" />
+                                    <label class="form-check-label text-light" for="setup-@warbond.Id">@warbond.DisplayName</label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8">
+                <div class="section-card rounded p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="text-light mb-0">Starting Loadout Preview</h4>
+                        <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
+                    </div>
+                    <div class="item-grid mt-3">
+                        @foreach (var item in _state.StarterItems)
+                        {
+                            <ItemCard Item="item" Badge="Starter" />
+                        }
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-success" @onclick="BeginPenitentRunAsync">Begin Run</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
     <div class="row g-4">
         <div class="col-xl-4">
             <div class="section-card rounded p-3">
                 <h4 class="text-light">Run Settings</h4>
                 <div class="mb-3">
                     <label class="form-label text-light">Difficulty</label>
-                    <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" disabled="@(!_state.CanEditPenitentSetup)" @onchange="OnPenitentDifficultyChangedAsync">
-                        @foreach (var difficulty in Catalog.PenitentDifficulties)
+                    <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" disabled="true">
+                        @foreach (var difficulty in PenitentCatalog.Difficulties)
                         {
                             <option value="@difficulty.Id">@difficulty.DisplayName</option>
                         }
@@ -66,7 +125,7 @@ else
                     {
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@warbond.Id" checked="@_state.SelectedWarbonds.Any(item => item.Id == warbond.Id)" disabled="@(!_state.CanEditPenitentSetup || warbond.AlwaysEnabled)" @onchange="(e => TogglePenitentWarbondAsync(warbond.Id, e.Value as bool? == true, warbond.AlwaysEnabled))" />
+                                <input class="form-check-input" type="checkbox" id="@warbond.Id" checked="@_state.SelectedWarbonds.Contains(warbond)" disabled="true" />
                                 <label class="form-check-label text-light" for="@warbond.Id">@warbond.DisplayName</label>
                             </div>
                         </div>
@@ -128,6 +187,7 @@ else
             </div>
         </div>
     </div>
+    }
 
     <Modal Title="Reward Options" Open="@_showRewardModal" OnClose="ClosePenitentRewardModal">
         @if (_state.PendingRewardItems.Count == 0)
@@ -225,10 +285,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         await Catalog.EnsureLoadedAsync();
-        _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        await PenitentCatalog.EnsureLoadedAsync();
+        _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds, Catalog.GetItemsByWarbonds);
         _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentStateDefinition>>(PenitentStorageKey) ?? new SaveLibrary<PenitentStateDefinition>();
 
-        if (_penitentLibrary.Slots.Count == 0)
+        bool createdNewSlot = _penitentLibrary.Slots.Count == 0;
+        if (createdNewSlot)
         {
             var state = CreatePenitentState();
             var slot = new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
@@ -238,6 +300,10 @@ else
         }
 
         EnsurePenitentCurrentSlot();
+        if (createdNewSlot)
+        {
+            _state.RunStarted = false;
+        }
         _loaded = true;
     }
 
@@ -246,14 +312,15 @@ else
     private bool _PenanceCompleted = false;
     private bool _canCompleteMission => !_PenanceCompleted && _state.PendingPunishmentItems.Count == 0;
     private bool _canFailMission => _state.AcquiredItems.AllItems.Count > 0 && !_PenanceCompleted && _state.PendingRewardItems.Count == 0;
-
     private async Task OnPenitentDifficultyChangedAsync(ChangeEventArgs args)
     {
-        if (args.Value is string difficulty && Catalog.PenitentDifficulties.Any(item => item.Id == difficulty))
+        if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
         {
-            await ReplacePenitentStateAsync(CreatePenitentState(difficulty, _state.SelectedWarbonds));
-            _statusMessage = $"Started a new { GetPenitentDifficulty(difficulty).DisplayName } run.";
+            _state = CreatePenitentSetupState(difficulty, _state.SelectedWarbonds);
+            _statusMessage = $"{GetPenitentDifficulty(difficulty).DisplayName} loadout preview updated.";
         }
+
+        await Task.CompletedTask;
     }
 
     private Task OnPenitentStarsChangedAsync(ChangeEventArgs args)
@@ -266,28 +333,32 @@ else
         return Task.CompletedTask;
     }
 
-    private async Task TogglePenitentWarbondAsync(string id, bool isChecked, bool alwaysEnabled)
+    private async Task TogglePenitentWarbondAsync(Warbond warbond, bool isChecked)
     {
-        if (alwaysEnabled)
+        if (warbond.AlwaysEnabled)
         {
             return;
         }
 
         if (isChecked)
         {
-            if (!_state.SelectedWarbonds.Any(item => item.Id == id))
-            {
-                var warbond = Catalog.Warbonds.First(item => item.Id == id);
-                _state.SelectedWarbonds.Add(warbond);
-            }
+            _state.SelectedWarbonds.Add(warbond);
         }
         else
         {
-            _state.SelectedWarbonds.RemoveAll(item => item.Id == id);
+            _state.SelectedWarbonds.Remove(warbond);
         }
 
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty.Id, _state.SelectedWarbonds));
-        _statusMessage = "Warbond filters updated.";
+        _statusMessage = "Warbond selections updated.";
+        await Task.CompletedTask;
+    }
+
+    private async Task BeginPenitentRunAsync()
+    {
+        _state.RunStarted = true;
+        ResetPenitentTransientState();
+        await PersistPenitentAsync();
+        _statusMessage = $"Started a new {_state.Difficulty.DisplayName} run.";
     }
 
     private async Task BeginPenitentMissionCompleteAsync()
@@ -378,8 +449,9 @@ else
 
     private async Task RestartPenitentRunAsync()
     {
-        await ReplacePenitentStateAsync(CreatePenitentState(_state.Difficulty.Id, _state.SelectedWarbonds));
-        _statusMessage = "Run restarted.";
+        _state = CreatePenitentSetupState(_state.Difficulty.Id, _state.SelectedWarbonds);
+        ResetPenitentTransientState();
+        _statusMessage = "Run reset. Review your settings before beginning again.";
     }
 
     private Task ClosePenitentRewardModal()
@@ -429,6 +501,7 @@ else
     {
         _penitentLibrary.CurrentSlotId = slotId;
         EnsurePenitentCurrentSlot();
+        ResetPenitentTransientState();
         _showSaveManager = false;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
@@ -436,7 +509,8 @@ else
     private async Task DeletePenitentSlotAsync(Guid slotId)
     {
         _penitentLibrary.Slots.RemoveAll(slot => slot.Id == slotId);
-        if (_penitentLibrary.Slots.Count == 0)
+        bool createdReplacementSlot = _penitentLibrary.Slots.Count == 0;
+        if (createdReplacementSlot)
         {
             PenitentState? state = CreatePenitentState();
             SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
@@ -449,6 +523,11 @@ else
         }
 
         EnsurePenitentCurrentSlot();
+        ResetPenitentTransientState();
+        if (createdReplacementSlot)
+        {
+            _state.RunStarted = false;
+        }
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
@@ -516,19 +595,6 @@ else
         await FileExport.DownloadTextAsync($"{SanitizeFileName(CurrentPenitentSlot?.Name ?? "penitent-crusade-summary")}.txt", builder.ToString());
     }
 
-    private async Task ReplacePenitentStateAsync(PenitentState state)
-    {
-        _state = state;
-        _selectedStars = _state.CurrentOperation.MaxStars;
-        if (CurrentPenitentSlot is not null)
-        {
-            CurrentPenitentSlot.State = _state.ToDefinition();
-        }
-        
-
-        await PersistPenitentAsync();
-    }
-
     private void AdvancePenitentMission()
     {
         MissionService.AdvanceMission(_state);
@@ -550,13 +616,21 @@ else
     {
         SaveSlot<PenitentStateDefinition>? slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
         _penitentLibrary.CurrentSlotId = slot.Id;
-        _state = new PenitentState(slot.State, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        _state = new PenitentState(slot.State, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds, Catalog.GetItemsByWarbonds);
         _selectedStars = Math.Clamp(_selectedStars, 1, _state.CurrentOperation.MaxStars);
+    }
+
+    private void ResetPenitentTransientState()
+    {
+        _PenanceCompleted = false;
+        _showRewardModal = false;
+        _showPunishmentModal = false;
+        _selectedStars = _state.CurrentOperation.MaxStars;
     }
 
     private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<Warbond>? selectedWarbonds = null)
     {
-        List<Warbond> warbonds = selectedWarbonds?.DistinctBy(item => item.Id).ToList() ?? Catalog.Warbonds.ToList();
+        HashSet<Warbond> warbonds = selectedWarbonds?.ToHashSet() ?? Catalog.Warbonds.ToHashSet();
         if (!warbonds.Any(item => item.Id == "helldiversMobilize"))
         {
             warbonds.Add(Catalog.Warbonds.First(item => item.Id == "helldiversMobilize"));
@@ -569,19 +643,20 @@ else
             SelectedWarbonds = warbonds.Select(item => item.Id).ToList(),
         };
 
-        var state = new PenitentState(definition, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        var state = new PenitentState(definition, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds, Catalog.GetItemsByWarbonds);
         MissionService.SetMissionProgress(state, startOperation.Id, startOperation.MissionNumber);
         _selectedStars = state.CurrentOperation.MaxStars;
         return state;
     }
 
-    private ItemSet GetPenitentStarterItems(string difficulty)
+    private PenitentState CreatePenitentSetupState(string difficulty, IEnumerable<Warbond> selectedWarbonds)
     {
-        ItemSet starterSet = Catalog.PenitentStarterLoadout.Clone();
-        PenitentDifficulty difficultyOption = GetPenitentDifficulty(difficulty);
-
-        return starterSet.ApplyOverrides(difficultyOption.LoadoutOverrides).ApplyAdditions(difficultyOption.LoadoutAdditions);
+        PenitentState state = CreatePenitentState(difficulty, selectedWarbonds);
+        state.RunStarted = false;
+        return state;
     }
+
+    private ItemSet GetPenitentStarterItems(string difficulty) => PenitentCatalog.GetStarterItems(difficulty);
 
     private void ClampPenitentStars()
     {
@@ -605,10 +680,12 @@ else
         return value;
     }
 
-    private PenitentDifficulty GetPenitentDifficulty(string id) => Catalog.PenitentDifficulties.First(option => option.Id == id);
+    private PenitentDifficulty GetPenitentDifficulty(string id) => PenitentCatalog.GetDifficulty(id);
 
-    private List<Warbond> ResolveSelectedWarbonds(IEnumerable<string> ids) =>
-        Catalog.Warbonds.Where(warbond => ids.Contains(warbond.Id)).ToList();
+    private HashSet<Warbond> ResolveSelectedWarbonds(IEnumerable<string> ids) =>
+        Catalog.Warbonds
+            .Where(warbond => ids.Contains(warbond.Id, StringComparer.OrdinalIgnoreCase))
+            .ToHashSet();
 
     private Operation GetPenitentOperation(string operationIndex, int missionIndex)
     {

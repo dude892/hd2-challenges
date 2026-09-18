@@ -17,8 +17,6 @@ public sealed class CatalogService(HttpClient httpClient)
     public readonly ItemSet AllItemsSet = new();
     public IReadOnlyList<OperationDefinition> Operations { get; private set; } = [];
     public IReadOnlyList<Warbond> Warbonds { get; set; } = [];
-    public IReadOnlyList<PenitentDifficulty> PenitentDifficulties { get; private set; } = [];
-    public ItemSet PenitentStarterLoadout { get; private set; } = new();
 
     public async Task EnsureLoadedAsync()
     {
@@ -43,12 +41,7 @@ public sealed class CatalogService(HttpClient httpClient)
         AllItemsSet.ArmorPassives = [.. ArmorPassives];
         AllItemsSet.Boosters = [.. Boosters];
 
-        PenitentStarterLoadout = ResolveLoadout(await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new());
-
         Operations = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
-
-        var difficultyDefinitions = await httpClient.GetFromJsonAsync<List<PenitentDifficultyDefinition>>("data/penitent-difficulties.json") ?? [];
-        PenitentDifficulties = [.. difficultyDefinitions.Select(definition => new PenitentDifficulty(definition, GetItemSet, GetOperation))];
 
         _loaded = true;
     }
@@ -83,19 +76,21 @@ public sealed class CatalogService(HttpClient httpClient)
         Boosters = [.. AllItemsSet.Boosters.Where(item => ids.Contains(item.Id))]
     };
 
-    public ItemSet ResolveLoadout(PenitentStarterLoadoutDefinition definition) => new()
-    {
-        Stratagems = GetItemSet(definition.Stratagems).Stratagems,
-        Primaries = GetItemSet(definition.Primaries).Primaries,
-        Secondaries = GetItemSet(definition.Secondaries).Secondaries,
-        Throwables = GetItemSet(definition.Throwables).Throwables,
-        ArmorPassives = GetItemSet(definition.ArmorPassives).ArmorPassives,
-        Boosters = GetItemSet(definition.Boosters).Boosters
-    };
-
     public ItemSet FilterAllItems(IEnumerable<ItemSet> itemSets)
     {
         return AllItemsSet.Clone().RemoveItems(itemSets);
+    }
+
+    public ItemSet GetItemsByWarbonds(IEnumerable<Warbond> selectedWarbonds)
+    {
+        return FilterItemsByWarbonds(AllItemsSet, selectedWarbonds);
+    }
+
+    public ItemSet FilterItemsByWarbonds(IEnumerable<GameItem> items, IEnumerable<Warbond> selectedWarbonds)
+    {
+        HashSet<Warbond> selected = [.. selectedWarbonds];
+
+        return new ItemSet(items.Where(item => item.Warbond is null || selected.Contains(item.Warbond)));
     }
 
     private async Task<IReadOnlyList<GameItem>> LoadItemsAsync(string path, ItemKind kind)

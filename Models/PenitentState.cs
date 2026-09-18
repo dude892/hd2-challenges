@@ -6,20 +6,21 @@ public sealed class PenitentState(
     Func<string, int, Operation> resolveOperation,
     Func<IEnumerable<string>, ItemSet> resolveItemSet,
     Func<string, ItemSet> resolveStarterItems,
-    Func<IEnumerable<string>, List<Warbond>> resolveWarbonds
+    Func<IEnumerable<string>, HashSet<Warbond>> resolveWarbonds,
+    Func<IEnumerable<Warbond>, ItemSet> resolveAvailableItems
 )
 {
+    public bool RunStarted { get; set; } = true;
     public PenitentDifficulty Difficulty { get; } = resolveDifficulty(definition.DifficultyId);
-    public int MissionsFailed { get; set; } = definition.MissionsFailed;
+    public HashSet<Warbond> SelectedWarbonds { get; set; } = resolveWarbonds(definition.SelectedWarbonds);
+    public ItemSet AvailableItems => resolveAvailableItems(SelectedWarbonds);
     public ItemSet BannedItems { get; set; } = resolveItemSet(definition.BannedItemIds);
-    public List<Warbond> SelectedWarbonds { get; set; } = resolveWarbonds(definition.SelectedWarbonds);
-    public Operation CurrentOperation { get; set; } = resolveOperation(definition.OperationId, definition.MissionNumber);
-    public ItemSet StarterItems { get; } = resolveStarterItems(definition.DifficultyId);
+    public ItemSet StarterItems => new(resolveStarterItems(Difficulty.Id).Where(AvailableItems.ContainsItem));
     public ItemSet AcquiredItems { get; set; } = resolveItemSet(definition.AcquiredItemIds);
     public ItemSet PendingRewardItems { get; set; } = resolveItemSet(definition.PendingRewardIds);
     public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentIds);
-
-    public bool CanEditPenitentSetup => CurrentOperation.Id == Difficulty.StartOperation.Id && CurrentOperation.IsFirstMission;
+    public Operation CurrentOperation { get; set; } = resolveOperation(definition.OperationId, definition.MissionNumber);
+    public int MissionsFailed { get; set; } = definition.MissionsFailed;
 
     public PenitentStateDefinition ToDefinition() => new()
     {
