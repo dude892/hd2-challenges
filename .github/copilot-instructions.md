@@ -6,6 +6,8 @@
 - The website has not been deployed yet. Optimize for the current local application and the current data shape.
 - Do not spend implementation effort on preserving previous save states, migrating old data, or supporting legacy export formats yet. Add migration/version compatibility only when deployment or an explicit requirement makes it necessary.
 - Keep changes focused and consistent with the existing C# and Razor patterns. Avoid introducing a server, database, API, or new persistence layer unless explicitly requested.
+- While the main focus of the app right now is on the "Penitent Crusade" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
+- Do not take the following instructions as exhaustive; they are meant to guide the development process and maintain consistency within the project, and should be adapted as needed for specific scenarios.
 
 ## Application Structure
 
@@ -56,3 +58,21 @@ Keep UI event handlers focused on orchestration, state display, and persistence.
 - When adding persisted state, update both the definition representation and the runtime construction/`ToDefinition()` path.
 - Keep random reward selection and mission progression in the domain services, not in Razor markup.
 - Validate changes with `dotnet build`; for behavior changes, add or update focused tests when a test project is introduced.
+
+## Querying Microsoft Documentation
+
+You have access to MCP tools called `microsoft_docs_search`, `microsoft_docs_fetch`, and `microsoft_code_sample_search` - these tools allow you to search through and fetch Microsoft's latest official documentation and code samples, and that information might be more detailed or newer than what's in your training data set.
+
+When handling questions around how to work with native Microsoft technologies, such as C#, F#, ASP.NET Core, Microsoft.Extensions, NuGet, Entity Framework, the `dotnet` runtime - please use these tools for research purposes when dealing with specific / narrowly defined questions that may occur.
+
+## Glider MCP Usage
+
+Use Glider for compiler-backed C#/.NET navigation, diagnostics, dependencies, impact analysis, edits, and refactors. Start navigation with find_code and preview supported changes. Before semantic work, call server_status and confirm the loaded solution or project belongs to the current repository or worktree. Changing directories does not retarget Glider. Call load with the intended .sln, .slnx, or .csproj if the loaded workspace differs.
+
+## Design Concerns
+
+Do not just put something in a service because it seems convenient; consider the proper separation of concerns and whether it truly belongs in the domain layer.
+Prefer keeping UI logic in Razor components and domain logic in services and models.
+When in doubt, ask whether a piece of logic affects the state of the application or the presentation; if it affects state, it likely belongs in a service or model, if it affects presentation, it likely belongs in a Razor component.
+Consider also the testability and maintainability of the code when deciding where it should reside.
+If something is not relying on the capabilities of a service, it is likely better suited to a model. Any logic that primarily manipulates or represents data without side effects should generally reside in a model rather than a service.
