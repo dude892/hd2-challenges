@@ -24,6 +24,7 @@ else
             <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
             @if (_state.RunStarted)
             {
+                <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
                 <button class="btn btn-outline-primary" @onclick="ExportPenitentSummaryAsync">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Restart Run</button>
             }
@@ -91,59 +92,26 @@ else
     else
     {
     <div class="row g-4">
-        <div class="col-xl-4">
-            <div class="section-card rounded p-3">
-                <h4 class="text-light">Run Settings</h4>
-                <div class="mb-3">
-                    <label class="form-label text-light">Difficulty</label>
-                    <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" disabled="true">
-                        @foreach (var difficulty in PenitentCatalog.Difficulties)
-                        {
-                            <option value="@difficulty.Id">@difficulty.DisplayName</option>
-                        }
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label text-light">Mission stars</label>
-                    <select class="form-select bg-dark text-light border-secondary" value="@_selectedStars" @onchange="OnPenitentStarsChangedAsync">
-                        @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
-                        {
-                            <option value="@star">@star</option>
-                        }
-                    </select>
-                </div>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-success" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_canCompleteMission)">Mission Complete</button>
-                    <button class="btn btn-danger" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_canFailMission)">Mission Failed</button>
-                </div>
-            </div>
-
-            <div class="section-card rounded p-3 mt-4">
-                <h4 class="text-light">Warbonds</h4>
-                <div class="row g-2">
-                    @foreach (var warbond in Catalog.Warbonds)
-                    {
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@warbond.Id" checked="@_state.SelectedWarbonds.Contains(warbond)" disabled="true" />
-                                <label class="form-check-label text-light" for="@warbond.Id">@warbond.DisplayName</label>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-8">
+        <div class="col-12">
             <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@_state.CurrentOperation.Label</div></div></div>
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Difficulty</small><div class="fs-5">@_state.Difficulty.DisplayName</div></div></div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@_state.CurrentOperation.Label</div></div></div>
+                </div>
+                <div class="col-md-2">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Failures</small><div class="fs-5">@_state.MissionsFailed</div></div></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body d-flex align-items-center">
+                        <button class="btn btn-success" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_canCompleteMission)">Mission Complete</button>
+                    </div></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body d-flex align-items-center">
+                        <button class="btn btn-danger" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_canFailMission)">Mission Failed</button>
+                    </div></div>
                 </div>
             </div>
 
@@ -189,6 +157,22 @@ else
     </div>
     }
 
+    <Modal Title="Mission Complete" Open="@_showMissionCompleteModal" OnClose="ClosePenitentMissionCompleteModal">
+        <div class="mb-3">
+            <label class="form-label text-light">Mission stars</label>
+            <select class="form-select bg-dark text-light border-secondary" value="@_selectedStars" @onchange="OnPenitentStarsChangedAsync">
+                @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
+                {
+                    <option value="@star">@star</option>
+                }
+            </select>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-outline-secondary" @onclick="ClosePenitentMissionCompleteModal">Cancel</button>
+            <button class="btn btn-success" @onclick="ConfirmPenitentMissionCompleteAsync">Continue to Rewards</button>
+        </div>
+    </Modal>
+
     <Modal Title="Reward Options" Open="@_showRewardModal" OnClose="ClosePenitentRewardModal">
         @if (_state.PendingRewardItems.Count == 0)
         {
@@ -228,6 +212,36 @@ else
         }
     </Modal>
 
+    <Modal Title="Run Settings" Open="@_showRunSettings" OnClose="ClosePenitentRunSettings">
+        <div class="mb-4">
+            <div class="text-secondary small">Difficulty</div>
+            <div class="fs-5">@_state.Difficulty.DisplayName</div>
+        </div>
+
+        <div class="mb-4">
+            <div class="text-secondary small mb-2">Warbonds</div>
+            <div class="d-grid gap-2">
+                @foreach (var warbond in Catalog.Warbonds.Where(warbond => _state.SelectedWarbonds.Contains(warbond)))
+                {
+                    <div class="text-light">@warbond.DisplayName</div>
+                }
+            </div>
+        </div>
+
+        <div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-secondary small">Starting loadout</div>
+                <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
+            </div>
+            <div class="item-grid mt-3">
+                @foreach (var item in _state.StarterItems)
+                {
+                    <ItemCard Item="item" Badge="Starter" />
+                }
+            </div>
+        </div>
+    </Modal>
+
     <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="ClosePenitentSaveManager">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
@@ -235,7 +249,7 @@ else
                 <div class="fw-semibold">@CurrentPenitentSlot?.Name</div>
             </div>
             <div class="d-flex gap-2">
-                <button class="btn btn-primary btn-sm" @onclick="CreatePenitentSnapshotAsync">Create Snapshot</button>
+                <button class="btn btn-primary btn-sm" @onclick="CreatePenitentSnapshotAsync" disabled="@(!_state.RunStarted)">Create Snapshot</button>
                 <label class="btn btn-outline-light btn-sm mb-0">
                     Import Slot
                     <InputFile OnChange="ImportPenitentSlotAsync" class="d-none" accept=".json" />
@@ -275,10 +289,13 @@ else
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
     private SaveLibrary<PenitentStateDefinition> _penitentLibrary = new();
     private PenitentState _state = default!;
+    private SaveSlot<PenitentStateDefinition>? _workingSlot;
     private int _selectedStars = 1;
     private bool _loaded;
+    private bool _showMissionCompleteModal;
     private bool _showRewardModal;
     private bool _showPunishmentModal;
+    private bool _showRunSettings;
     private bool _showSaveManager;
     private string? _statusMessage;
 
@@ -307,7 +324,7 @@ else
         _loaded = true;
     }
 
-    private SaveSlot<PenitentStateDefinition>? CurrentPenitentSlot => _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
+    private SaveSlot<PenitentStateDefinition>? CurrentPenitentSlot => _workingSlot ?? _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
 
     private bool _PenanceCompleted = false;
     private bool _canCompleteMission => !_PenanceCompleted && _state.PendingPunishmentItems.Count == 0;
@@ -357,17 +374,40 @@ else
     {
         _state.RunStarted = true;
         ResetPenitentTransientState();
+
+        if (_workingSlot is not null)
+        {
+            _workingSlot.State = _state.ToDefinition();
+            _penitentLibrary.Slots.Add(_workingSlot);
+            _penitentLibrary.CurrentSlotId = _workingSlot.Id;
+            _workingSlot = null;
+        }
+
         await PersistPenitentAsync();
         _statusMessage = $"Started a new {_state.Difficulty.DisplayName} run.";
     }
 
-    private async Task BeginPenitentMissionCompleteAsync()
+    private Task BeginPenitentMissionCompleteAsync()
     {
         if (_state.PendingPunishmentItems.Count > 0)
         {
-            return;
+            return Task.CompletedTask;
         }
 
+        if (_state.PendingRewardItems.Count > 0)
+        {
+            _showRewardModal = true;
+            return Task.CompletedTask;
+        }
+
+        ClampPenitentStars();
+        _showMissionCompleteModal = true;
+        return Task.CompletedTask;
+    }
+
+    private async Task ConfirmPenitentMissionCompleteAsync()
+    {
+        _showMissionCompleteModal = false;
         ClampPenitentStars();
         if (MissionService.IsFinalMission(_state))
         {
@@ -450,6 +490,11 @@ else
     private async Task RestartPenitentRunAsync()
     {
         _state = CreatePenitentSetupState(_state.Difficulty.Id, _state.SelectedWarbonds);
+        _workingSlot = new SaveSlot<PenitentStateDefinition>
+        {
+            Name = $"{BuildPenitentSlotName(_state)} (New Run)",
+            State = _state.ToDefinition()
+        };
         ResetPenitentTransientState();
         _statusMessage = "Run reset. Review your settings before beginning again.";
     }
@@ -466,6 +511,18 @@ else
         return Task.CompletedTask;
     }
 
+    private Task ClosePenitentMissionCompleteModal()
+    {
+        _showMissionCompleteModal = false;
+        return Task.CompletedTask;
+    }
+
+    private Task ClosePenitentRunSettings()
+    {
+        _showRunSettings = false;
+        return Task.CompletedTask;
+    }
+
     private Task ClosePenitentSaveManager()
     {
         _showSaveManager = false;
@@ -474,6 +531,11 @@ else
 
     private async Task CreatePenitentSnapshotAsync()
     {
+        if (!_state.RunStarted)
+        {
+            return;
+        }
+
         SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition>
         {
             Name = $"{BuildPenitentSlotName(_state)} Snapshot",
@@ -499,6 +561,7 @@ else
 
     private async Task LoadPenitentSlotAsync(Guid slotId)
     {
+        _workingSlot = null;
         _penitentLibrary.CurrentSlotId = slotId;
         EnsurePenitentCurrentSlot();
         ResetPenitentTransientState();
@@ -508,6 +571,7 @@ else
 
     private async Task DeletePenitentSlotAsync(Guid slotId)
     {
+        _workingSlot = null;
         _penitentLibrary.Slots.RemoveAll(slot => slot.Id == slotId);
         bool createdReplacementSlot = _penitentLibrary.Slots.Count == 0;
         if (createdReplacementSlot)
@@ -552,6 +616,7 @@ else
 
         import.Slot.Id = Guid.NewGuid();
         import.Slot.UpdatedAt = DateTimeOffset.UtcNow;
+        _workingSlot = null;
         _penitentLibrary.Slots.Add(import.Slot);
         _penitentLibrary.CurrentSlotId = import.Slot.Id;
         EnsurePenitentCurrentSlot();
@@ -623,6 +688,7 @@ else
     private void ResetPenitentTransientState()
     {
         _PenanceCompleted = false;
+        _showMissionCompleteModal = false;
         _showRewardModal = false;
         _showPunishmentModal = false;
         _selectedStars = _state.CurrentOperation.MaxStars;
@@ -665,7 +731,7 @@ else
 
     private string BuildPenitentSlotName(PenitentState state)
     {
-        return $"{state.Difficulty.Id.ToUpperInvariant()} | {state.CurrentOperation.Label} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
+        return $"{state.Difficulty.DisplayName} | {state.CurrentOperation.Label} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
     }
 
     private static T Clone<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, JsonOptions), JsonOptions)!;
