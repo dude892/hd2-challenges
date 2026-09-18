@@ -11,5 +11,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<CatalogService>();
 builder.Services.AddScoped<BrowserStorageService>();
 builder.Services.AddScoped<FileExportService>();
+builder.Services.AddScoped<PenitentRewardService>();
 
 await builder.Build().RunAsync();

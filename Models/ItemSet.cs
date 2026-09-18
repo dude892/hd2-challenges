@@ -9,6 +9,26 @@ public sealed class ItemSet : IEnumerable<GameItem>
     public HashSet<GameItem> ArmorPassives { get; set; } = [];
     public HashSet<GameItem> Boosters { get; set; } = [];
     
+    public ItemSet() 
+    {
+        Stratagems = [];
+        Primaries = [];
+        Secondaries = [];
+        Throwables = [];
+        ArmorPassives = [];
+        Boosters = [];
+    }
+
+    public ItemSet(IEnumerable<GameItem> items)
+    {
+        Stratagems = [.. items.Where(item => item.Kind == ItemKind.Stratagem)];
+        Primaries = [.. items.Where(item => item.Kind == ItemKind.Primary)];
+        Secondaries = [.. items.Where(item => item.Kind == ItemKind.Secondary)];
+        Throwables = [.. items.Where(item => item.Kind == ItemKind.Throwable)];
+        ArmorPassives = [.. items.Where(item => item.Kind == ItemKind.ArmorPassive)];
+        Boosters = [.. items.Where(item => item.Kind == ItemKind.Booster)];
+    }
+
     public ItemSet Clone() => new()
     {
         Stratagems = [.. Stratagems],
@@ -46,23 +66,24 @@ public sealed class ItemSet : IEnumerable<GameItem>
 
     public bool ContainsItems(ItemSet items) => items is not null && items.AllItems.All(AllItems.Contains);
 
-    public bool AddItem(GameItem item)
+    public ItemSet AddItem(GameItem item)
     {
-        return item.Kind switch
+        switch (item.Kind)
         {
-            ItemKind.Stratagem => Stratagems.Add(item),
-            ItemKind.Primary => Primaries.Add(item),
-            ItemKind.Secondary => Secondaries.Add(item),
-            ItemKind.Throwable => Throwables.Add(item),
-            ItemKind.ArmorPassive => ArmorPassives.Add(item),
-            ItemKind.Booster => Boosters.Add(item),
-            _ => false
-        };
+            case ItemKind.Stratagem: Stratagems.Add(item); break;
+            case ItemKind.Primary: Primaries.Add(item); break;
+            case ItemKind.Secondary: Secondaries.Add(item); break;
+            case ItemKind.Throwable: Throwables.Add(item); break;
+            case ItemKind.ArmorPassive: ArmorPassives.Add(item); break;
+            case ItemKind.Booster: Boosters.Add(item); break;
+        }
+
+        return this;
     }
 
-    public bool AddItems(ItemSet items)
+    public ItemSet AddItems(ItemSet items)
     {
-        if (items == null) return false;
+        if (items == null) return this;
 
         Stratagems.UnionWith(items.Stratagems);
         Primaries.UnionWith(items.Primaries);
@@ -71,26 +92,27 @@ public sealed class ItemSet : IEnumerable<GameItem>
         ArmorPassives.UnionWith(items.ArmorPassives);
         Boosters.UnionWith(items.Boosters);
 
-        return ContainsItems(items);
+        return this;
     }
 
-    public bool RemoveItem(GameItem item)
+    public ItemSet RemoveItem(GameItem item)
     {
-        return item.Kind switch
+        switch (item.Kind)
         {
-            ItemKind.Stratagem => Stratagems.Remove(item),
-            ItemKind.Primary => Primaries.Remove(item),
-            ItemKind.Secondary => Secondaries.Remove(item),
-            ItemKind.Throwable => Throwables.Remove(item),
-            ItemKind.ArmorPassive => ArmorPassives.Remove(item),
-            ItemKind.Booster => Boosters.Remove(item),
-            _ => false
-        };
+            case ItemKind.Stratagem: Stratagems.Remove(item); break;
+            case ItemKind.Primary: Primaries.Remove(item); break;
+            case ItemKind.Secondary: Secondaries.Remove(item); break;
+            case ItemKind.Throwable: Throwables.Remove(item); break;
+            case ItemKind.ArmorPassive: ArmorPassives.Remove(item); break;
+            case ItemKind.Booster: Boosters.Remove(item); break;
+        }
+
+        return this;
     }
 
-    public bool RemoveItems(ItemSet items)
+    public ItemSet RemoveItems(ItemSet items)
     {
-        if (items == null) return false;
+        if (items == null) return this;
 
         Stratagems.ExceptWith(items.Stratagems);
         Primaries.ExceptWith(items.Primaries);
@@ -99,10 +121,34 @@ public sealed class ItemSet : IEnumerable<GameItem>
         ArmorPassives.ExceptWith(items.ArmorPassives);
         Boosters.ExceptWith(items.Boosters);
 
-        return !ContainsItems(items);
+        return this;
     }
 
-    public void ClearSet(ItemKind kind)
+    public ItemSet RemoveItems(IEnumerable<ItemSet> itemSets)
+    {
+        if (itemSets == null) return this;
+
+        foreach (var itemSet in itemSets)
+        {
+            RemoveItems(itemSet);
+        }
+
+        return this;
+    }
+
+    public ItemSet Clear()
+    {
+        Stratagems.Clear();
+        Primaries.Clear();
+        Secondaries.Clear();
+        Throwables.Clear();
+        ArmorPassives.Clear();
+        Boosters.Clear();
+
+        return this;
+    }
+
+    public ItemSet ClearSet(ItemKind kind)
     {
         switch (kind)
         {
@@ -113,11 +159,13 @@ public sealed class ItemSet : IEnumerable<GameItem>
             case ItemKind.ArmorPassive: ArmorPassives.Clear(); break;
             case ItemKind.Booster: Boosters.Clear(); break;
         }
+
+        return this;
     }
 
-    public void ApplyOverrides(ItemSet overrides)
+    public ItemSet ApplyOverrides(ItemSet overrides)
     {
-        if (overrides == null) return;
+        if (overrides == null) return this;
         
         if (overrides.Stratagems.Count != 0) Stratagems = overrides.Stratagems;
         if (overrides.Primaries.Count != 0) Primaries = overrides.Primaries;
@@ -125,11 +173,13 @@ public sealed class ItemSet : IEnumerable<GameItem>
         if (overrides.Throwables.Count != 0) Throwables = overrides.Throwables;
         if (overrides.ArmorPassives.Count != 0) ArmorPassives = overrides.ArmorPassives;
         if (overrides.Boosters.Count != 0) Boosters = overrides.Boosters;
+
+        return this;
     }
 
-    public void ApplyAdditions(ItemSet additions)
+    public ItemSet ApplyAdditions(ItemSet additions)
     {
-        if (additions == null) return;
+        if (additions == null) return this;
 
         Stratagems.UnionWith(additions.Stratagems);
         Primaries.UnionWith(additions.Primaries);
@@ -137,5 +187,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Throwables.UnionWith(additions.Throwables);
         ArmorPassives.UnionWith(additions.ArmorPassives);
         Boosters.UnionWith(additions.Boosters);
+
+        return this;
     }
 }

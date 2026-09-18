@@ -6,18 +6,21 @@ public sealed class PenitentState(
     Func<string, int, Operation> resolveOperation,
     Func<IEnumerable<string>, ItemSet> resolveItemSet,
     Func<string, ItemSet> resolveStarterItems,
-    Func<IEnumerable<string>, List<Warbond>> resolveWarbonds)
+    Func<IEnumerable<string>, List<Warbond>> resolveWarbonds
+)
 {
-    public PenitentDifficulty Difficulty => resolveDifficulty(definition.DifficultyId);
+    public PenitentDifficulty Difficulty { get; } = resolveDifficulty(definition.DifficultyId);
     public int MissionsFailed { get; set; } = definition.MissionsFailed;
     public ItemSet BannedItems { get; set; } = resolveItemSet(definition.BannedItemInternalNames);
     public List<Warbond> SelectedWarbonds { get; set; } = resolveWarbonds(definition.SelectedWarbonds);
+    public Operation CurrentOperation { get; set; } = resolveOperation(definition.OperationId, definition.MissionNumber);
+    public ItemSet StarterItems { get; } = resolveStarterItems(definition.DifficultyId);
+    public ItemSet AcquiredItems { get; set; } = resolveItemSet(definition.AcquiredItemInternalNames);
+    public ItemSet PendingRewardItems { get; set; } = resolveItemSet(definition.PendingRewardInternalNames);
+    public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentInternalNames);
 
-    public Operation CurrentOperation => resolveOperation(definition.OperationId, definition.MissionNumber);
-    public ItemSet StarterItems { get; init; } = resolveStarterItems(definition.DifficultyId);
-    public ItemSet AcquiredItems => resolveItemSet(definition.AcquiredItemInternalNames);
-    public ItemSet PendingRewardItems => resolveItemSet(definition.PendingRewardInternalNames);
-    public ItemSet PendingPunishmentItems => resolveItemSet(definition.PendingPunishmentInternalNames);
+    public bool CanEditPenitentSetup => CurrentOperation.Id == Difficulty.StartOperation.Id && CurrentOperation.MissionNumber == 0;
+
 
     public PenitentStateDefinition ToDefinition() => new()
     {

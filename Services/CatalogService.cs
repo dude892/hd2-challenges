@@ -84,6 +84,11 @@ public sealed class CatalogService(HttpClient httpClient)
         Boosters = GetItemSet(definition.Boosters).Boosters
     };
 
+    public ItemSet FilterAllItems(IEnumerable<ItemSet> itemSets)
+    {
+        return AllItemsSet.Clone().RemoveItems(itemSets);
+    }
+
     private async Task<IReadOnlyList<GameItem>> LoadItemsAsync(string path, ItemKind kind)
     {
         var items = await httpClient.GetFromJsonAsync<List<GameItem>>(path) ?? [];
