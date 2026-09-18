@@ -42,15 +42,10 @@ public sealed class GameItem : IEquatable<GameItem>
     [JsonPropertyName("warbond")]
     private string _warbond { get; set; } = "none";
 
-    private void ResolveWarbond(IReadOnlyList<Warbond> warbonds)
-    {
-        Warbond = warbonds.FirstOrDefault(w => string.Equals(w.Id, _warbond, StringComparison.OrdinalIgnoreCase));
-    }
-
     public void PostInitSetup(ItemKind kind, IReadOnlyList<Warbond> warbonds)
     {
         Kind = kind;
-        ResolveWarbond(warbonds);
+        Warbond = warbonds.FirstOrDefault(w => string.Equals(w.Id, _warbond, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool Equals(GameItem? other) => other is GameItem gi && string.Equals(Id, gi.Id, StringComparison.OrdinalIgnoreCase);
