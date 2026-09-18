@@ -13,7 +13,6 @@ public sealed class CatalogService(HttpClient httpClient)
     private IReadOnlyList<GameItem> Boosters { get; set; } = [];
     private IReadOnlyList<GameItem> Stratagems { get; set; } = [];
     private IReadOnlyList<GameItem> ArmorPassives { get; set; } = [];
-    private PenitentStarterLoadoutDefinition _penitentStarterLoadout = new();
     
     public readonly ItemSet AllItemsSet = new();
     public IReadOnlyList<OperationDefinition> Operations { get; private set; } = [];
@@ -37,7 +36,8 @@ public sealed class CatalogService(HttpClient httpClient)
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
 
-        _penitentStarterLoadout = await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new();
+        PenitentStarterLoadout = ResolveLoadout(await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new());
+
         AllItemsSet.Stratagems = [.. Stratagems];
         AllItemsSet.Primaries = [.. Primaries];
         AllItemsSet.Secondaries = [.. Secondaries];
@@ -45,15 +45,11 @@ public sealed class CatalogService(HttpClient httpClient)
         AllItemsSet.ArmorPassives = [.. ArmorPassives];
         AllItemsSet.Boosters = [.. Boosters];
 
-        PenitentStarterLoadout = ResolveLoadout(_penitentStarterLoadout);
 
-        var operationDefinitions = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
-        Operations = operationDefinitions;
+        Operations = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
 
         var difficultyDefinitions = await httpClient.GetFromJsonAsync<List<PenitentDifficultyDefinition>>("data/penitent-difficulties.json") ?? [];
-        PenitentDifficulties = difficultyDefinitions
-            .Select(definition => new PenitentDifficulty(definition, GetItemSet, GetOperation))
-            .ToList();
+        PenitentDifficulties = [.. difficultyDefinitions.Select(definition => new PenitentDifficulty(definition, GetItemSet, GetOperation))];
 
         _loaded = true;
     }
