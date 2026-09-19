@@ -6,7 +6,7 @@ body {
 
 body {
     background-color: #151c24;
-    color: #f8f9fa;
+    color: white;
 }
 
 h1:focus {
@@ -25,6 +25,10 @@ h1:focus {
     height: 260px;
     object-fit: cover;
     object-position: top;
+}
+
+.card {
+    color: white
 }
 
 .mode-grid {

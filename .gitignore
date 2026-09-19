@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# exclude the lib folder in wwwroot
+wwwroot/lib
