@@ -19,6 +19,10 @@ public sealed class PenitentState(
     public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentIds);
     public Operation CurrentOperation { get; set; } = resolveOperation(definition.OperationIndex, definition.MissionNumber);
     public int MissionsFailed { get; set; } = definition.MissionsFailed;
+    public bool RunCompleted { get; set; } = definition.RunCompleted;
+
+    public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
+    public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
 
     public PenitentStateDefinition ToDefinition() => new()
     {
@@ -26,6 +30,7 @@ public sealed class PenitentState(
         OperationIndex = CurrentOperation.DifficultyIndex,
         MissionNumber = CurrentOperation.MissionNumber,
         MissionsFailed = MissionsFailed,
+        RunCompleted = RunCompleted,
         SelectedWarbonds = [.. SelectedWarbonds.Select(item => item.Id)],
         AcquiredItemIds = [.. AcquiredItems.Select(item => item.Id)],
         BannedItemIds = [.. BannedItems.Select(item => item.Id)],

@@ -93,25 +93,24 @@ else
     {
     <div class="row g-4">
         <div class="col-12">
-            <div class="row g-3 mb-3">
+            <div class="row g-3 mb-3 align-items-center">
                 <div class="col-md-2">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Difficulty</small><div class="fs-5">@_state.Difficulty.DisplayName</div></div></div>
                 </div>
                 <div class="col-md-2">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@_state.CurrentOperation.Label</div></div></div>
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Operation</small><div class="fs-5">@_state.CurrentOperation.DifficultyLabel</div></div></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5">@_state.CurrentOperation.MissionLabel</div></div></div>
                 </div>
                 <div class="col-md-2">
                     <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Failures</small><div class="fs-5">@_state.MissionsFailed</div></div></div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body d-flex align-items-center">
-                        <button class="btn btn-success" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_canCompleteMission)">Mission Complete</button>
-                    </div></div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body d-flex align-items-center">
-                        <button class="btn btn-danger" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_canFailMission)">Mission Failed</button>
-                    </div></div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <button class="btn btn-success btn-lg btn-block" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
+                        <button class="btn btn-danger btn-lg btn-block" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                    </div>
                 </div>
             </div>
 
@@ -269,7 +268,17 @@ else
                 <div class="card bg-dark border-secondary">
                     <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                         <div>
-                            <div class="fw-semibold">@slot.Name @if (slot.Id == _penitentLibrary.CurrentSlotId) { <span class="badge bg-primary ms-1">Current</span> }</div>
+                            <div class="fw-semibold">
+                                @slot.Name
+                                @if (slot.IsCompleted)
+                                {
+                                    <span class="badge bg-success ms-1">Completed</span>
+                                }
+                                @if (slot.Id == _penitentLibrary.CurrentSlotId)
+                                {
+                                    <span class="badge bg-primary ms-1">Current</span>
+                                }
+                            </div>
                             <div class="text-secondary small">@slot.UpdatedAt.ToLocalTime()</div>
                         </div>
                         <div class="d-flex gap-2">
@@ -325,10 +334,7 @@ else
     }
 
     private SaveSlot<PenitentStateDefinition>? CurrentPenitentSlot => _workingSlot ?? _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
-
-    private bool _PenanceCompleted = false;
-    private bool _canCompleteMission => !_PenanceCompleted && _state.PendingPunishmentItems.Count == 0;
-    private bool _canFailMission => _state.AcquiredItems.AllItems.Count > 0 && !_PenanceCompleted && _state.PendingRewardItems.Count == 0;
+    
     private async Task OnPenitentDifficultyChangedAsync(ChangeEventArgs args)
     {
         if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
@@ -411,7 +417,7 @@ else
         ClampPenitentStars();
         if (MissionService.IsFinalMission(_state))
         {
-            _PenanceCompleted = true;
+            _state.RunCompleted = true;
 
             await PersistPenitentAsync();
             
@@ -539,6 +545,7 @@ else
         SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition>
         {
             Name = $"{BuildPenitentSlotName(_state)} Snapshot",
+            IsCompleted = _state.RunCompleted,
             State = _state.ToDefinition(),
             UpdatedAt = DateTimeOffset.UtcNow
         };
@@ -615,6 +622,7 @@ else
         }
 
         import.Slot.Id = Guid.NewGuid();
+        import.Slot.IsCompleted = import.Slot.State.RunCompleted;
         import.Slot.UpdatedAt = DateTimeOffset.UtcNow;
         _workingSlot = null;
         _penitentLibrary.Slots.Add(import.Slot);
@@ -673,6 +681,7 @@ else
         }
 
         CurrentPenitentSlot.State = _state.ToDefinition();
+        CurrentPenitentSlot.IsCompleted = _state.RunCompleted;
         CurrentPenitentSlot.UpdatedAt = DateTimeOffset.UtcNow;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
@@ -682,12 +691,12 @@ else
         SaveSlot<PenitentStateDefinition>? slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
         _penitentLibrary.CurrentSlotId = slot.Id;
         _state = new PenitentState(slot.State, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        slot.IsCompleted = _state.RunCompleted;
         _selectedStars = Math.Clamp(_selectedStars, 1, _state.CurrentOperation.MaxStars);
     }
 
     private void ResetPenitentTransientState()
     {
-        _PenanceCompleted = false;
         _showMissionCompleteModal = false;
         _showRewardModal = false;
         _showPunishmentModal = false;
@@ -731,7 +740,7 @@ else
 
     private string BuildPenitentSlotName(PenitentState state)
     {
-        return $"{state.Difficulty.DisplayName} | {state.CurrentOperation.Label} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
+        return $"{state.Difficulty.DisplayName} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
     }
 
     private static T Clone<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, JsonOptions), JsonOptions)!;

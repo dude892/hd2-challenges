@@ -14,7 +14,9 @@ public sealed class Operation(OperationDefinition definition, int index, int mis
         set => _missionNumber = Math.Clamp(value, 1, MissionCount);
     }
 
-    public string Label => $"{DifficultyIndex} - {DisplayName} : Mission {MissionNumber} of {MissionCount}";
     public bool IsFirstMission => MissionNumber == 1;
     public bool IsLastMission => MissionNumber == MissionCount;
+
+    public string DifficultyLabel => $"{DifficultyIndex} - {DisplayName}";
+    public string MissionLabel => $"Mission {MissionNumber} of {MissionCount}";
 }

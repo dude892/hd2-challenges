@@ -10,6 +10,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
     {
         return CatalogService.FilterAllItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
     }
+    
     private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.DifficultyIndex == 5 && state.CurrentOperation.IsLastMission;
 
     public bool EnsurePendingRewards(PenitentState state, int selectedStars)
