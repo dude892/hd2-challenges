@@ -156,7 +156,7 @@ else
     </div>
     }
 
-    <Modal Title="Mission Complete" Open="@_showMissionCompleteModal" OnClose="ClosePenitentMissionCompleteModal">
+    <Modal Title="Mission Complete" Open="@_showMissionCompleteModal" OnClose="@(() => _showMissionCompleteModal = false)">
         <MainContent>
             <div>
                 <label class="form-label text-light">Mission stars</label>
@@ -173,7 +173,7 @@ else
         </FooterContent>
     </Modal>
 
-    <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="ClosePenitentRewardModal">
+    <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="@(() => _showRewardModal = false)">
         <MainContent>
             @if (_state.PendingRewardItems.Count == 0)
             {
@@ -200,7 +200,7 @@ else
         </FooterContent>
     </Modal>
 
-    <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="ClosePenitentPunishmentModal">
+    <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="@(() => _showPunishmentModal = false)">
         <MainContent>
             @if (_state.PendingPunishmentItems.Count == 0)
             {
@@ -218,7 +218,7 @@ else
         </MainContent>
     </Modal>
 
-    <Modal Title="Run Settings" Open="@_showRunSettings" OnClose="ClosePenitentRunSettings">
+    <Modal Title="Run Settings" Open="@_showRunSettings" OnClose="@(() => _showRunSettings = false)">
         <MainContent>
             <div class="mb-4">
                 <div class="text-secondary small">Difficulty</div>
@@ -250,7 +250,7 @@ else
         </MainContent>
     </Modal>
 
-    <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="ClosePenitentSaveManager">
+    <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
         <MainContent>
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
@@ -280,7 +280,7 @@ else
                             <div>
                                 <div class="fw-semibold">
                                     @slot.Name
-                                    @if (slot.IsCompleted)
+                                    @if (slot.State is PenitentStateDefinition { RunCompleted: true })
                                     {
                                         <span class="badge bg-success ms-1">Completed</span>
                                     }
@@ -367,7 +367,6 @@ else
     private async Task BeginPenitentRunAsync()
     {
         _state.RunStarted = true;
-        ResetPenitentTransientState();
 
         if (_penitentLibrary.WorkingSlot is not null)
         {
@@ -486,39 +485,8 @@ else
             Name = $"{BuildPenitentSlotName(_state)}",
             State = _state.ToDefinition()
         };
-        ResetPenitentTransientState();
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
         _statusMessage = "Run reset. Review your settings before beginning again.";
-    }
-
-    private Task ClosePenitentRewardModal()
-    {
-        _showRewardModal = false;
-        return Task.CompletedTask;
-    }
-
-    private Task ClosePenitentPunishmentModal()
-    {
-        _showPunishmentModal = false;
-        return Task.CompletedTask;
-    }
-
-    private Task ClosePenitentMissionCompleteModal()
-    {
-        _showMissionCompleteModal = false;
-        return Task.CompletedTask;
-    }
-
-    private Task ClosePenitentRunSettings()
-    {
-        _showRunSettings = false;
-        return Task.CompletedTask;
-    }
-
-    private Task ClosePenitentSaveManager()
-    {
-        _showSaveManager = false;
-        return Task.CompletedTask;
     }
 
     private async Task CreatePenitentSnapshotAsync()
@@ -531,7 +499,6 @@ else
         SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition>
         {
             Name = $"{BuildPenitentSlotName(_state)} Snapshot",
-            IsCompleted = _state.RunCompleted,
             State = _state.ToDefinition(),
             UpdatedAt = DateTimeOffset.UtcNow
         };
@@ -554,11 +521,10 @@ else
 
     private async Task LoadPenitentSlotAsync(Guid slotId)
     {
+        _showSaveManager = false;
         _penitentLibrary.WorkingSlot = null;
         _penitentLibrary.CurrentSlotId = slotId;
         EnsurePenitentCurrentSlot();
-        ResetPenitentTransientState();
-        _showSaveManager = false;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
@@ -578,7 +544,6 @@ else
         }
 
         EnsurePenitentCurrentSlot();
-        ResetPenitentTransientState();
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
@@ -602,7 +567,6 @@ else
         }
 
         import.Slot.Id = Guid.NewGuid();
-        import.Slot.IsCompleted = import.Slot.State.RunCompleted;
         import.Slot.UpdatedAt = DateTimeOffset.UtcNow;
         _penitentLibrary.WorkingSlot = null;
         _penitentLibrary.Slots.Add(import.Slot);
@@ -661,7 +625,6 @@ else
         }
 
         _penitentLibrary.CurrentSlot.State = _state.ToDefinition();
-        _penitentLibrary.CurrentSlot.IsCompleted = _state.RunCompleted;
         _penitentLibrary.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
@@ -679,15 +642,6 @@ else
         {
             _state.RunStarted = false;
         }
-
-        slot.IsCompleted = _state.RunCompleted;
-    }
-
-    private void ResetPenitentTransientState()
-    {
-        _showMissionCompleteModal = false;
-        _showRewardModal = false;
-        _showPunishmentModal = false;
     }
 
     private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<Warbond>? selectedWarbonds = null)

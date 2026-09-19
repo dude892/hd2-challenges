@@ -7,7 +7,6 @@ public sealed class SaveSlot<TState>
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = string.Empty;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
-    public bool IsCompleted { get; set; }
     public TState State { get; set; } = default!;
 }
 
