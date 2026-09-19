@@ -14,7 +14,7 @@ public sealed class PenitentMissionService(CatalogService catalogService)
         }
         else if (state.CurrentOperation.DifficultyIndex < Catalog.LastOperationIndex)
         {
-            state.CurrentOperation = catalogService.GetOperation(state.CurrentOperation.DifficultyIndex + 1);
+            state.CurrentOperation = Catalog.GetOperation(state.CurrentOperation.DifficultyIndex + 1);
         }
     }
 

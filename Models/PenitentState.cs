@@ -18,7 +18,6 @@ public sealed class PenitentState(
     public ItemSet PendingRewardItems { get; set; } = resolveItemSet(definition.PendingRewardIds);
     public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentIds);
     public Operation CurrentOperation { get; set; } = resolveOperation(definition.OperationIndex, definition.MissionNumber);
-    public int SelectedStars { get; set; } = resolveOperation(definition.OperationIndex, definition.MissionNumber).MaxStars;
     public int MissionsFailed { get; set; } = definition.MissionsFailed;
     public bool RunCompleted { get; set; } = definition.RunCompleted;
 

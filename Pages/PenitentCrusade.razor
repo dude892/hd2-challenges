@@ -160,7 +160,7 @@ else
         <MainContent>
             <div>
                 <label class="form-label text-light">Mission stars</label>
-                <select class="form-select bg-dark text-light border-secondary" @bind="_state.SelectedStars">
+                <select class="form-select bg-dark text-light border-secondary" @bind="_state.CurrentOperation.SelectedStars">
                     @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
                     {
                         <option value="@star">@star</option>
@@ -169,7 +169,7 @@ else
             </div>
         </MainContent>
         <FooterContent>
-            <button class="btn btn-success" @onclick="(() => ConfirmPenitentMissionCompleteAsync(_state.SelectedStars))">Continue to Rewards</button>
+            <button class="btn btn-success" @onclick="(() => ConfirmPenitentMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
         </FooterContent>
     </Modal>
 
@@ -393,7 +393,6 @@ else
             return Task.CompletedTask;
         }
 
-        _state.SelectedStars = _state.CurrentOperation.MaxStars;
         _showMissionCompleteModal = true;
         return Task.CompletedTask;
     }
@@ -450,7 +449,7 @@ else
     {
         if (RewardService.ClaimReward(_state, id))
         {
-            AdvancePenitentMission();
+            MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await PersistPenitentAsync();
         }
@@ -460,7 +459,7 @@ else
     {
         if (RewardService.BanPendingRewards(_state))
         {
-            AdvancePenitentMission();
+            MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await PersistPenitentAsync();
         }
@@ -612,11 +611,6 @@ else
         await FileExport.DownloadTextAsync($"{SanitizeFileName(_penitentLibrary.CurrentSlot?.Name ?? "penitent-crusade-summary")}.txt", builder.ToString());
     }
 
-    private void AdvancePenitentMission()
-    {
-        MissionService.AdvanceMission(_state);
-    }
-
     private async Task PersistPenitentAsync()
     {
         if (_penitentLibrary.CurrentSlot is null)
@@ -683,8 +677,6 @@ else
     {
         return $"{state.Difficulty.DisplayName} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
     }
-
-    private static T Clone<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, JsonOptions), JsonOptions)!;
 
     private static string SanitizeFileName(string value)
     {
