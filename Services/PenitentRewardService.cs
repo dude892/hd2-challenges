@@ -6,10 +6,9 @@ public sealed class PenitentRewardService(CatalogService catalogService)
 {
     private CatalogService CatalogService { get; } = catalogService;
 
-    public ItemSet GetRewardPool(PenitentState state)
-    {
-        return CatalogService.FilterAllItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
-    }
+    public ItemSet GetRewardPool(PenitentState state) => 
+        CatalogService.GetItemsByWarbonds(state.SelectedWarbonds)
+            .RemoveItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
     
     private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.DifficultyIndex == 5 && state.CurrentOperation.IsLastMission;
 

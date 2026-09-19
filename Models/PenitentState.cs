@@ -5,7 +5,7 @@ public sealed class PenitentState(
     Func<string, PenitentDifficulty> resolveDifficulty,
     Func<int, int, Operation> resolveOperation,
     Func<IEnumerable<string>, ItemSet> resolveItemSet,
-    Func<string, ItemSet> resolveStarterItems,
+    Func<string, IEnumerable<Warbond>, ItemSet> resolveStarterItems,
     Func<IEnumerable<string>, HashSet<Warbond>> resolveWarbonds
 )
 {
@@ -13,7 +13,6 @@ public sealed class PenitentState(
     public PenitentDifficulty Difficulty { get; } = resolveDifficulty(definition.DifficultyId);
     public HashSet<Warbond> SelectedWarbonds { get; set; } = resolveWarbonds(definition.SelectedWarbonds);
     public ItemSet BannedItems { get; set; } = resolveItemSet(definition.BannedItemIds);
-    public ItemSet StarterItems => new(resolveStarterItems(Difficulty.Id));
     public ItemSet AcquiredItems { get; set; } = resolveItemSet(definition.AcquiredItemIds);
     public ItemSet PendingRewardItems { get; set; } = resolveItemSet(definition.PendingRewardIds);
     public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentIds);
@@ -21,6 +20,7 @@ public sealed class PenitentState(
     public int MissionsFailed { get; set; } = definition.MissionsFailed;
     public bool RunCompleted { get; set; } = definition.RunCompleted;
 
+    public ItemSet StarterItems => new(resolveStarterItems(Difficulty.Id, SelectedWarbonds));
     public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
     public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
 

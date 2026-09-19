@@ -14,10 +14,10 @@ public sealed class CatalogService(HttpClient httpClient)
     private IReadOnlyList<GameItem> Stratagems { get; set; } = [];
     private IReadOnlyList<GameItem> ArmorPassives { get; set; } = [];
     
-    public readonly ItemSet AllItemsSet = new();
+    private readonly ItemSet AllItemsSet = new();
     private IReadOnlyList<OperationDefinition> _operationDefinitions { get; set; } = [];
     public int LastOperationIndex => _operationDefinitions.Count;
-    public IReadOnlyList<Warbond> Warbonds { get; set; } = [];
+    private IReadOnlyList<Warbond> Warbonds { get; set; } = [];
 
     public async Task EnsureLoadedAsync()
     {
@@ -50,6 +50,9 @@ public sealed class CatalogService(HttpClient httpClient)
     private OperationDefinition GetOperationDefinition(int index) => _operationDefinitions[Math.Clamp(index, 1, LastOperationIndex) - 1];
     public Operation GetOperation(int index, int missionIndex) => new(GetOperationDefinition(index), index, missionIndex);
     public Operation GetOperation(int index) => GetOperation(index, 1);
+
+    public HashSet<Warbond> GetAllWarbonds() => [.. Warbonds];
+    public HashSet<Warbond> GetWarbonds(IEnumerable<string> ids) => [.. Warbonds.Where(w => ids.Contains(w.Id)).Concat(Warbonds.Where(item => item.Id == "helldiversMobilize"))];
 
     public ItemSet GetItemSet(IEnumerable<string> ids) => new()
     {

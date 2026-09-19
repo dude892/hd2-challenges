@@ -57,7 +57,7 @@ else
                 <div class="section-card rounded p-3 mt-4">
                     <h4 class="text-light">Warbonds</h4>
                     <div class="row g-2">
-                        @foreach (var warbond in Catalog.Warbonds)
+                        @foreach (var warbond in Catalog.GetAllWarbonds())
                         {
                             <div class="col-12">
                                 <div class="form-check">
@@ -228,7 +228,7 @@ else
             <div class="mb-4">
                 <div class="text-secondary small mb-2">Warbonds</div>
                 <div class="d-grid gap-2">
-                    @foreach (var warbond in Catalog.Warbonds.Where(warbond => _state.SelectedWarbonds.Contains(warbond)))
+                    @foreach (var warbond in _state.SelectedWarbonds)
                     {
                         <div class="text-light">@warbond.DisplayName</div>
                     }
@@ -321,7 +321,7 @@ else
     {
         await Catalog.EnsureLoadedAsync();
         await PenitentCatalog.EnsureLoadedAsync();
-        _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        _state = PenitentCatalog.CreatePenitentState(new PenitentStateDefinition());
         _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentStateDefinition>>(PenitentStorageKey) ?? new SaveLibrary<PenitentStateDefinition>();
 
         if (_penitentLibrary.CurrentSlotId is null)
@@ -337,8 +337,8 @@ else
     {
         if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
         {
-            _state = CreatePenitentSetupState(difficulty, _state.SelectedWarbonds);
-            _statusMessage = $"{GetPenitentDifficulty(difficulty).DisplayName} loadout preview updated.";
+            _state = PenitentCatalog.CreatePenitentState(new PenitentStateDefinition { DifficultyId = difficulty });
+            _statusMessage = $"{_state.Difficulty.DisplayName} loadout preview updated.";
         }
 
         await Task.CompletedTask;
@@ -477,7 +477,7 @@ else
 
     private async Task RestartPenitentRunAsync()
     {
-        _state = CreatePenitentSetupState(_state.Difficulty.Id, _state.SelectedWarbonds);
+        _state = PenitentCatalog.CreatePenitentSetupState(_state.Difficulty.Id, _state.SelectedWarbonds);
         _penitentLibrary.CurrentSlotId = null;
         _penitentLibrary.WorkingSlot = new SaveSlot<PenitentStateDefinition>
         {
@@ -631,47 +631,18 @@ else
             _penitentLibrary.CurrentSlotId = slot.Id;
         }
         
-        _state = new PenitentState(slot.State, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        _state = PenitentCatalog.CreatePenitentState(slot.State);
         if (ReferenceEquals(slot, _penitentLibrary.WorkingSlot))
         {
             _state.RunStarted = false;
         }
     }
 
-    private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<Warbond>? selectedWarbonds = null)
-    {
-        HashSet<Warbond> warbonds = selectedWarbonds?.ToHashSet() ?? Catalog.Warbonds.ToHashSet();
-        if (!warbonds.Any(item => item.Id == "helldiversMobilize"))
-        {
-            warbonds.Add(Catalog.Warbonds.First(item => item.Id == "helldiversMobilize"));
-        }
-
-        var startOperation = GetPenitentDifficulty(difficulty).StartOperation;
-        var definition = new PenitentStateDefinition
-        {
-            DifficultyId = difficulty,
-            SelectedWarbonds = warbonds.Select(item => item.Id).ToList(),
-        };
-
-        var state = new PenitentState(definition, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
-        state.CurrentOperation = Catalog.GetOperation(startOperation.DifficultyIndex);
-        return state;
-    }
-
-    private PenitentState CreatePenitentSetupState(string difficulty, IEnumerable<Warbond> selectedWarbonds)
-    {
-        PenitentState state = CreatePenitentState(difficulty, selectedWarbonds);
-        state.RunStarted = false;
-        return state;
-    }
-
     private SaveSlot<PenitentStateDefinition> CreatePenitentWorkingSlot()
     {
-        PenitentState state = CreatePenitentSetupState("normal", Catalog.Warbonds);
+        PenitentState state = PenitentCatalog.CreatePenitentSetupState("normal", Catalog.GetAllWarbonds());
         return new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
     }
-
-    private ItemSet GetPenitentStarterItems(string difficulty) => PenitentCatalog.GetStarterItems(difficulty);
 
     private string BuildPenitentSlotName(PenitentState state)
     {
@@ -687,11 +658,4 @@ else
 
         return value;
     }
-
-    private PenitentDifficulty GetPenitentDifficulty(string id) => PenitentCatalog.GetDifficulty(id);
-
-    private HashSet<Warbond> ResolveSelectedWarbonds(IEnumerable<string> ids) =>
-        Catalog.Warbonds
-            .Where(warbond => ids.Contains(warbond.Id, StringComparer.OrdinalIgnoreCase))
-            .ToHashSet();
 }
