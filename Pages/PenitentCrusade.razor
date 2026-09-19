@@ -1,9 +1,7 @@
 @page "/penitent-crusade"
-@using System.Text
-@using System.Text.Json
 @inject CatalogService Catalog
 @inject PenitentCatalogService PenitentCatalog
-@inject BrowserStorageService Storage
+@inject PenitentSaveLibrary SaveLibrary
 @inject FileExportService FileExport
 @inject PenitentRewardService RewardService
 @inject PenitentMissionService MissionService
@@ -258,7 +256,7 @@ else
                     <div class="fw-semibold">@_penitentLibrary.CurrentSlot?.Name</div>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm" @onclick="CreatePenitentSnapshotAsync" disabled="@(!_state.RunStarted)">Create Snapshot</button>
+                    <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
                     <label class="btn btn-outline-light btn-sm mb-0">
                         Import Slot
                         <InputFile OnChange="ImportPenitentSlotAsync" class="d-none" accept=".json" />
@@ -305,10 +303,8 @@ else
 }
 
 @code {
-    private const string PenitentStorageKey = "blazor-penitent-crusade";
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
-    private SaveLibrary<PenitentStateDefinition> _penitentLibrary = new();
     private PenitentState _state = default!;
+    private SaveLibrary<PenitentStateDefinition> _penitentLibrary = new();
     private bool _loaded;
     private bool _showMissionCompleteModal;
     private bool _showRewardModal;
@@ -321,15 +317,8 @@ else
     {
         await Catalog.EnsureLoadedAsync();
         await PenitentCatalog.EnsureLoadedAsync();
-        _state = PenitentCatalog.CreatePenitentState(new PenitentStateDefinition());
-        _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentStateDefinition>>(PenitentStorageKey) ?? new SaveLibrary<PenitentStateDefinition>();
-
-        if (_penitentLibrary.CurrentSlotId is null)
-        {
-            _penitentLibrary.WorkingSlot = CreatePenitentWorkingSlot();
-        }
-
-        EnsurePenitentCurrentSlot();
+        _state = await SaveLibrary.LoadAsync();
+        _penitentLibrary = SaveLibrary.Library;
         _loaded = true;
     }
 
@@ -368,15 +357,9 @@ else
     {
         _state.RunStarted = true;
 
-        if (_penitentLibrary.WorkingSlot is not null)
-        {
-            _penitentLibrary.WorkingSlot.State = _state.ToDefinition();
-            _penitentLibrary.Slots.Add(_penitentLibrary.WorkingSlot);
-            _penitentLibrary.CurrentSlotId = _penitentLibrary.WorkingSlot.Id;
-            _penitentLibrary.WorkingSlot = null;
-        }
+        SaveLibrary.BeginRun(_state);
 
-        await PersistPenitentAsync();
+        await SaveLibrary.PersistAsync(_state);
         _statusMessage = $"Started a new {_state.Difficulty.DisplayName} run.";
     }
 
@@ -404,7 +387,7 @@ else
         {
             _state.RunCompleted = true;
 
-            await PersistPenitentAsync();
+            await SaveLibrary.PersistAsync(_state);
             
             _statusMessage = "Challenge complete.";
             return;
@@ -412,7 +395,7 @@ else
 
         if (RewardService.EnsurePendingRewards(_state, stars))
         {
-            await PersistPenitentAsync();
+            await SaveLibrary.PersistAsync(_state);
         }
 
         if (_state.PendingRewardItems.Count == 0)
@@ -433,7 +416,7 @@ else
 
         if (RewardService.EnsurePendingPunishments(_state))
         {
-            await PersistPenitentAsync();
+            await SaveLibrary.PersistAsync(_state);
         }
 
         if (_state.PendingPunishmentItems.Count == 0)
@@ -451,7 +434,7 @@ else
         {
             MissionService.AdvanceMission(_state);
             _showRewardModal = false;
-            await PersistPenitentAsync();
+            await SaveLibrary.PersistAsync(_state);
         }
     }
 
@@ -461,7 +444,7 @@ else
         {
             MissionService.AdvanceMission(_state);
             _showRewardModal = false;
-            await PersistPenitentAsync();
+            await SaveLibrary.PersistAsync(_state);
         }
     }
 
@@ -471,39 +454,14 @@ else
         {
             MissionService.ApplyMissionFailure(_state);
             _showPunishmentModal = false;
-            await PersistPenitentAsync();
+            await SaveLibrary.PersistAsync(_state);
         }
     }
 
     private async Task RestartPenitentRunAsync()
     {
-        _state = PenitentCatalog.CreatePenitentSetupState(_state.Difficulty.Id, _state.SelectedWarbonds);
-        _penitentLibrary.CurrentSlotId = null;
-        _penitentLibrary.WorkingSlot = new SaveSlot<PenitentStateDefinition>
-        {
-            Name = $"{BuildPenitentSlotName(_state)}",
-            State = _state.ToDefinition()
-        };
-        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+        _state = await SaveLibrary.RestartAsync(_state);
         _statusMessage = "Run reset. Review your settings before beginning again.";
-    }
-
-    private async Task CreatePenitentSnapshotAsync()
-    {
-        if (!_state.RunStarted)
-        {
-            return;
-        }
-
-        SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition>
-        {
-            Name = $"{BuildPenitentSlotName(_state)} Snapshot",
-            State = _state.ToDefinition(),
-            UpdatedAt = DateTimeOffset.UtcNow
-        };
-        _penitentLibrary.Slots.Add(slot);
-        _penitentLibrary.CurrentSlotId = slot.Id;
-        await PersistPenitentAsync();
     }
 
     private async Task RenamePenitentCurrentSlotAsync(ChangeEventArgs args)
@@ -513,43 +471,24 @@ else
             return;
         }
 
-        _penitentLibrary.CurrentSlot.Name = string.IsNullOrWhiteSpace(args.Value?.ToString()) ? _penitentLibrary.CurrentSlot.Name : args.Value!.ToString()!;
-        _penitentLibrary.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
-        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+        await SaveLibrary.RenameCurrentSlotAsync(args.Value?.ToString());
     }
 
     private async Task LoadPenitentSlotAsync(Guid slotId)
     {
         _showSaveManager = false;
-        _penitentLibrary.WorkingSlot = null;
-        _penitentLibrary.CurrentSlotId = slotId;
-        EnsurePenitentCurrentSlot();
-        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+        _state = await SaveLibrary.SelectSlotAsync(slotId);
     }
 
     private async Task DeletePenitentSlotAsync(Guid slotId)
     {
-        _penitentLibrary.WorkingSlot = null;
-        _penitentLibrary.Slots.RemoveAll(slot => slot.Id == slotId);
-        bool createdReplacementSlot = _penitentLibrary.Slots.Count == 0;
-        if (createdReplacementSlot)
-        {
-            _penitentLibrary.WorkingSlot = CreatePenitentWorkingSlot();
-            _penitentLibrary.CurrentSlotId = null;
-        }
-        else if (_penitentLibrary.CurrentSlotId == slotId)
-        {
-            _penitentLibrary.CurrentSlotId = _penitentLibrary.Slots[0].Id;
-        }
-
-        EnsurePenitentCurrentSlot();
-        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+        _state = await SaveLibrary.DeleteSlotAsync(slotId);
     }
 
     private async Task ExportPenitentSlotAsync(Guid slotId)
     {
-        SaveSlot<PenitentStateDefinition>? slot = _penitentLibrary.Slots.First(entry => entry.Id == slotId);
-        await FileExport.DownloadJsonAsync($"{SanitizeFileName(slot.Name)}.json", new SaveExport<PenitentStateDefinition> { Mode = "penitent-crusade", Slot = slot });
+        SaveSlot<PenitentStateDefinition> slot = _penitentLibrary.Slots.First(entry => entry.Id == slotId);
+        await FileExport.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
     }
 
     private async Task ImportPenitentSlotAsync(InputFileChangeEventArgs args)
@@ -558,21 +497,15 @@ else
         await using Stream? stream = file.OpenReadStream(1024 * 1024);
         using StreamReader? reader = new StreamReader(stream);
         string? json = await reader.ReadToEndAsync();
-        SaveExport<PenitentStateDefinition>? import = JsonSerializer.Deserialize<SaveExport<PenitentStateDefinition>>(json, JsonOptions);
-        if (import?.Slot?.State is null || import.Mode != "penitent-crusade")
+        (SaveSlot<PenitentStateDefinition> Slot, PenitentState State)? imported = await SaveLibrary.ImportAsync(json);
+        if (imported is null)
         {
             _statusMessage = "Invalid Penitent Crusade save file.";
             return;
         }
 
-        import.Slot.Id = Guid.NewGuid();
-        import.Slot.UpdatedAt = DateTimeOffset.UtcNow;
-        _penitentLibrary.WorkingSlot = null;
-        _penitentLibrary.Slots.Add(import.Slot);
-        _penitentLibrary.CurrentSlotId = import.Slot.Id;
-        EnsurePenitentCurrentSlot();
-        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
-        _statusMessage = $"Imported slot {import.Slot.Name}.";
+        _state = imported.Value.State;
+        _statusMessage = $"Imported slot {imported.Value.Slot.Name}.";
     }
 
     private async Task ExportPenitentSummaryAsync()

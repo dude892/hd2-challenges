@@ -11,8 +11,19 @@ public sealed class FileExportService(IJSRuntime jsRuntime)
     };
 
     public Task DownloadTextAsync(string fileName, string content, string contentType = "text/plain;charset=utf-8") =>
-        jsRuntime.InvokeVoidAsync("hd2App.downloadFile", fileName, contentType, content).AsTask();
+        jsRuntime.InvokeVoidAsync("hd2App.downloadFile", SanitizeFileName(fileName), contentType, content).AsTask();
 
     public Task DownloadJsonAsync<T>(string fileName, T content) =>
-        DownloadTextAsync(fileName, JsonSerializer.Serialize(content, JsonOptions), "application/json;charset=utf-8");
+        DownloadTextAsync(SanitizeFileName(fileName), JsonSerializer.Serialize(content, JsonOptions), "application/json;charset=utf-8");
+
+    private static string SanitizeFileName(string value)
+    {
+        foreach (var invalidChar in Path.GetInvalidFileNameChars())
+        {
+            value = value.Replace(invalidChar, '-');
+        }
+
+        return value;
+    }
+
 }

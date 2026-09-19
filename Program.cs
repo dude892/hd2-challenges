@@ -11,6 +11,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<CatalogService>();
 builder.Services.AddScoped<PenitentCatalogService>();
 builder.Services.AddScoped<BrowserStorageService>();
+builder.Services.AddScoped<SaveLibraryService>();
+builder.Services.AddScoped<PenitentSaveLibrary>();
 builder.Services.AddScoped<FileExportService>();
 builder.Services.AddScoped<PenitentRewardService>();
 builder.Services.AddScoped<PenitentMissionService>();
