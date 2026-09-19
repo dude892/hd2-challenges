@@ -2,7 +2,7 @@
   {
     "id": "normal",
     "displayName": "Penitent Crusade",
-    "startOperation": "medium",
+    "startOperationIndex": 3,
     "loadoutAdditions": {
       "secondaries": ["p2peacemaker"]
     }
@@ -10,7 +10,7 @@
   {
     "id": "solo",
     "displayName": "Solo/Duo Crusade",
-    "startOperation": "medium",
+    "startOperationIndex": 3,
     "loadoutAdditions": {
       "secondaries": ["p2peacemaker"],
       "stratagems": ["orbitalprecisionstrike"]
@@ -19,7 +19,7 @@
   {
     "id": "quick",
     "displayName": "Quick Crusade",
-    "startOperation": "suicide-mission",
+    "startOperationIndex": 7,
     "loadoutAdditions": {
       "secondaries": ["p2peacemaker"],
       "stratagems": [
@@ -40,7 +40,7 @@
   {
     "id": "super",
     "displayName": "Super Penitent Crusade",
-    "startOperation": "challenging",
+    "startOperationIndex": 4,
     "scoreModifier": 250,
     "isSuper": true,
     "loadoutOverrides": {
@@ -53,7 +53,7 @@
   {
     "id": "supersolo",
     "displayName": "Solo/Duo Super Crusade",
-    "startOperation": "challenging",
+    "startOperationIndex": 4,
     "scoreModifier": 250,
     "isSuper": true,
     "loadoutOverrides": {

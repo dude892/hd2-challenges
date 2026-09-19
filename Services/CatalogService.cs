@@ -15,7 +15,8 @@ public sealed class CatalogService(HttpClient httpClient)
     private IReadOnlyList<GameItem> ArmorPassives { get; set; } = [];
     
     public readonly ItemSet AllItemsSet = new();
-    public IReadOnlyList<OperationDefinition> Operations { get; private set; } = [];
+    private IReadOnlyList<OperationDefinition> _operationDefinitions { get; set; } = [];
+    public int LastOperationIndex => _operationDefinitions.Count;
     public IReadOnlyList<Warbond> Warbonds { get; set; } = [];
 
     public async Task EnsureLoadedAsync()
@@ -41,30 +42,14 @@ public sealed class CatalogService(HttpClient httpClient)
         AllItemsSet.ArmorPassives = [.. ArmorPassives];
         AllItemsSet.Boosters = [.. Boosters];
 
-        Operations = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
-
+        _operationDefinitions = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
+        
         _loaded = true;
     }
 
-    public Operation GetOperation(string id) => new(Operations.First(option => option.Id == id));
-
-    public OperationDefinition? GetNextOperationDefinition(string operationId)
-    {
-        for (int i = 0; i < Operations.Count; i++)
-        {
-            if (Operations[i].Id == operationId)
-            {
-                if (i + 1 < Operations.Count)
-                {
-                    return Operations[i + 1];
-                }
-
-                return null;
-            }
-        }
-
-        return null;
-    }
+    private OperationDefinition GetOperationDefinition(int index) => _operationDefinitions[Math.Clamp(index, 1, LastOperationIndex) - 1];
+    public Operation GetOperation(int index, int missionIndex) => new(GetOperationDefinition(index), index, missionIndex);
+    public Operation GetOperation(int index) => GetOperation(index, 1);
 
     public ItemSet GetItemSet(IEnumerable<string> ids) => new()
     {

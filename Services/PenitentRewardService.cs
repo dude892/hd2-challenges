@@ -2,13 +2,15 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class PenitentRewardService
+public sealed class PenitentRewardService(CatalogService catalogService)
 {
+    private CatalogService CatalogService { get; } = catalogService;
+
     public ItemSet GetRewardPool(PenitentState state)
     {
-        return state.AvailableItems.RemoveItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
+        return CatalogService.FilterAllItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
     }
-    private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.Id == "hard" && state.CurrentOperation.IsLastMission;
+    private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.DifficultyIndex == 5 && state.CurrentOperation.IsLastMission;
 
     public bool EnsurePendingRewards(PenitentState state, int selectedStars)
     {

@@ -303,7 +303,7 @@ else
     {
         await Catalog.EnsureLoadedAsync();
         await PenitentCatalog.EnsureLoadedAsync();
-        _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds, Catalog.GetItemsByWarbonds);
+        _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
         _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentStateDefinition>>(PenitentStorageKey) ?? new SaveLibrary<PenitentStateDefinition>();
 
         bool createdNewSlot = _penitentLibrary.Slots.Count == 0;
@@ -681,7 +681,7 @@ else
     {
         SaveSlot<PenitentStateDefinition>? slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
         _penitentLibrary.CurrentSlotId = slot.Id;
-        _state = new PenitentState(slot.State, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds, Catalog.GetItemsByWarbonds);
+        _state = new PenitentState(slot.State, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
         _selectedStars = Math.Clamp(_selectedStars, 1, _state.CurrentOperation.MaxStars);
     }
 
@@ -709,8 +709,8 @@ else
             SelectedWarbonds = warbonds.Select(item => item.Id).ToList(),
         };
 
-        var state = new PenitentState(definition, GetPenitentDifficulty, GetPenitentOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds, Catalog.GetItemsByWarbonds);
-        MissionService.SetMissionProgress(state, startOperation.Id, startOperation.MissionNumber);
+        var state = new PenitentState(definition, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        state.CurrentOperation = Catalog.GetOperation(startOperation.DifficultyIndex);
         _selectedStars = state.CurrentOperation.MaxStars;
         return state;
     }
@@ -752,15 +752,4 @@ else
         Catalog.Warbonds
             .Where(warbond => ids.Contains(warbond.Id, StringComparer.OrdinalIgnoreCase))
             .ToHashSet();
-
-    private Operation GetPenitentOperation(string operationIndex, int missionIndex)
-    {
-        var definition = Catalog.Operations.FirstOrDefault(op => string.Equals(op.Id, operationIndex, StringComparison.OrdinalIgnoreCase));
-        if (definition is null)
-        {
-            definition = Catalog.Operations.FirstOrDefault() ?? new OperationDefinition { Id = "medium", DisplayName = "Medium" };
-        }
-
-        return new Operation(definition, Math.Max(1, missionIndex + 1));
-    }
 }
