@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Hd2Challenges.Models;
 
 public sealed class SaveSlot<TState>
@@ -13,6 +15,12 @@ public sealed class SaveLibrary<TState>
 {
     public Guid? CurrentSlotId { get; set; }
     public List<SaveSlot<TState>> Slots { get; set; } = [];
+
+    [JsonIgnore]
+    public SaveSlot<TState>? WorkingSlot { get; set; }
+
+    [JsonIgnore]
+    public SaveSlot<TState>? CurrentSlot => WorkingSlot ?? Slots.FirstOrDefault(slot => slot.Id == CurrentSlotId);
 }
 
 public sealed class SaveExport<TState>

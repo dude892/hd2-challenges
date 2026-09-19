@@ -1,13 +1,22 @@
 @if (Open)
 {
     <div class="app-modal-backdrop" @onclick="HandleBackdropClick">
-        <div class="app-modal card bg-dark text-light border-secondary" @onclick:stopPropagation="true">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">@Title</h5>
-                <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
-            </div>
-            <div class="card-body">
-                @ChildContent
+        <div class="app-modal @CssClass" @onclick:stopPropagation="true">
+            <div class="card bg-dark text-light border-secondary">
+                <div class="card-header d-flex justify-content-between align-items-center gap-2">
+                    <h5 class="mb-0">@Title</h5>
+                    <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+                </div>
+                <div class="card-body">
+                    @MainContent
+                </div>
+
+                @if (FooterContent is not null)
+                {
+                    <div class="card-footer d-flex justify-content-end gap-2">
+                        @FooterContent
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -16,7 +25,9 @@
 @code {
     [Parameter] public bool Open { get; set; }
     [Parameter] public string Title { get; set; } = string.Empty;
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment? MainContent { get; set; }
+    [Parameter] public RenderFragment? FooterContent { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public bool CloseOnBackdrop { get; set; } = true;
 

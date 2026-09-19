@@ -1,0 +1,20 @@
+.app-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1050;
+}
+
+.app-modal.item-modal ::deep .item-grid {
+    grid-template-columns: repeat(var(--item-columns), 180px);
+}
+
+@media (max-width: 575.98px) {
+    .app-modal.item-modal ::deep .item-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 180px));
+    }
+}

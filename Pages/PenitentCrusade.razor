@@ -157,139 +157,150 @@ else
     }
 
     <Modal Title="Mission Complete" Open="@_showMissionCompleteModal" OnClose="ClosePenitentMissionCompleteModal">
-        <div class="mb-3">
-            <label class="form-label text-light">Mission stars</label>
-            <select class="form-select bg-dark text-light border-secondary" value="@_selectedStars" @onchange="OnPenitentStarsChangedAsync">
-                @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
-                {
-                    <option value="@star">@star</option>
-                }
-            </select>
-        </div>
-        <div class="d-flex justify-content-end gap-2">
-            <button class="btn btn-outline-secondary" @onclick="ClosePenitentMissionCompleteModal">Cancel</button>
-            <button class="btn btn-success" @onclick="ConfirmPenitentMissionCompleteAsync">Continue to Rewards</button>
-        </div>
-    </Modal>
-
-    <Modal Title="Reward Options" Open="@_showRewardModal" OnClose="ClosePenitentRewardModal">
-        @if (_state.PendingRewardItems.Count == 0)
-        {
-            <p class="text-secondary mb-0">No rewards available.</p>
-        }
-        else
-        {
-            <div class="item-grid">
-                @foreach (var group in _state.PendingRewardItems.Categories)
-                {
-                    @foreach (GameItem item in group)
+        <MainContent>
+            <div>
+                <label class="form-label text-light">Mission stars</label>
+                <select class="form-select bg-dark text-light border-secondary" @bind="_state.SelectedStars">
+                    @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
                     {
-                        <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.Id))" />
+                        <option value="@star">@star</option>
                     }
-                }
+                </select>
             </div>
-            <div class="sticky-actions d-flex justify-content-end gap-2">
-                <button class="btn btn-outline-secondary" @onclick="ClosePenitentRewardModal">Close</button>
-                <button class="btn btn-warning" @onclick="SkipAndBanPenitentRewardsAsync">Skip and Ban All</button>
-            </div>
-        }
+        </MainContent>
+        <FooterContent>
+            <button class="btn btn-success" @onclick="(() => ConfirmPenitentMissionCompleteAsync(_state.SelectedStars))">Continue to Rewards</button>
+        </FooterContent>
     </Modal>
 
-    <Modal Title="Punishment Options" Open="@_showPunishmentModal" OnClose="ClosePenitentPunishmentModal">
-        @if (_state.PendingPunishmentItems.Count == 0)
-        {
-            <p class="text-secondary mb-0">No punishments available.</p>
-        }
-        else
-        {
-            <div class="item-grid">
-                @foreach (var item in _state.PendingPunishmentItems)
-                {
-                    <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.Id))" />
-                }
-            </div>
-        }
+    <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="ClosePenitentRewardModal">
+        <MainContent>
+            @if (_state.PendingRewardItems.Count == 0)
+            {
+                <p class="text-secondary mb-0">No rewards available.</p>
+            }
+            else
+            {
+                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
+                    @foreach (var group in _state.PendingRewardItems.Categories)
+                    {
+                        @foreach (GameItem item in group)
+                        {
+                            <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.Id))" />
+                        }
+                    }
+                </div>
+            }
+        </MainContent>
+        <FooterContent>
+            @if (_state.PendingRewardItems.Count > 0)
+            {
+                <button class="btn btn-warning" @onclick="SkipAndBanPenitentRewardsAsync">Skip and Ban All</button>
+            }
+        </FooterContent>
+    </Modal>
+
+    <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="ClosePenitentPunishmentModal">
+        <MainContent>
+            @if (_state.PendingPunishmentItems.Count == 0)
+            {
+                <p class="text-secondary mb-0">No punishments available.</p>
+            }
+            else
+            {
+                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
+                    @foreach (var item in _state.PendingPunishmentItems)
+                    {
+                        <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.Id))" />
+                    }
+                </div>
+            }
+        </MainContent>
     </Modal>
 
     <Modal Title="Run Settings" Open="@_showRunSettings" OnClose="ClosePenitentRunSettings">
-        <div class="mb-4">
-            <div class="text-secondary small">Difficulty</div>
-            <div class="fs-5">@_state.Difficulty.DisplayName</div>
-        </div>
+        <MainContent>
+            <div class="mb-4">
+                <div class="text-secondary small">Difficulty</div>
+                <div class="fs-5">@_state.Difficulty.DisplayName</div>
+            </div>
 
-        <div class="mb-4">
-            <div class="text-secondary small mb-2">Warbonds</div>
-            <div class="d-grid gap-2">
-                @foreach (var warbond in Catalog.Warbonds.Where(warbond => _state.SelectedWarbonds.Contains(warbond)))
-                {
-                    <div class="text-light">@warbond.DisplayName</div>
-                }
+            <div class="mb-4">
+                <div class="text-secondary small mb-2">Warbonds</div>
+                <div class="d-grid gap-2">
+                    @foreach (var warbond in Catalog.Warbonds.Where(warbond => _state.SelectedWarbonds.Contains(warbond)))
+                    {
+                        <div class="text-light">@warbond.DisplayName</div>
+                    }
+                </div>
             </div>
-        </div>
 
-        <div>
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="text-secondary small">Starting loadout</div>
-                <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
+            <div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-secondary small">Starting loadout</div>
+                    <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
+                </div>
+                <div class="item-grid mt-3">
+                    @foreach (var item in _state.StarterItems)
+                    {
+                        <ItemCard Item="item" Badge="Starter" />
+                    }
+                </div>
             </div>
-            <div class="item-grid mt-3">
-                @foreach (var item in _state.StarterItems)
-                {
-                    <ItemCard Item="item" Badge="Starter" />
-                }
-            </div>
-        </div>
+        </MainContent>
     </Modal>
 
     <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="ClosePenitentSaveManager">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <div class="text-secondary small">Current slot</div>
-                <div class="fw-semibold">@CurrentPenitentSlot?.Name</div>
+        <MainContent>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <div class="text-secondary small">Current slot</div>
+                    <div class="fw-semibold">@_penitentLibrary.CurrentSlot?.Name</div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm" @onclick="CreatePenitentSnapshotAsync" disabled="@(!_state.RunStarted)">Create Snapshot</button>
+                    <label class="btn btn-outline-light btn-sm mb-0">
+                        Import Slot
+                        <InputFile OnChange="ImportPenitentSlotAsync" class="d-none" accept=".json" />
+                    </label>
+                </div>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary btn-sm" @onclick="CreatePenitentSnapshotAsync" disabled="@(!_state.RunStarted)">Create Snapshot</button>
-                <label class="btn btn-outline-light btn-sm mb-0">
-                    Import Slot
-                    <InputFile OnChange="ImportPenitentSlotAsync" class="d-none" accept=".json" />
-                </label>
-            </div>
-        </div>
-        @if (CurrentPenitentSlot is not null)
-        {
-            <div class="mb-3">
-                <label class="form-label text-light">Rename current slot</label>
-                <input class="form-control bg-dark text-light border-secondary" value="@CurrentPenitentSlot.Name" @onchange="RenamePenitentCurrentSlotAsync" />
-            </div>
-        }
-        <div class="d-grid gap-2">
-            @foreach (var slot in _penitentLibrary.Slots.OrderByDescending(slot => slot.UpdatedAt))
+            @if (_penitentLibrary.CurrentSlot is not null)
             {
-                <div class="card bg-dark border-secondary">
-                    <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
-                        <div>
-                            <div class="fw-semibold">
-                                @slot.Name
-                                @if (slot.IsCompleted)
-                                {
-                                    <span class="badge bg-success ms-1">Completed</span>
-                                }
-                                @if (slot.Id == _penitentLibrary.CurrentSlotId)
-                                {
-                                    <span class="badge bg-primary ms-1">Current</span>
-                                }
-                            </div>
-                            <div class="text-secondary small">@slot.UpdatedAt.ToLocalTime()</div>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-light" @onclick="(() => LoadPenitentSlotAsync(slot.Id))">Load</button>
-                            <button class="btn btn-sm btn-outline-primary" @onclick="(() => ExportPenitentSlotAsync(slot.Id))">Export</button>
-                            <button class="btn btn-sm btn-outline-danger" @onclick="(() => DeletePenitentSlotAsync(slot.Id))">Delete</button>
-                        </div>
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label text-light">Rename current slot</label>
+                    <input class="form-control bg-dark text-light border-secondary" value="@_penitentLibrary.CurrentSlot.Name" @onchange="RenamePenitentCurrentSlotAsync" />
                 </div>
             }
-        </div>
+            <div class="d-grid gap-2">
+                @foreach (var slot in _penitentLibrary.Slots.OrderByDescending(slot => slot.UpdatedAt))
+                {
+                    <div class="card bg-dark border-secondary">
+                        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-semibold">
+                                    @slot.Name
+                                    @if (slot.IsCompleted)
+                                    {
+                                        <span class="badge bg-success ms-1">Completed</span>
+                                    }
+                                    @if (slot.Id == _penitentLibrary.CurrentSlotId)
+                                    {
+                                        <span class="badge bg-primary ms-1">Current</span>
+                                    }
+                                </div>
+                                <div class="text-secondary small">@slot.UpdatedAt.ToLocalTime()</div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-light" @onclick="(() => LoadPenitentSlotAsync(slot.Id))">Load</button>
+                                <button class="btn btn-sm btn-outline-primary" @onclick="(() => ExportPenitentSlotAsync(slot.Id))">Export</button>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="(() => DeletePenitentSlotAsync(slot.Id))">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </MainContent>
     </Modal>
 }
 
@@ -298,8 +309,6 @@ else
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
     private SaveLibrary<PenitentStateDefinition> _penitentLibrary = new();
     private PenitentState _state = default!;
-    private SaveSlot<PenitentStateDefinition>? _workingSlot;
-    private int _selectedStars = 1;
     private bool _loaded;
     private bool _showMissionCompleteModal;
     private bool _showRewardModal;
@@ -315,26 +324,15 @@ else
         _state = new PenitentState(new PenitentStateDefinition(), GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
         _penitentLibrary = await Storage.GetAsync<SaveLibrary<PenitentStateDefinition>>(PenitentStorageKey) ?? new SaveLibrary<PenitentStateDefinition>();
 
-        bool createdNewSlot = _penitentLibrary.Slots.Count == 0;
-        if (createdNewSlot)
+        if (_penitentLibrary.CurrentSlotId is null)
         {
-            var state = CreatePenitentState();
-            var slot = new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
-            _penitentLibrary.Slots.Add(slot);
-            _penitentLibrary.CurrentSlotId = slot.Id;
-            await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
+            _penitentLibrary.WorkingSlot = CreatePenitentWorkingSlot();
         }
 
         EnsurePenitentCurrentSlot();
-        if (createdNewSlot)
-        {
-            _state.RunStarted = false;
-        }
         _loaded = true;
     }
 
-    private SaveSlot<PenitentStateDefinition>? CurrentPenitentSlot => _workingSlot ?? _penitentLibrary.Slots.FirstOrDefault(slot => slot.Id == _penitentLibrary.CurrentSlotId);
-    
     private async Task OnPenitentDifficultyChangedAsync(ChangeEventArgs args)
     {
         if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
@@ -344,16 +342,6 @@ else
         }
 
         await Task.CompletedTask;
-    }
-
-    private Task OnPenitentStarsChangedAsync(ChangeEventArgs args)
-    {
-        if (int.TryParse(args.Value?.ToString(), out var stars))
-        {
-            _selectedStars = Math.Clamp(stars, 1, _state.CurrentOperation.MaxStars);
-        }
-
-        return Task.CompletedTask;
     }
 
     private async Task TogglePenitentWarbondAsync(Warbond warbond, bool isChecked)
@@ -381,12 +369,12 @@ else
         _state.RunStarted = true;
         ResetPenitentTransientState();
 
-        if (_workingSlot is not null)
+        if (_penitentLibrary.WorkingSlot is not null)
         {
-            _workingSlot.State = _state.ToDefinition();
-            _penitentLibrary.Slots.Add(_workingSlot);
-            _penitentLibrary.CurrentSlotId = _workingSlot.Id;
-            _workingSlot = null;
+            _penitentLibrary.WorkingSlot.State = _state.ToDefinition();
+            _penitentLibrary.Slots.Add(_penitentLibrary.WorkingSlot);
+            _penitentLibrary.CurrentSlotId = _penitentLibrary.WorkingSlot.Id;
+            _penitentLibrary.WorkingSlot = null;
         }
 
         await PersistPenitentAsync();
@@ -406,15 +394,14 @@ else
             return Task.CompletedTask;
         }
 
-        ClampPenitentStars();
+        _state.SelectedStars = _state.CurrentOperation.MaxStars;
         _showMissionCompleteModal = true;
         return Task.CompletedTask;
     }
 
-    private async Task ConfirmPenitentMissionCompleteAsync()
+    private async Task ConfirmPenitentMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
-        ClampPenitentStars();
         if (MissionService.IsFinalMission(_state))
         {
             _state.RunCompleted = true;
@@ -425,7 +412,7 @@ else
             return;
         }
 
-        if (RewardService.EnsurePendingRewards(_state, _selectedStars))
+        if (RewardService.EnsurePendingRewards(_state, stars))
         {
             await PersistPenitentAsync();
         }
@@ -464,7 +451,6 @@ else
     {
         if (RewardService.ClaimReward(_state, id))
         {
-            _selectedStars = 1;
             AdvancePenitentMission();
             _showRewardModal = false;
             await PersistPenitentAsync();
@@ -476,7 +462,6 @@ else
         if (RewardService.BanPendingRewards(_state))
         {
             AdvancePenitentMission();
-            ClampPenitentStars();
             _showRewardModal = false;
             await PersistPenitentAsync();
         }
@@ -487,7 +472,6 @@ else
         if (RewardService.ClaimPunishment(_state, id))
         {
             MissionService.ApplyMissionFailure(_state);
-            _selectedStars = 1;
             _showPunishmentModal = false;
             await PersistPenitentAsync();
         }
@@ -496,12 +480,14 @@ else
     private async Task RestartPenitentRunAsync()
     {
         _state = CreatePenitentSetupState(_state.Difficulty.Id, _state.SelectedWarbonds);
-        _workingSlot = new SaveSlot<PenitentStateDefinition>
+        _penitentLibrary.CurrentSlotId = null;
+        _penitentLibrary.WorkingSlot = new SaveSlot<PenitentStateDefinition>
         {
-            Name = $"{BuildPenitentSlotName(_state)} (New Run)",
+            Name = $"{BuildPenitentSlotName(_state)}",
             State = _state.ToDefinition()
         };
         ResetPenitentTransientState();
+        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
         _statusMessage = "Run reset. Review your settings before beginning again.";
     }
 
@@ -556,19 +542,19 @@ else
 
     private async Task RenamePenitentCurrentSlotAsync(ChangeEventArgs args)
     {
-        if (CurrentPenitentSlot is null)
+        if (_penitentLibrary.CurrentSlot is null)
         {
             return;
         }
 
-        CurrentPenitentSlot.Name = string.IsNullOrWhiteSpace(args.Value?.ToString()) ? CurrentPenitentSlot.Name : args.Value!.ToString()!;
-        CurrentPenitentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+        _penitentLibrary.CurrentSlot.Name = string.IsNullOrWhiteSpace(args.Value?.ToString()) ? _penitentLibrary.CurrentSlot.Name : args.Value!.ToString()!;
+        _penitentLibrary.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
     private async Task LoadPenitentSlotAsync(Guid slotId)
     {
-        _workingSlot = null;
+        _penitentLibrary.WorkingSlot = null;
         _penitentLibrary.CurrentSlotId = slotId;
         EnsurePenitentCurrentSlot();
         ResetPenitentTransientState();
@@ -578,15 +564,13 @@ else
 
     private async Task DeletePenitentSlotAsync(Guid slotId)
     {
-        _workingSlot = null;
+        _penitentLibrary.WorkingSlot = null;
         _penitentLibrary.Slots.RemoveAll(slot => slot.Id == slotId);
         bool createdReplacementSlot = _penitentLibrary.Slots.Count == 0;
         if (createdReplacementSlot)
         {
-            PenitentState? state = CreatePenitentState();
-            SaveSlot<PenitentStateDefinition>? slot = new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
-            _penitentLibrary.Slots.Add(slot);
-            _penitentLibrary.CurrentSlotId = slot.Id;
+            _penitentLibrary.WorkingSlot = CreatePenitentWorkingSlot();
+            _penitentLibrary.CurrentSlotId = null;
         }
         else if (_penitentLibrary.CurrentSlotId == slotId)
         {
@@ -595,10 +579,6 @@ else
 
         EnsurePenitentCurrentSlot();
         ResetPenitentTransientState();
-        if (createdReplacementSlot)
-        {
-            _state.RunStarted = false;
-        }
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
@@ -624,7 +604,7 @@ else
         import.Slot.Id = Guid.NewGuid();
         import.Slot.IsCompleted = import.Slot.State.RunCompleted;
         import.Slot.UpdatedAt = DateTimeOffset.UtcNow;
-        _workingSlot = null;
+        _penitentLibrary.WorkingSlot = null;
         _penitentLibrary.Slots.Add(import.Slot);
         _penitentLibrary.CurrentSlotId = import.Slot.Id;
         EnsurePenitentCurrentSlot();
@@ -665,7 +645,7 @@ else
             builder.AppendLine();
         }
 
-        await FileExport.DownloadTextAsync($"{SanitizeFileName(CurrentPenitentSlot?.Name ?? "penitent-crusade-summary")}.txt", builder.ToString());
+        await FileExport.DownloadTextAsync($"{SanitizeFileName(_penitentLibrary.CurrentSlot?.Name ?? "penitent-crusade-summary")}.txt", builder.ToString());
     }
 
     private void AdvancePenitentMission()
@@ -675,24 +655,32 @@ else
 
     private async Task PersistPenitentAsync()
     {
-        if (CurrentPenitentSlot is null)
+        if (_penitentLibrary.CurrentSlot is null)
         {
             return;
         }
 
-        CurrentPenitentSlot.State = _state.ToDefinition();
-        CurrentPenitentSlot.IsCompleted = _state.RunCompleted;
-        CurrentPenitentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+        _penitentLibrary.CurrentSlot.State = _state.ToDefinition();
+        _penitentLibrary.CurrentSlot.IsCompleted = _state.RunCompleted;
+        _penitentLibrary.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
         await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
     }
 
     private void EnsurePenitentCurrentSlot()
     {
-        SaveSlot<PenitentStateDefinition>? slot = CurrentPenitentSlot ?? _penitentLibrary.Slots.First();
-        _penitentLibrary.CurrentSlotId = slot.Id;
+        SaveSlot<PenitentStateDefinition>? slot = _penitentLibrary.CurrentSlot ?? _penitentLibrary.Slots.First();
+        if (!ReferenceEquals(slot, _penitentLibrary.WorkingSlot))
+        {
+            _penitentLibrary.CurrentSlotId = slot.Id;
+        }
+        
         _state = new PenitentState(slot.State, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
+        if (ReferenceEquals(slot, _penitentLibrary.WorkingSlot))
+        {
+            _state.RunStarted = false;
+        }
+
         slot.IsCompleted = _state.RunCompleted;
-        _selectedStars = Math.Clamp(_selectedStars, 1, _state.CurrentOperation.MaxStars);
     }
 
     private void ResetPenitentTransientState()
@@ -700,7 +688,6 @@ else
         _showMissionCompleteModal = false;
         _showRewardModal = false;
         _showPunishmentModal = false;
-        _selectedStars = _state.CurrentOperation.MaxStars;
     }
 
     private PenitentState CreatePenitentState(string difficulty = "normal", IEnumerable<Warbond>? selectedWarbonds = null)
@@ -720,7 +707,6 @@ else
 
         var state = new PenitentState(definition, GetPenitentDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetPenitentStarterItems, ResolveSelectedWarbonds);
         state.CurrentOperation = Catalog.GetOperation(startOperation.DifficultyIndex);
-        _selectedStars = state.CurrentOperation.MaxStars;
         return state;
     }
 
@@ -731,12 +717,13 @@ else
         return state;
     }
 
-    private ItemSet GetPenitentStarterItems(string difficulty) => PenitentCatalog.GetStarterItems(difficulty);
-
-    private void ClampPenitentStars()
+    private SaveSlot<PenitentStateDefinition> CreatePenitentWorkingSlot()
     {
-        _selectedStars = Math.Clamp(_selectedStars, 1, _state.CurrentOperation.MaxStars);
+        PenitentState state = CreatePenitentSetupState("normal", Catalog.Warbonds);
+        return new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
     }
+
+    private ItemSet GetPenitentStarterItems(string difficulty) => PenitentCatalog.GetStarterItems(difficulty);
 
     private string BuildPenitentSlotName(PenitentState state)
     {
