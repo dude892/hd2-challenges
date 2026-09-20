@@ -34,7 +34,8 @@ public sealed class PenitentSaveLibraryService(
         }
 
         Library.WorkingSlot.State = state.ToDefinition();
-        saveLibrary.CommitWorkingSlot(Library);
+        Library.WorkingSlot.Name = BuildSlotName(state);
+        Library.CommitWorkingSlot();
         await PersistAsync();
     }
 
@@ -73,19 +74,19 @@ public sealed class PenitentSaveLibraryService(
             UpdatedAt = DateTimeOffset.UtcNow
         };
 
-        saveLibrary.AddSlot(Library, slot);
+        Library.AddSlot(slot);
         await PersistAsync(state);
     }
 
     public async Task RenameCurrentSlotAsync(string? name)
     {
-        saveLibrary.RenameCurrentSlot(Library, name);
+        Library.RenameCurrentSlot(name);
         await PersistAsync();
     }
 
     public async Task<PenitentState> SelectSlotAsync(Guid slotId)
     {
-        saveLibrary.SelectSlot(Library, slotId);
+        Library.SelectSlot(slotId);
         PenitentState state = ResolveCurrentState();
         await PersistAsync();
         return state;
@@ -93,7 +94,7 @@ public sealed class PenitentSaveLibraryService(
 
     public async Task<PenitentState> DeleteSlotAsync(Guid slotId)
     {
-        saveLibrary.DeleteSlot(Library, slotId, () => CreateWorkingSlot("normal", catalog.GetAllWarbonds()));
+        Library.DeleteSlot(slotId, () => CreateWorkingSlot("normal", catalog.GetAllWarbonds()));
         PenitentState state = ResolveCurrentState();
         await PersistAsync();
         return state;
@@ -113,7 +114,7 @@ public sealed class PenitentSaveLibraryService(
             return null;
         }
 
-        saveLibrary.AddSlot(Library, slot);
+        Library.AddSlot(slot);
         PenitentState state = ResolveCurrentState();
         await PersistAsync();
         return (slot, state);
@@ -142,5 +143,5 @@ public sealed class PenitentSaveLibraryService(
         State = state.ToDefinition()
     };
 
-    private static string BuildSlotName(PenitentState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
+    private static string BuildSlotName(PenitentState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
 }

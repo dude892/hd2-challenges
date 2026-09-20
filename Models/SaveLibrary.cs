@@ -20,6 +20,56 @@ public sealed class SaveLibrary<TState>
 
     [JsonIgnore]
     public SaveSlot<TState>? CurrentSlot => WorkingSlot ?? Slots.FirstOrDefault(slot => slot.Id == CurrentSlotId);
+
+    public void CommitWorkingSlot()
+    {
+        if (WorkingSlot is null)
+        {
+            return;
+        }
+
+        Slots.Add(WorkingSlot);
+        CurrentSlotId = WorkingSlot.Id;
+        WorkingSlot = null;
+    }
+
+    public void AddSlot(SaveSlot<TState> slot)
+    {
+        WorkingSlot = null;
+        Slots.Add(slot);
+        CurrentSlotId = slot.Id;
+    }
+
+    public SaveSlot<TState>? SelectSlot(Guid slotId)
+    {
+        WorkingSlot = null;
+        CurrentSlotId = slotId;
+        return CurrentSlot;
+    }
+
+    public void RenameCurrentSlot(string? name)
+    {
+        if (CurrentSlot is null || string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+
+        CurrentSlot.Name = name;
+        CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void DeleteSlot(Guid slotId, Func<SaveSlot<TState>> replacementFactory)
+    {
+        bool deletingCurrentSlot = CurrentSlotId == slotId;
+        WorkingSlot = null;
+        Slots.RemoveAll(slot => slot.Id == slotId);
+
+        if (deletingCurrentSlot || Slots.Count == 0)
+        {
+            WorkingSlot = replacementFactory();
+            CurrentSlotId = null;
+        }
+    }
 }
 
 public sealed class SaveExport<TState>
