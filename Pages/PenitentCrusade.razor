@@ -1,8 +1,8 @@
 @page "/penitent-crusade"
 @inject CatalogService Catalog
 @inject PenitentCatalogService PenitentCatalog
-@inject PenitentSaveLibrary SaveLibrary
-@inject FileExportService FileExport
+@inject PenitentSaveLibraryService SaveLibrary
+@inject FileExportService FileService
 @inject PenitentRewardService RewardService
 @inject PenitentMissionService MissionService
 
@@ -23,7 +23,7 @@ else
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="ExportPenitentSummaryAsync">Download Summary</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "penitent-crusade-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Restart Run</button>
             }
         </div>
@@ -136,12 +136,12 @@ else
                 }
                 else
                 {
-                    @foreach (var group in _state.AcquiredItems.Categories)
+                    @foreach (var group in _state.AcquiredItems.CategoryGroups)
                     {
                         <div class="mt-4">
-                            <h5 class="text-light">@group.FirstOrDefault()?.Kind</h5>
+                            <h5 class="text-light">@group.Label</h5>
                             <div class="item-grid">
-                                @foreach (GameItem item in group)
+                                @foreach (GameItem item in group.Items)
                                 {
                                     <ItemCard Item="item" />
                                 }
@@ -253,7 +253,7 @@ else
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <div class="text-secondary small">Current slot</div>
-                    <div class="fw-semibold">@_penitentLibrary.CurrentSlot?.Name</div>
+                    <div class="fw-semibold">@SaveLibrary.Library.CurrentSlot?.Name</div>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
@@ -263,15 +263,15 @@ else
                     </label>
                 </div>
             </div>
-            @if (_penitentLibrary.CurrentSlot is not null)
+            @if (SaveLibrary.Library.CurrentSlot is not null)
             {
                 <div class="mb-3">
                     <label class="form-label text-light">Rename current slot</label>
-                    <input class="form-control bg-dark text-light border-secondary" value="@_penitentLibrary.CurrentSlot.Name" @onchange="RenamePenitentCurrentSlotAsync" />
+                    <input class="form-control bg-dark text-light border-secondary" value="@SaveLibrary.Library.CurrentSlot.Name" @onchange="RenamePenitentCurrentSlotAsync" />
                 </div>
             }
             <div class="d-grid gap-2">
-                @foreach (var slot in _penitentLibrary.Slots.OrderByDescending(slot => slot.UpdatedAt))
+                @foreach (var slot in SaveLibrary.Library.Slots.OrderByDescending(slot => slot.UpdatedAt))
                 {
                     <div class="card bg-dark border-secondary">
                         <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -282,7 +282,7 @@ else
                                     {
                                         <span class="badge bg-success ms-1">Completed</span>
                                     }
-                                    @if (slot.Id == _penitentLibrary.CurrentSlotId)
+                                    @if (slot.Id == SaveLibrary.Library.CurrentSlotId)
                                     {
                                         <span class="badge bg-primary ms-1">Current</span>
                                     }
@@ -304,7 +304,6 @@ else
 
 @code {
     private PenitentState _state = default!;
-    private SaveLibrary<PenitentStateDefinition> _penitentLibrary = new();
     private bool _loaded;
     private bool _showMissionCompleteModal;
     private bool _showRewardModal;
@@ -318,7 +317,6 @@ else
         await Catalog.EnsureLoadedAsync();
         await PenitentCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
-        _penitentLibrary = SaveLibrary.Library;
         _loaded = true;
     }
 
@@ -326,7 +324,7 @@ else
     {
         if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
         {
-            _state = PenitentCatalog.CreatePenitentState(new PenitentStateDefinition { DifficultyId = difficulty });
+            _state = PenitentCatalog.CreatePenitentSetupState(difficulty, _state.SelectedWarbonds);
             _statusMessage = $"{_state.Difficulty.DisplayName} loadout preview updated.";
         }
 
@@ -357,10 +355,7 @@ else
     {
         _state.RunStarted = true;
 
-        SaveLibrary.BeginRun(_state);
-
-        await SaveLibrary.PersistAsync(_state);
-        _statusMessage = $"Started a new {_state.Difficulty.DisplayName} run.";
+        await SaveLibrary.BeginRun(_state);
     }
 
     private Task BeginPenitentMissionCompleteAsync()
@@ -466,7 +461,7 @@ else
 
     private async Task RenamePenitentCurrentSlotAsync(ChangeEventArgs args)
     {
-        if (_penitentLibrary.CurrentSlot is null)
+        if (SaveLibrary.Library.CurrentSlot is null)
         {
             return;
         }
@@ -487,8 +482,8 @@ else
 
     private async Task ExportPenitentSlotAsync(Guid slotId)
     {
-        SaveSlot<PenitentStateDefinition> slot = _penitentLibrary.Slots.First(entry => entry.Id == slotId);
-        await FileExport.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
+        SaveSlot<PenitentStateDefinition> slot = SaveLibrary.Library.Slots.First(entry => entry.Id == slotId);
+        await FileService.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
     }
 
     private async Task ImportPenitentSlotAsync(InputFileChangeEventArgs args)
@@ -506,89 +501,5 @@ else
 
         _state = imported.Value.State;
         _statusMessage = $"Imported slot {imported.Value.Slot.Name}.";
-    }
-
-    private async Task ExportPenitentSummaryAsync()
-    {
-        int difficultyModifier = _state.Difficulty.ScoreModifier;
-        int score = difficultyModifier - (_state.MissionsFailed * 50);
-        IOrderedEnumerable<IGrouping<string, GameItem>>? categories = _state.AcquiredItems.GroupBy(item => item.KindLabel).OrderBy(group => group.Key);
-        StringBuilder? builder = new StringBuilder();
-        builder.AppendLine($"{_state.Difficulty.DisplayName} Score Summary");
-        builder.AppendLine("=======================================");
-        builder.AppendLine();
-        builder.AppendLine($"Difficulty Modifier: {difficultyModifier}");
-        builder.AppendLine($"Missions Failed: {_state.MissionsFailed}");
-        builder.AppendLine($"Final Score: {score}");
-        builder.AppendLine();
-
-        foreach (string kind in new[] { "Stratagem", "Primary", "Booster", "Secondary", "Throwable", "Armor Passive" })
-        {
-            builder.AppendLine($"{kind}s:");
-            List<GameItem>? items = categories.FirstOrDefault(group => group.Key == kind)?.ToList() ?? [];
-            if (items.Count == 0)
-            {
-                builder.AppendLine("  - None");
-            }
-            else
-            {
-                foreach (GameItem item in items)
-                {
-                    builder.AppendLine($"  - {item.DisplayName}");
-                }
-            }
-
-            builder.AppendLine();
-        }
-
-        await FileExport.DownloadTextAsync($"{SanitizeFileName(_penitentLibrary.CurrentSlot?.Name ?? "penitent-crusade-summary")}.txt", builder.ToString());
-    }
-
-    private async Task PersistPenitentAsync()
-    {
-        if (_penitentLibrary.CurrentSlot is null)
-        {
-            return;
-        }
-
-        _penitentLibrary.CurrentSlot.State = _state.ToDefinition();
-        _penitentLibrary.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
-        await Storage.SetAsync(PenitentStorageKey, _penitentLibrary);
-    }
-
-    private void EnsurePenitentCurrentSlot()
-    {
-        SaveSlot<PenitentStateDefinition>? slot = _penitentLibrary.CurrentSlot ?? _penitentLibrary.Slots.First();
-        if (!ReferenceEquals(slot, _penitentLibrary.WorkingSlot))
-        {
-            _penitentLibrary.CurrentSlotId = slot.Id;
-        }
-        
-        _state = PenitentCatalog.CreatePenitentState(slot.State);
-        if (ReferenceEquals(slot, _penitentLibrary.WorkingSlot))
-        {
-            _state.RunStarted = false;
-        }
-    }
-
-    private SaveSlot<PenitentStateDefinition> CreatePenitentWorkingSlot()
-    {
-        PenitentState state = PenitentCatalog.CreatePenitentSetupState("normal", Catalog.GetAllWarbonds());
-        return new SaveSlot<PenitentStateDefinition> { Name = BuildPenitentSlotName(state), State = state.ToDefinition() };
-    }
-
-    private string BuildPenitentSlotName(PenitentState state)
-    {
-        return $"{state.Difficulty.DisplayName} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
-    }
-
-    private static string SanitizeFileName(string value)
-    {
-        foreach (var invalidChar in Path.GetInvalidFileNameChars())
-        {
-            value = value.Replace(invalidChar, '-');
-        }
-
-        return value;
     }
 }

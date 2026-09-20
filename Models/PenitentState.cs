@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Hd2Challenges.Models;
 
 public sealed class PenitentState(
@@ -23,6 +25,113 @@ public sealed class PenitentState(
     public ItemSet StarterItems => new(resolveStarterItems(Difficulty.Id, SelectedWarbonds));
     public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
     public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
+
+    public string SummaryText
+    {
+        get
+        {
+            int score = Difficulty.ScoreModifier - (MissionsFailed * 50);
+            StringBuilder builder = new();
+
+            builder.AppendLine("Penitent Crusade Summary");
+            builder.AppendLine("========================");
+            builder.AppendLine();
+            builder.AppendLine($"Difficulty: {Difficulty.DisplayName}");
+            
+            if (RunCompleted)
+            {
+                builder.AppendLine("Run Completed");
+                builder.AppendLine($"Missions Failed: {MissionsFailed}");
+                builder.AppendLine($"Final Score: {score}");
+            }
+            else
+            {
+                builder.AppendLine($"Current Operation: {CurrentOperation.DifficultyLabel}, {CurrentOperation.MissionLabel}");
+                builder.AppendLine($"Missions Failed: {MissionsFailed}");
+                builder.AppendLine($"Current Score: {score}");
+            }
+
+            builder.AppendLine();
+
+            builder.AppendLine("Selected Warbonds:");
+            if (SelectedWarbonds.Count == 0)
+            {
+                builder.AppendLine("  - None");
+            }
+            else
+            {
+                foreach (var warbond in SelectedWarbonds.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
+                {
+                    builder.AppendLine($"  - {warbond.DisplayName}");
+                }
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Banned Items:");
+            if (BannedItems.Count == 0)
+            {
+                builder.AppendLine("  - None");
+            }
+            else
+            {
+                foreach (var item in BannedItems.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
+                {
+                    builder.AppendLine($"  - {item.DisplayName}");
+                }
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Pending Rewards:");
+            if (PendingRewardItems.Count == 0)
+            {
+                builder.AppendLine("  - None");
+            }
+            else
+            {
+                foreach (var item in PendingRewardItems.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
+                {
+                    builder.AppendLine($"  - {item.DisplayName}");
+                }
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Pending Punishments:");
+            if (PendingPunishmentItems.Count == 0)
+            {
+                builder.AppendLine("  - None");
+            }
+            else
+            {
+                foreach (var item in PendingPunishmentItems.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
+                {
+                    builder.AppendLine($"  - {item.DisplayName}");
+                }
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Acquired Items:");
+            foreach (var (label, items) in AcquiredItems.CategoryGroups)
+            {
+                builder.AppendLine($"{label}:");
+
+                if (!items.Any())
+                {
+                    builder.AppendLine("  - None");
+                }
+                else
+                {
+                    foreach (var item in items)
+                    {
+                        builder.AppendLine($"  - {item.DisplayName}");
+                    }
+                }
+
+                builder.AppendLine();
+            }
+
+            return builder.ToString();
+        }
+    }
 
     public PenitentStateDefinition ToDefinition() => new()
     {

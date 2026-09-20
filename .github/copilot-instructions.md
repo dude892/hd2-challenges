@@ -76,3 +76,6 @@ Prefer keeping UI logic in Razor components and domain logic in services and mod
 When in doubt, ask whether a piece of logic affects the state of the application or the presentation; if it affects state, it likely belongs in a service or model, if it affects presentation, it likely belongs in a Razor component.
 Consider also the testability and maintainability of the code when deciding where it should reside.
 If something is not relying on the capabilities of a service, it is likely better suited to a model. Any logic that primarily manipulates or represents data without side effects should generally reside in a model rather than a service.
+Do not put application state management logic directly in Razor components; delegate it to services instead.
+Do not put random wrappers around service calls in Razor components; call the service methods directly instead.
+DO NOT EVER MAKE MAGIC NUMBER OR USE CONSTANTS DIRECTLY IN THE CODE, THIS INCLUDES MAKING A VARIABLE OF ANY KIND.

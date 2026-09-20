@@ -2,7 +2,7 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class PenitentSaveLibrary(
+public sealed class PenitentSaveLibraryService(
     SaveLibraryService saveLibrary,
     PenitentCatalogService penitentCatalog,
     CatalogService catalog)
@@ -11,6 +11,8 @@ public sealed class PenitentSaveLibrary(
     private const string ExportMode = "penitent-crusade";
 
     public SaveLibrary<PenitentStateDefinition> Library { get; private set; } = new();
+
+    private Task PersistAsync() => saveLibrary.PersistAsync(StorageKey, Library);
 
     public async Task<PenitentState> LoadAsync()
     {
@@ -24,7 +26,7 @@ public sealed class PenitentSaveLibrary(
         return ResolveCurrentState();
     }
 
-    public void BeginRun(PenitentState state)
+    public async Task BeginRun(PenitentState state)
     {
         if (Library.WorkingSlot is null)
         {
@@ -33,6 +35,7 @@ public sealed class PenitentSaveLibrary(
 
         Library.WorkingSlot.State = state.ToDefinition();
         saveLibrary.CommitWorkingSlot(Library);
+        await PersistAsync();
     }
 
     public async Task PersistAsync(PenitentState state)
@@ -44,7 +47,7 @@ public sealed class PenitentSaveLibrary(
 
         Library.CurrentSlot.State = state.ToDefinition();
         Library.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
-        await saveLibrary.PersistAsync(StorageKey, Library);
+        await PersistAsync();
     }
 
     public async Task<PenitentState> RestartAsync(PenitentState state)
@@ -52,7 +55,7 @@ public sealed class PenitentSaveLibrary(
         PenitentState restartedState = penitentCatalog.CreatePenitentSetupState(state.Difficulty.Id, state.SelectedWarbonds);
         Library.CurrentSlotId = null;
         Library.WorkingSlot = CreateWorkingSlot(restartedState);
-        await saveLibrary.PersistAsync(StorageKey, Library);
+        await PersistAsync();
         return restartedState;
     }
 
@@ -77,14 +80,14 @@ public sealed class PenitentSaveLibrary(
     public async Task RenameCurrentSlotAsync(string? name)
     {
         saveLibrary.RenameCurrentSlot(Library, name);
-        await saveLibrary.PersistAsync(StorageKey, Library);
+        await PersistAsync();
     }
 
     public async Task<PenitentState> SelectSlotAsync(Guid slotId)
     {
         saveLibrary.SelectSlot(Library, slotId);
         PenitentState state = ResolveCurrentState();
-        await saveLibrary.PersistAsync(StorageKey, Library);
+        await PersistAsync();
         return state;
     }
 
@@ -92,7 +95,7 @@ public sealed class PenitentSaveLibrary(
     {
         saveLibrary.DeleteSlot(Library, slotId, () => CreateWorkingSlot("normal", catalog.GetAllWarbonds()));
         PenitentState state = ResolveCurrentState();
-        await saveLibrary.PersistAsync(StorageKey, Library);
+        await PersistAsync();
         return state;
     }
 
@@ -112,7 +115,7 @@ public sealed class PenitentSaveLibrary(
 
         saveLibrary.AddSlot(Library, slot);
         PenitentState state = ResolveCurrentState();
-        await saveLibrary.PersistAsync(StorageKey, Library);
+        await PersistAsync();
         return (slot, state);
     }
 
@@ -139,6 +142,5 @@ public sealed class PenitentSaveLibrary(
         State = state.ToDefinition()
     };
 
-    private static string BuildSlotName(PenitentState state) =>
-        $"{state.Difficulty.DisplayName} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
+    private static string BuildSlotName(PenitentState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}";
 }
