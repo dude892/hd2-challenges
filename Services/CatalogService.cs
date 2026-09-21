@@ -12,7 +12,7 @@ public sealed class CatalogService(HttpClient httpClient)
     private IReadOnlyList<GameItem> Throwables { get; set; } = [];
     private IReadOnlyList<GameItem> Boosters { get; set; } = [];
     private IReadOnlyList<GameItem> Stratagems { get; set; } = [];
-    private IReadOnlyList<GameItem> ArmorPassives { get; set; } = [];
+    private IReadOnlyList<GameItem> Passives { get; set; } = [];
     
     private readonly ItemSet AllItemsSet = new();
     private IReadOnlyList<OperationDefinition> _operationDefinitions { get; set; } = [];
@@ -33,13 +33,13 @@ public sealed class CatalogService(HttpClient httpClient)
         Throwables = await LoadItemsAsync("data/throwables.json", ItemKind.Throwable);
         Boosters = await LoadItemsAsync("data/boosters.json", ItemKind.Booster);
         Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
-        ArmorPassives = await LoadItemsAsync("data/armor-passives.json", ItemKind.ArmorPassive);
+        Passives = await LoadItemsAsync("data/passives.json", ItemKind.Passive);
 
         AllItemsSet.Stratagems = [.. Stratagems];
         AllItemsSet.Primaries = [.. Primaries];
         AllItemsSet.Secondaries = [.. Secondaries];
         AllItemsSet.Throwables = [.. Throwables];
-        AllItemsSet.ArmorPassives = [.. ArmorPassives];
+        AllItemsSet.Passives = [.. Passives];
         AllItemsSet.Boosters = [.. Boosters];
 
         _operationDefinitions = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
@@ -60,7 +60,7 @@ public sealed class CatalogService(HttpClient httpClient)
         Primaries = [.. AllItemsSet.Primaries.Where(item => ids.Contains(item.Id))],
         Secondaries = [.. AllItemsSet.Secondaries.Where(item => ids.Contains(item.Id))],
         Throwables = [.. AllItemsSet.Throwables.Where(item => ids.Contains(item.Id))],
-        ArmorPassives = [.. AllItemsSet.ArmorPassives.Where(item => ids.Contains(item.Id))],
+        Passives = [.. AllItemsSet.Passives.Where(item => ids.Contains(item.Id))],
         Boosters = [.. AllItemsSet.Boosters.Where(item => ids.Contains(item.Id))]
     };
 

@@ -7,7 +7,7 @@
     }
     <img class="card-img-top item-card-image" src="@($"images/{Item.ImageDirectory}/{Item.ImageURL}")" alt="@Item.DisplayName" />
     <div class="card-body p-2 d-flex flex-column">
-        <small class="text-secondary">@Item.KindLabel</small>
+        <small class="text-secondary">@Item.Kind</small>
         <div class="fw-semibold">@Item.DisplayName</div>
         @if (Item.Warbond is not null)
         {

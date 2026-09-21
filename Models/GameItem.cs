@@ -9,7 +9,7 @@ public enum ItemKind
     Secondary,
     Throwable,
     Booster,
-    ArmorPassive
+    Passive
 }
 
 public sealed class GameItem : IEquatable<GameItem>
@@ -28,12 +28,9 @@ public sealed class GameItem : IEquatable<GameItem>
         Kind switch
         {
             ItemKind.Stratagem => "svgs",
-            ItemKind.ArmorPassive => "armorpassives",
+            ItemKind.Passive => "armorpassives",
             _ => "equipment"
         };
-
-    [JsonIgnore]
-    public string KindLabel => Kind.CompareTo(ItemKind.ArmorPassive) == 0 ? "Armor Passive" : Kind.ToString();
 
     [JsonIgnore]
     public Warbond? Warbond { get; private set; }

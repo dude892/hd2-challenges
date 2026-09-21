@@ -6,7 +6,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
     public HashSet<GameItem> Primaries { get; set; } = [];
     public HashSet<GameItem> Secondaries { get; set; } = [];
     public HashSet<GameItem> Throwables { get; set; } = [];
-    public HashSet<GameItem> ArmorPassives { get; set; } = [];
+    public HashSet<GameItem> Passives { get; set; } = [];
     public HashSet<GameItem> Boosters { get; set; } = [];
     
     public ItemSet() 
@@ -15,7 +15,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries = [];
         Secondaries = [];
         Throwables = [];
-        ArmorPassives = [];
+        Passives = [];
         Boosters = [];
     }
 
@@ -25,7 +25,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries = [.. items.Where(item => item.Kind == ItemKind.Primary)];
         Secondaries = [.. items.Where(item => item.Kind == ItemKind.Secondary)];
         Throwables = [.. items.Where(item => item.Kind == ItemKind.Throwable)];
-        ArmorPassives = [.. items.Where(item => item.Kind == ItemKind.ArmorPassive)];
+        Passives = [.. items.Where(item => item.Kind == ItemKind.Passive)];
         Boosters = [.. items.Where(item => item.Kind == ItemKind.Booster)];
     }
 
@@ -35,7 +35,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries = [.. Primaries],
         Secondaries = [.. Secondaries],
         Throwables = [.. Throwables],
-        ArmorPassives = [.. ArmorPassives],
+        Passives = [.. Passives],
         Boosters = [.. Boosters]
     };
 
@@ -47,7 +47,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
             yield return Primaries;
             yield return Secondaries;
             yield return Throwables;
-            yield return ArmorPassives;
+            yield return Passives;
             yield return Boosters;
         }
     }
@@ -58,7 +58,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         ("Primaries", Primaries.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
         ("Secondaries", Secondaries.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
         ("Throwables", Throwables.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
-        ("Armor Passives", ArmorPassives.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
+        ("Armor Passives", Passives.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
         ("Boosters", Boosters.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase))
     ];
 
@@ -84,7 +84,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
             case ItemKind.Primary: Primaries.Add(item); break;
             case ItemKind.Secondary: Secondaries.Add(item); break;
             case ItemKind.Throwable: Throwables.Add(item); break;
-            case ItemKind.ArmorPassive: ArmorPassives.Add(item); break;
+            case ItemKind.Passive: Passives.Add(item); break;
             case ItemKind.Booster: Boosters.Add(item); break;
         }
 
@@ -99,7 +99,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries.UnionWith(items.Primaries);
         Secondaries.UnionWith(items.Secondaries);
         Throwables.UnionWith(items.Throwables);
-        ArmorPassives.UnionWith(items.ArmorPassives);
+        Passives.UnionWith(items.Passives);
         Boosters.UnionWith(items.Boosters);
 
         return this;
@@ -113,7 +113,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
             case ItemKind.Primary: Primaries.Remove(item); break;
             case ItemKind.Secondary: Secondaries.Remove(item); break;
             case ItemKind.Throwable: Throwables.Remove(item); break;
-            case ItemKind.ArmorPassive: ArmorPassives.Remove(item); break;
+            case ItemKind.Passive: Passives.Remove(item); break;
             case ItemKind.Booster: Boosters.Remove(item); break;
         }
 
@@ -128,7 +128,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries.ExceptWith(items.Primaries);
         Secondaries.ExceptWith(items.Secondaries);
         Throwables.ExceptWith(items.Throwables);
-        ArmorPassives.ExceptWith(items.ArmorPassives);
+        Passives.ExceptWith(items.Passives);
         Boosters.ExceptWith(items.Boosters);
 
         return this;
@@ -152,7 +152,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries.Clear();
         Secondaries.Clear();
         Throwables.Clear();
-        ArmorPassives.Clear();
+        Passives.Clear();
         Boosters.Clear();
 
         return this;
@@ -166,7 +166,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
             case ItemKind.Primary: Primaries.Clear(); break;
             case ItemKind.Secondary: Secondaries.Clear(); break;
             case ItemKind.Throwable: Throwables.Clear(); break;
-            case ItemKind.ArmorPassive: ArmorPassives.Clear(); break;
+            case ItemKind.Passive: Passives.Clear(); break;
             case ItemKind.Booster: Boosters.Clear(); break;
         }
 
@@ -181,7 +181,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         if (overrides.Primaries.Count != 0) Primaries = overrides.Primaries;
         if (overrides.Secondaries.Count != 0) Secondaries = overrides.Secondaries;
         if (overrides.Throwables.Count != 0) Throwables = overrides.Throwables;
-        if (overrides.ArmorPassives.Count != 0) ArmorPassives = overrides.ArmorPassives;
+        if (overrides.Passives.Count != 0) Passives = overrides.Passives;
         if (overrides.Boosters.Count != 0) Boosters = overrides.Boosters;
 
         return this;
@@ -195,7 +195,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
         Primaries.UnionWith(additions.Primaries);
         Secondaries.UnionWith(additions.Secondaries);
         Throwables.UnionWith(additions.Throwables);
-        ArmorPassives.UnionWith(additions.ArmorPassives);
+        Passives.UnionWith(additions.Passives);
         Boosters.UnionWith(additions.Boosters);
 
         return this;

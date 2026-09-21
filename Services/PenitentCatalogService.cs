@@ -64,7 +64,7 @@ public sealed class PenitentCatalogService(HttpClient httpClient, CatalogService
         Primaries = Catalog.GetItemSet(definition.Primaries).Primaries,
         Secondaries = Catalog.GetItemSet(definition.Secondaries).Secondaries,
         Throwables = Catalog.GetItemSet(definition.Throwables).Throwables,
-        ArmorPassives = Catalog.GetItemSet(definition.ArmorPassives).ArmorPassives,
+        Passives = Catalog.GetItemSet(definition.ArmorPassives).Passives,
         Boosters = Catalog.GetItemSet(definition.Boosters).Boosters
     };
 }
