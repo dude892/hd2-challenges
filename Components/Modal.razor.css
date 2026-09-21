@@ -9,6 +9,21 @@
     z-index: 1050;
 }
 
+.app-modal {
+    max-height: 95vh;
+}
+
+.app-modal > .card {
+    display: flex;
+    max-height: 95vh;
+    flex-direction: column;
+}
+
+.app-modal > .card > .card-body {
+    min-height: 0;
+    overflow-y: auto;
+}
+
 .app-modal.item-modal ::deep .item-grid {
     grid-template-columns: repeat(var(--item-columns), 180px);
 }

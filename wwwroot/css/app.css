@@ -7,6 +7,34 @@ body {
 body {
     background-color: #151c24;
     color: white;
+    scrollbar-color: #596574 transparent;
+    scrollbar-width: thin;
+}
+
+* {
+    scrollbar-color: #596574 transparent;
+    scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #596574;
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #7d8a99;
+    border-width: 2px;
 }
 
 h1:focus {
@@ -40,35 +68,6 @@ h1:focus {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 0.75rem;
-}
-
-.item-card {
-    position: relative;
-    border: 1px solid #3c434d;
-}
-
-.item-card-clickable:hover {
-    transform: translateY(-2px);
-    border-color: #ffc107;
-}
-
-.item-card-image {
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
-    padding: 0.5rem;
-    background: #212830;
-}
-
-.item-card-badge {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    z-index: 2;
-    background: rgba(13, 110, 253, 0.9);
-    color: white;
-    font-size: 0.75rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 999px;
 }
 
 .specialist-image {

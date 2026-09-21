@@ -54,15 +54,14 @@ else
 
                 <div class="section-card rounded p-3 mt-4">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="row g-2">
+                    <div class="item-grid mt-3">
                         @foreach (var warbond in Catalog.GetAllWarbonds())
                         {
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="setup-@warbond.Id" checked="@_state.SelectedWarbonds.Contains(warbond)" disabled="@warbond.AlwaysEnabled" @onchange="(e => TogglePenitentWarbondAsync(warbond, e.Value as bool? == true))" />
-                                    <label class="form-check-label text-light" for="setup-@warbond.Id">@warbond.DisplayName</label>
-                                </div>
-                            </div>
+                            var isSelected = _state.SelectedWarbonds.Contains(warbond);
+                            <WarbondCard
+                                Warbond="warbond"
+                                IsSelected="isSelected"
+                                OnClick="@(() => TogglePenitentWarbondAsync(warbond, !isSelected))" />
                         }
                     </div>
                 </div>
@@ -225,10 +224,10 @@ else
 
             <div class="mb-4">
                 <div class="text-secondary small mb-2">Warbonds</div>
-                <div class="d-grid gap-2">
+                <div class="item-grid">
                     @foreach (var warbond in _state.SelectedWarbonds)
                     {
-                        <div class="text-light">@warbond.DisplayName</div>
+                        <WarbondCard Warbond="warbond" IsSelected="true" />
                     }
                 </div>
             </div>

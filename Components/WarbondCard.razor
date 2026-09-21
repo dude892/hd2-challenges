@@ -1,0 +1,19 @@
+@using Hd2Challenges.Models
+
+<button type="button" class="warbond-card card border-secondary bg-dark text-light h-100 @(OnClick.HasDelegate ? "warbond-card-clickable" : string.Empty) @(IsSelected ? "warbond-card-selected" : "warbond-card-unselected")" @onclick="OnClick" aria-pressed="@IsSelected">
+    @if (!string.IsNullOrWhiteSpace(_defaultBadge))
+    {
+        <div class="warbond-card-badge">@_defaultBadge</div>
+    }
+    <img class="card-img-top warbond-card-image" src="@_imagePath" alt="@Warbond.DisplayName" />
+    <div class="warbond-card-text text-center">@Warbond.DisplayName</div>
+</button>
+
+@code {
+    [Parameter, EditorRequired] public Warbond Warbond { get; set; } = default!;
+    [Parameter] public bool IsSelected { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private string _defaultBadge => Warbond.AlwaysEnabled ? "Always Enabled" : string.Empty;
+    private string _imagePath => $"images/warbonds/{Warbond.Id}.webp";
+}

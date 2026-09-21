@@ -79,3 +79,4 @@ If something is not relying on the capabilities of a service, it is likely bette
 Do not put application state management logic directly in Razor components; delegate it to services instead.
 Do not put random wrappers around service calls in Razor components; call the service methods directly instead.
 DO NOT EVER MAKE MAGIC NUMBER OR USE CONSTANTS DIRECTLY IN THE CODE, THIS INCLUDES MAKING A VARIABLE OF ANY KIND.
+Use razor.css files to define component-specific styles instead of putting them in global CSS files.

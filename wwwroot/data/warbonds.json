@@ -8,7 +8,7 @@
     "id": "superstore"
   },
   {
-    "displayName": "Pre-Order Bonus",
+    "displayName": "Xbox Pre-Order Bonus",
     "id": "preOrderBonus"
   },
   {
@@ -105,7 +105,7 @@
     "id": "exoExperts"
   },
   {
-    "displayName": "Warhammer 40k",
-    "id": "warhammer40k"
+    "displayName": "Warhammer 40K",
+    "id": "warhammer40K"
   }
 ]
