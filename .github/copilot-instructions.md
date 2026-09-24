@@ -80,3 +80,6 @@ Do not put application state management logic directly in Razor components; dele
 Do not put random wrappers around service calls in Razor components; call the service methods directly instead.
 DO NOT EVER MAKE MAGIC NUMBER OR USE CONSTANTS DIRECTLY IN THE CODE, THIS INCLUDES MAKING A VARIABLE OF ANY KIND.
 Use razor.css files to define component-specific styles instead of putting them in global CSS files.
+
+
+DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
