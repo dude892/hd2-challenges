@@ -15,6 +15,7 @@
 - `Pages/` contains routable Razor pages. `Components/` contains reusable UI components. `Layout/` contains the application shell and navigation.
 - `wwwroot/data/` contains the static JSON catalog and challenge definitions. `wwwroot/images/` contains item and warbond assets. `wwwroot/js/app.js` contains the JavaScript interop functions used by the app.
 - `Models/` contains both JSON-facing definitions and runtime domain classes. `Services/` contains catalog loading, browser persistence, export, and Penitent Crusade rules.
+- `imports/` contains files being imported from an external source not to be used directly in the app, do not modify them at all for any reason, as they will be overwritten or managed externally.
 
 ## Service Architecture
 
