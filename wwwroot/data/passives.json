@@ -1,21 +1,45 @@
 [
   {
-    "displayName": "Advanced Filtration",
-    "warbond": "chemicalAgents",
-    "id": "advancedfiltration",
-    "imageURL": "advancedfiltration.webp"
-  },
-  {
     "displayName": "Acclimated",
     "warbond": "killzone",
     "id": "acclimated",
     "imageURL": "inflammable.webp"
   },
   {
+    "displayName": "Adreno-Defibrillator",
+    "warbond": "controlGroup",
+    "id": "adrenodefibrillator",
+    "imageURL": "adrenodefibrillator.webp"
+  },
+  {
+    "displayName": "Advanced Filtration",
+    "warbond": "chemicalAgents",
+    "id": "advancedfiltration",
+    "imageURL": "advancedfiltration.webp"
+  },
+  {
+    "displayName": "Ballistic Padding",
+    "warbond": "forceOfLaw",
+    "id": "ballisticpadding",
+    "imageURL": "ballisticpadding.webp"
+  },
+  {
+    "displayName": "Concussive Padding",
+    "warbond": "entrenchedDivision",
+    "id": "concussivepadding",
+    "imageURL": "concussivepadding.webp"
+  },
+  {
     "displayName": "Democracy Protects",
     "warbond": "none",
     "id": "democracyprotects",
     "imageURL": "democracyprotects.webp"
+  },
+  {
+    "displayName": "Desert Stormer",
+    "warbond": "dustDevils",
+    "id": "desertstormer",
+    "imageURL": "desertstormer.webp"
   },
   {
     "displayName": "Electrical Conduit",
@@ -36,10 +60,22 @@
     "imageURL": "extrapadding.webp"
   },
   {
+    "displayName": "Feet First",
+    "warbond": "haloODST",
+    "id": "feetfirst",
+    "imageURL": "feetfirst.webp"
+  },
+  {
     "displayName": "Fortified",
     "warbond": "democraticDetonation",
     "id": "fortified",
     "imageURL": "fortified.webp"
+  },
+  {
+    "displayName": "Gunslinger",
+    "warbond": "borderlineJustice",
+    "id": "gunslinger",
+    "imageURL": "gunslinger.webp"
   },
   {
     "displayName": "Inflammable",
@@ -48,16 +84,52 @@
     "imageURL": "inflammable.webp"
   },
   {
+    "displayName": "Integrated Explosives",
+    "warbond": "servantsOfFreedom",
+    "id": "integratedexplosives",
+    "imageURL": "integratedexplosives.webp"
+  },
+  {
+    "displayName": "Kinetic Displacement Mitigation",
+    "warbond": "none",
+    "id": "kineticdisplacementmitigation",
+    "imageURL": "kineticdisplacementmitigation.webp"
+  },
+  {
     "displayName": "Med-Kit",
     "warbond": "helldiversMobilize",
     "id": "medkit",
     "imageURL": "medkit.webp"
   },
   {
+    "displayName": "Oxygenator",
+    "warbond": "exoExperts",
+    "id": "oxygenator",
+    "imageURL": "oxygenator.webp"
+  },
+  {
     "displayName": "Peak Physique",
     "warbond": "viperCommandos",
     "id": "peakphysique",
     "imageURL": "peakphysique.webp"
+  },
+  {
+    "displayName": "Reduced Signature",
+    "warbond": "redactedRegiment",
+    "id": "reducedsignature",
+    "imageURL": "reducedsignature.webp"
+  },
+  {
+    "displayName": "Reinforced Epaulettes",
+    "warbond": "mastersOfCeremony",
+    "id": "reinforcedepaulettes",
+    "imageURL": "reinforcedepaulettes.webp"
+  },
+  {
+    "displayName": "Rock Solid",
+    "warbond": "pythonCommandos",
+    "id": "rocksolid",
+    "imageURL": "rocksolid.webp"
   },
   {
     "displayName": "Scout",
@@ -72,70 +144,10 @@
     "imageURL": "servoassisted.webp"
   },
   {
-    "displayName": "Unflinching",
-    "warbond": "truthEnforcers",
-    "id": "unflinching",
-    "imageURL": "unflinching.webp"
-  },
-  {
     "displayName": "Siege Ready",
     "warbond": "urbanLegends",
     "id": "siegeready",
     "imageURL": "siegeready.webp"
-  },
-  {
-    "displayName": "Integrated Explosives",
-    "warbond": "servantsOfFreedom",
-    "id": "integratedexplosives",
-    "imageURL": "integratedexplosives.webp"
-  },
-  {
-    "displayName": "Gunslinger",
-    "warbond": "borderlineJustice",
-    "id": "gunslinger",
-    "imageURL": "gunslinger.webp"
-  },
-  {
-    "displayName": "Reinforced Epaulettes",
-    "warbond": "mastersOfCeremony",
-    "id": "reinforcedepaulettes",
-    "imageURL": "reinforcedepaulettes.webp"
-  },
-  {
-    "displayName": "Ballistic Padding",
-    "warbond": "forceOfLaw",
-    "id": "ballisticpadding",
-    "imageURL": "ballisticpadding.webp"
-  },
-  {
-    "displayName": "Adreno-Defibrillator",
-    "warbond": "controlGroup",
-    "id": "adrenodefibrillator",
-    "imageURL": "adrenodefibrillator.webp"
-  },
-  {
-    "displayName": "Feet First",
-    "warbond": "haloODST",
-    "id": "feetfirst",
-    "imageURL": "feetfirst.webp"
-  },
-  {
-    "displayName": "Desert Stormer",
-    "warbond": "dustDevils",
-    "id": "desertstormer",
-    "imageURL": "desertstormer.webp"
-  },
-  {
-    "displayName": "Rock Solid",
-    "warbond": "pythonCommandos",
-    "id": "rocksolid",
-    "imageURL": "rocksolid.webp"
-  },
-  {
-    "displayName": "Reduced Signature",
-    "warbond": "redactedRegiment",
-    "id": "reducedsignature",
-    "imageURL": "reducedsignature.webp"
   },
   {
     "displayName": "Supplementary Adrenaline",
@@ -144,27 +156,15 @@
     "imageURL": "supplementaryadrenaline.webp"
   },
   {
-    "displayName": "Concussive Padding",
-    "warbond": "entrenchedDivision",
-    "id": "concussivepadding",
-    "imageURL": "concussivepadding.webp"
-  },
-  {
-    "displayName": "Oxygenator",
-    "warbond": "exoExperts",
-    "id": "oxygenator",
-    "imageURL": "oxygenator.webp"
-  },
-  {
-    "displayName": "Kinetic Displacement Mitigation",
-    "warbond": "none",
-    "id": "kineticdisplacementmitigation",
-    "imageURL": "kineticdisplacementmitigation.webp"
-  },
-  {
     "displayName": "True Grit",
     "warbond": "warhammer40k",
     "id": "truegrit",
     "imageURL": "truegrit.webp"
+  },
+  {
+    "displayName": "Unflinching",
+    "warbond": "truthEnforcers",
+    "id": "unflinching",
+    "imageURL": "unflinching.webp"
   }
 ]

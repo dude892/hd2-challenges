@@ -1,9 +1,15 @@
 [
   {
-    "displayName": "Expert Extraction Pilot",
-    "warbond": "democraticDetonation",
-    "id": "expertextractionpilot",
-    "imageURL": "expertextractionpilot.webp"
+    "displayName": "Armed Resupply Pods",
+    "warbond": "urbanLegends",
+    "id": "armedresupplypods",
+    "imageURL": "armedresupplypods.webp"
+  },
+  {
+    "displayName": "Concealed Insertion",
+    "warbond": "redactedRegiment",
+    "id": "concealedinsertion",
+    "imageURL": "concealedinsertion.webp"
   },
   {
     "displayName": "Dead Sprint",
@@ -12,22 +18,22 @@
     "imageURL": "deadsprint.webp"
   },
   {
-    "displayName": "Armed Resupply Pods",
-    "warbond": "urbanLegends",
-    "id": "armedresupplypods",
-    "imageURL": "armedresupplypods.webp"
-  },
-  {
     "displayName": "Experimental Infusion",
     "warbond": "viperCommandos",
     "id": "experimentalinfusion",
     "imageURL": "experimentalinfusion.webp"
   },
   {
-    "displayName": "Motivational Shocks",
-    "warbond": "polarPatriots",
-    "id": "motivationalshocks",
-    "imageURL": "motivationalshocks.webp"
+    "displayName": "Expert Extraction Pilot",
+    "warbond": "democraticDetonation",
+    "id": "expertextractionpilot",
+    "imageURL": "expertextractionpilot.webp"
+  },
+  {
+    "displayName": "Firebomb Hellpods",
+    "warbond": "freedomsFlame",
+    "id": "firebombhellpods",
+    "imageURL": "firebombhellpods.webp"
   },
   {
     "displayName": "Flexible Reinforcement Budget",
@@ -54,34 +60,16 @@
     "imageURL": "localizationconfusion.webp"
   },
   {
+    "displayName": "Motivational Shocks",
+    "warbond": "polarPatriots",
+    "id": "motivationalshocks",
+    "imageURL": "motivationalshocks.webp"
+  },
+  {
     "displayName": "Muscle Enhancement",
     "warbond": "helldiversMobilize",
     "id": "muscleenhancement",
     "imageURL": "muscleenhancement.webp"
-  },
-  {
-    "displayName": "Stamina Enhancement",
-    "warbond": "helldiversMobilize",
-    "id": "staminaenhancement",
-    "imageURL": "staminaenhancement.webp"
-  },
-  {
-    "displayName": "UAV Recon",
-    "warbond": "helldiversMobilize",
-    "id": "uavrecon",
-    "imageURL": "uavrecon.webp"
-  },
-  {
-    "displayName": "Vitality Enhancement",
-    "warbond": "helldiversMobilize",
-    "id": "vitalityenhancement",
-    "imageURL": "vitalityenhancement.webp"
-  },
-  {
-    "displayName": "Firebomb Hellpods",
-    "warbond": "freedomsFlame",
-    "id": "firebombhellpods",
-    "imageURL": "firebombhellpods.webp"
   },
   {
     "displayName": "Sample Extricator",
@@ -96,15 +84,27 @@
     "imageURL": "samplescanner.webp"
   },
   {
+    "displayName": "Stamina Enhancement",
+    "warbond": "helldiversMobilize",
+    "id": "staminaenhancement",
+    "imageURL": "staminaenhancement.webp"
+  },
+  {
     "displayName": "Stun Pods",
     "warbond": "forceOfLaw",
     "id": "stunpods",
     "imageURL": "stunpods.webp"
   },
   {
-    "displayName": "Concealed Insertion",
-    "warbond": "redactedRegiment",
-    "id": "concealedinsertion",
-    "imageURL": "concealedinsertion.webp"
+    "displayName": "UAV Recon",
+    "warbond": "helldiversMobilize",
+    "id": "uavrecon",
+    "imageURL": "uavrecon.webp"
+  },
+  {
+    "displayName": "Vitality Enhancement",
+    "warbond": "helldiversMobilize",
+    "id": "vitalityenhancement",
+    "imageURL": "vitalityenhancement.webp"
   }
 ]
