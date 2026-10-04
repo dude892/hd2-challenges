@@ -5,7 +5,10 @@
     {
         <div class="item-card-badge">@Badge</div>
     }
-    <img class="card-img-top item-card-image" src="@($"images/{Item.ImageDirectory}/{Item.ImageURL}")" alt="@Item.DisplayName" />
+    @if (Item.ImagePath is { } imagePath)
+    {
+        <img class="card-img-top item-card-image" src="@imagePath" alt="@Item.DisplayName" />
+    }
     <div class="card-body p-2 d-flex flex-column">
         <small class="text-secondary">@Item.Kind</small>
         <div class="fw-semibold">@Item.DisplayName</div>

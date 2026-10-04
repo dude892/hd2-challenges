@@ -18,19 +18,38 @@ public sealed class GameItem : IEquatable<GameItem>
     public List<string> Tags { get; init; } = [];
     public string Id { get; init; } = string.Empty;
     public string ImageURL { get; init; } = string.Empty;
+    public string Svg { get; init; } = string.Empty;
     public bool Antitank { get; init; } = false;
 
     [JsonIgnore]
     public ItemKind Kind { get; private set; }
 
     [JsonIgnore]
-    public string ImageDirectory =>
-        Kind switch
+    public string? ImagePath
+    {
+        get
         {
-            ItemKind.Stratagem => "svgs",
-            ItemKind.Passive => "armorpassives",
-            _ => "equipment"
-        };
+            if (!string.IsNullOrWhiteSpace(Svg))
+            {
+                return (string?)$"svgs/{Kind.ToString().ToLowerInvariant()}/{Svg}";
+            }
+            else if (!string.IsNullOrWhiteSpace(ImageURL))
+            {
+                string subfolder = Kind.ToString().ToLowerInvariant();
+
+                if (Kind is ItemKind.Primary or ItemKind.Secondary or ItemKind.Throwable)
+                {
+                    subfolder = "equipment";
+                }
+
+                return $"images/{subfolder}/{ImageURL}";
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
 
     [JsonIgnore]
     public Warbond? Warbond { get; private set; }
