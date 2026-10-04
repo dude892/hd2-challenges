@@ -4,7 +4,7 @@
     "tags": ["Weapon", "Backpack", "Explosive"],
     "warbond": "none",
     "id": "ac8autocannon",
-    "imageURL": "ac8autocannon.svg",
+    "svg": "weapon-autocannon.svg",
     "antitank": true
   },
   {
@@ -12,7 +12,7 @@
     "tags": ["Backpack", "Bullet"],
     "warbond": "none",
     "id": "ad334guarddog",
-    "imageURL": "ad334guarddog.svg",
+    "svg": "supportdrone-machinegun.svg",
     "antitank": false
   },
   {
@@ -20,7 +20,7 @@
     "tags": ["Sentry", "Fire"],
     "warbond": "urbanLegends",
     "id": "aflam40flamesentry",
-    "imageURL": "aflam40flamesentry.svg",
+    "svg": "turret-flamethrower.svg",
     "antitank": false
   },
   {
@@ -28,7 +28,7 @@
     "tags": ["Emplacement"],
     "warbond": "none",
     "id": "antipersonnelminefield",
-    "imageURL": "antipersonnelminefield.svg",
+    "svg": "emplacements-minedeployer.svg",
     "antitank": false
   },
   {
@@ -36,7 +36,7 @@
     "tags": ["Emplacement", "Anti-Tank"],
     "warbond": "none",
     "id": "antitankmines",
-    "imageURL": "antitankmines.svg",
+    "svg": "emplacements-antitankmine.svg",
     "antitank": true
   },
   {
@@ -44,7 +44,7 @@
     "tags": ["Weapon", "Bullet"],
     "warbond": "none",
     "id": "apw1antimaterielrifle",
-    "imageURL": "apw1antimaterielrifle.svg",
+    "svg": "weapon-sniperrifle.svg",
     "antitank": true
   },
   {
@@ -52,7 +52,7 @@
     "tags": ["Weapon", "Arc"],
     "warbond": "none",
     "id": "arc3arcthrower",
-    "imageURL": "arc3arcthrower.svg",
+    "svg": "weapon-arcthrower.svg",
     "antitank": false
   },
   {
@@ -60,7 +60,7 @@
     "tags": ["Sentry", "Explosive", "Anti-Tank"],
     "warbond": "none",
     "id": "autocannonsentry",
-    "imageURL": "autocannonsentry.svg",
+    "svg": "turrets-autocannon.svg",
     "antitank": true
   },
   {
@@ -76,7 +76,7 @@
     "tags": ["Backpack", "Gas"],
     "warbond": "chemicalAgents",
     "id": "axtx13guarddogdogbreath",
-    "imageURL": "axtx13guarddogdogbreath.svg",
+    "svg": "drone-gas-projector.svg",
     "antitank": false
   },
   {
@@ -84,7 +84,7 @@
     "tags": ["Backpack"],
     "warbond": "none",
     "id": "b1supplypack",
-    "imageURL": "b1supplypack.svg",
+    "svg": "supportbackpack-ammo.svg",
     "antitank": false
   },
   {
@@ -92,7 +92,7 @@
     "tags": ["Vehicle"],
     "warbond": "none",
     "id": "bastiontank",
-    "imageURL": "bastiontank.svg",
+    "svg": "bastion.svg",
     "antitank": true
   },
   {
@@ -100,7 +100,7 @@
     "tags": ["Weapon", "Backpack", "Anti-Tank", "Explosive"],
     "warbond": "siegeBreakers",
     "id": "beltfedgrenadelauncher",
-    "imageURL": "beltfedgrenadelauncher.svg",
+    "svg": "grenadelauncher.svg",
     "antitank": true
   },
   {
@@ -108,7 +108,7 @@
     "tags": ["Weapon", "Melee", "Anti-Tank"],
     "warbond": "siegeBreakers",
     "id": "breachinghammer",
-    "imageURL": "breachinghammer.svg",
+    "svg": "hammer.svg",
     "antitank": true
   },
   {
@@ -116,7 +116,7 @@
     "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
     "warbond": "redactedRegiment",
     "id": "c4pack",
-    "imageURL": "c4pack.svg",
+    "svg": "c4.svg",
     "antitank": true
   },
   {
@@ -124,7 +124,7 @@
     "tags": ["Weapon", "Backpack", "Fire", "Anti-Tank"],
     "warbond": "entrenchedDivision",
     "id": "cremator",
-    "imageURL": "cremator.svg",
+    "svg": "cremator.svg",
     "antitank": true
   },
   {
@@ -132,7 +132,7 @@
     "tags": ["Weapon", "Melee"],
     "warbond": "pythonCommandos",
     "id": "defoliationtool",
-    "imageURL": "defoliationtool.svg",
+    "svg": "defoliationtool.svg",
     "antitank": false
   },
   {
@@ -140,7 +140,7 @@
     "tags": ["Eagle", "Anti-Tank"],
     "warbond": "none",
     "id": "eagle110mmrocketpods",
-    "imageURL": "eagle110mmrocketpods.svg",
+    "svg": "eagle-rockepods.svg",
     "antitank": true
   },
   {
@@ -148,7 +148,7 @@
     "tags": ["Eagle", "Anti-Tank"],
     "warbond": "none",
     "id": "eagle500kgbomb",
-    "imageURL": "eagle500kgbomb.svg",
+    "svg": "eagle500kgbomb.svg",
     "antitank": true
   },
   {
@@ -156,7 +156,7 @@
     "tags": ["Eagle"],
     "warbond": "none",
     "id": "eagleairstrike",
-    "imageURL": "eagleairstrike.svg",
+    "svg": "eagle-airstrike.svg",
     "antitank": true
   },
   {
@@ -164,7 +164,7 @@
     "tags": ["Eagle"],
     "warbond": "none",
     "id": "eagleclusterbomb",
-    "imageURL": "eagleclusterbomb.svg",
+    "svg": "eagle-clusterbomb.svg",
     "antitank": false
   },
   {
@@ -180,7 +180,7 @@
     "tags": ["Eagle", "Fire"],
     "warbond": "none",
     "id": "eaglenapalmstrike",
-    "imageURL": "eaglenapalmstrike.svg",
+    "svg": "eagle-napalmairstrike.svg",
     "antitank": false
   },
   {
@@ -188,7 +188,7 @@
     "tags": ["Eagle", "Smoke"],
     "warbond": "none",
     "id": "eaglesmokestrike",
-    "imageURL": "eaglesmokestrike.svg",
+    "svg": "eagle-smoke.svg",
     "antitank": false
   },
   {
@@ -196,7 +196,7 @@
     "tags": ["Eagle"],
     "warbond": "none",
     "id": "eaglestrafingrun",
-    "imageURL": "eaglestrafingrun.svg",
+    "svg": "eagle-air-support.svg",
     "antitank": false
   },
   {
@@ -204,7 +204,7 @@
     "tags": ["Emplacement", "Explosive", "Anti-Tank"],
     "warbond": "urbanLegends",
     "id": "eat12antitankemplacement",
-    "imageURL": "eat12antitankemplacement.svg",
+    "svg": "emplacement-anti-tank.svg",
     "antitank": true
   },
   {
@@ -212,7 +212,7 @@
     "tags": ["Weapon", "Expendable", "Anti-Tank"],
     "warbond": "none",
     "id": "eat17expendableantitank",
-    "imageURL": "eat17expendableantitank.svg",
+    "svg": "weapon-oneshotantitank.svg",
     "antitank": true
   },
   {
@@ -228,7 +228,7 @@
     "tags": ["Sentry", "Stun"],
     "warbond": "none",
     "id": "emsmortarsentry",
-    "imageURL": "emsmortarsentry.svg",
+    "svg": "turrets-mortar-staticfield.svg",
     "antitank": false
   },
   {
@@ -236,7 +236,7 @@
     "tags": ["Weapon", "Plasma", "Anti-Tank"],
     "warbond": "controlGroup",
     "id": "epoch",
-    "imageURL": "epoch.svg",
+    "svg": "epoch.svg",
     "antitank": true
   },
   {
@@ -244,7 +244,7 @@
     "tags": ["Vehicle", "Anti-Tank", "Exosuit", "Expendable"],
     "warbond": "none",
     "id": "exo45patriotexosuit",
-    "imageURL": "exo45patriotexosuit.svg",
+    "svg": "vehicle-combatwalker.svg",
     "antitank": true
   },
   {
@@ -252,7 +252,7 @@
     "tags": ["Vehicle", "Anti-Tank", "Exosuit", "Expendable"],
     "warbond": "none",
     "id": "exo49emancipatorexosuit",
-    "imageURL": "exo49emancipatorexosuit.svg",
+    "svg": "vehicle-combatwalkerobsidian.svg",
     "antitank": true
   },
   {
@@ -260,7 +260,7 @@
     "tags": ["Vehicle", "Fire", "Anti-Tank", "Expendable", "Exosuit"],
     "warbond": "exoExperts",
     "id": "exo51lumbererexosuit",
-    "imageURL": "exo51lumbererexosuit.svg",
+    "svg": "vehicle-combatwalker-lumberer.svg",
     "antitank": true
   },
   {
@@ -268,7 +268,7 @@
     "tags": ["Vehicle", "Expendable", "Anti-Tank", "Exosuit"],
     "warbond": "exoExperts",
     "id": "exo55breakthroughexosuit",
-    "imageURL": "exo55breakthroughexosuit.svg",
+    "svg": "vehicle-combatwalker-breacher.svg",
     "antitank": true
   },
   {
@@ -276,7 +276,7 @@
     "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
     "warbond": "none",
     "id": "faf14spear",
-    "imageURL": "faf14spear.svg",
+    "svg": "weapon-spear.svg",
     "antitank": true
   },
   {
@@ -292,7 +292,7 @@
     "tags": ["Weapon", "Fire"],
     "warbond": "none",
     "id": "flam40flamethrower",
-    "imageURL": "flam40flamethrower.svg",
+    "svg": "weapon-flamethrower.svg",
     "antitank": false
   },
   {
@@ -308,7 +308,7 @@
     "tags": ["Sentry", "Gas"],
     "warbond": "entrenchedDivision",
     "id": "gasmortarsentry",
-    "imageURL": "gasmortarsentry.svg",
+    "svg": "emplacements-gas-mine.svg",
     "antitank": false
   },
   {
@@ -316,7 +316,7 @@
     "tags": ["Sentry", "Bullet"],
     "warbond": "none",
     "id": "gatlingsentry",
-    "imageURL": "gatlingsentry.svg",
+    "svg": "turrets-gatling.svg",
     "antitank": false
   },
   {
@@ -324,7 +324,7 @@
     "tags": ["Weapon", "Explosive"],
     "warbond": "none",
     "id": "gl21grenadelauncher",
-    "imageURL": "gl21grenadelauncher.svg",
+    "svg": "weapon-grenadelauncher.svg",
     "antitank": false
   },
   {
@@ -332,7 +332,7 @@
     "tags": ["Weapon", "Arc"],
     "warbond": "forceOfLaw",
     "id": "gl52deescalator",
-    "imageURL": "gl52deescalator.svg",
+    "svg": "weapon-grenadelaunchertactical.svg",
     "antitank": true
   },
   {
@@ -340,7 +340,7 @@
     "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
     "warbond": "none",
     "id": "gr8recoillessrifle",
-    "imageURL": "gr8recoillessrifle.svg",
+    "svg": "weapon-recoillessrifle.svg",
     "antitank": true
   },
   {
@@ -348,7 +348,7 @@
     "tags": ["Emplacement", "Explosive"],
     "warbond": "none",
     "id": "grenadierbattlement",
-    "imageURL": "grenadierbattlement.svg",
+    "svg": "emplacements-coverwall.svg",
     "antitank": false
   },
   {
@@ -356,7 +356,7 @@
     "tags": ["Backpack", "Arc"],
     "warbond": "forceOfLaw",
     "id": "guarddogarc",
-    "imageURL": "guarddogarc.svg",
+    "svg": "drone-stun.svg",
     "antitank": false
   },
   {
@@ -372,7 +372,7 @@
     "tags": ["Emplacement", "Bullet"],
     "warbond": "none",
     "id": "hmgemplacement",
-    "imageURL": "hmgemplacement.svg",
+    "svg": "emplacement-anti-tank.svg",
     "antitank": true
   },
   {
@@ -380,7 +380,7 @@
     "tags": ["Emplacement", "Fire"],
     "warbond": "none",
     "id": "incendiarymines",
-    "imageURL": "incendiarymines.svg",
+    "svg": "emplacements-minedeployer-incendiary.svg",
     "antitank": false
   },
   {
@@ -388,7 +388,7 @@
     "tags": ["Weapon", "Laser"],
     "warbond": "none",
     "id": "las98lasercannon",
-    "imageURL": "las98lasercannon.svg",
+    "svg": "weapon-lasercannon.svg",
     "antitank": true
   },
   {
@@ -396,7 +396,7 @@
     "tags": ["Weapon", "Anti-Tank"],
     "warbond": "none",
     "id": "las99quasarcannon",
-    "imageURL": "las99quasarcannon.svg",
+    "svg": "weapon-quasarcannon.svg",
     "antitank": true
   },
   {
@@ -412,7 +412,7 @@
     "tags": ["Weapon", "Anti-Tank", "Expendable", "Explosive"],
     "warbond": "siegeBreakers",
     "id": "leveller",
-    "imageURL": "eat411leveller.svg",
+    "svg": "rocketlauncher.svg",
     "antitank": true
   },
   {
@@ -428,7 +428,7 @@
     "tags": ["Backpack", "Movement"],
     "warbond": "borderlineJustice",
     "id": "lift860hoverpack",
-    "imageURL": "lift860hoverpack.svg",
+    "svg": "hoverpack.svg",
     "antitank": false
   },
   {
@@ -436,7 +436,7 @@
     "tags": ["Weapon", "Bullet"],
     "warbond": "none",
     "id": "m105stalwart",
-    "imageURL": "m105stalwart.svg",
+    "svg": "weapon-lightmachinegun.svg",
     "antitank": false
   },
   {
@@ -444,7 +444,7 @@
     "tags": ["Sentry", "Bullet"],
     "warbond": "none",
     "id": "machinegunsentry",
-    "imageURL": "machinegunsentry.svg",
+    "svg": "turrets-machinegun.svg",
     "antitank": false
   },
   {
@@ -468,7 +468,7 @@
     "tags": ["Weapon", "Bullet"],
     "warbond": "none",
     "id": "mg206heavymachinegun",
-    "imageURL": "mg206heavymachinegun.svg",
+    "svg": "weapon-heavymachinegun.svg",
     "antitank": true
   },
   {
@@ -476,7 +476,7 @@
     "tags": ["Weapon", "Bullet"],
     "warbond": "none",
     "id": "mg43machinegun",
-    "imageURL": "mg43machinegun.svg",
+    "svg": "supportweapon-machinegun.svg",
     "antitank": false
   },
   {
@@ -484,7 +484,7 @@
     "tags": ["Weapon", "Expendable", "Bullet"],
     "warbond": "exoExperts",
     "id": "mgx42bulletstorm",
-    "imageURL": "mgx42bulletstorm.svg",
+    "svg": "expandablemachinegun.svg",
     "antitank": false
   },
   {
@@ -492,7 +492,7 @@
     "tags": ["Weapon", "Expendable", "Anti-Tank"],
     "warbond": "none",
     "id": "mls4xcommandorocketlauncher",
-    "imageURL": "mls4xcommandorocketlauncher.svg",
+    "svg": "weapon-commando.svg",
     "antitank": true
   },
   {
@@ -500,7 +500,7 @@
     "tags": ["Sentry"],
     "warbond": "none",
     "id": "mortarsentry",
-    "imageURL": "mortarsentry.svg",
+    "svg": "turrets-mortar.svg",
     "antitank": false
   },
   {
@@ -508,7 +508,7 @@
     "tags": ["Weapon", "Melee"],
     "warbond": "mastersOfCeremony",
     "id": "onetrueflag",
-    "imageURL": "onetrueflag.svg",
+    "svg": "onetrueflag.svg",
     "antitank": false
   },
   {
@@ -516,7 +516,7 @@
     "tags": ["Orbital"],
     "warbond": "none",
     "id": "orbital120mmhebarrage",
-    "imageURL": "orbital120mmhebarrage.svg",
+    "svg": "orbital-strike120mmhe.svg",
     "antitank": true
   },
   {
@@ -524,7 +524,7 @@
     "tags": ["Orbital"],
     "warbond": "none",
     "id": "orbital380mmhebarrage",
-    "imageURL": "orbital380mmhebarrage.svg",
+    "svg": "orbital-barrage380mmhd.svg",
     "antitank": true
   },
   {
@@ -532,7 +532,7 @@
     "tags": ["Orbital"],
     "warbond": "none",
     "id": "orbitalairburststrike",
-    "imageURL": "orbitalairburststrike.svg",
+    "svg": "orbital-strikeairburst.svg",
     "antitank": false
   },
   {
@@ -540,7 +540,7 @@
     "tags": ["Orbital", "Stun"],
     "warbond": "none",
     "id": "orbitalemsstrike",
-    "imageURL": "orbitalemsstrike.svg",
+    "svg": "orbital-strikeems.svg",
     "antitank": false
   },
   {
@@ -548,7 +548,7 @@
     "tags": ["Orbital", "Gas"],
     "warbond": "none",
     "id": "orbitalgasstrike",
-    "imageURL": "orbitalgasstrike.svg",
+    "svg": "orbital-strikegas.svg",
     "antitank": false
   },
   {
@@ -556,7 +556,7 @@
     "tags": ["Orbital", "Bullet"],
     "warbond": "none",
     "id": "orbitalgatlingbarrage",
-    "imageURL": "orbitalgatlingbarrage.svg",
+    "svg": "orbital-gatlingbarrage.svg",
     "antitank": false
   },
   {
@@ -564,7 +564,7 @@
     "tags": ["Orbital", "Laser", "Anti-Tank"],
     "warbond": "none",
     "id": "orbitallaser",
-    "imageURL": "orbitallaser.svg",
+    "svg": "orbital-laser.svg",
     "antitank": true
   },
   {
@@ -572,7 +572,7 @@
     "tags": ["Orbital", "Fire"],
     "warbond": "none",
     "id": "orbitalnapalmbarrage",
-    "imageURL": "orbitalnapalmbarrage.svg",
+    "svg": "orbital-napalm.svg",
     "antitank": false
   },
   {
@@ -580,7 +580,7 @@
     "tags": ["Orbital", "Anti-Tank"],
     "warbond": "none",
     "id": "orbitalprecisionstrike",
-    "imageURL": "orbitalprecisionstrike.svg",
+    "svg": "orbital-strikeprecision.svg",
     "antitank": true
   },
   {
@@ -588,7 +588,7 @@
     "tags": ["Orbital", "Anti-Tank"],
     "warbond": "none",
     "id": "orbitalrailcannonstrike",
-    "imageURL": "orbitalrailcannonstrike.svg",
+    "svg": "orbital-railcannon.svg",
     "antitank": true
   },
   {
@@ -596,7 +596,7 @@
     "tags": ["Orbital", "Smoke"],
     "warbond": "none",
     "id": "orbitalsmokestrike",
-    "imageURL": "orbitalsmokestrike.svg",
+    "svg": "orbital-smoke.svg",
     "antitank": false
   },
   {
@@ -604,7 +604,7 @@
     "tags": ["Orbital"],
     "warbond": "none",
     "id": "orbitalwalkingbarrage",
-    "imageURL": "orbitalwalkingbarrage.svg",
+    "svg": "orbital-barragewalking.svg",
     "antitank": true
   },
   {
@@ -620,7 +620,7 @@
     "tags": ["Weapon", "Backpack", "Explosive"],
     "warbond": "none",
     "id": "rl77airburstrocketlauncher",
-    "imageURL": "rl77airburstrocketlauncher.svg",
+    "svg": "weapon-airburstrocket.svg",
     "antitank": false
   },
   {
@@ -628,7 +628,7 @@
     "tags": ["Sentry", "Explosive", "Anti-Tank"],
     "warbond": "none",
     "id": "rocketsentry",
-    "imageURL": "rocketsentry.svg",
+    "svg": "turrets-rocket.svg",
     "antitank": true
   },
   {
@@ -636,7 +636,7 @@
     "tags": ["Weapon", "Anti-Tank"],
     "warbond": "none",
     "id": "rs422railgun",
-    "imageURL": "rs422railgun.svg",
+    "svg": "weapon-railgun.svg",
     "antitank": true
   },
   {
@@ -644,7 +644,7 @@
     "tags": ["Backpack"],
     "warbond": "none",
     "id": "sh20ballisticshieldbackpack",
-    "imageURL": "sh20ballisticshieldbackpack.svg",
+    "svg": "backpack-shieldballistic.svg",
     "antitank": false
   },
   {
@@ -652,7 +652,7 @@
     "tags": ["Backpack"],
     "warbond": "none",
     "id": "sh20shieldgeneratorpack",
-    "imageURL": "sh20shieldgeneratorpack.svg",
+    "svg": "backpack-shieldenergy.svg",
     "antitank": false
   },
   {
@@ -660,7 +660,7 @@
     "tags": ["Backpack"],
     "warbond": "urbanLegends",
     "id": "sh51directionalshield",
-    "imageURL": "sh51directionalshield.svg",
+    "svg": "directional-energy-shield.svg",
     "antitank": false
   },
   {
@@ -668,7 +668,7 @@
     "tags": ["Emplacement"],
     "warbond": "none",
     "id": "shieldgeneratorrelay",
-    "imageURL": "shieldgeneratorrelay.svg",
+    "svg": "emplacements-energyshield.svg",
     "antitank": false
   },
   {
@@ -676,7 +676,7 @@
     "tags": ["Weapon", "Expendable", "Anti-Tank"],
     "warbond": "dustDevils",
     "id": "solosilo",
-    "imageURL": "solosilo.svg",
+    "svg": "minimissilesilo.svg",
     "antitank": true
   },
   {
@@ -684,7 +684,7 @@
     "tags": ["Weapon", "Gas"],
     "warbond": "dustDevils",
     "id": "speargun",
-    "imageURL": "speargun.svg",
+    "svg": "speargun.svg",
     "antitank": false
   },
   {
@@ -692,7 +692,7 @@
     "tags": ["Vehicle", "Movement"],
     "warbond": "none",
     "id": "supplyfrv",
-    "imageURL": "supplyfrv.svg",
+    "svg": "vehicle-frv.svg",
     "antitank": false
   },
   {
@@ -700,7 +700,7 @@
     "tags": ["Sentry", "Arc"],
     "warbond": "none",
     "id": "teslatower",
-    "imageURL": "teslatower.svg",
+    "svg": "emplacements-teslatower.svg",
     "antitank": false
   },
   {
@@ -708,7 +708,7 @@
     "tags": ["Weapon", "Gas"],
     "warbond": "chemicalAgents",
     "id": "tx41sterilizer",
-    "imageURL": "tx41sterilizer.svg",
+    "svg": "weapon-chem-gun.svg",
     "antitank": false
   },
   {
@@ -716,7 +716,7 @@
     "tags": ["Backpack", "Movement"],
     "warbond": "controlGroup",
     "id": "warppack",
-    "imageURL": "warppack.svg",
+    "svg": "supportbackpack-displacement-backpack.svg",
     "antitank": false
   },
   {
@@ -724,7 +724,7 @@
     "tags": ["Weapon", "Backpack", "Explosive"],
     "warbond": "none",
     "id": "wasplauncher",
-    "imageURL": "wasplauncher.svg",
+    "svg": "weapon-wasp-spear.svg",
     "antitank": true
   }
 ]
