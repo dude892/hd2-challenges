@@ -153,12 +153,18 @@ else
         <MainContent>
             <div>
                 <label class="form-label text-light">Mission stars</label>
-                <select class="form-select bg-dark text-light border-secondary" @bind="_state.CurrentOperation.SelectedStars">
+                <div class="mission-star-rating" role="group" aria-label="Mission stars">
                     @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
                     {
-                        <option value="@star">@star</option>
+                        <button type="button"
+                                class="mission-star-button @(_state.CurrentOperation.SelectedStars >= star ? "selected" : null)"
+                                aria-label="@star star@(star == 1 ? string.Empty : "s")"
+                                aria-pressed="@(_state.CurrentOperation.SelectedStars >= star)"
+                                @onclick="() => { if(_state.CurrentOperation.SelectedStars == star) _state.CurrentOperation.SelectedStars = 0; else _state.CurrentOperation.SelectedStars = star; }">
+                            @(_state.CurrentOperation.SelectedStars >= star ? "★" : "☆")
+                        </button>
                     }
-                </select>
+                </div>
             </div>
         </MainContent>
         <FooterContent>
@@ -299,6 +305,7 @@ else
     private bool _showPunishmentModal;
     private bool _showRunSettings;
     private bool _showSaveManager;
+
     protected override async Task OnInitializedAsync()
     {
         await PenitentCatalog.EnsureLoadedAsync();

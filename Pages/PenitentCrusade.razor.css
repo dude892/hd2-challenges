@@ -1,0 +1,28 @@
+.mission-star-rating {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.mission-star-button {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    padding: 0;
+    border: 1px solid var(--bs-secondary);
+    border-radius: 0.25rem;
+    background: transparent;
+    color: #adb5bd;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.mission-star-button.selected {
+    border-color: var(--bs-warning);
+    color: var(--bs-warning);
+}
+
+.mission-star-button:focus-visible {
+    outline: 2px solid var(--bs-light);
+    outline-offset: 2px;
+}

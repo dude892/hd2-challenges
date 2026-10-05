@@ -7,12 +7,12 @@ public sealed class Operation(OperationDefinition definition, int index, int mis
     public int MaxStars { get; } = definition.MaxStars;
     public int MissionCount { get; } = definition.MissionCount;
     private int _missionNumber = Math.Clamp(missionNumber, 1, definition.MissionCount);
-    private int _selectedStars = definition.MaxStars;
+    private int _selectedStars;
 
     public int SelectedStars
     {
         get => _selectedStars;
-        set => _selectedStars = Math.Clamp(value, 1, MaxStars);
+        set => _selectedStars = Math.Clamp(value, 0, MaxStars);
     }
 
     public int MissionNumber
@@ -20,7 +20,7 @@ public sealed class Operation(OperationDefinition definition, int index, int mis
         get => _missionNumber;
         set 
         {
-            _selectedStars = MaxStars;
+            _selectedStars = 0;
             _missionNumber = Math.Clamp(value, 1, MissionCount);
         }
     }
