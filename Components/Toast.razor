@@ -1,0 +1,28 @@
+@implements IDisposable
+@inject ToastService Toasts
+
+@if (Toasts.Messages.Count > 0)
+{
+    <div class="toast-container position-fixed bottom-0 end-0 d-flex flex-column gap-2 p-3" aria-live="polite" aria-atomic="false">
+        @foreach (var message in Toasts.Messages)
+        {
+            <div @key="message.Id" class="toast show text-bg-dark border-info" role="status" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">@message.Message</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Dismiss notification" @onclick="(() => Toasts.Dismiss(message.Id))"></button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        Toasts.Changed += HandleToastsChanged;
+    }
+
+    private void HandleToastsChanged() => _ = InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Toasts.Changed -= HandleToastsChanged;
+}

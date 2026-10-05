@@ -5,6 +5,7 @@
 @inject FileExportService FileService
 @inject PenitentRewardService RewardService
 @inject PenitentMissionService MissionService
+@inject ToastService Toasts
 
 <PageTitle>Penitent Crusade</PageTitle>
 
@@ -24,15 +25,10 @@ else
             {
                 <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
                 <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "penitent-crusade-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
-                <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Restart Run</button>
+                <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Start New Run</button>
             }
         </div>
     </div>
-
-    @if (!string.IsNullOrWhiteSpace(_statusMessage))
-    {
-        <div class="alert alert-info">@_statusMessage</div>
-    }
 
     @if (!_state.RunStarted)
     {
@@ -309,8 +305,6 @@ else
     private bool _showPunishmentModal;
     private bool _showRunSettings;
     private bool _showSaveManager;
-    private string? _statusMessage;
-
     protected override async Task OnInitializedAsync()
     {
         await PenitentCatalog.EnsureLoadedAsync();
@@ -323,7 +317,7 @@ else
         if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
         {
             _state = PenitentCatalog.CreatePenitentSetupState(difficulty, _state.SelectedWarbonds);
-            _statusMessage = $"{_state.Difficulty.DisplayName} loadout preview updated.";
+            Toasts.Show($"{_state.Difficulty.DisplayName} loadout preview updated.");
         }
 
         await Task.CompletedTask;
@@ -353,7 +347,7 @@ else
         {
             await SaveLibrary.PersistAsync(_state);
             
-            _statusMessage = "Challenge complete.";
+            Toasts.Show("Challenge complete.");
             return;
         }
 
@@ -364,7 +358,7 @@ else
 
         if (_state.PendingRewardItems.Count == 0)
         {
-            _statusMessage = "No rewards available.";
+            Toasts.Show("No rewards available.");
             return;
         }
 
@@ -385,7 +379,7 @@ else
 
         if (_state.PendingPunishmentItems.Count == 0)
         {
-            _statusMessage = "No acquired rewards are available for punishment.";
+            Toasts.Show("No acquired rewards are available for punishment.");
             return;
         }
 
@@ -425,7 +419,7 @@ else
     private async Task RestartPenitentRunAsync()
     {
         _state = await SaveLibrary.RestartAsync(_state);
-        _statusMessage = "Run reset. Review your settings before beginning again.";
+        Toasts.Show("Run reset. Review your settings before starting a new run.");
     }
 
     private async Task RenamePenitentCurrentSlotAsync(ChangeEventArgs args)
@@ -464,11 +458,11 @@ else
         (SaveSlot<PenitentStateDefinition> Slot, PenitentState State)? imported = await SaveLibrary.ImportAsync(json);
         if (imported is null)
         {
-            _statusMessage = "Invalid Penitent Crusade save file.";
+            Toasts.Show("Invalid Penitent Crusade save file.");
             return;
         }
 
         _state = imported.Value.State;
-        _statusMessage = $"Imported slot {imported.Value.Slot.Name}.";
+        Toasts.Show($"Imported slot {imported.Value.Slot.Name}.");
     }
 }
