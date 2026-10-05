@@ -1,13 +1,17 @@
 @using Hd2Challenges.Models
 
-<button type="button" class="warbond-card card border-secondary bg-dark text-light h-100 @(OnClick.HasDelegate ? "warbond-card-clickable" : string.Empty) @(IsSelected ? "warbond-card-selected" : "warbond-card-unselected")" @onclick="OnClick" aria-pressed="@IsSelected">
-    @if (!string.IsNullOrWhiteSpace(_defaultBadge))
-    {
-        <div class="warbond-card-badge">@_defaultBadge</div>
-    }
-    <img class="card-img-top warbond-card-image" src="@_imagePath" alt="@Warbond.DisplayName" />
-    <div class="warbond-card-text text-center">@Warbond.DisplayName</div>
-</button>
+@if (OnClick.HasDelegate)
+{
+    <button type="button" class="warbond-card warbond-card-clickable card border-secondary bg-dark text-light text-center h-100 @(IsSelected ? "warbond-card-selected" : "warbond-card-unselected")" @onclick="OnClick" aria-pressed="@IsSelected">
+        @CardContent
+    </button>
+}
+else
+{
+    <div class="warbond-card card border-secondary bg-dark text-light text-center h-100 @(IsSelected ? "warbond-card-selected" : "warbond-card-unselected")">
+        @CardContent
+    </div>
+}
 
 @code {
     [Parameter, EditorRequired] public Warbond Warbond { get; set; } = default!;
@@ -16,4 +20,14 @@
 
     private string _defaultBadge => Warbond.AlwaysEnabled ? "Always Enabled" : string.Empty;
     private string _imagePath => $"images/warbond/{Warbond.Id}.webp";
+
+    private RenderFragment CardContent =>
+    @<text>
+        @if (!string.IsNullOrWhiteSpace(_defaultBadge))
+        {
+            <div class="warbond-card-badge">@_defaultBadge</div>
+        }
+        <img class="card-img-top warbond-card-image" src="@_imagePath" alt="@Warbond.DisplayName" />
+        <div class="warbond-card-text">@Warbond.DisplayName</div>
+    </text>;
 }

@@ -1,26 +1,42 @@
 @using Hd2Challenges.Models
 
-<button type="button" class="item-card card border-secondary bg-dark text-light h-100 @(OnClick.HasDelegate ? "item-card-clickable" : string.Empty)" @onclick="OnClick">
-    @if (!string.IsNullOrWhiteSpace(Badge))
-    {
-        <div class="item-card-badge">@Badge</div>
-    }
-    @if (Item.ImagePath is { } imagePath)
-    {
-        <img class="card-img-top item-card-image" src="@imagePath" alt="@Item.DisplayName" />
-    }
-    <div class="card-body p-2 d-flex flex-column">
-        <small class="text-secondary">@Item.Kind</small>
-        <div class="fw-semibold">@Item.DisplayName</div>
-        @if (Item.Warbond is not null)
-        {
-            <small class="text-secondary">@Item.Warbond.DisplayName</small>
-        }
+@if (OnClick.HasDelegate)
+{
+    <button type="button" class="item-card item-card-clickable card border-secondary bg-dark text-light text-center h-100" @onclick="OnClick">
+        @CardContent
+    </button>
+}
+else
+{
+    <div class="item-card card border-secondary bg-dark text-light text-center h-100">
+        @CardContent
     </div>
-</button>
+}
 
 @code {
     [Parameter, EditorRequired] public GameItem Item { get; set; } = default!;
     [Parameter] public string? Badge { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }
+
+    private RenderFragment CardContent =>
+    @<text>
+        @if (!string.IsNullOrWhiteSpace(Badge))
+        {
+            <div class="item-card-badge">@Badge</div>
+        }
+
+        @if (Item.ImagePath is { } imagePath)
+        {
+            <img class="card-img-top item-card-image" src="@imagePath" alt="@Item.DisplayName" />
+        }
+        
+        <div class="card-body p-2 d-flex flex-column">
+            <small class="text-secondary">@Item.Kind</small>
+            <div class="fw-semibold">@Item.DisplayName</div>
+            @if (Item.Warbond is not null)
+            {
+                <small class="text-secondary">@Item.Warbond.DisplayName</small>
+            }
+        </div>
+    </text>;
 }
