@@ -1,0 +1,57 @@
+@using System.ComponentModel.DataAnnotations
+
+<button class="btn btn-sm btn-outline-secondary" @onclick="OpenModal">Edit name</button>
+
+<Modal Title="Rename Save Slot" Open="_showModal" OnClose="CloseModal" CloseOnBackdrop="false">
+    <MainContent>
+        <EditForm id="@FormId" Model="_editModel" OnValidSubmit="SaveAsync">
+            <DataAnnotationsValidator />
+            <div>
+                <label class="form-label text-light" for="@InputId">Slot name</label>
+                <input id="@InputId" class="form-control bg-dark text-light border-secondary" @bind="_editModel.Name" @bind:event="oninput" />
+                <ValidationMessage For="@(() => _editModel.Name)" class="text-danger" />
+            </div>
+        </EditForm>
+    </MainContent>
+    <FooterContent>
+        <button class="btn btn-outline-light" @onclick="CloseModal">Cancel</button>
+        <button class="btn btn-primary" type="submit" form="@FormId" disabled="@(!CanSave)">Save name</button>
+    </FooterContent>
+</Modal>
+
+@code {
+    [Parameter, EditorRequired] public Guid SlotId { get; set; }
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> OnSave { get; set; }
+
+    private readonly RenameModel _editModel = new();
+    private bool _showModal;
+    private string FormId => $"rename-slot-{SlotId:N}";
+    private string InputId => $"rename-slot-name-{SlotId:N}";
+    private bool CanSave => !string.IsNullOrWhiteSpace(_editModel.Name) && !string.Equals(_editModel.Name.Trim(), Name, StringComparison.Ordinal);
+
+    private void OpenModal()
+    {
+        _editModel.Name = Name;
+        _showModal = true;
+    }
+
+    private void CloseModal() => _showModal = false;
+
+    private async Task SaveAsync()
+    {
+        if (!CanSave)
+        {
+            return;
+        }
+
+        await OnSave.InvokeAsync(_editModel.Name.Trim());
+        _showModal = false;
+    }
+
+    private sealed class RenameModel
+    {
+        [Required(ErrorMessage = "Enter a slot name.")]
+        public string Name { get; set; } = string.Empty;
+    }
+}

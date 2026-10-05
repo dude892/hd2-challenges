@@ -79,10 +79,15 @@ public sealed class PenitentSaveLibraryService(
         await PersistAsync(state);
     }
 
-    public async Task RenameCurrentSlotAsync(string? name)
+    public async Task<bool> RenameSlotAsync(Guid slotId, string? name)
     {
-        Library.RenameCurrentSlot(name);
+        if (!Library.RenameSlot(slotId, name))
+        {
+            return false;
+        }
+
         await PersistAsync();
+        return true;
     }
 
     public async Task<PenitentState> SelectSlotAsync(Guid slotId)

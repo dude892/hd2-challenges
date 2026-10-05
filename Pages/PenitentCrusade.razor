@@ -258,13 +258,6 @@ else
                     </label>
                 </div>
             </div>
-            @if (SaveLibrary.Library.CurrentSlot is not null)
-            {
-                <div class="mb-3">
-                    <label class="form-label text-light">Rename current slot</label>
-                    <input class="form-control bg-dark text-light border-secondary" value="@SaveLibrary.Library.CurrentSlot.Name" @onchange="RenamePenitentCurrentSlotAsync" />
-                </div>
-            }
             <div class="d-grid gap-2">
                 @foreach (var slot in SaveLibrary.Library.Slots.OrderByDescending(slot => slot.UpdatedAt))
                 {
@@ -285,6 +278,7 @@ else
                                 <div class="text-secondary small">@slot.UpdatedAt.ToLocalTime()</div>
                             </div>
                             <div class="d-flex gap-2">
+                                <SaveSlotRename SlotId="slot.Id" Name="@slot.Name" OnSave="name => RenamePenitentSlotAsync(slot.Id, name)" />
                                 <button class="btn btn-sm btn-outline-light" @onclick="(() => LoadPenitentSlotAsync(slot.Id))">Load</button>
                                 <button class="btn btn-sm btn-outline-primary" @onclick="(() => ExportPenitentSlotAsync(slot.Id))">Export</button>
                                 <button class="btn btn-sm btn-outline-danger" @onclick="(() => DeletePenitentSlotAsync(slot.Id))">Delete</button>
@@ -422,14 +416,12 @@ else
         Toasts.Show("Run reset. Review your settings before starting a new run.");
     }
 
-    private async Task RenamePenitentCurrentSlotAsync(ChangeEventArgs args)
+    private async Task RenamePenitentSlotAsync(Guid slotId, string name)
     {
-        if (SaveLibrary.Library.CurrentSlot is null)
+        if (await SaveLibrary.RenameSlotAsync(slotId, name))
         {
-            return;
+            Toasts.Show("Slot name saved.");
         }
-
-        await SaveLibrary.RenameCurrentSlotAsync(args.Value?.ToString());
     }
 
     private async Task LoadPenitentSlotAsync(Guid slotId)

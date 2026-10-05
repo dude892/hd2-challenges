@@ -47,15 +47,23 @@ public sealed class SaveLibrary<TState>
         return CurrentSlot;
     }
 
-    public void RenameCurrentSlot(string? name)
+    public bool RenameSlot(Guid slotId, string? name)
     {
-        if (CurrentSlot is null || string.IsNullOrWhiteSpace(name))
+        var slot = Slots.FirstOrDefault(entry => entry.Id == slotId);
+        if (slot is null || string.IsNullOrWhiteSpace(name))
         {
-            return;
+            return false;
         }
 
-        CurrentSlot.Name = name;
-        CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+        string normalizedName = name.Trim();
+        if (slot.Name == normalizedName)
+        {
+            return false;
+        }
+
+        slot.Name = normalizedName;
+        slot.UpdatedAt = DateTimeOffset.UtcNow;
+        return true;
     }
 
     public void DeleteSlot(Guid slotId, Func<SaveSlot<TState>> replacementFactory)
