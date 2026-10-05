@@ -84,3 +84,7 @@ Use razor.css files to define component-specific styles instead of putting them 
 
 
 DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
+
+
+## Testing
+When making changes, do not just attempt the build, but test thoroughly via the integrated browser. Always attempt to do so, and make sure to verify that the changes behave as expected, and don't forget to close the browser tab after testing to ensure a new one is opened on later changes.
