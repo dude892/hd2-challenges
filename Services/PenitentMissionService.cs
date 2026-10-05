@@ -28,4 +28,15 @@ public sealed class PenitentMissionService(CatalogService catalogService)
     {
         return state.CurrentOperation.DifficultyIndex == Catalog.LastOperationIndex && state.CurrentOperation.IsLastMission;
     }
+
+    public bool TryCompleteFinalMission(PenitentState state)
+    {
+        if (!IsFinalMission(state))
+        {
+            return false;
+        }
+
+        state.RunCompleted = true;
+        return true;
+    }
 }

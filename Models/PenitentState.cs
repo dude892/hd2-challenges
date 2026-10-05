@@ -26,6 +26,25 @@ public sealed class PenitentState(
     public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
     public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
 
+    public bool SetWarbondSelected(Warbond warbond, bool isSelected)
+    {
+        if (warbond.AlwaysEnabled)
+        {
+            return false;
+        }
+
+        if (isSelected)
+        {
+            SelectedWarbonds.Add(warbond);
+        }
+        else
+        {
+            SelectedWarbonds.Remove(warbond);
+        }
+
+        return true;
+    }
+
     public string SummaryText
     {
         get

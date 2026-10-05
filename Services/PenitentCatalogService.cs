@@ -21,8 +21,7 @@ public sealed class PenitentCatalogService(HttpClient httpClient, CatalogService
 
         await Catalog.EnsureLoadedAsync();
 
-        StarterLoadout = ResolveLoadout(
-            await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new());
+        StarterLoadout = ResolveLoadout(await httpClient.GetFromJsonAsync<PenitentStarterLoadoutDefinition>("data/penitent-starter-loadout.json") ?? new());
 
         var difficultyDefinitions = await httpClient.GetFromJsonAsync<List<PenitentDifficultyDefinition>>("data/penitent-difficulties.json") ?? [];
         Difficulties = [.. difficultyDefinitions.Select(definition => new PenitentDifficulty(definition, Catalog.GetItemSet, Catalog.GetOperation))];

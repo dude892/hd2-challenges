@@ -33,6 +33,7 @@ public sealed class PenitentSaveLibraryService(
             return;
         }
 
+        state.RunStarted = true;
         Library.WorkingSlot.State = state.ToDefinition();
         Library.WorkingSlot.Name = BuildSlotName(state);
         Library.CommitWorkingSlot();

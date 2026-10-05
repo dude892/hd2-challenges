@@ -61,7 +61,7 @@ else
                             <WarbondCard
                                 Warbond="warbond"
                                 IsSelected="isSelected"
-                                OnClick="@(() => TogglePenitentWarbondAsync(warbond, !isSelected))" />
+                                OnClick="@(() => _state.SetWarbondSelected(warbond, !isSelected))" />
                         }
                     </div>
                 </div>
@@ -80,7 +80,7 @@ else
                         }
                     </div>
                     <div class="d-grid mt-4">
-                        <button class="btn btn-success" @onclick="BeginPenitentRunAsync">Begin Run</button>
+                        <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
                     </div>
                 </div>
             </div>
@@ -313,7 +313,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await Catalog.EnsureLoadedAsync();
         await PenitentCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
         _loaded = true;
@@ -328,33 +327,6 @@ else
         }
 
         await Task.CompletedTask;
-    }
-
-    private async Task TogglePenitentWarbondAsync(Warbond warbond, bool isChecked)
-    {
-        if (warbond.AlwaysEnabled)
-        {
-            return;
-        }
-
-        if (isChecked)
-        {
-            _state.SelectedWarbonds.Add(warbond);
-        }
-        else
-        {
-            _state.SelectedWarbonds.Remove(warbond);
-        }
-
-        _statusMessage = "Warbond selections updated.";
-        await Task.CompletedTask;
-    }
-
-    private async Task BeginPenitentRunAsync()
-    {
-        _state.RunStarted = true;
-
-        await SaveLibrary.BeginRun(_state);
     }
 
     private Task BeginPenitentMissionCompleteAsync()
@@ -377,10 +349,8 @@ else
     private async Task ConfirmPenitentMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
-        if (MissionService.IsFinalMission(_state))
+        if (MissionService.TryCompleteFinalMission(_state))
         {
-            _state.RunCompleted = true;
-
             await SaveLibrary.PersistAsync(_state);
             
             _statusMessage = "Challenge complete.";
