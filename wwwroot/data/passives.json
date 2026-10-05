@@ -3,157 +3,157 @@
     "displayName": "Acclimated",
     "warbond": "killzone",
     "id": "acclimated",
-    "svg": "elementalresistance.svg"
+    "svg": "Elementalresistance.svg"
   },
   {
     "displayName": "Adreno-Defibrillator",
     "warbond": "controlGroup",
     "id": "adrenodefibrillator",
-    "svg": "constitution.svg"
+    "svg": "Constitution.svg"
   },
   {
     "displayName": "Advanced Filtration",
     "warbond": "chemicalAgents",
     "id": "advancedfiltration",
-    "svg": "gas.svg"
+    "svg": "Gas.svg"
   },
   {
     "displayName": "Ballistic Padding",
     "warbond": "forceOfLaw",
     "id": "ballisticpadding",
-    "svg": "kevlar.svg"
+    "svg": "Kevlar.svg"
   },
   {
     "displayName": "Concussive Padding",
     "warbond": "entrenchedDivision",
     "id": "concussivepadding",
-    "svg": "trench-light.svg"
+    "svg": "TrenchLight.svg"
   },
   {
     "displayName": "Democracy Protects",
     "warbond": "none",
     "id": "democracyprotects",
-    "svg": "democracy.svg"
+    "svg": "Democracy.svg"
   },
   {
     "displayName": "Desert Stormer",
     "warbond": "dustDevils",
     "id": "desertstormer",
-    "svg": "dustdevils.svg"
+    "svg": "Dustdevils.svg"
   },
   {
     "displayName": "Electrical Conduit",
     "warbond": "cuttingEdge",
     "id": "electricalconduit",
-    "svg": "electrical.svg"
+    "svg": "Electrical.svg"
   },
   {
     "displayName": "Engineering Kit",
     "warbond": "helldiversMobilize",
     "id": "engineeringkit",
-    "svg": "engineeringkit.svg"
+    "svg": "Engineeringkit.svg"
   },
   {
     "displayName": "Extra Padding",
     "warbond": "none",
     "id": "extrapadding",
-    "svg": "standard.svg"
+    "svg": "Standard.svg"
   },
   {
     "displayName": "Feet First",
     "warbond": "haloODST",
     "id": "feetfirst",
-    "svg": "bodynacho.svg"
+    "svg": "Bodynacho.svg"
   },
   {
     "displayName": "Fortified",
     "warbond": "democraticDetonation",
     "id": "fortified",
-    "svg": "fortified.svg"
+    "svg": "Fortified.svg"
   },
   {
     "displayName": "Gunslinger",
     "warbond": "borderlineJustice",
     "id": "gunslinger",
-    "svg": "quickshot.svg"
+    "svg": "Quickshot.svg"
   },
   {
     "displayName": "Inflammable",
     "warbond": "freedomsFlame",
     "id": "inflammable",
-    "svg": "elementalresistance.svg"
+    "svg": "Elementalresistance.svg"
   },
   {
     "displayName": "Integrated Explosives",
     "warbond": "servantsOfFreedom",
     "id": "integratedexplosives",
-    "svg": "postmortem.svg"
+    "svg": "Postmortem.svg"
   },
   {
     "displayName": "Kinetic Displacement Mitigation",
     "warbond": "none",
     "id": "kineticdisplacementmitigation",
-    "svg": "driver.svg"
+    "svg": "Driver.svg"
   },
   {
     "displayName": "Med-Kit",
     "warbond": "helldiversMobilize",
     "id": "medkit",
-    "svg": "medkit.svg"
+    "svg": "Medkit.svg"
   },
   {
     "displayName": "Oxygenator",
     "warbond": "exoExperts",
     "id": "oxygenator",
-    "svg": "mechpilots.svg"
+    "svg": "Mechpilots.svg"
   },
   {
     "displayName": "Peak Physique",
     "warbond": "viperCommandos",
     "id": "peakphysique",
-    "svg": "peakbody.svg"
+    "svg": "Peakbody.svg"
   },
   {
     "displayName": "Reduced Signature",
     "warbond": "redactedRegiment",
     "id": "reducedsignature",
-    "svg": "stealth.svg"
+    "svg": "Stealth.svg"
   },
   {
     "displayName": "Reinforced Epaulettes",
     "warbond": "mastersOfCeremony",
     "id": "reinforcedepaulettes",
-    "svg": "stronglimbs.svg"
+    "svg": "Stronglimbs.svg"
   },
   {
     "displayName": "Rock Solid",
     "warbond": "pythonCommandos",
     "id": "rocksolid",
-    "svg": "jungle.svg"
+    "svg": "Jungle.svg"
   },
   {
     "displayName": "Scout",
     "warbond": "helldiversMobilize",
     "id": "scout",
-    "svg": "scout.svg"
+    "svg": "Scout.svg"
   },
   {
     "displayName": "Servo-Assisted",
     "warbond": "steeledVeterans",
     "id": "servoassisted",
-    "svg": "servoassisted.svg"
+    "svg": "Servoassisted.svg"
   },
   {
     "displayName": "Siege-Ready",
     "warbond": "urbanLegends",
     "id": "siegeready",
-    "svg": "homelandadvantage.svg"
+    "svg": "Homelandadvantage.svg"
   },
   {
     "displayName": "Supplementary Adrenaline",
     "warbond": "siegeBreakers",
     "id": "supplementaryadrenaline",
-    "svg": "siegebreakers.svg"
+    "svg": "Siegebreakers.svg"
   },
   {
     "displayName": "True Grit",
@@ -165,6 +165,6 @@
     "displayName": "Unflinching",
     "warbond": "truthEnforcers",
     "id": "unflinching",
-    "svg": "reducedpainflinch.svg"
+    "svg": "Reducedpainflinch.svg"
   }
 ]

@@ -3,108 +3,108 @@
     "displayName": "Armed Resupply Pods",
     "warbond": "urbanLegends",
     "id": "armedresupplypods",
-    "svg": "armedpods.svg"
+    "svg": "Armedpods.svg"
   },
   {
     "displayName": "Concealed Insertion",
     "warbond": "redactedRegiment",
     "id": "concealedinsertion",
-    "svg": "concealedinsertion.svg"
+    "svg": "Concealedinsertion.svg"
   },
   {
     "displayName": "Dead Sprint",
     "warbond": "truthEnforcers",
     "id": "deadsprint",
-    "svg": "deadsprint.svg"
+    "svg": "Deadsprint.svg"
   },
   {
     "displayName": "Experimental Infusion",
     "warbond": "viperCommandos",
     "id": "experimentalinfusion",
-    "svg": "infusion.svg"
+    "svg": "Infusion.svg"
   },
   {
     "displayName": "Expert Extraction Pilot",
     "warbond": "democraticDetonation",
     "id": "expertextractionpilot",
-    "svg": "expert.svg"
+    "svg": "Expert.svg"
   },
   {
     "displayName": "Firebomb Hellpods",
     "warbond": "freedomsFlame",
     "id": "firebombhellpods",
-    "svg": "firebomb.svg"
+    "svg": "Firebomb.svg"
   },
   {
     "displayName": "Flexible Reinforcement Budget",
     "warbond": "steeledVeterans",
     "id": "flexiblereinforcementbudget",
-    "svg": "flexiblebudget.svg"
+    "svg": "Flexiblebudget.svg"
   },
   {
     "displayName": "Hellpod Space Optimization",
     "warbond": "helldiversMobilize",
     "id": "hellpodspaceoptimization",
-    "svg": "hellpodopt.svg"
+    "svg": "Hellpodopt.svg"
   },
   {
     "displayName": "Increased Reinforcement Budget",
     "warbond": "helldiversMobilize",
     "id": "increasedreinforcementbudget",
-    "svg": "increasedbudget.svg"
+    "svg": "Increasedbudget.svg"
   },
   {
     "displayName": "Localization Confusion",
     "warbond": "cuttingEdge",
     "id": "localizationconfusion",
-    "svg": "localization.svg"
+    "svg": "Localization.svg"
   },
   {
     "displayName": "Motivational Shocks",
     "warbond": "polarPatriots",
     "id": "motivationalshocks",
-    "svg": "shocks.svg"
+    "svg": "Shocks.svg"
   },
   {
     "displayName": "Muscle Enhancement",
     "warbond": "helldiversMobilize",
     "id": "muscleenhancement",
-    "svg": "muscle.svg"
+    "svg": "Muscle.svg"
   },
   {
     "displayName": "Sample Extricator",
     "warbond": "borderlineJustice",
     "id": "sampleextricator",
-    "svg": "sampleextricator.svg"
+    "svg": "Sampleextricator.svg"
   },
   {
     "displayName": "Sample Scanner",
     "warbond": "mastersOfCeremony",
     "id": "samplescanner",
-    "svg": "samplescanner.svg"
+    "svg": "Samplescanner.svg"
   },
   {
     "displayName": "Stamina Enhancement",
     "warbond": "helldiversMobilize",
     "id": "staminaenhancement",
-    "svg": "staminaenhancement.svg"
+    "svg": "Stamina.svg"
   },
   {
     "displayName": "Stun Pods",
     "warbond": "forceOfLaw",
     "id": "stunpods",
-    "svg": "stunpods.svg"
+    "svg": "Stunpods.svg"
   },
   {
     "displayName": "UAV Recon",
     "warbond": "helldiversMobilize",
     "id": "uavrecon",
-    "svg": "recon.svg"
+    "svg": "Recon.svg"
   },
   {
     "displayName": "Vitality Enhancement",
     "warbond": "helldiversMobilize",
     "id": "vitalityenhancement",
-    "svg": "vitality.svg"
+    "svg": "Vitality.svg"
   }
 ]
