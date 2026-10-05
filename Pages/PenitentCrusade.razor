@@ -107,43 +107,131 @@ else
                 </div>
             </div>
 
-            <div class="section-card rounded p-3 mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="text-light mb-0">Starting Loadout</h4>
-                    <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
-                </div>
-                <div class="item-grid mt-3">
-                    @foreach (var item in _state.StarterItems)
-                    {
-                        <ItemCard Item="item" Badge="Starter" />
-                    }
-                </div>
-            </div>
-
-            <div class="section-card rounded p-3 mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="text-light mb-0">Acquired Rewards</h4>
-                    <span class="text-secondary">@_state.AcquiredItems.Count item(s)</span>
-                </div>
-                @if (_state.AcquiredItems.Count == 0)
-                {
-                    <p class="text-secondary mt-3 mb-0">No rewards claimed yet.</p>
-                }
-                else
-                {
-                    @foreach (var group in _state.AcquiredItems.CategoryGroups)
-                    {
-                        <div class="mt-4">
-                            <h5 class="text-light">@group.Label</h5>
-                            <div class="item-grid">
-                                @foreach (GameItem item in group.Items)
-                                {
-                                    <ItemCard Item="item" />
-                                }
+            <div class="accordion mt-3" data-bs-theme="dark">
+                <div class="accordion-item">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
+                                aria-expanded="false" aria-controls="equipment-collapse">
+                            <span class="d-flex align-items-baseline gap-3">
+                                <span>Equipment</span>
+                                <span class="text-secondary small">@_state.AcquiredItems.Count() item(s)</span>
+                            </span>
+                        </button>
+                    </h4>
+                    <div id="equipment-collapse" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <div class="d-flex flex-column gap-5">
+                        <div class="row gx-5 gy-3 align-items-start">
+                            <div class="col-12 col-sm-auto">
+                                <h5 class="text-light">Primaries</h5>
+                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
+                                    @if (!_state.AcquiredItems.Primaries.Any())
+                                    {
+                                        <div class="text-secondary small">No primary items acquired.</div>
+                                    }
+                                    else
+                                    {
+                                        foreach (GameItem item in _state.AcquiredItems.Primaries)
+                                        {
+                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm">
+                                <h5 class="text-light">Secondaries</h5>
+                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
+                                    @if (!_state.AcquiredItems.Secondaries.Any())
+                                    {
+                                        <div class="text-secondary small">No secondary items acquired.</div>
+                                    }
+                                    else
+                                    {
+                                        foreach (GameItem item in _state.AcquiredItems.Secondaries)
+                                        {
+                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                        }
+                                    }
+                                </div>
                             </div>
                         </div>
-                    }
-                }
+                        <div class="row gx-5 gy-3 align-items-start">
+                            <div class="col-12 col-sm-auto">
+                                <h5 class="text-light">Throwables</h5>
+                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
+                                    @if (!_state.AcquiredItems.Throwables.Any())
+                                    {
+                                        <div class="text-secondary small">No throwable items acquired.</div>
+                                    }
+                                    else
+                                    {
+                                        foreach (GameItem item in _state.AcquiredItems.Throwables)
+                                        {
+                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm">
+                                <h5 class="text-light">Armor Passives</h5>
+                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
+                                    @if (!_state.AcquiredItems.Passives.Any())
+                                    {
+                                        <div class="text-secondary small">No armor passives acquired.</div>
+                                    }
+                                    else
+                                    {
+                                        foreach (GameItem item in _state.AcquiredItems.Passives)
+                                        {
+                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mt-1">
+                <div class="col-12 col-lg-9">
+                    <div class="section-card rounded p-3 h-100">
+                        <h5 class="text-light">Stratagems</h5>
+                        <div class="item-grid run-item-grid">
+                            @if (!_state.AcquiredItems.Stratagems.Any())
+                            {
+                                <div class="text-secondary small">No stratagems acquired.</div>
+                            }
+                            else
+                            {
+                                foreach (GameItem item in _state.AcquiredItems.Stratagems)
+                                {
+                                    <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <div class="section-card rounded p-3 h-100">
+                        <h5 class="text-light">Boosters</h5>
+                        <div class="item-grid run-item-grid">
+                            @if (!_state.AcquiredItems.Boosters.Any())
+                            {
+                                <div class="text-secondary small">No boosters acquired.</div>
+                            }
+                            else
+                            {
+                                foreach (GameItem item in _state.AcquiredItems.Boosters)
+                                {
+                                    <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -251,7 +339,7 @@ else
 
     <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
         <MainContent>
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 gap-5">
                 <div>
                     <div class="text-secondary small">Current slot</div>
                     <div class="fw-semibold text-light">@SaveLibrary.Library.CurrentSlot?.Name</div>
@@ -435,11 +523,13 @@ else
     {
         _showSaveManager = false;
         _state = await SaveLibrary.SelectSlotAsync(slotId);
+        Toasts.Show("Slot loaded.");
     }
 
     private async Task DeletePenitentSlotAsync(Guid slotId)
     {
         _state = await SaveLibrary.DeleteSlotAsync(slotId);
+        Toasts.Show("Slot deleted.");
     }
 
     private async Task ExportPenitentSlotAsync(Guid slotId)

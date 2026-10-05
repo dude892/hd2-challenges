@@ -26,3 +26,18 @@
     outline: 2px solid var(--bs-light);
     outline-offset: 2px;
 }
+
+.run-item-grid {
+    --run-item-card-width: 140px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--run-item-card-width)), var(--run-item-card-width)));
+}
+
+.equipment-content-item-grid {
+    grid-template-columns: repeat(var(--equipment-card-count), var(--run-item-card-width));
+}
+
+@media (max-width: 575.98px) {
+    .equipment-content-item-grid {
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--run-item-card-width)), var(--run-item-card-width)));
+    }
+}
