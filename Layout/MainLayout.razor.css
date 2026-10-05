@@ -1,6 +1,7 @@
 .app-shell {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 .app-container {
@@ -8,4 +9,8 @@
     max-width: none;
     margin-left: auto;
     margin-right: auto;
+}
+
+.app-header {
+    background-color: rgba(0, 0, 0, 0.15);
 }
