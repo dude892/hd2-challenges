@@ -84,157 +84,178 @@ else
     }
     else
     {
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="row g-3 mb-3 align-items-center">
-                <div class="col-md-2">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Difficulty</small><div class="fs-5 text-light">@_state.Difficulty.DisplayName</div></div></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Operation</small><div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div></div></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Mission</small><div class="fs-5 text-light">@_state.CurrentOperation.MissionLabel</div></div></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-dark border-secondary h-100"><div class="card-body"><small class="text-secondary">Failures</small><div class="fs-5 text-light">@_state.MissionsFailed</div></div></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                        <button class="btn btn-success btn-lg btn-block" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                        <button class="btn btn-danger btn-lg btn-block" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="row g-3 mb-3 align-items-center">
+                    <div class="col-md-2">
+                        <div class="card bg-dark border-secondary h-100">
+                            <div class="card-body">
+                                <small class="text-secondary">Difficulty</small>
+                                <div class="fs-5 text-light">@_state.Difficulty.DisplayName</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-dark border-secondary h-100">
+                            <div class="card-body">
+                                <small class="text-secondary">Operation</small>
+                                <div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-dark border-secondary h-100">
+                            <div class="card-body">
+                                <small class="text-secondary">Mission</small>
+                                <div class="fs-5 text-light">@_state.CurrentOperation.MissionLabel</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-dark border-secondary h-100">
+                            <div class="card-body">
+                                <small class="text-secondary">Failures</small>
+                                <div class="fs-5 text-light">@_state.MissionsFailed</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-primary btn-lg btn-block" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="accordion mt-3" data-bs-theme="dark">
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
-                                aria-expanded="false" aria-controls="equipment-collapse">
-                            <span class="d-flex align-items-baseline gap-3">
-                                <span>Equipment</span>
-                                <span class="text-secondary small">@_state.AcquiredItems.Count() item(s)</span>
-                            </span>
-                        </button>
-                    </h4>
-                    <div id="equipment-collapse" class="accordion-collapse collapse">
-                <div class="accordion-body">
-                    <div class="d-flex flex-column gap-5">
-                        <div class="row gx-5 gy-3 align-items-start">
-                            <div class="col-12 col-sm-auto">
-                                <h5 class="text-light">Primaries</h5>
-                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
-                                    @if (!_state.AcquiredItems.Primaries.Any())
-                                    {
-                                        <div class="text-secondary small">No primary items acquired.</div>
-                                    }
-                                    else
-                                    {
-                                        foreach (GameItem item in _state.AcquiredItems.Primaries)
-                                        {
-                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                        }
-                                    }
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm">
-                                <h5 class="text-light">Secondaries</h5>
-                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
-                                    @if (!_state.AcquiredItems.Secondaries.Any())
-                                    {
-                                        <div class="text-secondary small">No secondary items acquired.</div>
-                                    }
-                                    else
-                                    {
-                                        foreach (GameItem item in _state.AcquiredItems.Secondaries)
-                                        {
-                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row gx-5 gy-3 align-items-start">
-                            <div class="col-12 col-sm-auto">
-                                <h5 class="text-light">Throwables</h5>
-                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
-                                    @if (!_state.AcquiredItems.Throwables.Any())
-                                    {
-                                        <div class="text-secondary small">No throwable items acquired.</div>
-                                    }
-                                    else
-                                    {
-                                        foreach (GameItem item in _state.AcquiredItems.Throwables)
-                                        {
-                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                        }
-                                    }
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm">
-                                <h5 class="text-light">Armor Passives</h5>
-                                <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
-                                    @if (!_state.AcquiredItems.Passives.Any())
-                                    {
-                                        <div class="text-secondary small">No armor passives acquired.</div>
-                                    }
-                                    else
-                                    {
-                                        foreach (GameItem item in _state.AcquiredItems.Passives)
-                                        {
-                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                        }
-                                    }
+                <div class="accordion mt-3" data-bs-theme="dark">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
+                                    aria-expanded="false" aria-controls="equipment-collapse">
+                                <span class="d-flex align-items-baseline gap-3">
+                                    <span>Equipment</span>
+                                    <span class="text-secondary small">@_state.AcquiredItems.Count() item(s)</span>
+                                </span>
+                            </button>
+                        </h4>
+                        <div id="equipment-collapse" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                <div class="d-flex flex-column gap-5">
+                                    <div class="row gx-5 gy-3 align-items-start">
+                                        <div class="col-12 col-sm-auto">
+                                            <h5 class="text-light">Primaries</h5>
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
+                                                @if (!_state.AcquiredItems.Primaries.Any())
+                                                {
+                                                    <div class="text-secondary small">No primary items acquired.</div>
+                                                }
+                                                else
+                                                {
+                                                    foreach (GameItem item in _state.AcquiredItems.Primaries)
+                                                    {
+                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm">
+                                            <h5 class="text-light">Secondaries</h5>
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
+                                                @if (!_state.AcquiredItems.Secondaries.Any())
+                                                {
+                                                    <div class="text-secondary small">No secondary items acquired.</div>
+                                                }
+                                                else
+                                                {
+                                                    foreach (GameItem item in _state.AcquiredItems.Secondaries)
+                                                    {
+                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row gx-5 gy-3 align-items-start">
+                                        <div class="col-12 col-sm-auto">
+                                            <h5 class="text-light">Throwables</h5>
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
+                                                @if (!_state.AcquiredItems.Throwables.Any())
+                                                {
+                                                    <div class="text-secondary small">No throwable items acquired.</div>
+                                                }
+                                                else
+                                                {
+                                                    foreach (GameItem item in _state.AcquiredItems.Throwables)
+                                                    {
+                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm">
+                                            <h5 class="text-light">Armor Passives</h5>
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
+                                                @if (!_state.AcquiredItems.Passives.Any())
+                                                {
+                                                    <div class="text-secondary small">No armor passives acquired.</div>
+                                                }
+                                                else
+                                                {
+                                                    foreach (GameItem item in _state.AcquiredItems.Passives)
+                                                    {
+                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-3 mt-1">
-                <div class="col-12 col-lg-9">
-                    <div class="section-card rounded p-3 h-100">
-                        <h5 class="text-light">Stratagems</h5>
-                        <div class="item-grid run-item-grid">
-                            @if (!_state.AcquiredItems.Stratagems.Any())
-                            {
-                                <div class="text-secondary small">No stratagems acquired.</div>
-                            }
-                            else
-                            {
-                                foreach (GameItem item in _state.AcquiredItems.Stratagems)
+                <div class="row g-3 mt-1">
+                    <div class="col-12 col-lg-9">
+                        <div class="section-card rounded p-3 h-100">
+                            <h5 class="text-light">Stratagems</h5>
+                            <div class="item-grid run-item-grid">
+                                @if (!_state.AcquiredItems.Stratagems.Any())
                                 {
-                                    <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                    <div class="text-secondary small">No stratagems acquired.</div>
                                 }
-                            }
+                                else
+                                {
+                                    foreach (GameItem item in _state.AcquiredItems.Stratagems)
+                                    {
+                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12 col-lg-3">
-                    <div class="section-card rounded p-3 h-100">
-                        <h5 class="text-light">Boosters</h5>
-                        <div class="item-grid run-item-grid">
-                            @if (!_state.AcquiredItems.Boosters.Any())
-                            {
-                                <div class="text-secondary small">No boosters acquired.</div>
-                            }
-                            else
-                            {
-                                foreach (GameItem item in _state.AcquiredItems.Boosters)
+                    <div class="col-12 col-lg-3">
+                        <div class="section-card rounded p-3 h-100">
+                            <h5 class="text-light">Boosters</h5>
+                            <div class="item-grid run-item-grid">
+                                @if (!_state.AcquiredItems.Boosters.Any())
                                 {
-                                    <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                    <div class="text-secondary small">No boosters acquired.</div>
                                 }
-                            }
+                                else
+                                {
+                                    foreach (GameItem item in _state.AcquiredItems.Boosters)
+                                    {
+                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     }
 
     <Modal Title="Mission Complete" Open="@_showMissionCompleteModal" OnClose="@(() => _showMissionCompleteModal = false)">
@@ -299,6 +320,27 @@ else
                     @foreach (var item in _state.PendingPunishmentItems)
                     {
                         <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.Id))" />
+                    }
+                </div>
+            }
+        </MainContent>
+    </Modal>
+
+    <Modal Title="Banned Items" Open="@_showBannedItemsModal" CssClass="item-modal" OnClose="@(() => _showBannedItemsModal = false)">
+        <MainContent>
+            @if (_state.BannedItems.Count == 0)
+            {
+                <p class="text-secondary mb-0">No banned items.</p>
+            }
+            else
+            {
+                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
+                    @foreach (var group in _state.BannedItems.GroupBy(item => item.Kind))
+                    {
+                        @foreach (var item in group)
+                        {
+                            <ItemCard Item="item" />
+                        }
                     }
                 </div>
             }
@@ -393,6 +435,7 @@ else
     private bool _showPunishmentModal;
     private bool _showRunSettings;
     private bool _showSaveManager;
+    private bool _showBannedItemsModal;
 
     protected override async Task OnInitializedAsync()
     {
