@@ -6,7 +6,7 @@
 - The website has not been deployed yet. Optimize for the current local application and the current data shape.
 - Do not spend implementation effort on preserving previous save states, migrating old data, or supporting legacy export formats yet. Add migration/version compatibility only when deployment or an explicit requirement makes it necessary.
 - Keep changes focused and consistent with the existing C# and Razor patterns. Avoid introducing a server, database, API, or new persistence layer unless explicitly requested.
-- While the main focus of the app right now is on the "Penitent Crusade" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
+- While the main focus of the app right now is on the "Warpath: Redemption" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
 - Do not take the following instructions as exhaustive; they are meant to guide the development process and maintain consistency within the project, and should be adapted as needed for specific scenarios.
 
 ## Application Structure
@@ -14,7 +14,7 @@
 - `Program.cs` configures the WebAssembly host, the root components, an `HttpClient` rooted at the app base URL, and scoped application services.
 - `Pages/` contains routable Razor pages. `Components/` contains reusable UI components. `Layout/` contains the application shell and navigation.
 - `wwwroot/data/` contains the static JSON catalog and challenge definitions. `wwwroot/images/` contains item and warbond assets. `wwwroot/js/app.js` contains the JavaScript interop functions used by the app.
-- `Models/` contains both JSON-facing definitions and runtime domain classes. `Services/` contains catalog loading, browser persistence, export, and Penitent Crusade rules.
+- `Models/` contains both JSON-facing definitions and runtime domain classes. `Services/` contains catalog loading, browser persistence, export, and Warpath: Redemption rules.
 - `imports/` contains files being imported from an external source not to be used directly in the app, do not modify them at all for any reason, as they will be overwritten or managed externally.
 
 ## Service Architecture
@@ -43,7 +43,7 @@ Keep UI event handlers focused on orchestration, state display, and persistence.
 - `ItemSet` is the categorized runtime collection for stratagems, primaries, secondaries, throwables, armor passives, and boosters. Use its set operations and category collections instead of duplicating item-set logic in components.
 - `Operation` is the runtime form of `OperationDefinition` and owns clamped mission-number behavior and mission labels.
 - `PenitentDifficulty` is the runtime form of `PenitentDifficultyDefinition`; it resolves its start operation and loadout overrides/additions to `ItemSet` instances.
-- `PenitentState` is the live Penitent Crusade aggregate. It holds resolved runtime objects for difficulty, operation, starter items, acquired items, banned items, pending rewards, pending punishments, and selected warbonds. Its `ToDefinition()` method is the serialization boundary back to stable IDs.
+- `PenitentState` is the live Warpath: Redemption aggregate. Internal Penitent identifiers remain unchanged. It holds resolved runtime objects for difficulty, operation, starter items, acquired items, banned items, pending rewards, pending punishments, and selected warbonds. Its `ToDefinition()` method is the serialization boundary back to stable IDs.
 
 ### Save and persistence boundary
 

@@ -1,4 +1,4 @@
-@page "/penitent-crusade"
+@page "/warpath-redemption"
 @inject CatalogService Catalog
 @inject PenitentCatalogService PenitentCatalog
 @inject PenitentSaveLibraryService SaveLibrary
@@ -7,24 +7,24 @@
 @inject PenitentMissionService MissionService
 @inject ToastService Toasts
 
-<PageTitle>Penitent Crusade</PageTitle>
+<PageTitle>Warpath: Redemption</PageTitle>
 
 @if (!_loaded)
 {
-    <p class="text-light">Loading Penitent Crusade...</p>
+    <p class="text-light">Loading Warpath: Redemption...</p>
 }
 else
 {
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
-            <h1 class="text-light mb-0">Penitent Crusade</h1>
+            <h1 class="text-light mb-0">Warpath: Redemption</h1>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "penitent-crusade-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Start New Run</button>
             }
         </div>
@@ -49,7 +49,7 @@ else
                             }
                         </select>
                     </div>
-                    <p class="text-secondary mb-0">Configure your crusade before committing to the first mission.</p>
+                    <p class="text-secondary mb-0">Configure your campaign before committing to the first mission.</p>
                 </div>
 
                 <div class="row section-card rounded p-3">
@@ -380,7 +380,7 @@ else
         </MainContent>
     </Modal>
 
-    <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
+    <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
         <MainContent>
             <div class="d-flex justify-content-between align-items-center mb-3 gap-5">
                 <div>
@@ -591,7 +591,7 @@ else
         (SaveSlot<PenitentStateDefinition> Slot, PenitentState State)? imported = await SaveLibrary.ImportAsync(json);
         if (imported is null)
         {
-            Toasts.Show("Invalid Penitent Crusade save file.");
+            Toasts.Show("Invalid Warpath: Redemption save file.");
             return;
         }
 

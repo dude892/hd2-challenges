@@ -52,8 +52,8 @@ public sealed class PenitentState(
             int score = Difficulty.ScoreModifier - (MissionsFailed * 50);
             StringBuilder builder = new();
 
-            builder.AppendLine("Penitent Crusade Summary");
-            builder.AppendLine("========================");
+            builder.AppendLine("Warpath: Redemption Summary");
+            builder.AppendLine("===========================");
             builder.AppendLine();
             builder.AppendLine($"Difficulty: {Difficulty.DisplayName}");
             
