@@ -1,6 +1,6 @@
 namespace Hd2Challenges.Models;
 
-public sealed class PenitentDifficulty(PenitentDifficultyDefinition definition, Func<IEnumerable<string>, ItemSet> resolveItemSet, Func<int, Operation> resolveOperation)
+public sealed class RedemptionDifficulty(RedemptionDifficultyDefinition definition, Func<IEnumerable<string>, ItemSet> resolveItemSet, Func<int, Operation> resolveOperation)
 {
     public string Id { get; } = definition.Id;
     public string DisplayName { get; } = definition.DisplayName;
@@ -10,7 +10,7 @@ public sealed class PenitentDifficulty(PenitentDifficultyDefinition definition, 
     public ItemSet LoadoutOverrides { get; } = resolveItemSet(GetItemNames(definition.LoadoutOverrides));
     public ItemSet LoadoutAdditions { get; } = resolveItemSet(GetItemNames(definition.LoadoutAdditions));
 
-    private static IEnumerable<string> GetItemNames(PenitentStarterLoadoutDefinition? definition) =>
+    private static IEnumerable<string> GetItemNames(RedemptionStarterLoadoutDefinition? definition) =>
         definition is null
             ? []
             : definition.Stratagems

@@ -2,9 +2,9 @@ using System.Text;
 
 namespace Hd2Challenges.Models;
 
-public sealed class PenitentState(
-    PenitentStateDefinition definition,
-    Func<string, PenitentDifficulty> resolveDifficulty,
+public sealed class RedemptionState(
+    RedemptionStateDefinition definition,
+    Func<string, RedemptionDifficulty> resolveDifficulty,
     Func<int, int, Operation> resolveOperation,
     Func<IEnumerable<string>, ItemSet> resolveItemSet,
     Func<string, IEnumerable<Warbond>, ItemSet> resolveStarterItems,
@@ -12,7 +12,7 @@ public sealed class PenitentState(
 )
 {
     public bool RunStarted { get; set; } = true;
-    public PenitentDifficulty Difficulty { get; } = resolveDifficulty(definition.DifficultyId);
+    public RedemptionDifficulty Difficulty { get; } = resolveDifficulty(definition.DifficultyId);
     public HashSet<Warbond> SelectedWarbonds { get; set; } = resolveWarbonds(definition.SelectedWarbonds);
     public ItemSet BannedItems { get; set; } = resolveItemSet(definition.BannedItemIds);
     public ItemSet AcquiredItems { get; set; } = resolveItemSet(definition.AcquiredItemIds);
@@ -152,7 +152,7 @@ public sealed class PenitentState(
         }
     }
 
-    public PenitentStateDefinition ToDefinition() => new()
+    public RedemptionStateDefinition ToDefinition() => new()
     {
         DifficultyId = Difficulty.Id,
         OperationIndex = CurrentOperation.DifficultyIndex,

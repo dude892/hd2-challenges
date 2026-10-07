@@ -1,6 +1,6 @@
 namespace Hd2Challenges.Models;
 
-public sealed class PenitentStarterLoadoutDefinition
+public sealed class RedemptionStarterLoadoutDefinition
 {
     public List<string> Stratagems { get; set; } = [];
     public List<string> Primaries { get; set; } = [];

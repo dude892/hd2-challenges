@@ -24,20 +24,21 @@
 
 Services are registered as scoped services in `Program.cs` and should remain small, feature-oriented, and testable.
 
-- `CatalogService` is the catalog boundary. It lazily loads the static JSON files through `HttpClient`, post-processes `GameItem` instances, builds `AllItemsSet`, resolves starter loadouts, and converts difficulty definitions into runtime `PenitentDifficulty` objects. Use it for item, warbond, operation, difficulty, and loadout lookup rather than loading catalog JSON from components.
-- `PenitentMissionService` owns mission progression rules: advancing missions and operations, applying failures, setting progress, and detecting the final mission. It mutates a supplied `PenitentState`.
-- `PenitentRewardService` owns reward and punishment rules: calculating pools, rolling rewards, creating pending choices, claiming rewards, banning rewards, and removing punishments. It mutates a supplied `PenitentState`.
+- `CatalogService` is the catalog boundary. It lazily loads the static JSON files through `HttpClient`, post-processes `GameItem` instances, and builds `AllItemsSet`. Use it for item, warbond, and operation lookup rather than loading catalog JSON from components.
+- `RedemptionCatalogService` loads `redemption-difficulties.json` and `redemption-starter-loadout.json`, resolves loadouts and runtime `RedemptionDifficulty` objects, and constructs `RedemptionState` instances.
+- `RedemptionMissionService` owns mission progression rules: advancing missions and operations, applying failures, setting progress, and detecting the final mission. It mutates a supplied `RedemptionState`.
+- `RedemptionRewardService` owns reward and punishment rules: calculating pools, rolling rewards, creating pending choices, claiming rewards, banning rewards, and removing punishments. It mutates a supplied `RedemptionState`.
 - `BrowserStorageService` is the local-storage adapter. It serializes values as JSON and calls `hd2App.getLocalStorage`, `setLocalStorage`, and `removeLocalStorage` through `IJSRuntime`.
 - `FileExportService` is the download adapter. It uses `hd2App.downloadFile` through `IJSRuntime` and provides JSON export helpers.
 
-Keep UI event handlers focused on orchestration, state display, and persistence. Put catalog resolution in `CatalogService`, game rules in the relevant Penitent service, and browser/JavaScript concerns in the storage or export adapter.
+Keep UI event handlers focused on orchestration, state display, and persistence. Put catalog resolution in the relevant catalog service, game rules in the relevant Redemption service, and browser/JavaScript concerns in the storage or export adapter.
 
 ## Data, Definition, and Runtime Class Architecture
 
 ### Static data and definitions
 
-- Static JSON under `wwwroot/data/` is the source catalog for items, warbonds, operations, Penitent difficulties, and the starter loadout.
-- `*Definition` classes are JSON-friendly DTOs. They store stable IDs, display values, numeric settings, and references as strings or lists of internal names. Examples include `OperationDefinition`, `PenitentDifficultyDefinition`, `PenitentStarterLoadoutDefinition`, and `PenitentStateDefinition`.
+- Static JSON under `wwwroot/data/` is the source catalog for items, warbonds, operations, Redemption difficulties, and the starter loadout.
+- `*Definition` classes are JSON-friendly DTOs. They store stable IDs, display values, numeric settings, and references as strings or lists of internal names. Examples include `OperationDefinition`, `RedemptionDifficultyDefinition`, `RedemptionStarterLoadoutDefinition`, and `RedemptionStateDefinition`.
 - Item identity is `GameItem.Id`, and item collections should preserve the existing case-insensitive equality behavior. Use IDs for serialized references, lookups, and save data rather than display names.
 
 ### Runtime domain objects
@@ -45,13 +46,14 @@ Keep UI event handlers focused on orchestration, state display, and persistence.
 - `GameItem` is the runtime item model. `CatalogService` assigns its `ItemKind` and resolves its optional `Warbond` after deserialization; these derived properties are not the catalog JSON contract.
 - `ItemSet` is the categorized runtime collection for stratagems, primaries, secondaries, throwables, armor passives, and boosters. Use its set operations and category collections instead of duplicating item-set logic in components.
 - `Operation` is the runtime form of `OperationDefinition` and owns clamped mission-number behavior and mission labels.
-- `PenitentDifficulty` is the runtime form of `PenitentDifficultyDefinition`; it resolves its start operation and loadout overrides/additions to `ItemSet` instances.
-- `PenitentState` is the live Warpath: Redemption aggregate. Internal Penitent identifiers remain unchanged. It holds resolved runtime objects for difficulty, operation, starter items, acquired items, banned items, pending rewards, pending punishments, and selected warbonds. Its `ToDefinition()` method is the serialization boundary back to stable IDs.
+- `RedemptionDifficulty` is the runtime form of `RedemptionDifficultyDefinition`; it resolves its start operation and loadout overrides/additions to `ItemSet` instances.
+- `RedemptionState` is the live Warpath: Redemption aggregate. It holds resolved runtime objects for difficulty, operation, starter items, acquired items, banned items, pending rewards, pending punishments, and selected warbonds. Its `ToDefinition()` method is the serialization boundary back to stable IDs.
 
 ### Save and persistence boundary
 
-- Browser saves use `SaveLibrary<TState>`, `SaveSlot<TState>`, and `SaveExport<TState>` around `PenitentStateDefinition`, not around the live `PenitentState` object graph.
-- `PenitentCrusade.razor` loads the catalog first, resolves a `PenitentStateDefinition` into a `PenitentState`, and persists definitions back to browser local storage after state changes.
+- Browser saves use `SaveLibrary<TState>`, `SaveSlot<TState>`, and `SaveExport<TState>` around `RedemptionStateDefinition`, not around the live `RedemptionState` object graph.
+- `WarpathRedemption.razor` loads the catalog first, resolves a `RedemptionStateDefinition` into a `RedemptionState`, and persists definitions back to browser local storage after state changes through `RedemptionSaveLibraryService`.
+- `RedemptionSaveLibraryService` uses local-storage key `blazor-warpath-redemption` and export mode `warpath-redemption`.
 - Imported and exported save files use the same definition-based representation. Keep runtime-only properties out of save DTOs and resolve IDs through `CatalogService` when loading.
 - The current local-storage key and save format are allowed to evolve without backward migration support until the site is deployed. Do not add compatibility shims or migration code speculatively.
 
