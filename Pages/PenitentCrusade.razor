@@ -33,8 +33,12 @@ else
     @if (!_state.RunStarted)
     {
         <div class="row g-4">
-            <div class="col-xl-4">
-                <div class="section-card rounded p-3">
+            <div class="col-xl-4 d-grid row-gap-3">
+                <div class="row">
+                    <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
+                </div>
+
+                <div class="row section-card rounded p-3">
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
                         <label class="form-label text-light">Difficulty</label>
@@ -48,7 +52,7 @@ else
                     <p class="text-secondary mb-0">Configure your crusade before committing to the first mission.</p>
                 </div>
 
-                <div class="section-card rounded p-3 mt-4">
+                <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
                     <div class="item-grid mt-3">
                         @foreach (var warbond in Catalog.GetAllWarbonds())
@@ -74,9 +78,6 @@ else
                         {
                             <ItemCard Item="item" Badge="Starter" />
                         }
-                    </div>
-                    <div class="d-grid mt-4">
-                        <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
                     </div>
                 </div>
             </div>
