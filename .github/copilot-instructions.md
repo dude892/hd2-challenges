@@ -11,6 +11,9 @@
 
 ## Application Structure
 
+- The repository-root `hd2-challenges.slnx` includes the Blazor app in `challenges/` and the Windows/WPF XAML converter in `xaml2Svg/`. Build both with `dotnet build` from the repository root.
+- Application paths below are relative to `challenges/`. Run the app with `dotnet run --project .\challenges\hd2-challenges.csproj`, or use the VS Code "Warpath: Redemption" debug configuration.
+- The app build runs `xaml2Svg/hd2Xaml2Svg.csproj` to generate SVGs and galleries from `challenges/imports/xaml/` into `$(OutputPath)generated/wwwroot/svgs/` under the app's build directory. Linked content registers these as `/svgs/` static assets and copies them into build and publish `wwwroot/svgs/`. The separate generated folder keeps converter outputs distinct from hand-authored assets such as `challenges/wwwroot/svgs/icon/shield-plus.svg`. This build step requires Windows and the .NET 10 SDK; XAML dictionaries produce multiple SVGs in category subfolders, so conversion runs on each normal build, not design-time builds.
 - `Program.cs` configures the WebAssembly host, the root components, an `HttpClient` rooted at the app base URL, and scoped application services.
 - `Pages/` contains routable Razor pages. `Components/` contains reusable UI components. `Layout/` contains the application shell and navigation.
 - `wwwroot/data/` contains the static JSON catalog and challenge definitions. `wwwroot/images/` contains item and warbond assets. `wwwroot/js/app.js` contains the JavaScript interop functions used by the app.

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/challenges/">
+    <Project Path="challenges/hd2-challenges.csproj" />
+  </Folder>
+  <Folder Name="/xaml2Svg/">
+    <Project Path="xaml2Svg/hd2Xaml2Svg.csproj" />
+  </Folder>
+</Solution>

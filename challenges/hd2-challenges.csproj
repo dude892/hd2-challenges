@@ -15,17 +15,28 @@
   </ItemGroup>
 
   <Target Name="GenerateSvgsFromXaml"
-          BeforeTargets="BeforeBuild"
-          Inputs="@(XamlFiles)"
-          Outputs="@(XamlFiles->'$(MSBuildProjectDirectory)\wwwroot\svgs\%(Filename).svg')">
+          BeforeTargets="ResolveProjectStaticWebAssets"
+          Condition="'$(DesignTimeBuild)' != 'true'">
 
-    <!-- Run converter only when inputs changed -->
-    <Exec Command="dotnet run --project ../hd2-xaml2Svg -c Release -- $(MSBuildProjectDirectory)\imports\xaml $(MSBuildProjectDirectory)\wwwroot\svgs" />
+    <PropertyGroup>
+      <GeneratedSvgWebRoot>$([System.IO.Path]::GetFullPath('$(OutputPath)generated\wwwroot\', '$(MSBuildProjectDirectory)'))</GeneratedSvgWebRoot>
+    </PropertyGroup>
+
+    <!-- Each XAML dictionary produces multiple SVGs in category subfolders. -->
+    <RemoveDir Directories="$(GeneratedSvgWebRoot)svgs" />
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)\..\xaml2Svg\hd2Xaml2Svg.csproj&quot; -c Release -- &quot;$(MSBuildProjectDirectory)\imports\xaml&quot; &quot;$(GeneratedSvgWebRoot)svgs&quot;" />
+
+    <ItemGroup>
+      <GeneratedSvg Include="$(GeneratedSvgWebRoot)svgs\**\*.svg;$(GeneratedSvgWebRoot)svgs\**\index.html" />
+      <Content Remove="@(GeneratedSvg->'wwwroot\svgs\%(RecursiveDir)%(Filename)%(Extension)')" />
+      <Content Include="@(GeneratedSvg)"
+               Link="wwwroot\svgs\%(RecursiveDir)%(Filename)%(Extension)"
+               ContentRoot="$(GeneratedSvgWebRoot)"
+               CopyToOutputDirectory="PreserveNewest"
+               CopyToPublishDirectory="PreserveNewest" />
+      <FileWrites Include="@(GeneratedSvg)" />
+    </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <XamlFiles Include="$(MSBuildProjectDirectory)\imports\xaml\**\*.xaml" />
-  </ItemGroup>
 
   <PropertyGroup>
     <CompileRemove>$(CompileRemove);tools\**\*.cs;**\obj\**\*.cs;**\bin\**\*.cs</CompileRemove>

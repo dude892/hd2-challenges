@@ -5,10 +5,10 @@
             "name": "Warpath: Redemption",
             "type": "blazorwasm",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}\\challenges",
             "url": "http://localhost:5192/warpath-redemption",
             "browser": "chrome",
-            "projectPath": "hd2-challenges/hd2-challenges.csproj"
+            "projectPath": "${workspaceFolder}\\challenges\\hd2-challenges.csproj"
         }
     ]
 }
