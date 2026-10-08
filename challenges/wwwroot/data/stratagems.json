@@ -372,7 +372,7 @@
     "tags": ["Emplacement", "Bullet"],
     "warbond": "none",
     "id": "hmgemplacement",
-    "svg": "EmplacementAntiTank.svg",
+    "svg": "MannedMachinegun.svg",
     "antitank": true
   },
   {
