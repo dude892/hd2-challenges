@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Helldivers 2 Challenges - Redirecting</title>
+    <script>
+        // Keep this project path aligned with base_href in the Pages workflow.
+        const appRoot = new URL("/hd2-challenges/", window.location.origin);
+        appRoot.searchParams.set("__hd2_route",
+            window.location.pathname + window.location.search + window.location.hash);
+        window.location.replace(appRoot.href);
+    </script>
+</head>
+<body>
+    <p>Redirecting to Helldivers 2 Challenges...</p>
+</body>
+</html>
