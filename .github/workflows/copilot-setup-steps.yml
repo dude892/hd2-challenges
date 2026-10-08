@@ -11,8 +11,8 @@ on:
 
 jobs:
   copilot-setup-steps:
-runs-on: windows-latest
-steps:
-  - name: Initialize Windows runner
-    run: Write-Output "Copilot setup is running on Windows."
+    runs-on: windows-latest
+    steps:
+      - name: Initialize Windows runner
+        run: Write-Output "Copilot setup is running on Windows."
     
