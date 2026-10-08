@@ -8,6 +8,7 @@ on:
   push:
     paths:
       - challenges/**
+      - xaml2Svg/**
     branches:
       - main
 
