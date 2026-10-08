@@ -6,35 +6,39 @@
 - The website has not been deployed yet. Optimize for the current local application and the current data shape.
 - Do not spend implementation effort on preserving previous save states, migrating old data, or supporting legacy export formats yet. Add migration/version compatibility only when deployment or an explicit requirement makes it necessary.
 - Keep changes focused and consistent with the existing C# and Razor patterns. Avoid introducing a server, database, API, or new persistence layer unless explicitly requested.
-- While the main focus of the app right now is on the "Penitent Crusade" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
+- While the main focus of the app right now is on the "Warpath: Redemption" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
 - Do not take the following instructions as exhaustive; they are meant to guide the development process and maintain consistency within the project, and should be adapted as needed for specific scenarios.
 
 ## Application Structure
 
+- The repository-root `hd2-challenges.slnx` includes the Blazor app in `challenges/` and the Windows/WPF XAML converter in `xaml2Svg/`. Build both with `dotnet build` from the repository root.
+- Application paths below are relative to `challenges/`. Run the app with `dotnet run --project .\challenges\hd2-challenges.csproj`, or use the VS Code "Warpath: Redemption" debug configuration.
+- The app build runs `xaml2Svg/hd2Xaml2Svg.csproj` to generate SVGs and galleries from `challenges/imports/xaml/` into `$(OutputPath)generated/wwwroot/svgs/` under the app's build directory. Linked content registers these as `/svgs/` static assets and copies them into build and publish `wwwroot/svgs/`. The separate generated folder keeps converter outputs distinct from hand-authored assets such as `challenges/wwwroot/svgs/icon/shield-plus.svg`. This build step requires Windows and the .NET 10 SDK; XAML dictionaries produce multiple SVGs in category subfolders, so conversion runs on each normal build, not design-time builds.
 - `Program.cs` configures the WebAssembly host, the root components, an `HttpClient` rooted at the app base URL, and scoped application services.
 - `Pages/` contains routable Razor pages. `Components/` contains reusable UI components. `Layout/` contains the application shell and navigation.
 - `wwwroot/data/` contains the static JSON catalog and challenge definitions. `wwwroot/images/` contains item and warbond assets. `wwwroot/js/app.js` contains the JavaScript interop functions used by the app.
-- `Models/` contains both JSON-facing definitions and runtime domain classes. `Services/` contains catalog loading, browser persistence, export, and Penitent Crusade rules.
+- `Models/` contains both JSON-facing definitions and runtime domain classes. `Services/` contains catalog loading, browser persistence, export, and Warpath: Redemption rules.
 - `imports/` contains files being imported from an external source not to be used directly in the app, do not modify them at all for any reason, as they will be overwritten or managed externally.
 
 ## Service Architecture
 
 Services are registered as scoped services in `Program.cs` and should remain small, feature-oriented, and testable.
 
-- `CatalogService` is the catalog boundary. It lazily loads the static JSON files through `HttpClient`, post-processes `GameItem` instances, builds `AllItemsSet`, resolves starter loadouts, and converts difficulty definitions into runtime `PenitentDifficulty` objects. Use it for item, warbond, operation, difficulty, and loadout lookup rather than loading catalog JSON from components.
-- `PenitentMissionService` owns mission progression rules: advancing missions and operations, applying failures, setting progress, and detecting the final mission. It mutates a supplied `PenitentState`.
-- `PenitentRewardService` owns reward and punishment rules: calculating pools, rolling rewards, creating pending choices, claiming rewards, banning rewards, and removing punishments. It mutates a supplied `PenitentState`.
+- `CatalogService` is the catalog boundary. It lazily loads the static JSON files through `HttpClient`, post-processes `GameItem` instances, and builds `AllItemsSet`. Use it for item, warbond, and operation lookup rather than loading catalog JSON from components.
+- `RedemptionCatalogService` loads `redemption-difficulties.json` and `redemption-starter-loadout.json`, resolves loadouts and runtime `RedemptionDifficulty` objects, and constructs `RedemptionState` instances.
+- `RedemptionMissionService` owns mission progression rules: advancing missions and operations, applying failures, setting progress, and detecting the final mission. It mutates a supplied `RedemptionState`.
+- `RedemptionRewardService` owns reward and punishment rules: calculating pools, rolling rewards, creating pending choices, claiming rewards, banning rewards, and removing punishments. It mutates a supplied `RedemptionState`.
 - `BrowserStorageService` is the local-storage adapter. It serializes values as JSON and calls `hd2App.getLocalStorage`, `setLocalStorage`, and `removeLocalStorage` through `IJSRuntime`.
 - `FileExportService` is the download adapter. It uses `hd2App.downloadFile` through `IJSRuntime` and provides JSON export helpers.
 
-Keep UI event handlers focused on orchestration, state display, and persistence. Put catalog resolution in `CatalogService`, game rules in the relevant Penitent service, and browser/JavaScript concerns in the storage or export adapter.
+Keep UI event handlers focused on orchestration, state display, and persistence. Put catalog resolution in the relevant catalog service, game rules in the relevant Redemption service, and browser/JavaScript concerns in the storage or export adapter.
 
 ## Data, Definition, and Runtime Class Architecture
 
 ### Static data and definitions
 
-- Static JSON under `wwwroot/data/` is the source catalog for items, warbonds, operations, Penitent difficulties, and the starter loadout.
-- `*Definition` classes are JSON-friendly DTOs. They store stable IDs, display values, numeric settings, and references as strings or lists of internal names. Examples include `OperationDefinition`, `PenitentDifficultyDefinition`, `PenitentStarterLoadoutDefinition`, and `PenitentStateDefinition`.
+- Static JSON under `wwwroot/data/` is the source catalog for items, warbonds, operations, Redemption difficulties, and the starter loadout.
+- `*Definition` classes are JSON-friendly DTOs. They store stable IDs, display values, numeric settings, and references as strings or lists of internal names. Examples include `OperationDefinition`, `RedemptionDifficultyDefinition`, `RedemptionStarterLoadoutDefinition`, and `RedemptionStateDefinition`.
 - Item identity is `GameItem.Id`, and item collections should preserve the existing case-insensitive equality behavior. Use IDs for serialized references, lookups, and save data rather than display names.
 
 ### Runtime domain objects
@@ -42,13 +46,14 @@ Keep UI event handlers focused on orchestration, state display, and persistence.
 - `GameItem` is the runtime item model. `CatalogService` assigns its `ItemKind` and resolves its optional `Warbond` after deserialization; these derived properties are not the catalog JSON contract.
 - `ItemSet` is the categorized runtime collection for stratagems, primaries, secondaries, throwables, armor passives, and boosters. Use its set operations and category collections instead of duplicating item-set logic in components.
 - `Operation` is the runtime form of `OperationDefinition` and owns clamped mission-number behavior and mission labels.
-- `PenitentDifficulty` is the runtime form of `PenitentDifficultyDefinition`; it resolves its start operation and loadout overrides/additions to `ItemSet` instances.
-- `PenitentState` is the live Penitent Crusade aggregate. It holds resolved runtime objects for difficulty, operation, starter items, acquired items, banned items, pending rewards, pending punishments, and selected warbonds. Its `ToDefinition()` method is the serialization boundary back to stable IDs.
+- `RedemptionDifficulty` is the runtime form of `RedemptionDifficultyDefinition`; it resolves its start operation and loadout overrides/additions to `ItemSet` instances.
+- `RedemptionState` is the live Warpath: Redemption aggregate. It holds resolved runtime objects for difficulty, operation, starter items, acquired items, banned items, pending rewards, pending punishments, and selected warbonds. Its `ToDefinition()` method is the serialization boundary back to stable IDs.
 
 ### Save and persistence boundary
 
-- Browser saves use `SaveLibrary<TState>`, `SaveSlot<TState>`, and `SaveExport<TState>` around `PenitentStateDefinition`, not around the live `PenitentState` object graph.
-- `PenitentCrusade.razor` loads the catalog first, resolves a `PenitentStateDefinition` into a `PenitentState`, and persists definitions back to browser local storage after state changes.
+- Browser saves use `SaveLibrary<TState>`, `SaveSlot<TState>`, and `SaveExport<TState>` around `RedemptionStateDefinition`, not around the live `RedemptionState` object graph.
+- `WarpathRedemption.razor` loads the catalog first, resolves a `RedemptionStateDefinition` into a `RedemptionState`, and persists definitions back to browser local storage after state changes through `RedemptionSaveLibraryService`.
+- `RedemptionSaveLibraryService` uses local-storage key `blazor-warpath-redemption` and export mode `warpath-redemption`.
 - Imported and exported save files use the same definition-based representation. Keep runtime-only properties out of save DTOs and resolve IDs through `CatalogService` when loading.
 - The current local-storage key and save format are allowed to evolve without backward migration support until the site is deployed. Do not add compatibility shims or migration code speculatively.
 

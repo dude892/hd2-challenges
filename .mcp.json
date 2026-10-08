@@ -1,0 +1,23 @@
+{
+	"mcpServers": {
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/"
+		},
+		"microsoft-learn": {
+			"type": "http",
+			"url": "https://learn.microsoft.com/api/mcp"
+		},
+		"glider": {
+			"type": "stdio",
+			"command": "glider",
+			"args": [
+				"--solution",
+				".\\hd2-challenges.slnx",
+				"--default-timeout",
+				"30m"
+			],
+			"cwd": "${workspaceFolder}"
+		}
+	}
+}

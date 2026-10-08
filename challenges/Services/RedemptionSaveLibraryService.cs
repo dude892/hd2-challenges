@@ -2,21 +2,21 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class PenitentSaveLibraryService(
+public sealed class RedemptionSaveLibraryService(
     SaveLibraryService saveLibrary,
-    PenitentCatalogService penitentCatalog,
+    RedemptionCatalogService redemptionCatalog,
     CatalogService catalog)
 {
-    private const string StorageKey = "blazor-penitent-crusade";
-    private const string ExportMode = "penitent-crusade";
+    private const string StorageKey = "blazor-warpath-redemption";
+    private const string ExportMode = "warpath-redemption";
 
-    public SaveLibrary<PenitentStateDefinition> Library { get; private set; } = new();
+    public SaveLibrary<RedemptionStateDefinition> Library { get; private set; } = new();
 
     private Task PersistAsync() => saveLibrary.PersistAsync(StorageKey, Library);
 
-    public async Task<PenitentState> LoadAsync()
+    public async Task<RedemptionState> LoadAsync()
     {
-        Library = await saveLibrary.LoadAsync<PenitentStateDefinition>(StorageKey) ?? new();
+        Library = await saveLibrary.LoadAsync<RedemptionStateDefinition>(StorageKey) ?? new();
 
         if (Library.CurrentSlotId is null || Library.CurrentSlot is null && Library.Slots.Count == 0)
         {
@@ -26,7 +26,7 @@ public sealed class PenitentSaveLibraryService(
         return ResolveCurrentState();
     }
 
-    public async Task BeginRun(PenitentState state)
+    public async Task BeginRun(RedemptionState state)
     {
         if (Library.WorkingSlot is null)
         {
@@ -41,7 +41,7 @@ public sealed class PenitentSaveLibraryService(
         await PersistAsync();
     }
 
-    public async Task PersistAsync(PenitentState state)
+    public async Task PersistAsync(RedemptionState state)
     {
         if (Library.CurrentSlot is null)
         {
@@ -53,23 +53,23 @@ public sealed class PenitentSaveLibraryService(
         await PersistAsync();
     }
 
-    public async Task<PenitentState> RestartAsync(PenitentState state)
+    public async Task<RedemptionState> RestartAsync(RedemptionState state)
     {
-        PenitentState restartedState = penitentCatalog.CreatePenitentSetupState(state.Difficulty.Id, state.SelectedWarbonds);
+        RedemptionState restartedState = redemptionCatalog.CreateRedemptionSetupState(state.Difficulty.Id, state.SelectedWarbonds);
         Library.CurrentSlotId = null;
         Library.WorkingSlot = CreateWorkingSlot(restartedState);
         await PersistAsync();
         return restartedState;
     }
 
-    public async Task CreateSnapshotAsync(PenitentState state)
+    public async Task CreateSnapshotAsync(RedemptionState state)
     {
         if (!state.RunStarted)
         {
             return;
         }
 
-        SaveSlot<PenitentStateDefinition> slot = new()
+        SaveSlot<RedemptionStateDefinition> slot = new()
         {
             Name = $"{BuildSlotName(state)} Snapshot",
             State = state.ToDefinition(),
@@ -91,64 +91,64 @@ public sealed class PenitentSaveLibraryService(
         return true;
     }
 
-    public async Task<PenitentState> SelectSlotAsync(Guid slotId)
+    public async Task<RedemptionState> SelectSlotAsync(Guid slotId)
     {
         Library.SelectSlot(slotId);
-        PenitentState state = ResolveCurrentState();
+        RedemptionState state = ResolveCurrentState();
         await PersistAsync();
         return state;
     }
 
-    public async Task<PenitentState> DeleteSlotAsync(Guid slotId)
+    public async Task<RedemptionState> DeleteSlotAsync(Guid slotId)
     {
         Library.DeleteSlot(slotId, () => CreateWorkingSlot("normal", catalog.GetAllWarbonds()));
-        PenitentState state = ResolveCurrentState();
+        RedemptionState state = ResolveCurrentState();
         await PersistAsync();
         return state;
     }
 
-    public SaveExport<PenitentStateDefinition> CreateExport(Guid slotId)
+    public SaveExport<RedemptionStateDefinition> CreateExport(Guid slotId)
     {
-        SaveSlot<PenitentStateDefinition> slot = Library.Slots.First(entry => entry.Id == slotId);
+        SaveSlot<RedemptionStateDefinition> slot = Library.Slots.First(entry => entry.Id == slotId);
         return saveLibrary.CreateExport(ExportMode, slot);
     }
 
-    public async Task<(SaveSlot<PenitentStateDefinition> Slot, PenitentState State)?> ImportAsync(string json)
+    public async Task<(SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)?> ImportAsync(string json)
     {
-        SaveSlot<PenitentStateDefinition>? slot = saveLibrary.ImportSlot<PenitentStateDefinition>(json, ExportMode);
+        SaveSlot<RedemptionStateDefinition>? slot = saveLibrary.ImportSlot<RedemptionStateDefinition>(json, ExportMode);
         if (slot is null)
         {
             return null;
         }
 
         Library.AddSlot(slot);
-        PenitentState state = ResolveCurrentState();
+        RedemptionState state = ResolveCurrentState();
         await PersistAsync();
         return (slot, state);
     }
 
-    private PenitentState ResolveCurrentState()
+    private RedemptionState ResolveCurrentState()
     {
-        SaveSlot<PenitentStateDefinition> slot = Library.CurrentSlot ?? Library.Slots.FirstOrDefault() ?? CreateWorkingSlot("normal", catalog.GetAllWarbonds());
+        SaveSlot<RedemptionStateDefinition> slot = Library.CurrentSlot ?? Library.Slots.FirstOrDefault() ?? CreateWorkingSlot("normal", catalog.GetAllWarbonds());
         if (ReferenceEquals(slot, Library.WorkingSlot))
         {
-            PenitentState setupState = penitentCatalog.CreatePenitentState(slot.State);
+            RedemptionState setupState = redemptionCatalog.CreateRedemptionState(slot.State);
             setupState.RunStarted = false;
             return setupState;
         }
 
         Library.CurrentSlotId = slot.Id;
-        return penitentCatalog.CreatePenitentState(slot.State);
+        return redemptionCatalog.CreateRedemptionState(slot.State);
     }
 
-    private SaveSlot<PenitentStateDefinition> CreateWorkingSlot(string difficulty, IEnumerable<Warbond> selectedWarbonds) =>
-        CreateWorkingSlot(penitentCatalog.CreatePenitentSetupState(difficulty, selectedWarbonds));
+    private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(string difficulty, IEnumerable<Warbond> selectedWarbonds) =>
+        CreateWorkingSlot(redemptionCatalog.CreateRedemptionSetupState(difficulty, selectedWarbonds));
 
-    private SaveSlot<PenitentStateDefinition> CreateWorkingSlot(PenitentState state) => new()
+    private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionState state) => new()
     {
         Name = BuildSlotName(state),
         State = state.ToDefinition()
     };
 
-    private static string BuildSlotName(PenitentState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
+    private static string BuildSlotName(RedemptionState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
 }

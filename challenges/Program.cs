@@ -10,12 +10,12 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<CatalogService>();
 builder.Services.AddScoped<ToastService>();
-builder.Services.AddScoped<PenitentCatalogService>();
+builder.Services.AddScoped<RedemptionCatalogService>();
 builder.Services.AddScoped<BrowserStorageService>();
 builder.Services.AddScoped<SaveLibraryService>();
-builder.Services.AddScoped<PenitentSaveLibraryService>();
+builder.Services.AddScoped<RedemptionSaveLibraryService>();
 builder.Services.AddScoped<FileExportService>();
-builder.Services.AddScoped<PenitentRewardService>();
-builder.Services.AddScoped<PenitentMissionService>();
+builder.Services.AddScoped<RedemptionRewardService>();
+builder.Services.AddScoped<RedemptionMissionService>();
 
 await builder.Build().RunAsync();

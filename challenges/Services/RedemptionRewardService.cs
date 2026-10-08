@@ -2,17 +2,17 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class PenitentRewardService(CatalogService catalogService)
+public sealed class RedemptionRewardService(CatalogService catalogService)
 {
     private CatalogService CatalogService { get; } = catalogService;
 
-    public ItemSet GetRewardPool(PenitentState state) => 
+    public ItemSet GetRewardPool(RedemptionState state) => 
         CatalogService.GetItemsByWarbonds(state.SelectedWarbonds)
             .RemoveItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
     
-    private static bool IsHardFinale(PenitentState state) => state.CurrentOperation.DifficultyIndex == 5 && state.CurrentOperation.IsLastMission;
+    private static bool IsHardFinale(RedemptionState state) => state.CurrentOperation.DifficultyIndex == 5 && state.CurrentOperation.IsLastMission;
 
-    public bool EnsurePendingRewards(PenitentState state, int selectedStars)
+    public bool EnsurePendingRewards(RedemptionState state, int selectedStars)
     {
         if (state.PendingRewardItems.Count != 0)
         {
@@ -23,7 +23,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public bool ClaimReward(PenitentState state, string id)
+    public bool ClaimReward(RedemptionState state, string id)
     {
         GameItem? reward = state.PendingRewardItems.FirstOrDefault(item => item.Id == id);
         if (reward is null)
@@ -36,7 +36,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public bool BanPendingRewards(PenitentState state)
+    public bool BanPendingRewards(RedemptionState state)
     {
         if (state.PendingRewardItems.Count == 0)
         {
@@ -48,7 +48,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public bool EnsurePendingPunishments(PenitentState state)
+    public bool EnsurePendingPunishments(RedemptionState state)
     {
         if (state.PendingPunishmentItems.Count != 0)
         {
@@ -62,7 +62,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public bool ClaimPunishment(PenitentState state, string id)
+    public bool ClaimPunishment(RedemptionState state, string id)
     {
         GameItem? punishment = state.PendingPunishmentItems.FirstOrDefault(item => item.Id == id);
         if (punishment is null)
@@ -76,7 +76,7 @@ public sealed class PenitentRewardService(CatalogService catalogService)
         return true;
     }
 
-    public ItemSet RollRewardItems(PenitentState state, int selectedStars)
+    public ItemSet RollRewardItems(RedemptionState state, int selectedStars)
     {
         int rewardQuantity = Math.Max(1, selectedStars - 1);
         if (state.Difficulty.IsSuper)

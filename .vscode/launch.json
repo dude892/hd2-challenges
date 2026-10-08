@@ -2,12 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Penitent Crusade",
+            "name": "Warpath: Redemption",
             "type": "blazorwasm",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "url": "http://localhost:5192/penitent-crusade",
-            "browser": "chrome"
+            "cwd": "${workspaceFolder}\\challenges",
+            "url": "http://localhost:5192/warpath-redemption",
+            "browser": "chrome",
+            "projectPath": "${workspaceFolder}\\challenges\\hd2-challenges.csproj"
         }
     ]
 }

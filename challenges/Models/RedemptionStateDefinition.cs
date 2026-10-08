@@ -1,6 +1,6 @@
 namespace Hd2Challenges.Models;
 
-public sealed class PenitentStateDefinition
+public sealed class RedemptionStateDefinition
 {
     public string DifficultyId { get; set; } = "normal";
     public int OperationIndex { get; set; } = 3;

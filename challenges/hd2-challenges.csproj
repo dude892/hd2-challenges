@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <AssemblyName>Hd2Challenges</AssemblyName>
+    <RootNamespace>Hd2Challenges</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="GenerateSvgsFromXaml"
+          BeforeTargets="ResolveProjectStaticWebAssets"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+
+    <PropertyGroup>
+      <GeneratedSvgWebRoot>$([System.IO.Path]::GetFullPath('$(OutputPath)generated\wwwroot\', '$(MSBuildProjectDirectory)'))</GeneratedSvgWebRoot>
+    </PropertyGroup>
+
+    <!-- Each XAML dictionary produces multiple SVGs in category subfolders. -->
+    <RemoveDir Directories="$(GeneratedSvgWebRoot)svgs" />
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)\..\xaml2Svg\hd2Xaml2Svg.csproj&quot; -c Release -- &quot;$(MSBuildProjectDirectory)\imports\xaml&quot; &quot;$(GeneratedSvgWebRoot)svgs&quot;" />
+
+    <ItemGroup>
+      <GeneratedSvg Include="$(GeneratedSvgWebRoot)svgs\**\*.svg;$(GeneratedSvgWebRoot)svgs\**\index.html" />
+      <Content Remove="@(GeneratedSvg->'wwwroot\svgs\%(RecursiveDir)%(Filename)%(Extension)')" />
+      <Content Include="@(GeneratedSvg)"
+               Link="wwwroot\svgs\%(RecursiveDir)%(Filename)%(Extension)"
+               ContentRoot="$(GeneratedSvgWebRoot)"
+               CopyToOutputDirectory="PreserveNewest"
+               CopyToPublishDirectory="PreserveNewest" />
+      <FileWrites Include="@(GeneratedSvg)" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <CompileRemove>$(CompileRemove);tools\**\*.cs;**\obj\**\*.cs;**\bin\**\*.cs</CompileRemove>
+  </PropertyGroup>
+
+</Project>

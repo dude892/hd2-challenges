@@ -1,7 +1,7 @@
 [
   {
     "id": "normal",
-    "displayName": "Penitent Crusade",
+    "displayName": "Normal Warpath",
     "startOperationIndex": 3,
     "loadoutAdditions": {
       "secondaries": ["p2peacemaker"]
@@ -9,7 +9,7 @@
   },
   {
     "id": "solo",
-    "displayName": "Solo/Duo Crusade",
+    "displayName": "Solo/Duo Warpath",
     "startOperationIndex": 3,
     "loadoutAdditions": {
       "secondaries": ["p2peacemaker"],
@@ -18,7 +18,7 @@
   },
   {
     "id": "quick",
-    "displayName": "Quick Crusade",
+    "displayName": "Quick Warpath",
     "startOperationIndex": 7,
     "loadoutAdditions": {
       "secondaries": ["p2peacemaker"],
@@ -39,7 +39,7 @@
   },
   {
     "id": "super",
-    "displayName": "Super Penitent Crusade",
+    "displayName": "Super Warpath",
     "startOperationIndex": 4,
     "scoreModifier": 250,
     "isSuper": true,
@@ -52,7 +52,7 @@
   },
   {
     "id": "supersolo",
-    "displayName": "Solo/Duo Super Crusade",
+    "displayName": "Super Solo/Duo Warpath",
     "startOperationIndex": 4,
     "scoreModifier": 250,
     "isSuper": true,

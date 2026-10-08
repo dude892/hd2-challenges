@@ -1,31 +1,31 @@
-@page "/penitent-crusade"
+@page "/warpath-redemption"
 @inject CatalogService Catalog
-@inject PenitentCatalogService PenitentCatalog
-@inject PenitentSaveLibraryService SaveLibrary
+@inject RedemptionCatalogService RedemptionCatalog
+@inject RedemptionSaveLibraryService SaveLibrary
 @inject FileExportService FileService
-@inject PenitentRewardService RewardService
-@inject PenitentMissionService MissionService
+@inject RedemptionRewardService RewardService
+@inject RedemptionMissionService MissionService
 @inject ToastService Toasts
 
-<PageTitle>Penitent Crusade</PageTitle>
+<PageTitle>Warpath: Redemption</PageTitle>
 
 @if (!_loaded)
 {
-    <p class="text-light">Loading Penitent Crusade...</p>
+    <p class="text-light">Loading Warpath: Redemption...</p>
 }
 else
 {
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
-            <h1 class="text-light mb-0">Penitent Crusade</h1>
+            <h1 class="text-light mb-0">Warpath: Redemption</h1>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "penitent-crusade-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
-                <button class="btn btn-warning" @onclick="RestartPenitentRunAsync">Start New Run</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
     </div>
@@ -42,14 +42,14 @@ else
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
                         <label class="form-label text-light">Difficulty</label>
-                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnPenitentDifficultyChangedAsync">
-                            @foreach (var difficulty in PenitentCatalog.Difficulties)
+                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChangedAsync">
+                            @foreach (var difficulty in RedemptionCatalog.Difficulties)
                             {
                                 <option value="@difficulty.Id">@difficulty.DisplayName</option>
                             }
                         </select>
                     </div>
-                    <p class="text-secondary mb-0">Configure your crusade before committing to the first mission.</p>
+                    <p class="text-secondary mb-0">Configure your campaign before committing to the first mission.</p>
                 </div>
 
                 <div class="row section-card rounded p-3">
@@ -122,8 +122,8 @@ else
                     </div>
                     <div class="col-md-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginPenitentMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginPenitentMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
                             <button class="btn btn-primary btn-lg btn-block" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
@@ -278,7 +278,7 @@ else
             </div>
         </MainContent>
         <FooterContent>
-            <button class="btn btn-success" @onclick="(() => ConfirmPenitentMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
+            <button class="btn btn-success" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
         </FooterContent>
     </Modal>
 
@@ -295,7 +295,7 @@ else
                     {
                         @foreach (GameItem item in group)
                         {
-                            <ItemCard Item="item" OnClick="@(() => ClaimPenitentRewardAsync(item.Id))" />
+                            <ItemCard Item="item" OnClick="@(() => ClaimRedemptionRewardAsync(item.Id))" />
                         }
                     }
                 </div>
@@ -304,7 +304,7 @@ else
         <FooterContent>
             @if (_state.PendingRewardItems.Count > 0)
             {
-                <button class="btn btn-warning" @onclick="SkipAndBanPenitentRewardsAsync">Skip and Ban All</button>
+                <button class="btn btn-warning" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
             }
         </FooterContent>
     </Modal>
@@ -320,7 +320,7 @@ else
                 <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
                     @foreach (var item in _state.PendingPunishmentItems)
                     {
-                        <ItemCard Item="item" OnClick="@(() => ClaimPenitentPunishmentAsync(item.Id))" />
+                        <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
                     }
                 </div>
             }
@@ -380,7 +380,7 @@ else
         </MainContent>
     </Modal>
 
-    <Modal Title="Penitent Crusade Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
+    <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
         <MainContent>
             <div class="d-flex justify-content-between align-items-center mb-3 gap-5">
                 <div>
@@ -391,7 +391,7 @@ else
                     <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
                     <label class="btn btn-outline-light btn-sm mb-0">
                         Import Slot
-                        <InputFile OnChange="ImportPenitentSlotAsync" class="d-none" accept=".json" />
+                        <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
                     </label>
                 </div>
             </div>
@@ -403,7 +403,7 @@ else
                             <div>
                                 <div class="fw-semibold text-light">
                                     @slot.Name
-                                    @if (slot.State is PenitentStateDefinition { RunCompleted: true })
+                                    @if (slot.State is RedemptionStateDefinition { RunCompleted: true })
                                     {
                                         <span class="badge bg-success ms-1">Completed</span>
                                     }
@@ -415,10 +415,10 @@ else
                                 <div class="text-secondary small">@slot.UpdatedAt.ToLocalTime()</div>
                             </div>
                             <div class="d-flex gap-2">
-                                <SaveSlotRename SlotId="slot.Id" Name="@slot.Name" OnSave="name => RenamePenitentSlotAsync(slot.Id, name)" />
-                                <button class="btn btn-sm btn-outline-light" @onclick="(() => LoadPenitentSlotAsync(slot.Id))">Load</button>
-                                <button class="btn btn-sm btn-outline-primary" @onclick="(() => ExportPenitentSlotAsync(slot.Id))">Export</button>
-                                <button class="btn btn-sm btn-outline-danger" @onclick="(() => DeletePenitentSlotAsync(slot.Id))">Delete</button>
+                                <SaveSlotRename SlotId="slot.Id" Name="@slot.Name" OnSave="name => RenameRedemptionSlotAsync(slot.Id, name)" />
+                                <button class="btn btn-sm btn-outline-light" @onclick="(() => LoadRedemptionSlotAsync(slot.Id))">Load</button>
+                                <button class="btn btn-sm btn-outline-primary" @onclick="(() => ExportRedemptionSlotAsync(slot.Id))">Export</button>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="(() => DeleteRedemptionSlotAsync(slot.Id))">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -429,7 +429,7 @@ else
 }
 
 @code {
-    private PenitentState _state = default!;
+    private RedemptionState _state = default!;
     private bool _loaded;
     private bool _showMissionCompleteModal;
     private bool _showRewardModal;
@@ -440,23 +440,23 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await PenitentCatalog.EnsureLoadedAsync();
+        await RedemptionCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
         _loaded = true;
     }
 
-    private async Task OnPenitentDifficultyChangedAsync(ChangeEventArgs args)
+    private async Task OnRedemptionDifficultyChangedAsync(ChangeEventArgs args)
     {
-        if (args.Value is string difficulty && PenitentCatalog.Difficulties.Any(item => item.Id == difficulty))
+        if (args.Value is string difficulty && RedemptionCatalog.Difficulties.Any(item => item.Id == difficulty))
         {
-            _state = PenitentCatalog.CreatePenitentSetupState(difficulty, _state.SelectedWarbonds);
+            _state = RedemptionCatalog.CreateRedemptionSetupState(difficulty, _state.SelectedWarbonds);
             Toasts.Show($"{_state.Difficulty.DisplayName} loadout preview updated.");
         }
 
         await Task.CompletedTask;
     }
 
-    private Task BeginPenitentMissionCompleteAsync()
+    private Task BeginRedemptionMissionCompleteAsync()
     {
         if (_state.PendingPunishmentItems.Count > 0)
         {
@@ -473,7 +473,7 @@ else
         return Task.CompletedTask;
     }
 
-    private async Task ConfirmPenitentMissionCompleteAsync(int stars)
+    private async Task ConfirmRedemptionMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
         if (MissionService.TryCompleteFinalMission(_state))
@@ -498,7 +498,7 @@ else
         _showRewardModal = true;
     }
 
-    private async Task BeginPenitentMissionFailureAsync()
+    private async Task BeginRedemptionMissionFailureAsync()
     {
         if (_state.PendingRewardItems.Count > 0)
         {
@@ -519,7 +519,7 @@ else
         _showPunishmentModal = true;
     }
 
-    private async Task ClaimPenitentRewardAsync(string id)
+    private async Task ClaimRedemptionRewardAsync(string id)
     {
         if (RewardService.ClaimReward(_state, id))
         {
@@ -529,7 +529,7 @@ else
         }
     }
 
-    private async Task SkipAndBanPenitentRewardsAsync()
+    private async Task SkipAndBanRedemptionRewardsAsync()
     {
         if (RewardService.BanPendingRewards(_state))
         {
@@ -539,7 +539,7 @@ else
         }
     }
 
-    private async Task ClaimPenitentPunishmentAsync(string id)
+    private async Task ClaimRedemptionPunishmentAsync(string id)
     {
         if (RewardService.ClaimPunishment(_state, id))
         {
@@ -549,13 +549,13 @@ else
         }
     }
 
-    private async Task RestartPenitentRunAsync()
+    private async Task RestartRedemptionRunAsync()
     {
         _state = await SaveLibrary.RestartAsync(_state);
         Toasts.Show("Run reset. Review your settings before starting a new run.");
     }
 
-    private async Task RenamePenitentSlotAsync(Guid slotId, string name)
+    private async Task RenameRedemptionSlotAsync(Guid slotId, string name)
     {
         if (await SaveLibrary.RenameSlotAsync(slotId, name))
         {
@@ -563,35 +563,35 @@ else
         }
     }
 
-    private async Task LoadPenitentSlotAsync(Guid slotId)
+    private async Task LoadRedemptionSlotAsync(Guid slotId)
     {
         _showSaveManager = false;
         _state = await SaveLibrary.SelectSlotAsync(slotId);
         Toasts.Show("Slot loaded.");
     }
 
-    private async Task DeletePenitentSlotAsync(Guid slotId)
+    private async Task DeleteRedemptionSlotAsync(Guid slotId)
     {
         _state = await SaveLibrary.DeleteSlotAsync(slotId);
         Toasts.Show("Slot deleted.");
     }
 
-    private async Task ExportPenitentSlotAsync(Guid slotId)
+    private async Task ExportRedemptionSlotAsync(Guid slotId)
     {
-        SaveSlot<PenitentStateDefinition> slot = SaveLibrary.Library.Slots.First(entry => entry.Id == slotId);
+        SaveSlot<RedemptionStateDefinition> slot = SaveLibrary.Library.Slots.First(entry => entry.Id == slotId);
         await FileService.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
     }
 
-    private async Task ImportPenitentSlotAsync(InputFileChangeEventArgs args)
+    private async Task ImportRedemptionSlotAsync(InputFileChangeEventArgs args)
     {
         IBrowserFile? file = args.File;
         await using Stream? stream = file.OpenReadStream(1024 * 1024);
         using StreamReader? reader = new StreamReader(stream);
         string? json = await reader.ReadToEndAsync();
-        (SaveSlot<PenitentStateDefinition> Slot, PenitentState State)? imported = await SaveLibrary.ImportAsync(json);
+        (SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)? imported = await SaveLibrary.ImportAsync(json);
         if (imported is null)
         {
-            Toasts.Show("Invalid Penitent Crusade save file.");
+            Toasts.Show("Invalid Warpath: Redemption save file.");
             return;
         }
 

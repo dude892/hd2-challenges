@@ -480,11 +480,3 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-
-# exclude the lib and svgs folder in wwwroot
-wwwroot/lib/
-wwwroot/svgs/*
-# include the icon folder, and only the svg files in it
-!wwwroot/svgs/icon/
-wwwroot/svgs/icon/*
-!wwwroot/svgs/icon/*.svg
