@@ -69,10 +69,9 @@ public sealed class SaveLibrary<TState>
     public void DeleteSlot(Guid slotId, Func<SaveSlot<TState>> replacementFactory)
     {
         bool deletingCurrentSlot = CurrentSlotId == slotId;
-        WorkingSlot = null;
         Slots.RemoveAll(slot => slot.Id == slotId);
 
-        if (deletingCurrentSlot || Slots.Count == 0)
+        if (deletingCurrentSlot || WorkingSlot is null && Slots.Count == 0)
         {
             WorkingSlot = replacementFactory();
             CurrentSlotId = null;
