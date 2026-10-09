@@ -2,7 +2,7 @@
 
 <button class="btn btn-sm btn-outline-secondary" @onclick="OpenModal">Edit name</button>
 
-<Modal Title="Rename Save Slot" Open="_showModal" OnClose="CloseModal" CloseOnBackdrop="false">
+<Modal Title="Rename Save Slot" Open="_showModal" CssClass="save-slot-rename-modal" OnClose="CloseModal" CloseOnBackdrop="false">
     <MainContent>
         <EditForm id="@FormId" Model="_editModel" OnValidSubmit="SaveAsync">
             <DataAnnotationsValidator />
