@@ -100,7 +100,10 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Operation</small>
-                                <div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img class="difficulty-icon" src="@($"svgs/difficulty/{_state.CurrentOperation.DifficultyIndex}.svg")" alt="" />
+                                    <div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div>
+                                </div>
                             </div>
                         </div>
                     </div>
