@@ -13,7 +13,7 @@
             <div class="text-secondary small">@Slot.UpdatedAt.ToLocalTime()</div>
         </div>
         <div class="d-flex gap-2">
-            <SaveSlotRename SlotId="Slot.Id" Name="Slot.Name" OnSave="OnRename" />
+            <SaveSlotRename SlotId="Slot.Id" Name="@Slot.Name" OnSave="OnRename" />
             @if (OnLoad.HasDelegate)
             {
                 <button class="btn btn-sm btn-outline-light" @onclick="OnLoad">Load</button>
