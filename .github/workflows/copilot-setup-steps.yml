@@ -14,5 +14,5 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Initialize Windows runner
+        shell: pwsh
         run: Write-Output "Copilot setup is running on Windows."
-    
