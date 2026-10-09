@@ -17,7 +17,13 @@ else
 {
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
-            <h1 class="text-light mb-0">Warpath: Redemption</h1>
+            <h1 class="text-light mb-0">
+                Warpath: Redemption
+                @if (_state.RunStarted && SaveLibrary.Library.CurrentSlot is { } currentSlot)
+                {
+                    <span class="fs-5 text-secondary"> - @currentSlot.Name</span>
+                }
+            </h1>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
