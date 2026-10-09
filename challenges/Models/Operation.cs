@@ -28,6 +28,8 @@ public sealed class Operation(OperationDefinition definition, int index, int mis
     public bool IsFirstMission => MissionNumber == 1;
     public bool IsLastMission => MissionNumber == MissionCount;
 
+    public Operation Clone() => (Operation)MemberwiseClone();
+
     public string DifficultyLabel => $"{DifficultyIndex} - {DisplayName}";
     public string MissionLabel => $"Mission {MissionNumber} of {MissionCount}";
 }

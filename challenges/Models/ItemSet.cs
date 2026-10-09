@@ -9,15 +9,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
     public HashSet<GameItem> Passives { get; set; } = [];
     public HashSet<GameItem> Boosters { get; set; } = [];
     
-    public ItemSet() 
-    {
-        Stratagems = [];
-        Primaries = [];
-        Secondaries = [];
-        Throwables = [];
-        Passives = [];
-        Boosters = [];
-    }
+    public ItemSet() { }
 
     public ItemSet(IEnumerable<GameItem> items)
     {
@@ -177,12 +169,12 @@ public sealed class ItemSet : IEnumerable<GameItem>
     {
         if (overrides == null) return this;
         
-        if (overrides.Stratagems.Count != 0) Stratagems = overrides.Stratagems;
-        if (overrides.Primaries.Count != 0) Primaries = overrides.Primaries;
-        if (overrides.Secondaries.Count != 0) Secondaries = overrides.Secondaries;
-        if (overrides.Throwables.Count != 0) Throwables = overrides.Throwables;
-        if (overrides.Passives.Count != 0) Passives = overrides.Passives;
-        if (overrides.Boosters.Count != 0) Boosters = overrides.Boosters;
+        if (overrides.Stratagems.Count != 0) Stratagems = [.. overrides.Stratagems];
+        if (overrides.Primaries.Count != 0) Primaries = [.. overrides.Primaries];
+        if (overrides.Secondaries.Count != 0) Secondaries = [.. overrides.Secondaries];
+        if (overrides.Throwables.Count != 0) Throwables = [.. overrides.Throwables];
+        if (overrides.Passives.Count != 0) Passives = [.. overrides.Passives];
+        if (overrides.Boosters.Count != 0) Boosters = [.. overrides.Boosters];
 
         return this;
     }
