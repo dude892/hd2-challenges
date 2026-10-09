@@ -5,8 +5,19 @@
             <div class="card bg-dark text-light border-secondary">
                 <div class="card-header d-flex justify-content-between align-items-center gap-2">
                     <h5 class="mb-0">@Title</h5>
-                    <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+                    @if (HeaderButtons is not null)
+                    {
+                        <div class="d-flex gap-2">
+                            @HeaderButtons
+                            <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+                    }
                 </div>
+
                 <div class="card-body">
                     @MainContent
                 </div>
@@ -26,6 +37,7 @@
     [Parameter] public bool Open { get; set; }
     [Parameter] public string Title { get; set; } = string.Empty;
     [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment? HeaderButtons { get; set; }
     [Parameter] public RenderFragment? MainContent { get; set; }
     [Parameter] public RenderFragment? FooterContent { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }

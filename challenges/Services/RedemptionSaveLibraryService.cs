@@ -99,12 +99,18 @@ public sealed class RedemptionSaveLibraryService(
         return state;
     }
 
-    public async Task<RedemptionState> DeleteSlotAsync(Guid slotId)
+    public async Task<(bool Deleted, RedemptionState State)> DeleteSlotAsync(Guid slotId, RedemptionState state)
     {
-        Library.DeleteSlot(slotId, () => CreateWorkingSlot("normal", catalog.GetAllWarbonds()));
-        RedemptionState state = ResolveCurrentState();
+        (bool deleted, bool createdReplacement) = Library.DeleteSlot(slotId, () => CreateWorkingSlot(state.Difficulty.Id, state.SelectedWarbonds));
+
+        if (!deleted)
+        {
+            return (false, state);
+        }
+
+        RedemptionState resultingState = createdReplacement ? ResolveCurrentState() : state;
         await PersistAsync();
-        return state;
+        return (true, resultingState);
     }
 
     public SaveExport<RedemptionStateDefinition> CreateExport(Guid slotId)
@@ -151,4 +157,6 @@ public sealed class RedemptionSaveLibraryService(
     };
 
     private static string BuildSlotName(RedemptionState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
+
+    public SaveSlot<RedemptionStateDefinition>? GetSlot(Guid slotId) => Library.GetSlot(slotId);
 }

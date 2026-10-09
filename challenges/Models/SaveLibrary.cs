@@ -66,16 +66,34 @@ public sealed class SaveLibrary<TState>
         return true;
     }
 
-    public void DeleteSlot(Guid slotId, Func<SaveSlot<TState>> replacementFactory)
+    public (bool Deleted, bool CreatedReplacement) DeleteSlot(Guid slotId, Func<SaveSlot<TState>> replacementFactory)
     {
-        bool deletingCurrentSlot = CurrentSlotId == slotId;
-        Slots.RemoveAll(slot => slot.Id == slotId);
+        bool deleted = false;
+        bool creatingReplacement = false;
 
-        if (deletingCurrentSlot || WorkingSlot is null && Slots.Count == 0)
+        if (Slots.RemoveAll(slot => slot.Id == slotId) > 0)
+        {
+            deleted = true;
+        }
+        else
+        {
+            return (deleted, creatingReplacement);
+        }
+
+        bool deletingCurrentSlot = CurrentSlotId == slotId;
+        creatingReplacement = deletingCurrentSlot || (WorkingSlot is null && Slots.Count == 0);
+        if (creatingReplacement)
         {
             WorkingSlot = replacementFactory();
             CurrentSlotId = null;
         }
+
+        return (deleted, creatingReplacement);
+    }
+
+    public SaveSlot<TState>? GetSlot(Guid slotId)
+    {
+        return Slots.FirstOrDefault(entry => entry.Id == slotId);
     }
 }
 
