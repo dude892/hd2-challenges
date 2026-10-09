@@ -380,7 +380,7 @@ else
         </MainContent>
     </Modal>
 
-    <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" OnClose="@(() => _showSaveManager = false)">
+    <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" CssClass="save-slot-modal" OnClose="@(() => _showSaveManager = false)">
         <HeaderButtons>
             <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
             <label class="btn btn-outline-light btn-sm mb-0">

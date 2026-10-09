@@ -13,6 +13,16 @@
     max-height: 95vh;
 }
 
+.app-modal.save-slot-modal {
+    anchor-name: --save-slots-modal;
+}
+
+.app-modal.save-slot-rename-modal {
+    position: fixed;
+    position-anchor: --save-slots-modal;
+    width: calc(anchor-size(width) * 0.75);
+}
+
 .app-modal > .card {
     display: flex;
     max-height: 95vh;
