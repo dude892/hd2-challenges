@@ -42,7 +42,7 @@ else
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
                         <label class="form-label text-light">Difficulty</label>
-                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChangedAsync">
+                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
                             @foreach (var difficulty in RedemptionCatalog.Difficulties)
                             {
                                 <option value="@difficulty.Id">@difficulty.DisplayName</option>
@@ -446,15 +446,14 @@ else
         _loaded = true;
     }
 
-    private async Task OnRedemptionDifficultyChangedAsync(ChangeEventArgs args)
+    private void OnRedemptionDifficultyChanged(ChangeEventArgs args)
     {
-        if (args.Value is string difficulty && RedemptionCatalog.Difficulties.Any(item => item.Id == difficulty))
+        if (args.Value is string difficulty)
         {
-            _state = RedemptionCatalog.CreateRedemptionSetupState(difficulty, _state.SelectedWarbonds);
+            RedemptionDifficulty redemptionDifficulty = RedemptionCatalog.GetDifficulty(difficulty);
+            _state = RedemptionCatalog.CreateRedemptionSetupState(redemptionDifficulty, _state.SelectedWarbonds);
             Toasts.Show($"{_state.Difficulty.DisplayName} loadout preview updated.");
         }
-
-        await Task.CompletedTask;
     }
 
     private Task BeginRedemptionMissionCompleteAsync()

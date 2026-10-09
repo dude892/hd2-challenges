@@ -2,27 +2,57 @@ using System.Text;
 
 namespace Hd2Challenges.Models;
 
-public sealed class RedemptionState(
-    RedemptionStateDefinition definition,
-    Func<string, RedemptionDifficulty> resolveDifficulty,
-    Func<int, int, Operation> resolveOperation,
-    Func<IEnumerable<string>, ItemSet> resolveItemSet,
-    Func<string, IEnumerable<Warbond>, ItemSet> resolveStarterItems,
-    Func<IEnumerable<string>, HashSet<Warbond>> resolveWarbonds
-)
+public sealed class RedemptionState
 {
-    public bool RunStarted { get; set; } = true;
-    public RedemptionDifficulty Difficulty { get; } = resolveDifficulty(definition.DifficultyId);
-    public HashSet<Warbond> SelectedWarbonds { get; set; } = resolveWarbonds(definition.SelectedWarbonds);
-    public ItemSet BannedItems { get; set; } = resolveItemSet(definition.BannedItemIds);
-    public ItemSet AcquiredItems { get; set; } = resolveItemSet(definition.AcquiredItemIds);
-    public ItemSet PendingRewardItems { get; set; } = resolveItemSet(definition.PendingRewardIds);
-    public ItemSet PendingPunishmentItems { get; set; } = resolveItemSet(definition.PendingPunishmentIds);
-    public Operation CurrentOperation { get; set; } = resolveOperation(definition.OperationIndex, definition.MissionNumber);
-    public int MissionsFailed { get; set; } = definition.MissionsFailed;
-    public bool RunCompleted { get; set; } = definition.RunCompleted;
+    private readonly Func<RedemptionDifficulty, IEnumerable<Warbond>, ItemSet> _resolveStarterItems;
+    private readonly HashSet<Warbond> _selectedWarbonds;
 
-    public ItemSet StarterItems => new(resolveStarterItems(Difficulty.Id, SelectedWarbonds));
+    public RedemptionState(
+        RedemptionDifficulty difficulty,
+        IEnumerable<Warbond> selectedWarbonds,
+        Func<RedemptionDifficulty, IEnumerable<Warbond>, ItemSet> resolveStarterItems)
+    {
+        Difficulty = difficulty;
+        _selectedWarbonds = [.. selectedWarbonds];
+        CurrentOperation = difficulty.StartOperation.Clone();
+        _resolveStarterItems = resolveStarterItems;
+        StarterItems = _resolveStarterItems(Difficulty, _selectedWarbonds);
+        RunStarted = false;
+    }
+
+    public RedemptionState(
+        RedemptionStateDefinition definition,
+        Func<string, RedemptionDifficulty> resolveDifficulty,
+        Func<int, int, Operation> resolveOperation,
+        Func<IEnumerable<string>, ItemSet> resolveItemSet,
+        Func<RedemptionDifficulty, IEnumerable<Warbond>, ItemSet> resolveStarterItems,
+        Func<IEnumerable<string>, HashSet<Warbond>> resolveWarbonds)
+    {
+        Difficulty = resolveDifficulty(definition.DifficultyId);
+        _selectedWarbonds = resolveWarbonds(definition.SelectedWarbonds);
+        BannedItems = resolveItemSet(definition.BannedItemIds);
+        AcquiredItems = resolveItemSet(definition.AcquiredItemIds);
+        PendingRewardItems = resolveItemSet(definition.PendingRewardIds);
+        PendingPunishmentItems = resolveItemSet(definition.PendingPunishmentIds);
+        CurrentOperation = resolveOperation(definition.OperationIndex, definition.MissionNumber);
+        MissionsFailed = definition.MissionsFailed;
+        RunCompleted = definition.RunCompleted;
+        _resolveStarterItems = resolveStarterItems;
+        StarterItems = _resolveStarterItems(Difficulty, _selectedWarbonds);
+    }
+
+    public bool RunStarted { get; set; } = true;
+    public RedemptionDifficulty Difficulty { get; }
+    public IReadOnlySet<Warbond> SelectedWarbonds => _selectedWarbonds;
+    public ItemSet BannedItems { get; } = new();
+    public ItemSet AcquiredItems { get; } = new();
+    public ItemSet PendingRewardItems { get; set; } = new();
+    public ItemSet PendingPunishmentItems { get; set; } = new();
+    public Operation CurrentOperation { get; set; }
+    public int MissionsFailed { get; set; }
+    public bool RunCompleted { get; set; }
+
+    public ItemSet StarterItems { get; private set; }
     public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
     public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
 
@@ -33,16 +63,16 @@ public sealed class RedemptionState(
             return false;
         }
 
-        if (isSelected)
+        bool changed = isSelected
+            ? _selectedWarbonds.Add(warbond)
+            : _selectedWarbonds.Remove(warbond);
+
+        if (changed)
         {
-            SelectedWarbonds.Add(warbond);
-        }
-        else
-        {
-            SelectedWarbonds.Remove(warbond);
+            StarterItems = _resolveStarterItems(Difficulty, _selectedWarbonds);
         }
 
-        return true;
+        return changed;
     }
 
     public string SummaryText
