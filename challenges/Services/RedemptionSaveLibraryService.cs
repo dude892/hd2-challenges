@@ -20,7 +20,7 @@ public sealed class RedemptionSaveLibraryService(
 
         if (Library.CurrentSlotId is null || Library.CurrentSlot is null && Library.Slots.Count == 0)
         {
-            Library.WorkingSlot = CreateWorkingSlot("normal", catalog.GetAllWarbonds());
+            Library.WorkingSlot = CreateWorkingSlot(redemptionCatalog.GetDifficulty("normal"), catalog.GetAllWarbonds());
         }
 
         return ResolveCurrentState();
@@ -55,7 +55,7 @@ public sealed class RedemptionSaveLibraryService(
 
     public async Task<RedemptionState> RestartAsync(RedemptionState state)
     {
-        RedemptionState restartedState = redemptionCatalog.CreateRedemptionSetupState(state.Difficulty.Id, state.SelectedWarbonds);
+        RedemptionState restartedState = redemptionCatalog.CreateRedemptionSetupState(state.Difficulty, state.SelectedWarbonds);
         Library.CurrentSlotId = null;
         Library.WorkingSlot = CreateWorkingSlot(restartedState);
         await PersistAsync();
@@ -101,7 +101,7 @@ public sealed class RedemptionSaveLibraryService(
 
     public async Task<(bool Deleted, RedemptionState State)> DeleteSlotAsync(Guid slotId, RedemptionState state)
     {
-        (bool deleted, bool createdReplacement) = Library.DeleteSlot(slotId, () => CreateWorkingSlot(state.Difficulty.Id, state.SelectedWarbonds));
+        (bool deleted, bool createdReplacement) = Library.DeleteSlot(slotId, () => CreateWorkingSlot(state.Difficulty, state.SelectedWarbonds));
 
         if (!deleted)
         {
@@ -135,7 +135,7 @@ public sealed class RedemptionSaveLibraryService(
 
     private RedemptionState ResolveCurrentState()
     {
-        SaveSlot<RedemptionStateDefinition> slot = Library.CurrentSlot ?? Library.Slots.FirstOrDefault() ?? CreateWorkingSlot("normal", catalog.GetAllWarbonds());
+        SaveSlot<RedemptionStateDefinition> slot = Library.CurrentSlot ?? Library.Slots.FirstOrDefault() ?? CreateWorkingSlot(redemptionCatalog.GetDifficulty("normal"), catalog.GetAllWarbonds());
         if (ReferenceEquals(slot, Library.WorkingSlot))
         {
             RedemptionState setupState = redemptionCatalog.CreateRedemptionState(slot.State);
@@ -147,7 +147,7 @@ public sealed class RedemptionSaveLibraryService(
         return redemptionCatalog.CreateRedemptionState(slot.State);
     }
 
-    private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(string difficulty, IEnumerable<Warbond> selectedWarbonds) =>
+    private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionDifficulty difficulty, IEnumerable<Warbond> selectedWarbonds) =>
         CreateWorkingSlot(redemptionCatalog.CreateRedemptionSetupState(difficulty, selectedWarbonds));
 
     private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionState state) => new()

@@ -1,4 +1,3 @@
-using System.Data;
 using System.Net.Http.Json;
 using Hd2Challenges.Models;
 
@@ -8,9 +7,9 @@ public sealed class RedemptionCatalogService(HttpClient httpClient, CatalogServi
 {
     private bool _loaded;
     private CatalogService Catalog { get; } = catalog;
+    private ItemSet StarterLoadout { get; set; } = new();
 
     public IReadOnlyList<RedemptionDifficulty> Difficulties { get; private set; } = [];
-    public ItemSet StarterLoadout { get; private set; } = new();
 
     public async Task EnsureLoadedAsync()
     {
@@ -21,9 +20,12 @@ public sealed class RedemptionCatalogService(HttpClient httpClient, CatalogServi
 
         await Catalog.EnsureLoadedAsync();
 
-        StarterLoadout = ResolveLoadout(await httpClient.GetFromJsonAsync<RedemptionStarterLoadoutDefinition>("data/redemption-starter-loadout.json") ?? new());
+        var starterLoadoutDefinition = await httpClient.GetFromJsonAsync<RedemptionStarterLoadoutDefinition>("data/redemption-starter-loadout.json")
+            ?? throw new InvalidOperationException("Required catalog data 'data/redemption-starter-loadout.json' deserialized to null.");
+        StarterLoadout = Catalog.GetItemSet(starterLoadoutDefinition.GetItemNames());
 
-        var difficultyDefinitions = await httpClient.GetFromJsonAsync<List<RedemptionDifficultyDefinition>>("data/redemption-difficulties.json") ?? [];
+        var difficultyDefinitions = await httpClient.GetFromJsonAsync<List<RedemptionDifficultyDefinition>>("data/redemption-difficulties.json")
+            ?? throw new InvalidOperationException("Required catalog data 'data/redemption-difficulties.json' deserialized to null.");
         Difficulties = [.. difficultyDefinitions.Select(definition => new RedemptionDifficulty(definition, Catalog.GetItemSet, Catalog.GetOperation))];
 
         _loaded = true;
@@ -32,38 +34,16 @@ public sealed class RedemptionCatalogService(HttpClient httpClient, CatalogServi
     public RedemptionState CreateRedemptionState(RedemptionStateDefinition definition) => 
         new (definition, GetDifficulty, Catalog.GetOperation, Catalog.GetItemSet, GetStarterItems, Catalog.GetWarbonds);
 
-    public RedemptionState CreateRedemptionState(string difficulty = "normal") =>
-        CreateRedemptionState(new RedemptionStateDefinition { DifficultyId = difficulty });
-
-    public RedemptionState CreateRedemptionState(string difficulty, IEnumerable<Warbond> selectedWarbonds) =>
-        CreateRedemptionState(new RedemptionStateDefinition { DifficultyId = difficulty, SelectedWarbonds = [.. selectedWarbonds.Select(item => item.Id)] });
-
-    public RedemptionState CreateRedemptionSetupState(string difficulty, IEnumerable<Warbond> selectedWarbonds)
-    {
-        RedemptionState state = CreateRedemptionState(difficulty, selectedWarbonds);
-        state.RunStarted = false;
-        return state;
-    }
+    public RedemptionState CreateRedemptionSetupState(RedemptionDifficulty difficulty, IEnumerable<Warbond> selectedWarbonds) =>
+        new(difficulty, selectedWarbonds, GetStarterItems);
 
     public RedemptionDifficulty GetDifficulty(string id) => Difficulties.First(option => option.Id == id);
 
-    public ItemSet GetStarterItems(string difficultyId, IEnumerable<Warbond> selectedWarbonds)
-    {
-        ItemSet starterSet = StarterLoadout.Clone();
-        RedemptionDifficulty difficulty = GetDifficulty(difficultyId);
-
-        starterSet.ApplyOverrides(difficulty.LoadoutOverrides).ApplyAdditions(difficulty.LoadoutAdditions);
-
-        return Catalog.FilterItemsByWarbonds(starterSet, selectedWarbonds);
-    }
-
-    private ItemSet ResolveLoadout(RedemptionStarterLoadoutDefinition definition) => new()
-    {
-        Stratagems = Catalog.GetItemSet(definition.Stratagems).Stratagems,
-        Primaries = Catalog.GetItemSet(definition.Primaries).Primaries,
-        Secondaries = Catalog.GetItemSet(definition.Secondaries).Secondaries,
-        Throwables = Catalog.GetItemSet(definition.Throwables).Throwables,
-        Passives = Catalog.GetItemSet(definition.ArmorPassives).Passives,
-        Boosters = Catalog.GetItemSet(definition.Boosters).Boosters
-    };
+    public ItemSet GetStarterItems(RedemptionDifficulty difficulty, IEnumerable<Warbond> selectedWarbonds) =>
+        Catalog.FilterItemsByWarbonds(
+            StarterLoadout.Clone()
+                .ApplyOverrides(difficulty.LoadoutOverrides)
+                .ApplyAdditions(difficulty.LoadoutAdditions),
+            selectedWarbonds
+        );
 }

@@ -27,6 +27,12 @@
     outline-offset: 2px;
 }
 
+.difficulty-icon {
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+}
+
 .run-item-grid {
     --run-item-card-width: 140px;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--run-item-card-width)), var(--run-item-card-width)));

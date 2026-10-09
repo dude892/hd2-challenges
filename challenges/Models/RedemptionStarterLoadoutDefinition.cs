@@ -8,4 +8,12 @@ public sealed class RedemptionStarterLoadoutDefinition
     public List<string> Throwables { get; set; } = [];
     public List<string> ArmorPassives { get; set; } = [];
     public List<string> Boosters { get; set; } = [];
+
+    public IEnumerable<string> GetItemNames() =>
+        Stratagems
+            .Concat(Primaries)
+            .Concat(Secondaries)
+            .Concat(Throwables)
+            .Concat(ArmorPassives)
+            .Concat(Boosters);
 }
