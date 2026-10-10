@@ -7,6 +7,7 @@ public sealed class RedemptionStateDefinition
     public int MissionNumber { get; set; } = 0;
     public int MissionsFailed { get; set; } = 0;
     public bool RunCompleted { get; set; }
+    public List<MissionProgressEntry> MissionHistory { get; set; } = [];
     public List<string> SelectedWarbonds { get; set; } = [];
     public List<string> AcquiredItemIds { get; set; } = [];
     public List<string> BannedItemIds { get; set; } = [];
