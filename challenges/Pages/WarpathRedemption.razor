@@ -140,7 +140,6 @@ else
                                     aria-expanded="false" aria-controls="equipment-collapse">
                                 <span class="d-flex align-items-baseline gap-3">
                                     <span>Equipment</span>
-                                    <span class="text-secondary small">@_state.AcquiredItems.Count() item(s)</span>
                                 </span>
                             </button>
                         </h4>
@@ -247,7 +246,6 @@ else
                                     @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
                                 <span class="booster-accordion-label">
                                     <span>Boosters</span>
-                                    <span class="text-secondary small">@_state.AcquiredItems.Boosters.Count()</span>
                                 </span>
                             </button>
                             <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
