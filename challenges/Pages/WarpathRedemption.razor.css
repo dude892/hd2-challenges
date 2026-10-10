@@ -42,8 +42,44 @@
     grid-template-columns: repeat(var(--equipment-card-count), var(--run-item-card-width));
 }
 
+.stratagems-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    gap: 1rem;
+    transition: grid-template-columns 0.25s ease, gap 0.25s ease;
+}
+
+.stratagems-layout.boosters-collapsed {
+    grid-template-columns: minmax(0, 1fr) 0fr;
+    gap: 0;
+}
+
+.boosters-panel {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    transition: opacity 0.2s ease;
+}
+
+.boosters-collapsed .boosters-panel {
+    opacity: 0;
+    pointer-events: none;
+}
+
 @media (max-width: 575.98px) {
     .equipment-content-item-grid {
         grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--run-item-card-width)), var(--run-item-card-width)));
+    }
+}
+
+@media (max-width: 991.98px) {
+    .stratagems-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+    }
+
+    .stratagems-layout.boosters-collapsed {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 0fr;
     }
 }

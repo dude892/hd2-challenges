@@ -220,26 +220,33 @@ else
                         </div>
                     </div>
                 </div>
-                <div class="row g-3 mt-1">
-                    <div class="col-12 col-lg-9">
-                        <div class="section-card rounded p-3 h-100">
-                            <h5 class="text-light">Stratagems</h5>
-                            <div class="item-grid run-item-grid">
-                                @if (!_state.AcquiredItems.Stratagems.Any())
-                                {
-                                    <div class="text-secondary small">No stratagems acquired.</div>
-                                }
-                                else
-                                {
-                                    foreach (GameItem item in _state.AcquiredItems.Stratagems)
-                                    {
-                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                    }
-                                }
-                            </div>
+                <div class="stratagems-layout mt-3 @(_showBoosters ? string.Empty : "boosters-collapsed")">
+                    <section class="section-card rounded p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-light mb-0">Stratagems</h5>
+                            <button class="btn btn-sm btn-outline-light"
+                                    type="button"
+                                    aria-controls="boosters-panel"
+                                    aria-expanded="@_showBoosters"
+                                    @onclick="() => _showBoosters = !_showBoosters">
+                                @(_showBoosters ? "Hide Boosters" : "Show Boosters")
+                            </button>
                         </div>
-                    </div>
-                    <div class="col-12 col-lg-3">
+                        <div class="item-grid run-item-grid">
+                            @if (!_state.AcquiredItems.Stratagems.Any())
+                            {
+                                <div class="text-secondary small">No stratagems acquired.</div>
+                            }
+                            else
+                            {
+                                foreach (GameItem item in _state.AcquiredItems.Stratagems)
+                                {
+                                    <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                }
+                            }
+                        </div>
+                    </section>
+                    <div class="boosters-panel" id="boosters-panel" aria-hidden="@(!_showBoosters)">
                         <div class="section-card rounded p-3 h-100">
                             <h5 class="text-light">Boosters</h5>
                             <div class="item-grid run-item-grid">
@@ -437,6 +444,7 @@ else
     private bool _showRunSettings;
     private bool _showSaveManager;
     private bool _showBannedItemsModal;
+    private bool _showBoosters = true;
     private SaveSlot<RedemptionStateDefinition>? _slotToDelete;
 
     protected override async Task OnInitializedAsync()
