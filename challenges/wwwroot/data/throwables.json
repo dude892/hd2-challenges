@@ -166,5 +166,21 @@
     "id": "tm01luremine",
     "imageURL": "tm01luremine.webp",
     "antitank": false
+  },
+  {
+    "displayName": "G-8 Immolation",
+    "tags": ["Explosive", "Fire"],
+    "warbond": "ironcladDemocracy",
+    "id": "g8immolation",
+    "imageURL": "g8immolation.webp",
+    "antitank": false
+  },
+  {
+    "displayName": "G-60 Anti-Tank Seeker",
+    "tags": ["Anti-Tank", "Explosive"],
+    "warbond": "ironcladDemocracy",
+    "id": "g60antitankseeker",
+    "imageURL": "g60antitankseeker.webp",
+    "antitank": true
   }
 ]
