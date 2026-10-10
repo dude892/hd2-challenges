@@ -240,20 +240,35 @@ else
                         </div>
                     </div>
                     <div class="col-12 col-lg-3">
-                        <div class="section-card rounded p-3 h-100">
-                            <h5 class="text-light">Boosters</h5>
-                            <div class="item-grid run-item-grid">
-                                @if (!_state.AcquiredItems.Boosters.Any())
-                                {
-                                    <div class="text-secondary small">No boosters acquired.</div>
-                                }
-                                else
-                                {
-                                    foreach (GameItem item in _state.AcquiredItems.Boosters)
-                                    {
-                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                    }
-                                }
+                        <div class="accordion" data-bs-theme="dark">
+                            <div class="accordion-item">
+                                <h4 class="accordion-header">
+                                    <button class="@($"accordion-button{(_showBoosterAccordion ? string.Empty : " collapsed")}")" type="button"
+                                            aria-expanded="@(_showBoosterAccordion ? "true" : "false")" aria-controls="boosters-collapse"
+                                            @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
+                                        <span class="d-flex align-items-baseline gap-3">
+                                            <span>Boosters</span>
+                                            <span class="text-secondary small">@_state.AcquiredItems.Boosters.Count() item(s)</span>
+                                        </span>
+                                    </button>
+                                </h4>
+                                <div id="boosters-collapse" class="@($"accordion-collapse collapse{(_showBoosterAccordion ? " show" : string.Empty)}")">
+                                    <div class="accordion-body">
+                                        <div class="item-grid run-item-grid">
+                                            @if (!_state.AcquiredItems.Boosters.Any())
+                                            {
+                                                <div class="text-secondary small">No boosters acquired.</div>
+                                            }
+                                            else
+                                            {
+                                                foreach (GameItem item in _state.AcquiredItems.Boosters)
+                                                {
+                                                    <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -437,12 +452,14 @@ else
     private bool _showRunSettings;
     private bool _showSaveManager;
     private bool _showBannedItemsModal;
+    private bool _showBoosterAccordion;
     private SaveSlot<RedemptionStateDefinition>? _slotToDelete;
 
     protected override async Task OnInitializedAsync()
     {
         await RedemptionCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
+        _showBoosterAccordion = _state.AcquiredItems.Boosters.Any();
         _loaded = true;
     }
 
@@ -521,8 +538,14 @@ else
 
     private async Task ClaimRedemptionRewardAsync(string id)
     {
+        int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
         if (RewardService.ClaimReward(_state, id))
         {
+            if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
+            {
+                _showBoosterAccordion = true;
+            }
+
             MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await SaveLibrary.PersistAsync(_state);
