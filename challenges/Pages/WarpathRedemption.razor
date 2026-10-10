@@ -227,7 +227,7 @@ else
                             <button class="btn btn-sm btn-outline-light"
                                     type="button"
                                     aria-controls="boosters-panel"
-                                    aria-expanded="@_showBoosters"
+                                    aria-expanded="@(_showBoosters ? "true" : "false")"
                                     @onclick="() => _showBoosters = !_showBoosters">
                                 @(_showBoosters ? "Hide Boosters" : "Show Boosters")
                             </button>
@@ -246,7 +246,7 @@ else
                             }
                         </div>
                     </section>
-                    <div class="boosters-panel" id="boosters-panel" aria-hidden="@(!_showBoosters)">
+                    <div class="boosters-panel" id="boosters-panel" aria-hidden="@(_showBoosters ? "false" : "true")">
                         <div class="section-card rounded p-3 h-100">
                             <h5 class="text-light">Boosters</h5>
                             <div class="item-grid run-item-grid">
