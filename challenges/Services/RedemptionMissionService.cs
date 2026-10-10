@@ -20,8 +20,22 @@ public sealed class RedemptionMissionService(CatalogService catalogService)
 
     public void ApplyMissionFailure(RedemptionState state)
     {
+        state.MissionHistory.Add(new(
+            state.CurrentOperation.DifficultyIndex,
+            state.CurrentOperation.MissionNumber,
+            false,
+            0));
         state.MissionsFailed++;
         state.CurrentOperation.MissionNumber = 1;
+    }
+
+    public void RecordMissionSuccess(RedemptionState state, int stars)
+    {
+        state.MissionHistory.Add(new(
+            state.CurrentOperation.DifficultyIndex,
+            state.CurrentOperation.MissionNumber,
+            true,
+            Math.Clamp(stars, 0, state.CurrentOperation.MaxStars)));
     }
 
     public bool IsFinalMission(RedemptionState state)
