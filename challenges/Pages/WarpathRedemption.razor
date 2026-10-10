@@ -328,6 +328,7 @@ else
                                 <th scope="col">Mission</th>
                                 <th scope="col">Result</th>
                                 <th scope="col">Stars</th>
+                                <th scope="col">Selected Item</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -338,6 +339,7 @@ else
                                     <td>@entry.MissionNumber</td>
                                     <td>@(entry.Succeeded ? "Success" : "Failure")</td>
                                     <td>@(entry.Succeeded ? new string('★', entry.Stars) : "—")</td>
+                                    <td>@(entry.SelectedItemId is { } itemId ? Catalog.GetItemSet([itemId]).FirstOrDefault()?.DisplayName ?? "—" : "—")</td>
                                 </tr>
                             }
                         </tbody>
@@ -587,6 +589,7 @@ else
     {
         if (RewardService.ClaimReward(_state, id))
         {
+            MissionService.RecordMissionRewardSelection(_state, id);
             MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await SaveLibrary.PersistAsync(_state);
@@ -607,7 +610,7 @@ else
     {
         if (RewardService.ClaimPunishment(_state, id))
         {
-            MissionService.ApplyMissionFailure(_state);
+            MissionService.ApplyMissionFailure(_state, id);
             _showPunishmentModal = false;
             await SaveLibrary.PersistAsync(_state);
         }

@@ -1,3 +1,3 @@
 namespace Hd2Challenges.Models;
 
-public sealed record MissionProgressEntry(int OperationIndex, int MissionNumber, bool Succeeded, int Stars);
+public sealed record MissionProgressEntry(int OperationIndex, int MissionNumber, bool Succeeded, int Stars, string? SelectedItemId = null);
