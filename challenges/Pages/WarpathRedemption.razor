@@ -250,27 +250,27 @@ else
                                     <span class="text-secondary small">@_state.AcquiredItems.Boosters.Count()</span>
                                 </span>
                             </button>
-                            <div id="boosters-collapse" class="booster-accordion-content">
+                            <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
                                 <div class="booster-accordion-content-inner p-3">
                                     <div class="item-grid run-item-grid">
-                                    @if (_state.AcquiredItems.Boosters.Any())
+                                        @if (_state.AcquiredItems.Boosters.Any())
                                         {
-                                        @foreach (GameItem item in _state.AcquiredItems.Boosters)
-                                        {
-                                            <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                            @foreach (GameItem item in _state.AcquiredItems.Boosters)
+                                            {
+                                                <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        <div class="text-secondary small">No boosters acquired.</div>
-                                    }
+                                        else
+                                        {
+                                            <div class="text-secondary small">No boosters acquired.</div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     }
 
