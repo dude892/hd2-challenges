@@ -244,6 +244,7 @@ else
                                     aria-label="Toggle acquired boosters"
                                     aria-expanded="@(_showBoosterAccordion ? "true" : "false")" aria-controls="boosters-collapse"
                                     @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
+                                <span class="booster-accordion-arrow" aria-hidden="true">@(_showBoosterAccordion ? "←" : "→")</span>
                                 <span class="booster-accordion-label">
                                     <span>Boosters</span>
                                 </span>
