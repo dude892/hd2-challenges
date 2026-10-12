@@ -15,7 +15,8 @@
 }
 
 .item-grid {
+    --item-card-width: 140px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 140px));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--item-card-width)), var(--item-card-width)));
     gap: 0.75rem;
 }
