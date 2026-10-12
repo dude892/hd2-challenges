@@ -1,3 +1,13 @@
 {
-    "dotnet.defaultSolution": "hd2-challenges.slnx"
+    "dotnet.defaultSolution": "hd2-challenges.slnx",
+    "chat.tools.terminal.autoApprove": {
+        "/^dotnet run --project \\.\\\\challenges\\\\hd2-challenges\\.csproj$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet run --project \\.\\\\challenges\\\\hd2-challenges\\.csproj -c Release --no-build$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
 }

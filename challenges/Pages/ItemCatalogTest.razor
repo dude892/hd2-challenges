@@ -1,0 +1,61 @@
+@page "/item-catalog-test"
+@inject CatalogService Catalog
+
+<PageTitle>Item Catalog Test</PageTitle>
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+    <div>
+        <h1 class="text-light mb-1">Item Catalog Test</h1>
+        <p class="text-secondary mb-0">All catalog items grouped by data file.</p>
+    </div>
+    @if (_loaded)
+    {
+        <span class="text-secondary">@_items.Count items</span>
+    }
+</div>
+
+@if (!_loaded)
+{
+    <p class="text-light">Loading item catalog...</p>
+}
+else
+{
+    <div class="accordion" id="item-catalog-accordion" data-bs-theme="dark">
+        @foreach (var (label, items) in _items.CategoryGroups)
+        {
+            var collapseId = $"item-category-{label.Replace(" ", "-").ToLowerInvariant()}";
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed item-category-accordion-button" type="button"
+                            data-bs-toggle="collapse" data-bs-target="@( $"#{collapseId}" )"
+                            aria-expanded="false" aria-controls="@collapseId">
+                        <span>@label</span>
+                        <span class="item-category-accordion-count text-secondary">@items.Count() items</span>
+                    </button>
+                </h2>
+                <div id="@collapseId" class="accordion-collapse collapse" data-bs-parent="#item-catalog-accordion">
+                    <div class="accordion-body">
+                        <div class="item-grid">
+                            @foreach (var item in items)
+                            {
+                                <ItemCard Item="item" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private ItemSet _items = new();
+    private bool _loaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Catalog.EnsureLoadedAsync();
+        _items = Catalog.GetAllItems();
+        _loaded = true;
+    }
+}
