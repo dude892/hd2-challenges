@@ -238,15 +238,17 @@ else
                             </div>
                         </div>
                     </div>
-                    <div class="@($"col-12 col-lg-auto accordion booster-accordion{(_showBoosterAccordion ? " expanded" : string.Empty)}")" data-bs-theme="dark">
-                        <div class="section-card accordion-item rounded d-flex h-100 booster-accordion-container">
-                            <button class="accordion-button accordion-header booster-accordion-toggle" type="button"
+                    <div class="@($"col-12 col-lg-auto booster-accordion{(_showBoosterAccordion ? " expanded" : string.Empty)}")" data-bs-theme="dark">
+                        <div class="section-card rounded d-flex h-100 booster-accordion-container">
+                            <button class="booster-accordion-toggle" type="button"
                                     aria-label="Toggle acquired boosters"
                                     aria-expanded="@(_showBoosterAccordion ? "true" : "false")" aria-controls="boosters-collapse"
                                     @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
-                                <span class="@(!_showBoosterAccordion ? "collapsed " : "")booster-accordion-label">
+                                <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
+                                <span class="booster-accordion-label">
                                     <span class="text-light">Boosters</span>
                                 </span>
+                                <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                             </button>
                             <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
                                 <div class="booster-accordion-content-inner p-3">

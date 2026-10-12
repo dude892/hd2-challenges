@@ -47,7 +47,7 @@
     flex: 0 0 2.75rem;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     gap: 0.75rem;
     padding: 0.75rem;
     border: 0;
@@ -56,12 +56,8 @@
     color: var(--bs-light);
 }
 
-.booster-accordion-toggle::after {
-    transform: rotate(90deg);
-}
-
-.booster-accordion.expanded .booster-accordion-toggle::after {
-    transform: rotate(-90deg);
+.booster-accordion-svg {
+    filter: invert(84%) sepia(41%) saturate(7278%) hue-rotate(191deg) brightness(102%) contrast(99%);
 }
 
 .booster-accordion-toggle:focus-visible {
