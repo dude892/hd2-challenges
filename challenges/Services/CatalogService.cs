@@ -53,6 +53,7 @@ public sealed class CatalogService(HttpClient httpClient)
 
     public HashSet<Warbond> GetAllWarbonds() => [.. Warbonds];
     public HashSet<Warbond> GetWarbonds(IEnumerable<string> ids) => [.. Warbonds.Where(w => ids.Contains(w.Id)).Concat(Warbonds.Where(item => item.Id == "helldiversMobilize"))];
+    public ItemSet GetAllItems() => AllItemsSet.Clone();
 
     public ItemSet GetItemSet(IEnumerable<string> ids) => new()
     {

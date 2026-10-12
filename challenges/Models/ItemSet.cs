@@ -46,12 +46,12 @@ public sealed class ItemSet : IEnumerable<GameItem>
 
     public IEnumerable<(string Label, IEnumerable<GameItem> Items)> CategoryGroups =>
     [
-        ("Stratagems", Stratagems.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
-        ("Primaries", Primaries.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
-        ("Secondaries", Secondaries.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
-        ("Throwables", Throwables.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
-        ("Armor Passives", Passives.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase)),
-        ("Boosters", Boosters.OrderBy(display => display.DisplayName, StringComparer.OrdinalIgnoreCase))
+        ("Stratagems", Stratagems),
+        ("Primaries", Primaries),
+        ("Secondaries", Secondaries),
+        ("Throwables", Throwables),
+        ("Armor Passives", Passives),
+        ("Boosters", Boosters)
     ];
 
     public HashSet<GameItem> AllItems => [.. Categories.SelectMany(category => category)];
