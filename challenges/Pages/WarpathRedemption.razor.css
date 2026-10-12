@@ -56,9 +56,12 @@
     color: var(--bs-light);
 }
 
-.booster-accordion-arrow {
-    font-size: 1.25rem;
-    line-height: 1;
+.booster-accordion-toggle::after {
+    transform: rotate(90deg);
+}
+
+.booster-accordion.expanded .booster-accordion-toggle::after {
+    transform: rotate(-90deg);
 }
 
 .booster-accordion-toggle:focus-visible {
