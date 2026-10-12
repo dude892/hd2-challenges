@@ -106,5 +106,17 @@
     "warbond": "helldiversMobilize",
     "id": "vitalityenhancement",
     "svg": "Vitality.svg"
+  },
+  {
+    "displayName": "Surplus EAT Allocation",
+    "warbond": "ironcladDemocracy",
+    "id": "surpluseatallocation",
+    "svg": "SurplusEAT.svg"
+  },
+  {
+    "displayName": "Integrated Extinguishers",
+    "warbond": "freedomsFlame",
+    "id": "integratedextinguishers",
+    "svg": "IntegratedExtinguishers.svg"
   }
 ]

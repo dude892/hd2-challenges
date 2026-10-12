@@ -414,5 +414,21 @@
     "id": "variable",
     "imageURL": "variable.webp",
     "antitank": false
+  },
+  {
+    "displayName": "AR-11 Arbitrator",
+    "tags": ["AssaultRifle"],
+    "warbond": "ironcladDemocracy",
+    "id": "ar11arbitrator",
+    "imageURL": "ar11arbitrator.webp",
+    "antitank": false
+  },
+  {
+    "displayName": "GL-15 Evictor",
+    "tags": ["Shotgun", "Explosive"],
+    "warbond": "ironcladDemocracy",
+    "id": "gl15evictor",
+    "imageURL": "gl15evictor.webp",
+    "antitank": false
   }
 ]
