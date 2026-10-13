@@ -248,6 +248,22 @@
     "antitank": false
   },
   {
+    "displayName": "Meltagun",
+    "tags": ["Weapon", "Anti-Tank"],
+    "warbond": "warhammer40k",
+    "id": "meltagun",
+    "svg": "meltagun.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "De-Escalator",
+    "tags": ["Weapon", "Arc"],
+    "warbond": "forceOfLaw",
+    "id": "gl52deescalator",
+    "svg": "WeaponGrenadelaunchertactical.svg",
+    "antitank": true
+  },
+  {
     "displayName": "Sterilizer",
     "tags": ["Weapon", "Gas"],
     "warbond": "chemicalAgents",
@@ -504,6 +520,14 @@
     "antitank": false
   },
   {
+    "displayName": "Supply FRV",
+    "tags": ["Vehicle", "Movement"],
+    "warbond": "none",
+    "id": "supplyfrv",
+    "svg": "VehicleFrv.svg",
+    "antitank": false
+  },
+  {
     "displayName": "Gunner FRV",
     "tags": ["Vehicle", "Movement"],
     "warbond": "none",
@@ -701,31 +725,6 @@
     "warbond": "none",
     "id": "incendiarymines",
     "svg": "EmplacementsMinedeployerIncendiary.svg",
-    "antitank": false
-  },
-
-  {
-    "displayName": "De-Escalator",
-    "tags": ["Weapon", "Arc"],
-    "warbond": "forceOfLaw",
-    "id": "gl52deescalator",
-    "svg": "WeaponGrenadelaunchertactical.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Meltagun",
-    "tags": ["Weapon", "Anti-Tank"],
-    "warbond": "warhammer40k",
-    "id": "meltagun",
-    "svg": "meltagun.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Supply FRV",
-    "tags": ["Vehicle", "Movement"],
-    "warbond": "none",
-    "id": "supplyfrv",
-    "svg": "VehicleFrv.svg",
     "antitank": false
   }
 ]
