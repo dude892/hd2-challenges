@@ -9,6 +9,7 @@ on:
     paths:
       - challenges/**
       - xaml2Svg/**
+      - xaml2Svg.tests/**
       - tests/**
     branches:
       - main
@@ -43,6 +44,9 @@ jobs:
 
       - name: Run unit and component tests
         run: dotnet test tests/hd2-challenges.tests.csproj -c Release
+
+      - name: Run XAML-to-SVG tests
+        run: dotnet test xaml2Svg.tests/hd2Xaml2Svg.tests.csproj -c Release
 
       - name: Build browser tests
         run: dotnet build tests/e2e/hd2-challenges.e2e.tests.csproj -c Release

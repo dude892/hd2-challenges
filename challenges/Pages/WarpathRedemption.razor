@@ -26,11 +26,11 @@ else
             </h1>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
+            <button class="btn btn-outline-light" @onclick="() => _showSaveManager = true">Save Slots</button>
             @if (_state.RunStarted)
             {
-                <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-outline-light" @onclick="() => _showRunSettings = true">Run Settings</button>
+                <button class="btn btn-outline-primary" @onclick="DownloadSummaryAsync">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
@@ -38,412 +38,53 @@ else
 
     @if (!_state.RunStarted)
     {
-        <div class="row g-4">
-            <div class="col-xl-4 d-grid row-gap-3">
-                <div class="row">
-                    <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
-                </div>
-
-                <div class="row section-card rounded p-3">
-                    <h4 class="text-light">Run Settings</h4>
-                    <div class="mb-3">
-                        <label class="form-label text-light">Difficulty</label>
-                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
-                            @foreach (var difficulty in RedemptionCatalog.Difficulties)
-                            {
-                                <option value="@difficulty.Id">@difficulty.DisplayName</option>
-                            }
-                        </select>
-                    </div>
-                    <p class="text-secondary mb-0">Configure your campaign before committing to the first mission.</p>
-                </div>
-
-                <div class="row section-card rounded p-3">
-                    <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3">
-                        @foreach (var warbond in Catalog.GetAllWarbonds())
-                        {
-                            var isSelected = _state.SelectedWarbonds.Contains(warbond);
-                            <WarbondCard
-                                Warbond="warbond"
-                                IsSelected="isSelected"
-                                OnClick="@(() => _state.SetWarbondSelected(warbond, !isSelected))" />
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-8">
-                <div class="section-card rounded p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="text-light mb-0">Starting Loadout Preview</h4>
-                        <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
-                    </div>
-                    <div class="item-grid mt-3">
-                        @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
-                        {
-                            <ItemCard Item="item" Badge="Starter" />
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+        <RedemptionSetup State="_state"
+                         Catalog="Catalog"
+                         RedemptionCatalog="RedemptionCatalog"
+                         OnBeginRun="BeginRunAsync"
+                         OnDifficultyChanged="OnRedemptionDifficultyChanged"
+                         OnWarbondToggle="ToggleWarbondSelection" />
     }
     else
     {
-        <div class="row g-4">
-            <div class="col-12">
-                <div class="row g-3 mb-3 align-items-center">
-                    <div class="col-md-2">
-                        <div class="card bg-dark border-secondary h-100">
-                            <div class="card-body">
-                                <small class="text-secondary">Difficulty</small>
-                                <div class="fs-5 text-light">@_state.Difficulty.DisplayName</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card bg-dark border-secondary h-100">
-                            <div class="card-body">
-                                <small class="text-secondary">Operation</small>
-                                <div class="d-flex align-items-center gap-2">
-                                    <img class="difficulty-icon" src="@($"svgs/difficulty/{_state.CurrentOperation.DifficultyIndex}.svg")" alt="" />
-                                    <div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card bg-dark border-secondary h-100">
-                            <div class="card-body">
-                                <small class="text-secondary">Mission</small>
-                                <div class="fs-5 text-light">@_state.CurrentOperation.MissionLabel</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card bg-dark border-secondary h-100">
-                            <div class="card-body">
-                                <small class="text-secondary">Failures</small>
-                                <div class="fs-5 text-light">@_state.MissionsFailed</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
-                            <button class="btn btn-primary btn-lg btn-block" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion mt-3" data-bs-theme="dark">
-                    <div class="accordion-item">
-                        <h4 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
-                                    aria-expanded="false" aria-controls="equipment-collapse">
-                                <span class="d-flex align-items-baseline gap-3">
-                                    <span>Equipment</span>
-                                </span>
-                            </button>
-                        </h4>
-                        <div id="equipment-collapse" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                <div class="d-flex flex-column gap-5">
-                                    <div class="row gx-5 gy-3 align-items-start">
-                                        <div class="col-12 col-sm-auto">
-                                            <h5 class="text-light">Primaries</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
-                                                @if (!_state.AcquiredItems.Primaries.Any())
-                                                {
-                                                    <div class="text-secondary small">No primary items acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries))
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm">
-                                            <h5 class="text-light">Secondaries</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
-                                                @if (!_state.AcquiredItems.Secondaries.Any())
-                                                {
-                                                    <div class="text-secondary small">No secondary items acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries))
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row gx-5 gy-3 align-items-start">
-                                        <div class="col-12 col-sm-auto">
-                                            <h5 class="text-light">Throwables</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
-                                                @if (!_state.AcquiredItems.Throwables.Any())
-                                                {
-                                                    <div class="text-secondary small">No throwable items acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables))
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm">
-                                            <h5 class="text-light">Armor Passives</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
-                                                @if (!_state.AcquiredItems.Passives.Any())
-                                                {
-                                                    <div class="text-secondary small">No armor passives acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives))
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-3 mt-1">
-                    <div class="col-12 col-lg">
-                        <div class="section-card rounded p-3 h-100">
-                            <h5 class="text-light">Stratagems</h5>
-                            <div class="item-grid run-item-grid">
-                                @if (!_state.AcquiredItems.Stratagems.Any())
-                                {
-                                    <div class="text-secondary small">No stratagems acquired.</div>
-                                }
-                                else
-                                {
-                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems))
-                                    {
-                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="@($"col-12 col-lg-auto booster-accordion{(_showBoosterAccordion ? " expanded" : string.Empty)}")" data-bs-theme="dark">
-                        <div class="section-card rounded d-flex h-100 booster-accordion-container">
-                            <button class="booster-accordion-toggle" type="button"
-                                    aria-label="Toggle acquired boosters"
-                                    aria-expanded="@(_showBoosterAccordion ? "true" : "false")" aria-controls="boosters-collapse"
-                                    @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
-                                <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
-                                <span class="booster-accordion-label">
-                                    <span class="text-light">Boosters</span>
-                                </span>
-                                <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
-                            </button>
-                            <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
-                                <div class="booster-accordion-content-inner p-3">
-                                    <div class="item-grid run-item-grid">
-                                        @if (_state.AcquiredItems.Boosters.Any())
-                                        {
-                                            @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters))
-                                            {
-                                                <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <div class="text-secondary small">No boosters acquired.</div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <RedemptionActiveRun State="_state"
+                             Catalog="Catalog"
+                             OnMissionComplete="BeginRedemptionMissionCompleteAsync"
+                             OnMissionFailure="BeginRedemptionMissionFailureAsync"
+                             OnShowBannedItems="() => _showBannedItemsModal = true" />
     }
 
-    <Modal Title="Mission Complete" Open="@_showMissionCompleteModal" OnClose="@(() => _showMissionCompleteModal = false)">
-        <MainContent>
-            <div>
-                <label class="form-label text-light">Mission stars</label>
-                <div class="mission-star-rating" role="group" aria-label="Mission stars">
-                    @foreach (var star in Enumerable.Range(1, _state.CurrentOperation.MaxStars))
-                    {
-                        <button type="button"
-                                class="mission-star-button @(_state.CurrentOperation.SelectedStars >= star ? "selected" : null)"
-                                aria-label="@star star@(star == 1 ? string.Empty : "s")"
-                                aria-pressed="@(_state.CurrentOperation.SelectedStars >= star)"
-                                @onclick="() => { if(_state.CurrentOperation.SelectedStars == star) _state.CurrentOperation.SelectedStars = 0; else _state.CurrentOperation.SelectedStars = star; }">
-                            @(_state.CurrentOperation.SelectedStars >= star ? "★" : "☆")
-                        </button>
-                    }
-                </div>
-            </div>
-        </MainContent>
-        <FooterContent>
-            <button class="btn btn-success" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
-        </FooterContent>
-    </Modal>
+    <RedemptionRewards State="_state"
+                       Catalog="Catalog"
+                       ShowMissionComplete="_showMissionCompleteModal"
+                       ShowRewardOptions="_showRewardModal"
+                       ShowPunishmentOptions="_showPunishmentModal"
+                       ShowBannedItems="_showBannedItemsModal"
+                       ShowRunSettings="_showRunSettings"
+                       OnStarsSelected="SetSelectedStars"
+                       OnContinueToRewards="ConfirmRedemptionMissionCompleteAsync"
+                       OnClaimReward="ClaimRedemptionRewardAsync"
+                       OnSkipAndBanRewards="SkipAndBanRedemptionRewardsAsync"
+                       OnClaimPunishment="ClaimRedemptionPunishmentAsync"
+                       OnCloseMissionComplete="() => _showMissionCompleteModal = false"
+                       OnCloseRewardOptions="() => _showRewardModal = false"
+                       OnClosePunishmentOptions="() => _showPunishmentModal = false"
+                       OnCloseBannedItems="() => _showBannedItemsModal = false"
+                       OnCloseRunSettings="() => _showRunSettings = false" />
 
-    <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="@(() => _showRewardModal = false)">
-        <MainContent>
-            @if (_state.PendingRewardItems.Count == 0)
-            {
-                <p class="text-secondary mb-0">No rewards available.</p>
-            }
-            else
-            {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
-                    @foreach (var group in _state.PendingRewardItems.Categories)
-                    {
-                        @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(group))
-                        {
-                            <ItemCard Item="item" OnClick="@(() => ClaimRedemptionRewardAsync(item.Id))" />
-                        }
-                    }
-                </div>
-            }
-        </MainContent>
-        <FooterContent>
-            @if (_state.PendingRewardItems.Count > 0)
-            {
-                <button class="btn btn-warning" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
-            }
-        </FooterContent>
-    </Modal>
-
-    <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="@(() => _showPunishmentModal = false)">
-        <MainContent>
-            @if (_state.PendingPunishmentItems.Count == 0)
-            {
-                <p class="text-secondary mb-0">No punishments available.</p>
-            }
-            else
-            {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
-                    @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems))
-                    {
-                        <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
-                    }
-                </div>
-            }
-        </MainContent>
-    </Modal>
-
-    <Modal Title="Banned Items" Open="@_showBannedItemsModal" CssClass="item-modal" OnClose="@(() => _showBannedItemsModal = false)">
-        <MainContent>
-            @if (_state.BannedItems.Count == 0)
-            {
-                <p class="text-secondary mb-0">No banned items.</p>
-            }
-            else
-            {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
-                    @foreach (var group in _state.BannedItems.Categories)
-                    {
-                        @foreach (var item in Catalog.GetItemsInCatalogOrder(group))
-                        {
-                            <ItemCard Item="item" />
-                        }
-                    }
-                </div>
-            }
-        </MainContent>
-    </Modal>
-
-    <Modal Title="Run Settings" Open="@_showRunSettings" OnClose="@(() => _showRunSettings = false)">
-        <MainContent>
-            <div class="mb-4">
-                <div class="text-secondary small">Difficulty</div>
-                <div class="fs-5">@_state.Difficulty.DisplayName</div>
-            </div>
-
-            <div class="mb-4">
-                <div class="text-secondary small mb-2">Warbonds</div>
-                <div class="item-grid">
-                    @foreach (var warbond in _state.SelectedWarbonds)
-                    {
-                        <WarbondCard Warbond="warbond" IsSelected="true" />
-                    }
-                </div>
-            </div>
-
-            <div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-secondary small">Starting loadout</div>
-                    <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
-                </div>
-                <div class="item-grid mt-3">
-                    @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
-                    {
-                        <ItemCard Item="item" Badge="Starter" />
-                    }
-                </div>
-            </div>
-        </MainContent>
-    </Modal>
-
-    <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" CssClass="save-slot-modal" OnClose="@(() => _showSaveManager = false)">
-        <HeaderButtons>
-            <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
-            <label class="btn btn-outline-light btn-sm mb-0">
-                Import Save
-                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
-            </label>
-        </HeaderButtons>
-        <MainContent>
-            <div class="d-grid gap-2">
-                @if (SaveLibrary.Library.WorkingSlot is null && SaveLibrary.Library.CurrentSlot is not null)
-                {
-                    <SaveSlotCard Slot="SaveLibrary.Library.CurrentSlot"
-                                  IsCurrent="true"
-                                  OnRename="name => RenameRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id, name)"
-                                  OnExport="() => ExportRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id)"
-                                  OnDelete="() => CheckDeleteRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id)" />
-                }
-
-                @foreach (var slot in SaveLibrary.Library.Slots.Where(slot => slot.Id != SaveLibrary.Library.CurrentSlotId).OrderByDescending(slot => slot.UpdatedAt))
-                {
-                    <SaveSlotCard Slot="slot"
-                                  OnRename="name => RenameRedemptionSlotAsync(slot.Id, name)"
-                                  OnLoad="() => LoadRedemptionSlotAsync(slot.Id)"
-                                  OnExport="() => ExportRedemptionSlotAsync(slot.Id)"
-                                  OnDelete="() => CheckDeleteRedemptionSlotAsync(slot.Id)" />
-                }
-            </div>
-        </MainContent>
-    </Modal>
-
-    @if (_slotToDelete is { } slotToDelete)
-    {
-        <Modal Title="Delete Current Save?" Open="true" OnClose="@(() => _slotToDelete = null)" CloseOnBackdrop="false">
-            <MainContent>
-                <p class="mb-0">Delete the current save "@slotToDelete.Name"? This cannot be undone.</p>
-            </MainContent>
-            <FooterContent>
-                <button class="btn btn-outline-light" @onclick="() => _slotToDelete = null">Cancel</button>
-                <button class="btn btn-danger" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
-            </FooterContent>
-        </Modal>
-    }
+    <RedemptionSaveManagement Open="_showSaveManager"
+                              State="_state"
+                              SaveLibrary="SaveLibrary"
+                              SlotToDelete="_slotToDelete"
+                              OnClose="() => _showSaveManager = false"
+                              OnCreateSnapshot="() => SaveLibrary.CreateSnapshotAsync(_state)"
+                              OnImport="ImportRedemptionSlotAsync"
+                              OnRename="RenameSaveSlotAsync"
+                              OnLoad="LoadRedemptionSlotAsync"
+                              OnExport="ExportRedemptionSlotAsync"
+                              OnCheckDelete="CheckDeleteRedemptionSlotAsync"
+                              OnDelete="DeleteRedemptionSlotAsync"
+                              OnCancelDelete="() => _slotToDelete = null" />
 }
 
 @code {
@@ -455,16 +96,16 @@ else
     private bool _showRunSettings;
     private bool _showSaveManager;
     private bool _showBannedItemsModal;
-    private bool _showBoosterAccordion;
     private SaveSlot<RedemptionStateDefinition>? _slotToDelete;
 
     protected override async Task OnInitializedAsync()
     {
         await RedemptionCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
-        _showBoosterAccordion = _state.AcquiredItems.Boosters.Any();
         _loaded = true;
     }
+
+    private Task BeginRunAsync() => SaveLibrary.BeginRun(_state);
 
     private void OnRedemptionDifficultyChanged(ChangeEventArgs args)
     {
@@ -475,6 +116,9 @@ else
             Toasts.Show($"{_state.Difficulty.DisplayName} loadout preview updated.");
         }
     }
+
+    private void ToggleWarbondSelection(Warbond warbond) =>
+        _state.SetWarbondSelected(warbond, !_state.SelectedWarbonds.Contains(warbond));
 
     private Task BeginRedemptionMissionCompleteAsync()
     {
@@ -499,7 +143,6 @@ else
         if (MissionService.TryCompleteFinalMission(_state))
         {
             await SaveLibrary.PersistAsync(_state);
-            
             Toasts.Show("Challenge complete.");
             return;
         }
@@ -539,16 +182,12 @@ else
         _showPunishmentModal = true;
     }
 
+    private void SetSelectedStars(int stars) => _state.CurrentOperation.SelectedStars = stars;
+
     private async Task ClaimRedemptionRewardAsync(string id)
     {
-        int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
         if (RewardService.ClaimReward(_state, id))
         {
-            if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
-            {
-                _showBoosterAccordion = true;
-            }
-
             MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await SaveLibrary.PersistAsync(_state);
@@ -581,6 +220,9 @@ else
         Toasts.Show("Run reset. Review your settings before starting a new run.");
     }
 
+    private async Task RenameSaveSlotAsync((Guid SlotId, string Name) rename) =>
+        await RenameRedemptionSlotAsync(rename.SlotId, rename.Name);
+
     private async Task RenameRedemptionSlotAsync(Guid slotId, string name)
     {
         if (await SaveLibrary.RenameSlotAsync(slotId, name))
@@ -601,7 +243,6 @@ else
         if (slotId == SaveLibrary.Library.CurrentSlotId)
         {
             _slotToDelete = SaveLibrary.Library.CurrentSlot;
-            
             return;
         }
 
@@ -612,7 +253,6 @@ else
     {
         var slotToDelete = SaveLibrary.GetSlot(slotId);
         (bool deleted, _state) = await SaveLibrary.DeleteSlotAsync(slotId, _state);
-
         _slotToDelete = null;
 
         if (deleted)
@@ -624,15 +264,15 @@ else
     private async Task ExportRedemptionSlotAsync(Guid slotId)
     {
         SaveSlot<RedemptionStateDefinition> slot = SaveLibrary.Library.Slots.First(entry => entry.Id == slotId);
-        await FileService.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
+        await FileService.DownloadJsonAsync($"{slot.Name}.json", SaveLibrary.CreateExport(slotId));
     }
 
     private async Task ImportRedemptionSlotAsync(InputFileChangeEventArgs args)
     {
-        IBrowserFile? file = args.File;
-        await using Stream? stream = file.OpenReadStream(1024 * 1024);
-        using StreamReader? reader = new StreamReader(stream);
-        string? json = await reader.ReadToEndAsync();
+        IBrowserFile file = args.File;
+        await using Stream stream = file.OpenReadStream(1024 * 1024);
+        using StreamReader reader = new(stream);
+        string json = await reader.ReadToEndAsync();
         (SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)? imported = await SaveLibrary.ImportAsync(json);
         if (imported is null)
         {
@@ -643,4 +283,9 @@ else
         _state = imported.Value.State;
         Toasts.Show($"Imported slot {imported.Value.Slot.Name}.");
     }
+
+    private Task DownloadSummaryAsync() =>
+        FileService.DownloadTextAsync(
+            $"{SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary"}.txt",
+            _state.SummaryText);
 }

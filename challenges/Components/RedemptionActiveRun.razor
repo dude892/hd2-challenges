@@ -1,0 +1,204 @@
+@using Hd2Challenges.Models
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col-md-2">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <small class="text-secondary">Difficulty</small>
+                        <div class="fs-5 text-light">@State.Difficulty.DisplayName</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <small class="text-secondary">Operation</small>
+                        <div class="d-flex align-items-center gap-2">
+                            <img class="difficulty-icon" src="@($"svgs/difficulty/{State.CurrentOperation.DifficultyIndex}.svg")" alt="" />
+                            <div class="fs-5 text-light">@State.CurrentOperation.DifficultyLabel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <small class="text-secondary">Mission</small>
+                        <div class="fs-5 text-light">@State.CurrentOperation.MissionLabel</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <small class="text-secondary">Failures</small>
+                        <div class="fs-5 text-light">@State.MissionsFailed</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <button class="btn btn-success btn-lg btn-block" @onclick="OnMissionComplete" disabled="@(!State.CanCompleteMission)">Mission Complete</button>
+                    <button class="btn btn-danger btn-lg btn-block" @onclick="OnMissionFailure" disabled="@(!State.CanFailMission)">Mission Failed</button>
+                    <button class="btn btn-primary btn-lg btn-block" @onclick="OnShowBannedItems" disabled="@(!State.BannedItems.Any())">Banned Items</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion mt-3" data-bs-theme="dark">
+            <div class="accordion-item">
+                <h4 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
+                            aria-expanded="false" aria-controls="equipment-collapse">
+                        <span class="d-flex align-items-baseline gap-3">
+                            <span>Equipment</span>
+                        </span>
+                    </button>
+                </h4>
+                <div id="equipment-collapse" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <div class="d-flex flex-column gap-5">
+                            <div class="row gx-5 gy-3 align-items-start">
+                                <div class="col-12 col-sm-auto">
+                                    <h5 class="text-light">Primaries</h5>
+                                    <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @State.AcquiredItems.Primaries.Count()">
+                                        @if (!State.AcquiredItems.Primaries.Any())
+                                        {
+                                            <div class="text-secondary small">No primary items acquired.</div>
+                                        }
+                                        else
+                                        {
+                                            foreach (GameItem item in Catalog.GetItemsInCatalogOrder(State.AcquiredItems.Primaries))
+                                            {
+                                                <ItemCard Item="item" Badge="@(State.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm">
+                                    <h5 class="text-light">Secondaries</h5>
+                                    <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @State.AcquiredItems.Secondaries.Count()">
+                                        @if (!State.AcquiredItems.Secondaries.Any())
+                                        {
+                                            <div class="text-secondary small">No secondary items acquired.</div>
+                                        }
+                                        else
+                                        {
+                                            foreach (GameItem item in Catalog.GetItemsInCatalogOrder(State.AcquiredItems.Secondaries))
+                                            {
+                                                <ItemCard Item="item" Badge="@(State.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row gx-5 gy-3 align-items-start">
+                                <div class="col-12 col-sm-auto">
+                                    <h5 class="text-light">Throwables</h5>
+                                    <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @State.AcquiredItems.Throwables.Count()">
+                                        @if (!State.AcquiredItems.Throwables.Any())
+                                        {
+                                            <div class="text-secondary small">No throwable items acquired.</div>
+                                        }
+                                        else
+                                        {
+                                            foreach (GameItem item in Catalog.GetItemsInCatalogOrder(State.AcquiredItems.Throwables))
+                                            {
+                                                <ItemCard Item="item" Badge="@(State.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm">
+                                    <h5 class="text-light">Armor Passives</h5>
+                                    <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @State.AcquiredItems.Passives.Count()">
+                                        @if (!State.AcquiredItems.Passives.Any())
+                                        {
+                                            <div class="text-secondary small">No armor passives acquired.</div>
+                                        }
+                                        else
+                                        {
+                                            foreach (GameItem item in Catalog.GetItemsInCatalogOrder(State.AcquiredItems.Passives))
+                                            {
+                                                <ItemCard Item="item" Badge="@(State.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-12 col-lg">
+                <div class="section-card rounded p-3 h-100">
+                    <h5 class="text-light">Stratagems</h5>
+                    <div class="item-grid run-item-grid">
+                        @if (!State.AcquiredItems.Stratagems.Any())
+                        {
+                            <div class="text-secondary small">No stratagems acquired.</div>
+                        }
+                        else
+                        {
+                            foreach (GameItem item in Catalog.GetItemsInCatalogOrder(State.AcquiredItems.Stratagems))
+                            {
+                                <ItemCard Item="item" Badge="@(State.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="@($"col-12 col-lg-auto booster-accordion{(_showBoosterAccordion ? " expanded" : string.Empty)}")" data-bs-theme="dark">
+                <div class="section-card rounded d-flex h-100 booster-accordion-container">
+                    <button class="booster-accordion-toggle" type="button"
+                            aria-label="Toggle acquired boosters"
+                            aria-expanded="@(_showBoosterAccordion ? "true" : "false")" aria-controls="boosters-collapse"
+                            @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
+                        <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
+                        <span class="booster-accordion-label">
+                            <span class="text-light">Boosters</span>
+                        </span>
+                        <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
+                    </button>
+                    <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
+                        <div class="booster-accordion-content-inner p-3">
+                            <div class="item-grid run-item-grid">
+                                @if (State.AcquiredItems.Boosters.Any())
+                                {
+                                    @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(State.AcquiredItems.Boosters))
+                                    {
+                                        <ItemCard Item="item" Badge="@(State.StarterItems.ContainsItem(item) ? "Starter" : null)" />
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="text-secondary small">No boosters acquired.</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool _showBoosterAccordion;
+
+    [Parameter, EditorRequired] public RedemptionState State { get; set; } = default!;
+    [Parameter, EditorRequired] public CatalogService Catalog { get; set; } = default!;
+    [Parameter] public EventCallback OnMissionComplete { get; set; }
+    [Parameter] public EventCallback OnMissionFailure { get; set; }
+    [Parameter] public EventCallback OnShowBannedItems { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _showBoosterAccordion |= State.AcquiredItems.Boosters.Any();
+    }
+}
