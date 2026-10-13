@@ -35,6 +35,29 @@ public sealed class ModelTests
     }
 
     [Fact]
+    public void ItemSetOverridesReplaceOnlyPopulatedCategoriesAndAdditionsUnionItems()
+    {
+        GameItem originalPrimary = new() { Id = "original-primary" };
+        originalPrimary.PostInitSetup(ItemKind.Primary, []);
+        GameItem originalBooster = new() { Id = "original-booster" };
+        originalBooster.PostInitSetup(ItemKind.Booster, []);
+        ItemSet loadout = new([originalPrimary, originalBooster]);
+
+        GameItem overridePrimary = new() { Id = "override-primary" };
+        overridePrimary.PostInitSetup(ItemKind.Primary, []);
+        GameItem addedBooster = new() { Id = "added-booster" };
+        addedBooster.PostInitSetup(ItemKind.Booster, []);
+        loadout.ApplyOverrides(new ItemSet([overridePrimary]))
+            .ApplyAdditions(new ItemSet([originalBooster, addedBooster]));
+
+        Assert.DoesNotContain(originalPrimary, loadout);
+        Assert.Contains(overridePrimary, loadout);
+        Assert.Contains(originalBooster, loadout);
+        Assert.Contains(addedBooster, loadout);
+        Assert.Equal(3, loadout.Count);
+    }
+
+    [Fact]
     public void OperationClampsValuesAndResetsStarsWhenMissionChanges()
     {
         Operation operation = new(new OperationDefinition

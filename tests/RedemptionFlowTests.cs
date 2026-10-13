@@ -50,6 +50,29 @@ public sealed class RedemptionFlowTests
     }
 
     [Fact]
+    public async Task CatalogOrdersSelectedItemsByCategoryRatherThanInputOrder()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        ItemSet allItems = context.Catalog.GetAllItems();
+        GameItem[] selectedItems =
+        [
+            allItems.Boosters.First(),
+            allItems.Passives.First(),
+            allItems.Throwables.First(),
+            allItems.Secondaries.First(),
+            allItems.Primaries.First(),
+            allItems.Stratagems.First()
+        ];
+
+        IReadOnlyList<GameItem> orderedItems = context.Catalog.GetItemsInCatalogOrder(selectedItems);
+
+        Assert.Equal(
+            [ItemKind.Stratagem, ItemKind.Primary, ItemKind.Secondary, ItemKind.Throwable, ItemKind.Passive, ItemKind.Booster],
+            orderedItems.Select(item => item.Kind));
+        Assert.Equal(selectedItems.Length, orderedItems.Count);
+    }
+
+    [Fact]
     public async Task SetupResolvesDifficultyLoadoutAndWarbondSelection()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
@@ -173,6 +196,23 @@ public sealed class RedemptionFlowTests
         Assert.True(missions.IsFinalMission(state));
         Assert.True(missions.TryCompleteFinalMission(state));
         Assert.True(state.RunCompleted);
+    }
+
+    [Fact]
+    public async Task MissionServiceDoesNotAdvancePastTheFinalOperation()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
+            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
+        RedemptionMissionService missions = new(context.Catalog);
+        int finalOperation = context.Catalog.LastOperationIndex;
+        int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
+        state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
+
+        missions.AdvanceMission(state);
+
+        Assert.Equal(finalOperation, state.CurrentOperation.DifficultyIndex);
+        Assert.Equal(finalMission, state.CurrentOperation.MissionNumber);
     }
 
     [Fact]
