@@ -5,4 +5,7 @@
   <Folder Name="/xaml2Svg/">
     <Project Path="xaml2Svg/hd2Xaml2Svg.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/hd2-challenges.tests.csproj" />
+  </Folder>
 </Solution>
