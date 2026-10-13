@@ -464,11 +464,11 @@
     "antitank": false
   },
   {
-    "displayName": "K-9",
-    "tags": ["Backpack", "Arc"],
-    "warbond": "forceOfLaw",
-    "id": "guarddogarc",
-    "svg": "DroneStun.svg",
+    "displayName": "Shield Generator Pack",
+    "tags": ["Backpack"],
+    "warbond": "none",
+    "id": "sh20shieldgeneratorpack",
+    "svg": "BackpackShieldenergy.svg",
     "antitank": false
   },
   {
@@ -485,6 +485,14 @@
     "warbond": "none",
     "id": "sh20ballisticshieldbackpack",
     "svg": "BackpackShieldballistic.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "K-9",
+    "tags": ["Backpack", "Arc"],
+    "warbond": "forceOfLaw",
+    "id": "guarddogarc",
+    "svg": "DroneStun.svg",
     "antitank": false
   },
   {
