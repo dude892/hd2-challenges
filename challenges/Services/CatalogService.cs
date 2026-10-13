@@ -55,6 +55,20 @@ public sealed class CatalogService(HttpClient httpClient)
     public HashSet<Warbond> GetWarbonds(IEnumerable<string> ids) => [.. Warbonds.Where(w => ids.Contains(w.Id)).Concat(Warbonds.Where(item => item.Id == "helldiversMobilize"))];
     public ItemSet GetAllItems() => AllItemsSet.Clone();
 
+    public IReadOnlyList<GameItem> GetItemsInCatalogOrder(IEnumerable<GameItem> items)
+    {
+        HashSet<GameItem> includedItems = [.. items];
+        return
+        [
+            .. Stratagems.Where(includedItems.Contains),
+            .. Primaries.Where(includedItems.Contains),
+            .. Secondaries.Where(includedItems.Contains),
+            .. Throwables.Where(includedItems.Contains),
+            .. Passives.Where(includedItems.Contains),
+            .. Boosters.Where(includedItems.Contains)
+        ];
+    }
+
     public ItemSet GetItemSet(IEnumerable<string> ids) => new()
     {
         Stratagems = [.. AllItemsSet.Stratagems.Where(item => ids.Contains(item.Id))],

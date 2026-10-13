@@ -36,7 +36,7 @@ else
                 <div id="@collapseId" class="accordion-collapse collapse" data-bs-parent="#item-catalog-accordion">
                     <div class="accordion-body">
                         <div class="item-grid">
-                            @foreach (var item in items)
+                            @foreach (var item in Catalog.GetItemsInCatalogOrder(items))
                             {
                                 <ItemCard Item="item" />
                             }

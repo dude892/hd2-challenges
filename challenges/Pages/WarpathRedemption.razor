@@ -80,7 +80,7 @@ else
                         <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
                     </div>
                     <div class="item-grid mt-3">
-                        @foreach (var item in _state.StarterItems)
+                        @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
                         {
                             <ItemCard Item="item" Badge="Starter" />
                         }
@@ -162,7 +162,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    foreach (GameItem item in _state.AcquiredItems.Primaries)
+                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries))
                                                     {
                                                         <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
                                                     }
@@ -178,7 +178,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    foreach (GameItem item in _state.AcquiredItems.Secondaries)
+                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries))
                                                     {
                                                         <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
                                                     }
@@ -196,7 +196,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    foreach (GameItem item in _state.AcquiredItems.Throwables)
+                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables))
                                                     {
                                                         <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
                                                     }
@@ -212,7 +212,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    foreach (GameItem item in _state.AcquiredItems.Passives)
+                                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives))
                                                     {
                                                         <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
                                                     }
@@ -236,7 +236,7 @@ else
                                 }
                                 else
                                 {
-                                    foreach (GameItem item in _state.AcquiredItems.Stratagems)
+                                    foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems))
                                     {
                                         <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
                                     }
@@ -261,7 +261,7 @@ else
                                     <div class="item-grid run-item-grid">
                                         @if (_state.AcquiredItems.Boosters.Any())
                                         {
-                                            @foreach (GameItem item in _state.AcquiredItems.Boosters)
+                                            @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters))
                                             {
                                                 <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
                                             }
@@ -314,7 +314,7 @@ else
                 <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
                     @foreach (var group in _state.PendingRewardItems.Categories)
                     {
-                        @foreach (GameItem item in group)
+                        @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(group))
                         {
                             <ItemCard Item="item" OnClick="@(() => ClaimRedemptionRewardAsync(item.Id))" />
                         }
@@ -339,7 +339,7 @@ else
             else
             {
                 <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
-                    @foreach (var item in _state.PendingPunishmentItems)
+                    @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems))
                     {
                         <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
                     }
@@ -357,9 +357,9 @@ else
             else
             {
                 <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
-                    @foreach (var group in _state.BannedItems.GroupBy(item => item.Kind))
+                    @foreach (var group in _state.BannedItems.Categories)
                     {
-                        @foreach (var item in group)
+                        @foreach (var item in Catalog.GetItemsInCatalogOrder(group))
                         {
                             <ItemCard Item="item" />
                         }
@@ -392,7 +392,7 @@ else
                     <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
                 </div>
                 <div class="item-grid mt-3">
-                    @foreach (var item in _state.StarterItems)
+                    @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
                     {
                         <ItemCard Item="item" Badge="Starter" />
                     }
