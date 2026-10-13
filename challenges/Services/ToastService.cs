@@ -1,28 +1,29 @@
 namespace Hd2Challenges.Services;
 
-public sealed class ToastService(IConfiguration configuration)
+public sealed class ToastService
 {
     private readonly List<ToastMessage> _messages = [];
-    private readonly TimeSpan _autoCloseDelay = configuration.GetValue<TimeSpan>("Toast:AutoCloseDelay");
 
     public IReadOnlyList<ToastMessage> Messages => _messages;
 
     public event Action? Changed;
 
-    public void Show(string message, bool autoClose = true)
+    public void Show(string message, int? autoCloseMilliseconds = 5000)
     {
         if (string.IsNullOrWhiteSpace(message))
         {
             return;
         }
 
+        ArgumentOutOfRangeException.ThrowIfNegative(autoCloseMilliseconds.GetValueOrDefault());
+
         var toast = new ToastMessage(Guid.NewGuid(), message);
         _messages.Add(toast);
         Changed?.Invoke();
 
-        if (autoClose)
+        if (autoCloseMilliseconds.HasValue)
         {
-            _ = DismissAfterDelayAsync(toast.Id);
+            _ = DismissAfterDelayAsync(toast.Id, autoCloseMilliseconds.Value);
         }
     }
 
@@ -34,9 +35,9 @@ public sealed class ToastService(IConfiguration configuration)
         }
     }
 
-    private async Task DismissAfterDelayAsync(Guid id)
+    private async Task DismissAfterDelayAsync(Guid id, int delay)
     {
-        await Task.Delay(_autoCloseDelay);
+        await Task.Delay(delay);
         Dismiss(id);
     }
 }
