@@ -107,5 +107,9 @@
   {
     "displayName": "Warhammer 40K",
     "id": "warhammer40K"
+  },
+  {
+    "displayName": "Ironclad Democracy",
+    "id": "ironcladDemocracy"
   }
 ]
