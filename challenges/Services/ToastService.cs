@@ -38,8 +38,14 @@ public sealed class ToastService
     private async Task DismissAfterDelayAsync(Guid id, int delay)
     {
         await Task.Delay(delay);
-        Dismiss(id);
+
+        var index = _messages.FindIndex(message => message.Id == id);
+        if (index >= 0)
+        {
+            _messages[index] = _messages[index] with { IsDismissing = true };
+            Changed?.Invoke();
+        }
     }
 }
 
-public sealed record ToastMessage(Guid Id, string Message);
+public sealed record ToastMessage(Guid Id, string Message, bool IsDismissing = false);
