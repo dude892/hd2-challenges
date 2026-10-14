@@ -13,8 +13,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests:
-    name: Test (${{ matrix.browser }})
+  unit-tests:
+    name: Unit tests
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Run unit tests
+        run: dotnet test tests/hd2-challenges.tests.csproj --configuration Debug --logger trx --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unit-test-results
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+
+  e2e-tests:
+    name: E2E tests (${{ matrix.browser }})
     runs-on: windows-latest
     timeout-minutes: 30
     strategy:
@@ -27,10 +55,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: 10.0.x
 
@@ -43,12 +71,12 @@ jobs:
       - name: Install Playwright browser
         run: pwsh tests/e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
 
-      - name: Run all tests
-        run: dotnet test hd2-challenges.slnx --configuration Debug --no-build --logger trx --results-directory TestResults -- Playwright.BrowserName=${{ matrix.browser }}
+      - name: Run E2E tests
+        run: dotnet test tests/e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --logger trx --results-directory TestResults -- Playwright.BrowserName=${{ matrix.browser }}
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results-${{ matrix.browser }}
           path: TestResults/**/*.trx
@@ -56,15 +84,16 @@ jobs:
 
   build-and-test:
     name: Build and test
-    needs: tests
+    needs: [unit-tests, e2e-tests]
     if: always()
     runs-on: windows-latest
     steps:
-      - name: Require all browser jobs to pass
+      - name: Require all test jobs to pass
         shell: pwsh
         env:
-          TEST_RESULT: ${{ needs.tests.result }}
+          UNIT_TEST_RESULT: ${{ needs.unit-tests.result }}
+          E2E_TEST_RESULT: ${{ needs.e2e-tests.result }}
         run: |
-          if ($env:TEST_RESULT -ne 'success') {
-            throw "Browser test jobs did not all pass: $env:TEST_RESULT"
+          if ($env:UNIT_TEST_RESULT -ne 'success' -or $env:E2E_TEST_RESULT -ne 'success') {
+            throw "Test jobs did not all pass. Unit tests: $env:UNIT_TEST_RESULT; E2E tests: $env:E2E_TEST_RESULT"
           }
