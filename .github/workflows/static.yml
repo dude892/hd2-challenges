@@ -9,6 +9,8 @@ on:
     paths:
       - challenges/**
       - xaml2Svg/**
+      - xaml2Svg.tests/**
+      - tests/**
     branches:
       - main
 
@@ -39,6 +41,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Run unit and component tests
+        run: dotnet test tests/hd2-challenges.tests.csproj -c Release
+
+      - name: Run XAML-to-SVG tests
+        run: dotnet test xaml2Svg.tests/hd2Xaml2Svg.tests.csproj -c Release
+
+      - name: Build browser tests
+        run: dotnet build tests/e2e/hd2-challenges.e2e.tests.csproj -c Release
+
+      - name: Install Playwright browser
+        run: pwsh tests/e2e/bin/Release/net10.0/playwright.ps1 install chromium
+
+      - name: Run browser tests
+        run: dotnet test tests/e2e/hd2-challenges.e2e.tests.csproj -c Release --no-build
 
       - name: Publish app
         run: dotnet publish challenges/hd2-challenges.csproj -c Release

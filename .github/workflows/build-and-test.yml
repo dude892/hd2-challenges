@@ -1,0 +1,70 @@
+name: Build and test
+
+on:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-and-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Test (${{ matrix.browser }})
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore solution
+        run: dotnet restore hd2-challenges.slnx
+
+      - name: Build solution
+        run: dotnet build hd2-challenges.slnx --configuration Debug --no-restore
+
+      - name: Install Playwright browser
+        run: pwsh tests/e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
+
+      - name: Run all tests
+        run: dotnet test hd2-challenges.slnx --configuration Debug --no-build --logger trx --results-directory TestResults -- Playwright.BrowserName=${{ matrix.browser }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+
+  build-and-test:
+    name: Build and test
+    needs: tests
+    if: always()
+    runs-on: windows-latest
+    steps:
+      - name: Require all browser jobs to pass
+        shell: pwsh
+        env:
+          TEST_RESULT: ${{ needs.tests.result }}
+        run: |
+          if ($env:TEST_RESULT -ne 'success') {
+            throw "Browser test jobs did not all pass: $env:TEST_RESULT"
+          }

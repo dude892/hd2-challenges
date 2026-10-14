@@ -79,6 +79,7 @@ Use Glider for compiler-backed C#/.NET navigation, diagnostics, dependencies, im
 ### Other Tools
 PowerShell - for running scripts and automating tasks within the development environment.
 Python is not installed and should not be used in scripts for processing.
+This is a Windows system and does not have access to any unix tools or environments.
 
 ## Design Concerns
 
@@ -94,5 +95,5 @@ Use razor.css files to define component-specific styles instead of putting them 
 DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
 
 ## Testing
-When making changes, do not just attempt the build, but test thoroughly via the integrated browser. Always attempt to do so, and make sure to verify that the changes behave as expected, and don't forget to close the browser tab after testing to ensure a new one is opened on later changes.
+When making changes, do not just attempt the build, use the new integrated tests. Ensure that all relevant scenarios are covered and that the tests pass successfully. If the final result behavior is not obvious based on the request, ask for more information before creating tests.
 When adjusting or creating a new flow or feature, ensure that all related components are tested and that the changes do not introduce regressions in existing functionality.
