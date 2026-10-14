@@ -56,8 +56,9 @@ public sealed class RedemptionRewardService(CatalogService catalogService)
         }
 
         var punishmentPool = state.AcquiredItems
+            .Where(item => !state.StarterItems.ContainsItem(item))
             .OrderBy(_ => Random.Shared.Next())
-            .Take(Math.Min(3, state.AcquiredItems.Count));
+            .Take(3);
         state.PendingPunishmentItems = new ItemSet(punishmentPool);
         return true;
     }
