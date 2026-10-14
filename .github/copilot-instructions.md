@@ -79,6 +79,7 @@ Use Glider for compiler-backed C#/.NET navigation, diagnostics, dependencies, im
 ### Other Tools
 PowerShell - for running scripts and automating tasks within the development environment.
 Python is not installed and should not be used in scripts for processing.
+This is a Windows system and does not have access to any unix tools or environments.
 
 ## Design Concerns
 
