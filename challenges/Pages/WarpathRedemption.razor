@@ -356,7 +356,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
+                <div class="item-grid justify-content-center" style="@($"--item-columns: {Math.Min(_state.BannedItems.Count, 5)}")">
                     @foreach (var group in _state.BannedItems.Categories)
                     {
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(group))
