@@ -1,10 +1,19 @@
 namespace Hd2Challenges.Services;
 
+public sealed record ToastMessage(Guid Id, string Message, bool IsDismissing = false);
+
 public sealed class ToastService
 {
-    private readonly List<ToastMessage> _messages = [];
+    private readonly List<ToastMessage> _messages;
+    private readonly IReadOnlyList<ToastMessage> _readOnlyMessages;
 
-    public IReadOnlyList<ToastMessage> Messages => _messages;
+    public ToastService()
+    {
+        _messages = [];
+        _readOnlyMessages = _messages.AsReadOnly();
+    }
+
+    public IReadOnlyList<ToastMessage> Messages => _readOnlyMessages;
 
     public event Action? Changed;
 
@@ -47,5 +56,3 @@ public sealed class ToastService
         }
     }
 }
-
-public sealed record ToastMessage(Guid Id, string Message, bool IsDismissing = false);

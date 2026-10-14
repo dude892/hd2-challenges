@@ -33,6 +33,8 @@ Services are registered as scoped services in `Program.cs` and should remain sma
 
 Keep UI event handlers focused on orchestration, state display, and persistence. Put catalog resolution in the relevant catalog service, game rules in the relevant Redemption service, and browser/JavaScript concerns in the storage or export adapter.
 
+Keep service boundaries narrow: expose only the operations and data consumers need, and keep mutable state owned by the service. An interface such as `IReadOnlyList<T>` limits operations available through that interface, but does not make a mutable object immutable; when exposing collections, return a read-only wrapper or snapshot as appropriate, and use immutable elements or controlled update methods when callers must not mutate item state. Route state changes through the owning service so related notifications and invariants cannot be bypassed.
+
 ## Data, Definition, and Runtime Class Architecture
 
 ### Static data and definitions
