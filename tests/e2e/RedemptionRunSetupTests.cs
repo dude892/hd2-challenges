@@ -10,8 +10,16 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
     public async Task SelectedDifficultyIsShownInRunSettings()
     {
         await OpenSetupAsync();
+        string initialPreview = string.Join(
+            "|",
+            await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
+
         await Page.Locator("select.form-select").SelectOptionAsync("quick");
         await Expect(Page.GetByText("Quick Warpath loadout preview updated.")).ToBeVisibleAsync();
+        string updatedPreview = string.Join(
+            "|",
+            await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
+        Assert.NotEqual(initialPreview, updatedPreview);
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" }).ClickAsync();
         await Expect(Page.GetByText("Quick Warpath", new() { Exact = true })).ToBeVisibleAsync();
