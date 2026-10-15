@@ -3,8 +3,7 @@
 ## Project Context
 
 - This is a Blazor WebAssembly application targeting .NET 10 for Helldivers 2 challenge tracking.
-- The website has not been deployed yet. Optimize for the current local application and the current data shape.
-- Do not spend implementation effort on preserving previous save states, migrating old data, or supporting legacy export formats yet. Add migration/version compatibility only when deployment or an explicit requirement makes it necessary.
+- The website has now been deployed and is under active use, take care to maintain backward compatibility and avoid breaking changes.
 - Keep changes focused and consistent with the existing C# and Razor patterns. Avoid introducing a server, database, API, or new persistence layer unless explicitly requested.
 - While the main focus of the app right now is on the "Warpath: Redemption" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
 - Do not take the following instructions as exhaustive; they are meant to guide the development process and maintain consistency within the project, and should be adapted as needed for specific scenarios.
@@ -67,15 +66,22 @@ Keep service boundaries narrow: expose only the operations and data consumers ne
 - Keep random reward selection and mission progression in the domain services, not in Razor markup.
 - Validate changes with `dotnet build`; for behavior changes, add or update focused tests when a test project is introduced.
 
-## Querying Microsoft Documentation
+## Tools Available
+
+### Querying Microsoft Documentation
 
 You have access to MCP tools called `microsoft_docs_search`, `microsoft_docs_fetch`, and `microsoft_code_sample_search` - these tools allow you to search through and fetch Microsoft's latest official documentation and code samples, and that information might be more detailed or newer than what's in your training data set.
 
 When handling questions around how to work with native Microsoft technologies, such as C#, F#, ASP.NET Core, Microsoft.Extensions, NuGet, Entity Framework, the `dotnet` runtime - please use these tools for research purposes when dealing with specific / narrowly defined questions that may occur.
 
-## Glider MCP Usage
+### Glider MCP Usage
 
 Use Glider for compiler-backed C#/.NET navigation, diagnostics, dependencies, impact analysis, edits, and refactors. Start navigation with find_code and preview supported changes. Before semantic work, call server_status and confirm the loaded solution or project belongs to the current repository or worktree. Changing directories does not retarget Glider. Call load with the intended .sln, .slnx, or .csproj if the loaded workspace differs.
+
+### Other Tools
+PowerShell - for running scripts and automating tasks within the development environment.
+Python is not installed and should not be used in scripts for processing.
+This is a Windows system and does not have access to any unix tools or environments.
 
 ## Design Concerns
 
@@ -88,10 +94,8 @@ Do not put application state management logic directly in Razor components; dele
 Do not put random wrappers around service calls in Razor components; call the service methods directly instead.
 DO NOT EVER MAKE MAGIC NUMBER OR USE CONSTANTS DIRECTLY IN THE CODE, THIS INCLUDES MAKING A VARIABLE OF ANY KIND.
 Use razor.css files to define component-specific styles instead of putting them in global CSS files.
-
-
 DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
 
-
 ## Testing
-When making changes, do not just attempt the build, but test thoroughly via the integrated browser. Always attempt to do so, and make sure to verify that the changes behave as expected, and don't forget to close the browser tab after testing to ensure a new one is opened on later changes.
+When making changes, do not just attempt the build, use the new integrated tests. Ensure that all relevant scenarios are covered and that the tests pass successfully. If the final result behavior is not obvious based on the request, ask for more information before creating tests.
+When adjusting or creating a new flow or feature, ensure that all related components are tested and that the changes do not introduce regressions in existing functionality.

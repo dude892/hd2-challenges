@@ -8,6 +8,14 @@
         "/^dotnet run --project \\.\\\\challenges\\\\hd2-challenges\\.csproj -c Release --no-build$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^dotnet test \\.\\\\tests\\\\hd2-challenges\\.tests\\.csproj$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet test \\.\\\\tests\\\\hd2-challenges\\.tests\\.csproj --verbosity quiet$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

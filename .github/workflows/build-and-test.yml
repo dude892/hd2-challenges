@@ -1,0 +1,99 @@
+name: Build and test
+
+on:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-and-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Run unit tests
+        run: dotnet test tests/hd2-challenges.tests.csproj --configuration Debug --logger trx --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unit-test-results
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+
+  e2e-tests:
+    name: E2E tests (${{ matrix.browser }})
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore solution
+        run: dotnet restore hd2-challenges.slnx
+
+      - name: Build solution
+        run: dotnet build hd2-challenges.slnx --configuration Debug --no-restore
+
+      - name: Install Playwright browser
+        run: pwsh tests/e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
+
+      - name: Run E2E tests
+        run: dotnet test tests/e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --logger trx --results-directory TestResults -- Playwright.BrowserName=${{ matrix.browser }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+
+  build-and-test:
+    name: Build and test
+    needs: [unit-tests, e2e-tests]
+    if: always()
+    runs-on: windows-latest
+    steps:
+      - name: Require all test jobs to pass
+        shell: pwsh
+        env:
+          UNIT_TEST_RESULT: ${{ needs.unit-tests.result }}
+          E2E_TEST_RESULT: ${{ needs.e2e-tests.result }}
+        run: |
+          if ($env:UNIT_TEST_RESULT -ne 'success' -or $env:E2E_TEST_RESULT -ne 'success') {
+            throw "Test jobs did not all pass. Unit tests: $env:UNIT_TEST_RESULT; E2E tests: $env:E2E_TEST_RESULT"
+          }
