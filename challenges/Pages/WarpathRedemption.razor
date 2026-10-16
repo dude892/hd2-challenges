@@ -60,7 +60,7 @@ else
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3" role="group" aria-label="Starting loadout preview">
+                    <div class="item-grid mt-3">
                         @foreach (var warbond in Catalog.GetAllWarbonds())
                         {
                             var isSelected = _state.SelectedWarbonds.Contains(warbond);
@@ -79,7 +79,7 @@ else
                         <h4 class="text-light mb-0">Starting Loadout Preview</h4>
                         <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
                     </div>
-                    <div class="item-grid mt-3">
+                    <div class="item-grid mt-3" role="group" aria-label="Starting loadout preview">
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
                         {
                             <ItemCard Item="item" Badge="Starter" />
