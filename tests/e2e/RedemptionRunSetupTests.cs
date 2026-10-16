@@ -10,15 +10,11 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
     public async Task SelectedDifficultyIsShownInRunSettings()
     {
         await OpenSetupAsync();
-        string initialPreview = string.Join(
-            "|",
-            await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" }).AllInnerTextsAsync());
+        string initialPreview = await GetLoadoutPreviewAsync();
 
         await Page.GetByLabel("Difficulty").SelectOptionAsync("quick");
         await Expect(Page.GetByText("Quick Warpath loadout preview updated.")).ToBeVisibleAsync();
-        string updatedPreview = string.Join(
-            "|",
-            await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" }).AllInnerTextsAsync());
+        string updatedPreview = await GetLoadoutPreviewAsync();
         Assert.NotEqual(initialPreview, updatedPreview);
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" }).ClickAsync();
@@ -26,6 +22,14 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Run Settings" }).ClickAsync();
         await Expect(Page.GetByRole(AriaRole.Dialog, new() { Name = "Run Settings" })).ToContainTextAsync("Quick Warpath");
+    }
+
+    private async Task<string> GetLoadoutPreviewAsync()
+    {
+        ILocator[] images = [.. await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" })
+            .GetByRole(AriaRole.Img).AllAsync()];
+        string?[] itemNames = await Task.WhenAll(images.Select(image => image.GetAttributeAsync("alt")));
+        return string.Join("|", itemNames);
     }
 
     [Fact]

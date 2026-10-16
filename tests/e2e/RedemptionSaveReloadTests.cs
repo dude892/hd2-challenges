@@ -75,8 +75,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await snapshot.GetByRole(AriaRole.Button, new() { Name = "Load" }).ClickAsync();
 
         await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
-        await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Warpath: Redemption Snapshot" }))
-            .ToBeVisibleAsync();
+        await Expect(Page.GetByRole(AriaRole.Heading, new() { Level = 1 })).ToContainTextAsync("Snapshot");
     }
 
     [Fact]

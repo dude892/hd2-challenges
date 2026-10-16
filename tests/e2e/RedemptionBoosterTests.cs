@@ -12,7 +12,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await StartRunAsync();
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
-        ILocator content = Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" });
+        ILocator content = Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(content).ToHaveAttributeAsync("aria-hidden", "true");
         await Expect(content).ToBeHiddenAsync();
@@ -36,7 +36,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
 
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" }))
             .ToHaveAttributeAsync("aria-expanded", "false");
-        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })).ToBeHiddenAsync();
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })).ToBeHiddenAsync();
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await Page.ReloadAsync();
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" }))
             .ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })).ToContainTextAsync("UAV Recon");
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })).ToContainTextAsync("UAV Recon");
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })).ToContainTextAsync("UAV Recon");
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })).ToContainTextAsync("UAV Recon");
     }
 
 }

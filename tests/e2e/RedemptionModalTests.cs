@@ -77,7 +77,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(modal).ToHaveCountAsync(0);
         await Expect(complete).ToBeEnabledAsync();
         await Expect(failed).ToBeEnabledAsync();
-        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })
             .GetByText("UAV Recon", new() { Exact = true })).ToHaveCountAsync(0);
     }
 
