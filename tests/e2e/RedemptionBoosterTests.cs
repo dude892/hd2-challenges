@@ -12,7 +12,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await StartRunAsync();
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
-        ILocator content = Page.Locator("#boosters-collapse");
+        ILocator content = Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(content).ToHaveAttributeAsync("aria-hidden", "true");
         await Expect(content).ToBeHiddenAsync();
@@ -36,7 +36,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
 
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" }))
             .ToHaveAttributeAsync("aria-expanded", "false");
-        await Expect(Page.Locator("#boosters-collapse")).ToBeHiddenAsync();
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })).ToBeHiddenAsync();
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await Page.ReloadAsync();
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" }))
             .ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(Page.Locator("#boosters-collapse")).ToContainTextAsync("UAV Recon");
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })).ToContainTextAsync("UAV Recon");
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(Page.Locator("#boosters-collapse")).ToContainTextAsync("UAV Recon");
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })).ToContainTextAsync("UAV Recon");
     }
 
 }

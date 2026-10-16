@@ -12,13 +12,13 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
         await OpenSetupAsync();
         string initialPreview = string.Join(
             "|",
-            await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
+            await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" }).AllInnerTextsAsync());
 
         await Page.GetByLabel("Difficulty").SelectOptionAsync("quick");
         await Expect(Page.GetByText("Quick Warpath loadout preview updated.")).ToBeVisibleAsync();
         string updatedPreview = string.Join(
             "|",
-            await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
+            await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" }).AllInnerTextsAsync());
         Assert.NotEqual(initialPreview, updatedPreview);
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" }).ClickAsync();

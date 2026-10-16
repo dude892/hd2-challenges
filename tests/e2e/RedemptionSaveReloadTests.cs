@@ -58,7 +58,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save Slots", Exact = true }).ClickAsync();
         saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
-        await saveManager.Locator(".card-body > .d-grid > .card").Last
+        await saveManager.GetByRole(AriaRole.Group).Last
             .GetByRole(AriaRole.Button, new() { Name = "Load" }).ClickAsync();
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
 
@@ -71,11 +71,12 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save Slots", Exact = true }).ClickAsync();
         saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
-        ILocator snapshot = saveManager.Locator(".card-body > .d-grid > .card").Filter(new() { HasText = "Snapshot" });
+        ILocator snapshot = saveManager.GetByRole(AriaRole.Group).Filter(new() { HasText = "Snapshot" });
         await snapshot.GetByRole(AriaRole.Button, new() { Name = "Load" }).ClickAsync();
 
         await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
-        await Expect(Page.Locator("h1")).ToContainTextAsync("Snapshot");
+        await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Warpath: Redemption Snapshot" }))
+            .ToBeVisibleAsync();
     }
 
     [Fact]
@@ -101,7 +102,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         });
 
         await Expect(Page.GetByRole(AriaRole.Status)).ToContainTextAsync("Imported slot");
-        await Expect(saveManager.Locator(".card-body > .d-grid > .card")).ToHaveCountAsync(2);
+        await Expect(saveManager.GetByRole(AriaRole.Group)).ToHaveCountAsync(2);
     }
 
     [Fact]

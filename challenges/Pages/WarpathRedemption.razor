@@ -60,7 +60,7 @@ else
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3">
+                    <div class="item-grid mt-3" role="group" aria-label="Starting loadout preview">
                         @foreach (var warbond in Catalog.GetAllWarbonds())
                         {
                             var isSelected = _state.SelectedWarbonds.Contains(warbond);
@@ -149,7 +149,7 @@ else
                                 </span>
                             </button>
                         </h4>
-                        <div id="equipment-collapse" class="accordion-collapse collapse">
+                        <div id="equipment-collapse" class="accordion-collapse collapse" role="region" aria-label="Acquired equipment">
                             <div class="accordion-body">
                                 <div class="d-flex flex-column gap-5">
                                     <div class="row gx-5 gy-3 align-items-start">
@@ -256,7 +256,7 @@ else
                                 </span>
                                 <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                             </button>
-                            <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
+                            <div id="boosters-collapse" class="booster-accordion-content" role="region" aria-label="Acquired boosters" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
                                 <div class="booster-accordion-content-inner p-3">
                                     <div class="item-grid run-item-grid">
                                         @if (_state.AcquiredItems.Boosters.Any())

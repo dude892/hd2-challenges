@@ -77,7 +77,8 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(modal).ToHaveCountAsync(0);
         await Expect(complete).ToBeEnabledAsync();
         await Expect(failed).ToBeEnabledAsync();
-        await Expect(Page.Locator("#boosters-collapse .item-card")).ToHaveCountAsync(0);
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters" })
+            .GetByText("UAV Recon", new() { Exact = true })).ToHaveCountAsync(0);
     }
 
     [Theory]
@@ -108,7 +109,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await modal.GetByRole(AriaRole.Heading, new() { Name = "Run Settings", Exact = true }).ClickAsync();
         await Expect(modal).ToBeVisibleAsync();
 
-        await Page.Locator(".app-modal-backdrop").ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
+        await modal.Locator("xpath=..").ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
         await Expect(modal).ToHaveCountAsync(0);
     }
 
@@ -149,8 +150,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
         ILocator confirmation = Page.GetByRole(AriaRole.Dialog, new() { Name = "Delete Current Save?", Exact = true });
         await Expect(confirmation).ToBeVisibleAsync();
-        await Page.Locator(".app-modal-backdrop").Filter(new() { Has = confirmation })
-            .ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
+        await confirmation.Locator("xpath=..").ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
         await Expect(confirmation).ToBeVisibleAsync();
         await confirmation.GetByRole(AriaRole.Button, new() { Name = "Cancel", Exact = true }).ClickAsync();
 
