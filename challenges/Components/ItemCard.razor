@@ -2,7 +2,7 @@
 
 @if (OnClick.HasDelegate)
 {
-    <button type="button" class="item-card item-card-clickable card border-secondary bg-dark text-light text-center h-100" @onclick="OnClick">
+    <button type="button" class="item-card item-card-clickable card border-secondary bg-dark text-light text-center h-100" aria-label="@Item.DisplayName" @onclick="OnClick">
         @CardContent
     </button>
 }

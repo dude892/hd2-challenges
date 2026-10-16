@@ -18,10 +18,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Page.GetByRole(AriaRole.Button, new() { Name = "3 stars", Exact = true }).ClickAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Continue to Rewards" }).ClickAsync();
 
-        ILocator modal = Page.Locator(".app-modal.item-modal");
+        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" });
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Reward Options" })).ToBeVisibleAsync();
         string[] rewards = [.. await modal.Locator(".item-card").AllTextContentsAsync()];
-        await modal.GetByRole(AriaRole.Button, new() { Name = "×" }).ClickAsync();
+        await modal.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
         await Expect(failed).ToBeDisabledAsync();
         await Expect(complete).ToBeEnabledAsync();
         await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
@@ -56,11 +56,11 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         ILocator failed = Page.GetByRole(AriaRole.Button, new() { Name = "Mission Failed", Exact = true });
         await failed.ClickAsync();
 
-        ILocator modal = Page.Locator(".app-modal.item-modal");
+        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Punishment Options" });
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Punishment Options" })).ToBeVisibleAsync();
         await Expect(modal.Locator(".item-card")).ToHaveCountAsync(1);
         await Expect(modal.Locator(".item-card")).ToContainTextAsync("UAV Recon");
-        await modal.GetByRole(AriaRole.Button, new() { Name = "×" }).ClickAsync();
+        await modal.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
         await Expect(complete).ToBeDisabledAsync();
         await Expect(failed).ToBeEnabledAsync();
 
@@ -70,7 +70,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Punishment Options" })).ToBeVisibleAsync();
         await Expect(modal.Locator(".item-card")).ToHaveCountAsync(1);
         await Expect(modal.Locator(".item-card")).ToContainTextAsync("UAV Recon");
-        await modal.Locator(".item-card").ClickAsync();
+        await modal.GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 
         await Expect(modal).ToHaveCountAsync(0);
         await Expect(complete).ToBeEnabledAsync();
@@ -87,9 +87,9 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await StartRunAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = buttonName, Exact = true }).ClickAsync();
 
-        ILocator modal = Page.Locator(".app-modal");
+        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = title, Exact = true });
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = title, Exact = true })).ToBeVisibleAsync();
-        await modal.GetByRole(AriaRole.Button, new() { Name = "×" }).ClickAsync();
+        await modal.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
 
         await Expect(modal).ToHaveCountAsync(0);
         await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
@@ -102,7 +102,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await StartRunAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Run Settings", Exact = true }).ClickAsync();
 
-        ILocator modal = Page.Locator(".app-modal");
+        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Run Settings", Exact = true });
         await modal.GetByRole(AriaRole.Heading, new() { Name = "Run Settings", Exact = true }).ClickAsync();
         await Expect(modal).ToBeVisibleAsync();
 
@@ -115,10 +115,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     {
         await StartRunAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save Slots", Exact = true }).ClickAsync();
-        ILocator saveManager = Page.Locator(".app-modal.save-slot-modal");
+        ILocator saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Edit name" }).ClickAsync();
 
-        ILocator renameModal = Page.Locator(".app-modal.save-slot-rename-modal");
+        ILocator renameModal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Rename Save Slot" });
         ILocator nameInput = renameModal.GetByLabel("Slot name");
         string originalName = await nameInput.InputValueAsync();
         ILocator saveButton = renameModal.GetByRole(AriaRole.Button, new() { Name = "Save name" });
@@ -142,13 +142,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     {
         await StartRunAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save Slots", Exact = true }).ClickAsync();
-        ILocator saveManager = Page.Locator(".app-modal.save-slot-modal");
+        ILocator saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete", Exact = true }).ClickAsync();
 
-        ILocator confirmation = Page.Locator(".app-modal").Filter(new()
-        {
-            Has = Page.GetByRole(AriaRole.Heading, new() { Name = "Delete Current Save?", Exact = true })
-        });
+        ILocator confirmation = Page.GetByRole(AriaRole.Dialog, new() { Name = "Delete Current Save?", Exact = true });
         await Expect(confirmation).ToBeVisibleAsync();
         await Page.Locator(".app-modal-backdrop").Filter(new() { Has = confirmation })
             .ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
@@ -157,7 +154,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
         await Expect(confirmation).ToHaveCountAsync(0);
         await Expect(saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete", Exact = true })).ToBeVisibleAsync();
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "×" }).ClickAsync();
+        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
         await Page.ReloadAsync();
         await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
     }
@@ -167,13 +164,13 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     {
         await StartRunAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save Slots", Exact = true }).ClickAsync();
-        ILocator saveManager = Page.Locator(".app-modal.save-slot-modal");
+        ILocator saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete", Exact = true }).ClickAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Delete Save", Exact = true }).ClickAsync();
 
         await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Delete Current Save?", Exact = true })).ToHaveCountAsync(0);
         await Expect(saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete", Exact = true })).ToHaveCountAsync(0);
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "×" }).ClickAsync();
+        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run", Exact = true })).ToBeVisibleAsync();
 
         await Page.ReloadAsync();

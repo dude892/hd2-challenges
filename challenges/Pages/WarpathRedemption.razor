@@ -47,8 +47,8 @@ else
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
-                        <label class="form-label text-light">Difficulty</label>
-                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
+                        <label class="form-label text-light" for="redemption-difficulty">Difficulty</label>
+                        <select id="redemption-difficulty" class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
                             @foreach (var difficulty in RedemptionCatalog.Difficulties)
                             {
                                 <option value="@difficulty.Id">@difficulty.DisplayName</option>

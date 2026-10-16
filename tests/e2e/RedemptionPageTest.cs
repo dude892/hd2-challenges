@@ -42,15 +42,16 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
             }
         };
         string json = JsonSerializer.Serialize(saveExport, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        await Page.Locator(".app-modal.save-slot-modal input[type=file]").SetInputFilesAsync(new FilePayload
+        await Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" })
+            .GetByLabel("Import Save").SetInputFilesAsync(new FilePayload
         {
             Name = "test-run.json",
             MimeType = "application/json",
             Buffer = Encoding.UTF8.GetBytes(json)
         });
 
-        await Expect(Page.Locator(".toast-body")).ToContainTextAsync("Imported slot Test Run.");
-        await Page.Locator(".app-modal.save-slot-modal")
-            .GetByRole(AriaRole.Button, new() { Name = "×" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Status)).ToContainTextAsync("Imported slot Test Run.");
+        await Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" })
+            .GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
     }
 }

@@ -14,7 +14,7 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
             "|",
             await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
 
-        await Page.Locator("select.form-select").SelectOptionAsync("quick");
+        await Page.GetByLabel("Difficulty").SelectOptionAsync("quick");
         await Expect(Page.GetByText("Quick Warpath loadout preview updated.")).ToBeVisibleAsync();
         string updatedPreview = string.Join(
             "|",

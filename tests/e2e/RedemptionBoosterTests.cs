@@ -56,7 +56,8 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await ImportRunAsync(pendingRewardIds: ["uavrecon"]);
         await Page.GetByRole(AriaRole.Button, new() { Name = "Mission Complete" }).ClickAsync();
         await Expect(Page.GetByText("Reward Options")).ToBeVisibleAsync();
-        await Page.Locator(".app-modal.item-modal .item-card").Filter(new() { HasText = "UAV Recon" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" })
+            .GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
