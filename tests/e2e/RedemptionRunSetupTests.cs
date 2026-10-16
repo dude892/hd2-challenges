@@ -12,7 +12,7 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
         await OpenSetupAsync();
         string initialPreview = await GetLoadoutPreviewAsync();
 
-        await Page.GetByLabel("Difficulty").SelectOptionAsync("quick");
+        await Page.GetByLabel("Select campaign difficulty").SelectOptionAsync("quick");
         await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Quick Warpath loadout preview updated." })).ToBeVisibleAsync();
         string updatedPreview = await GetLoadoutPreviewAsync();
         Assert.NotEqual(initialPreview, updatedPreview);

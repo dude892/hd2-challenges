@@ -43,7 +43,7 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
         };
         string json = JsonSerializer.Serialize(saveExport, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         await Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" })
-            .GetByLabel("Import Save").SetInputFilesAsync(new FilePayload
+            .GetByLabel("Select a save file to import").SetInputFilesAsync(new FilePayload
         {
             Name = "test-run.json",
             MimeType = "application/json",

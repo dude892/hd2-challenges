@@ -37,7 +37,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot" }).ClickAsync();
 
         ILocator renameModal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Rename Save Slot" });
-        await renameModal.GetByLabel("Slot name").FillAsync("Campaign One");
+        await renameModal.GetByLabel("New save slot name").FillAsync("Campaign One");
         await renameModal.GetByRole(AriaRole.Button, new() { Name = "Save new save slot name" }).ClickAsync();
         await Expect(saveManager).ToContainTextAsync("Campaign One");
 
@@ -92,15 +92,16 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         string json = await File.ReadAllTextAsync(await download.PathAsync());
         using JsonDocument export = JsonDocument.Parse(json);
         Assert.Equal("warpath-redemption", export.RootElement.GetProperty("mode").GetString());
+        string importedSlotName = export.RootElement.GetProperty("slot").GetProperty("name").GetString()!;
 
-        await saveManager.GetByLabel("Import Save").SetInputFilesAsync(new FilePayload
+        await saveManager.GetByLabel("Select a save file to import").SetInputFilesAsync(new FilePayload
         {
             Name = download.SuggestedFilename,
             MimeType = "application/json",
             Buffer = Encoding.UTF8.GetBytes(json)
         });
 
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = export.RootElement.GetProperty("slot").GetProperty("name").GetString() }))
+        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = $"Imported slot {importedSlotName}." }))
             .ToBeVisibleAsync();
         await Expect(saveManager.GetByRole(AriaRole.Group)).ToHaveCountAsync(2);
     }

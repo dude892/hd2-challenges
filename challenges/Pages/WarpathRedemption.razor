@@ -48,7 +48,7 @@ else
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
                         <label class="form-label text-light" for="redemption-difficulty">Difficulty</label>
-                        <select id="redemption-difficulty" class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
+                        <select id="redemption-difficulty" class="form-select bg-dark text-light border-secondary" aria-label="Select campaign difficulty" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
                             @foreach (var difficulty in RedemptionCatalog.Difficulties)
                             {
                                 <option value="@difficulty.Id">@difficulty.DisplayName</option>
@@ -406,7 +406,7 @@ else
             <button class="btn btn-primary btn-sm" aria-label="Create save snapshot" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
             <label class="btn btn-outline-light btn-sm mb-0">
                 Import Save
-                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
+                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" aria-label="Select a save file to import" />
             </label>
         </HeaderButtons>
         <MainContent>
