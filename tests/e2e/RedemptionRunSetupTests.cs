@@ -25,7 +25,7 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
         await Expect(Page.GetByText("Quick Warpath", new() { Exact = true })).ToBeVisibleAsync();
 
         await Page.GetByRole(AriaRole.Button, new() { Name = "Run Settings" }).ClickAsync();
-        await Expect(Page.Locator(".app-modal")).ToContainTextAsync("Quick Warpath");
+        await Expect(Page.GetByRole(AriaRole.Dialog, new() { Name = "Run Settings" })).ToContainTextAsync("Quick Warpath");
     }
 
     [Fact]

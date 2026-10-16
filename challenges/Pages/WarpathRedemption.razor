@@ -311,7 +311,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Reward choices" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
                     @foreach (var group in _state.PendingRewardItems.Categories)
                     {
                         @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(group))
@@ -338,7 +338,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Punishment choices" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
                     @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems))
                     {
                         <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
@@ -356,7 +356,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Banned items" style="@($"--item-columns: {_state.BannedItems.Count}")">
                     @foreach (var group in _state.BannedItems.Categories)
                     {
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(group))

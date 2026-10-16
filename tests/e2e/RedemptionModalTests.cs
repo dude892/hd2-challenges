@@ -20,7 +20,8 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
         ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" });
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Reward Options" })).ToBeVisibleAsync();
-        string[] rewards = [.. await modal.Locator(".item-card").AllTextContentsAsync()];
+        ILocator rewardChoices = modal.GetByRole(AriaRole.Group, new() { Name = "Reward choices" });
+        string[] rewards = [.. await rewardChoices.GetByRole(AriaRole.Button).AllTextContentsAsync()];
         await modal.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
         await Expect(failed).ToBeDisabledAsync();
         await Expect(complete).ToBeEnabledAsync();
@@ -30,7 +31,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(failed).ToBeDisabledAsync();
         await complete.ClickAsync();
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Reward Options" })).ToBeVisibleAsync();
-        await Expect(modal.Locator(".item-card")).ToHaveTextAsync(rewards);
+        await Expect(rewardChoices.GetByRole(AriaRole.Button)).ToHaveTextAsync(rewards);
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Continue to Rewards" })).ToHaveCountAsync(0);
 
         if (banRewards)
@@ -39,7 +40,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         }
         else
         {
-            await modal.Locator(".item-card").First.ClickAsync();
+            await rewardChoices.GetByRole(AriaRole.Button).First.ClickAsync();
         }
 
         await Expect(modal).ToHaveCountAsync(0);
@@ -58,8 +59,9 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
         ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Punishment Options" });
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Punishment Options" })).ToBeVisibleAsync();
-        await Expect(modal.Locator(".item-card")).ToHaveCountAsync(1);
-        await Expect(modal.Locator(".item-card")).ToContainTextAsync("UAV Recon");
+        ILocator punishmentChoices = modal.GetByRole(AriaRole.Group, new() { Name = "Punishment choices" });
+        await Expect(punishmentChoices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
+        await Expect(punishmentChoices).ToContainTextAsync("UAV Recon");
         await modal.GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
         await Expect(complete).ToBeDisabledAsync();
         await Expect(failed).ToBeEnabledAsync();
@@ -68,8 +70,8 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(complete).ToBeDisabledAsync();
         await failed.ClickAsync();
         await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Punishment Options" })).ToBeVisibleAsync();
-        await Expect(modal.Locator(".item-card")).ToHaveCountAsync(1);
-        await Expect(modal.Locator(".item-card")).ToContainTextAsync("UAV Recon");
+        await Expect(punishmentChoices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
+        await Expect(punishmentChoices).ToContainTextAsync("UAV Recon");
         await modal.GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 
         await Expect(modal).ToHaveCountAsync(0);
