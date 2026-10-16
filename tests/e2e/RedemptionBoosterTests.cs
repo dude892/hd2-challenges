@@ -54,8 +54,8 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
     public async Task ClaimingBoosterRewardAutomaticallyExpandsAccordion()
     {
         await ImportRunAsync(pendingRewardIds: ["uavrecon"]);
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Mission Complete" }).ClickAsync();
-        await Expect(Page.GetByText("Reward Options")).ToBeVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" })).ToBeVisibleAsync();
         await Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" })
             .GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 

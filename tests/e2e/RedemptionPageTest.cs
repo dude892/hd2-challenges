@@ -10,19 +10,19 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
     protected async Task OpenSetupAsync()
     {
         await Page.GotoAsync($"{webApp.BaseUrl}/warpath-redemption");
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" }).WaitForAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run" }).WaitForAsync();
     }
 
     protected async Task StartRunAsync()
     {
         await OpenSetupAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run" }).ClickAsync();
     }
 
     protected async Task ImportRunAsync(string[]? acquiredItemIds = null, string[]? pendingRewardIds = null)
     {
         await OpenSetupAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Save Slots" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Open save slot manager" }).ClickAsync();
 
         object saveExport = new
         {
@@ -50,8 +50,8 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
             Buffer = Encoding.UTF8.GetBytes(json)
         });
 
-        await Expect(Page.GetByRole(AriaRole.Status)).ToContainTextAsync("Imported slot Test Run.");
+        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Imported slot Test Run." })).ToBeVisibleAsync();
         await Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" })
-            .GetByRole(AriaRole.Button, new() { Name = "Close dialog" }).ClickAsync();
+            .GetByRole(AriaRole.Button, new() { Name = "Close Warpath: Redemption Save Slots dialog" }).ClickAsync();
     }
 }
