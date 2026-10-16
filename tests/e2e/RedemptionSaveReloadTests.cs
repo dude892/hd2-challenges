@@ -37,7 +37,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot" }).ClickAsync();
 
         ILocator renameModal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Rename Save Slot" });
-        await renameModal.GetByLabel("New save slot name").FillAsync("Campaign One");
+        await renameModal.GetByRole(AriaRole.Textbox, new() { Name = "New save slot name" }).FillAsync("Campaign One");
         await renameModal.GetByRole(AriaRole.Button, new() { Name = "Save new save slot name" }).ClickAsync();
         await Expect(saveManager).ToContainTextAsync("Campaign One");
 

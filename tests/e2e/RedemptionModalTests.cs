@@ -122,7 +122,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot" }).ClickAsync();
 
         ILocator renameModal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Rename Save Slot" });
-        ILocator nameInput = renameModal.GetByLabel("New save slot name");
+        ILocator nameInput = renameModal.GetByRole(AriaRole.Textbox, new() { Name = "New save slot name" });
         string originalName = await nameInput.InputValueAsync();
         ILocator saveButton = renameModal.GetByRole(AriaRole.Button, new() { Name = "Save new save slot name" });
         await Expect(saveButton).ToBeDisabledAsync();
@@ -137,7 +137,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(saveManager).ToContainTextAsync(originalName);
         await Expect(saveManager).Not.ToContainTextAsync("Unsaved modal test name");
         await saveManager.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot" }).ClickAsync();
-        await Expect(renameModal.GetByLabel("New save slot name")).ToHaveValueAsync(originalName);
+        await Expect(renameModal.GetByRole(AriaRole.Textbox, new() { Name = "New save slot name" })).ToHaveValueAsync(originalName);
     }
 
     [Fact]
