@@ -21,10 +21,10 @@ public sealed class ComponentTests
             .Add(card => card.IsSelected, true)
             .Add(card => card.OnClick, EventCallback.Factory.Create(this, () => clickCount++)));
 
-        Assert.Contains("warbond-card-selected", component.Find("button").ClassName);
-        Assert.Contains("Test Warbond", component.Markup);
+        var card = component.Find("[aria-label='Warbond: Test Warbond']");
+        Assert.Equal("true", card.GetAttribute("aria-pressed"));
 
-        component.Find("button").Click();
+        card.Click();
 
         Assert.Equal(1, clickCount);
     }

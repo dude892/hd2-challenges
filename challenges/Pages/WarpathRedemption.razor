@@ -26,12 +26,12 @@ else
             </h1>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
+            <button class="btn btn-outline-light" aria-label="Open save slot manager" @onclick="(() => _showSaveManager = true)">Save Slots</button>
             @if (_state.RunStarted)
             {
-                <button class="btn btn-outline-light" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
-                <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
+                <button class="btn btn-outline-light" aria-label="Open current run settings" @onclick="(() => _showRunSettings = true)">Run Settings</button>
+                <button class="btn btn-outline-primary" aria-label="Download current run summary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-warning" aria-label="Start a new Warpath: Redemption run" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
     </div>
@@ -41,14 +41,14 @@ else
         <div class="row g-4">
             <div class="col-xl-4 d-grid row-gap-3">
                 <div class="row">
-                    <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
+                    <button class="btn btn-success" aria-label="Begin Warpath: Redemption run" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
                 </div>
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
-                        <label class="form-label text-light">Difficulty</label>
-                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
+                        <label class="form-label text-light" for="redemption-difficulty">Difficulty</label>
+                        <select id="redemption-difficulty" class="form-select bg-dark text-light border-secondary" aria-label="Select campaign difficulty" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
                             @foreach (var difficulty in RedemptionCatalog.Difficulties)
                             {
                                 <option value="@difficulty.Id">@difficulty.DisplayName</option>
@@ -79,7 +79,7 @@ else
                         <h4 class="text-light mb-0">Starting Loadout Preview</h4>
                         <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
                     </div>
-                    <div class="item-grid mt-3">
+                    <div class="item-grid mt-3" role="group" aria-label="Starting loadout preview">
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
                         {
                             <ItemCard Item="item" Badge="Starter" />
@@ -98,7 +98,7 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Difficulty</small>
-                                <div class="fs-5 text-light">@_state.Difficulty.DisplayName</div>
+                                <div class="fs-5 text-light" role="status" aria-label="Selected difficulty">@_state.Difficulty.DisplayName</div>
                             </div>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Mission</small>
-                                <div class="fs-5 text-light">@_state.CurrentOperation.MissionLabel</div>
+                                <div class="fs-5 text-light" role="status" aria-label="Current mission progress">@_state.CurrentOperation.MissionLabel</div>
                             </div>
                         </div>
                     </div>
@@ -131,9 +131,9 @@ else
                     </div>
                     <div class="col-md-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
-                            <button class="btn btn-primary btn-lg btn-block" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
+                            <button class="btn btn-success btn-lg btn-block" aria-label="Record mission completion" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" aria-label="Record mission failure" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-primary btn-lg btn-block" aria-label="View banned items" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
                 </div>
@@ -143,13 +143,13 @@ else
                         <h4 class="accordion-header">
                             <button class="accordion-button collapsed" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
-                                    aria-expanded="false" aria-controls="equipment-collapse">
+                                    aria-label="Toggle acquired equipment" aria-expanded="false" aria-controls="equipment-collapse">
                                 <span class="d-flex align-items-baseline gap-3">
                                     <span>Equipment</span>
                                 </span>
                             </button>
                         </h4>
-                        <div id="equipment-collapse" class="accordion-collapse collapse">
+                        <div id="equipment-collapse" class="accordion-collapse collapse" role="region" aria-label="Acquired equipment">
                             <div class="accordion-body">
                                 <div class="d-flex flex-column gap-5">
                                     <div class="row gx-5 gy-3 align-items-start">
@@ -256,7 +256,7 @@ else
                                 </span>
                                 <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                             </button>
-                            <div id="boosters-collapse" class="booster-accordion-content" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
+                            <div id="boosters-collapse" class="booster-accordion-content" role="region" aria-label="Acquired boosters" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
                                 <div class="booster-accordion-content-inner p-3">
                                     <div class="item-grid run-item-grid">
                                         @if (_state.AcquiredItems.Boosters.Any())
@@ -289,7 +289,7 @@ else
                     {
                         <button type="button"
                                 class="mission-star-button @(_state.CurrentOperation.SelectedStars >= star ? "selected" : null)"
-                                aria-label="@star star@(star == 1 ? string.Empty : "s")"
+                                aria-label="Set mission rating to @star star@(star == 1 ? string.Empty : "s")"
                                 aria-pressed="@(_state.CurrentOperation.SelectedStars >= star)"
                                 @onclick="() => { if(_state.CurrentOperation.SelectedStars == star) _state.CurrentOperation.SelectedStars = 0; else _state.CurrentOperation.SelectedStars = star; }">
                             @(_state.CurrentOperation.SelectedStars >= star ? "★" : "☆")
@@ -299,7 +299,7 @@ else
             </div>
         </MainContent>
         <FooterContent>
-            <button class="btn btn-success" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
+            <button class="btn btn-success" aria-label="Continue to reward selection" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
         </FooterContent>
     </Modal>
 
@@ -311,7 +311,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Reward choices" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
                     @foreach (var group in _state.PendingRewardItems.Categories)
                     {
                         @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(group))
@@ -325,7 +325,7 @@ else
         <FooterContent>
             @if (_state.PendingRewardItems.Count > 0)
             {
-                <button class="btn btn-warning" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
+                <button class="btn btn-warning" aria-label="Skip all rewards and ban them" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
             }
         </FooterContent>
     </Modal>
@@ -338,7 +338,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Punishment choices" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
                     @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems))
                     {
                         <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
@@ -356,7 +356,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Banned items" style="@($"--item-columns: {_state.BannedItems.Count}")">
                     @foreach (var group in _state.BannedItems.Categories)
                     {
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(group))
@@ -403,10 +403,10 @@ else
 
     <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" CssClass="save-slot-modal" OnClose="@(() => _showSaveManager = false)">
         <HeaderButtons>
-            <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
+            <button class="btn btn-primary btn-sm" aria-label="Create save snapshot" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
             <label class="btn btn-outline-light btn-sm mb-0">
                 Import Save
-                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
+                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" aria-label="Select a save file to import" />
             </label>
         </HeaderButtons>
         <MainContent>
@@ -439,8 +439,8 @@ else
                 <p class="mb-0">Delete the current save "@slotToDelete.Name"? This cannot be undone.</p>
             </MainContent>
             <FooterContent>
-                <button class="btn btn-outline-light" @onclick="() => _slotToDelete = null">Cancel</button>
-                <button class="btn btn-danger" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
+                <button class="btn btn-outline-light" aria-label="Cancel save deletion" @onclick="() => _slotToDelete = null">Cancel</button>
+                <button class="btn btn-danger" aria-label="Confirm deleting this save" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
             </FooterContent>
         </Modal>
     }

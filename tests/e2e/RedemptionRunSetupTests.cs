@@ -10,31 +10,35 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
     public async Task SelectedDifficultyIsShownInRunSettings()
     {
         await OpenSetupAsync();
-        string initialPreview = string.Join(
-            "|",
-            await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
+        string initialPreview = await GetLoadoutPreviewAsync();
 
-        await Page.Locator("select.form-select").SelectOptionAsync("quick");
-        await Expect(Page.GetByText("Quick Warpath loadout preview updated.")).ToBeVisibleAsync();
-        string updatedPreview = string.Join(
-            "|",
-            await Page.Locator(".col-xl-8 .section-card .item-card").AllInnerTextsAsync());
+        await Page.GetByLabel("Select campaign difficulty").SelectOptionAsync("quick");
+        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Quick Warpath loadout preview updated." })).ToBeVisibleAsync();
+        string updatedPreview = await GetLoadoutPreviewAsync();
         Assert.NotEqual(initialPreview, updatedPreview);
 
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" }).ClickAsync();
-        await Expect(Page.GetByText("Quick Warpath", new() { Exact = true })).ToBeVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Selected difficulty" })).ToContainTextAsync("Quick Warpath");
 
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Run Settings" }).ClickAsync();
-        await Expect(Page.Locator(".app-modal")).ToContainTextAsync("Quick Warpath");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Open current run settings" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Dialog, new() { Name = "Run Settings" })).ToContainTextAsync("Quick Warpath");
+    }
+
+    private async Task<string> GetLoadoutPreviewAsync()
+    {
+        ILocator[] images = [.. await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" })
+            .GetByRole(AriaRole.Img).AllAsync()];
+        string?[] itemNames = await Task.WhenAll(images.Select(image => image.GetAttributeAsync("alt")));
+        return string.Join("|", itemNames);
     }
 
     [Fact]
     public async Task StartingNewRunReturnsToTheSetupScreen()
     {
         await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Start New Run" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Start a new Warpath: Redemption run" }).ClickAsync();
 
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run" })).ToBeVisibleAsync();
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Mission Complete" })).ToHaveCountAsync(0);
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run" })).ToBeVisibleAsync();
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion" })).ToHaveCountAsync(0);
     }
 }

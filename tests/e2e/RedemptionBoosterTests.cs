@@ -12,7 +12,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await StartRunAsync();
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
-        ILocator content = Page.Locator("#boosters-collapse");
+        ILocator content = Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(content).ToHaveAttributeAsync("aria-hidden", "true");
         await Expect(content).ToBeHiddenAsync();
@@ -36,7 +36,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
 
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" }))
             .ToHaveAttributeAsync("aria-expanded", "false");
-        await Expect(Page.Locator("#boosters-collapse")).ToBeHiddenAsync();
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })).ToBeHiddenAsync();
     }
 
     [Fact]
@@ -47,20 +47,21 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await Page.ReloadAsync();
         await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" }))
             .ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(Page.Locator("#boosters-collapse")).ToContainTextAsync("UAV Recon");
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })).ToContainTextAsync("UAV Recon");
     }
 
     [Fact]
     public async Task ClaimingBoosterRewardAutomaticallyExpandsAccordion()
     {
         await ImportRunAsync(pendingRewardIds: ["uavrecon"]);
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Mission Complete" }).ClickAsync();
-        await Expect(Page.GetByText("Reward Options")).ToBeVisibleAsync();
-        await Page.Locator(".app-modal.item-modal .item-card").Filter(new() { HasText = "UAV Recon" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion" }).ClickAsync();
+        await Expect(Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" })).ToBeVisibleAsync();
+        await Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" })
+            .GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 
         ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters" });
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(Page.Locator("#boosters-collapse")).ToContainTextAsync("UAV Recon");
+        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })).ToContainTextAsync("UAV Recon");
     }
 
 }
