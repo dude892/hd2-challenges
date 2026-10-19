@@ -12,6 +12,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
     public async Task AdvancingMissionPersistsAndReloadsTheActiveRun()
     {
         await StartRunAsync();
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "3");
         await Modals.MissionComplete.OpenAsync();
         await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
         await Modals.RewardOptions.OpenAsync();
@@ -20,11 +21,30 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
         await Page.ReloadAsync();
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "3");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
 
         await Modals.SaveSlots.OpenAsync();
         await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync("Normal Warpath |");
+    }
+
+    [Fact]
+    public async Task AdvancingPastTheLastMissionUpdatesTheOperationIndex()
+    {
+        await ImportRunAsync(operationIndex: 3, missionNumber: 2);
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "3");
+
+        await Modals.MissionComplete.OpenAsync();
+        await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
+        await Modals.RewardOptions.OpenAsync();
+        await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).First.ClickAsync();
+
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "4");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
+        await Page.ReloadAsync();
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "4");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
     }
 
     [Fact]
@@ -104,6 +124,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await StartRunAsync();
         await CompleteFirstMissionAndOpenRewardsAsync();
 
+        int rewardCount = await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).CountAsync();
         await Modals.RewardOptions.SkipAndBanAllButton.ClickAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
@@ -111,11 +132,15 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Modals.BannedItems.OpenAsync();
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();
         await Expect(Modals.BannedItems.Items).ToBeVisibleAsync();
+        await Expect(Modals.BannedItems.Items).ToHaveAttributeAsync("data-item-count", rewardCount.ToString());
+        await Expect(Modals.BannedItems.Items.Locator(".item-card")).ToHaveCountAsync(rewardCount);
 
         await Page.ReloadAsync();
         await Modals.BannedItems.OpenAsync();
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();
         await Expect(Modals.BannedItems.Items).ToBeVisibleAsync();
+        await Expect(Modals.BannedItems.Items).ToHaveAttributeAsync("data-item-count", rewardCount.ToString());
+        await Expect(Modals.BannedItems.Items.Locator(".item-card")).ToHaveCountAsync(rewardCount);
     }
 
     private async Task CompleteFirstMissionAndOpenRewardsAsync()

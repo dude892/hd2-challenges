@@ -14,17 +14,20 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
         await Expect(AcquiredBoostersRegion).ToBeHiddenAsync();
+        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "0");
 
         await BoosterAccordionToggle.ClickAsync();
         await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
         await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "false");
         await Expect(AcquiredBoostersRegion).ToBeVisibleAsync();
         await Expect(AcquiredBoostersRegion).ToContainTextAsync("No boosters acquired.");
+        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "0");
 
         await BoosterAccordionToggle.ClickAsync();
         await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
         await Expect(AcquiredBoostersRegion).ToBeHiddenAsync();
+        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "0");
     }
 
     [Fact]
@@ -46,6 +49,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await Page.ReloadAsync();
         await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
         await Expect(AcquiredBoostersRegion).ToContainTextAsync("UAV Recon");
+        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "1");
     }
 
     [Fact]
@@ -59,6 +63,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
 
         await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
         await Expect(AcquiredBoostersRegion).ToContainTextAsync("UAV Recon");
+        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "1");
     }
 
 }

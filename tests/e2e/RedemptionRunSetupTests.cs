@@ -26,8 +26,11 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
 
     private async Task<string> GetLoadoutPreviewAsync()
     {
-        ILocator[] images = [.. await Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" })
-            .GetByRole(AriaRole.Img).AllAsync()];
+        ILocator preview = Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" });
+        int itemCount = await preview.Locator(".item-card").CountAsync();
+        await Expect(preview).ToHaveAttributeAsync("data-item-count", itemCount.ToString());
+
+        ILocator[] images = [.. await preview.GetByRole(AriaRole.Img).AllAsync()];
         string?[] itemNames = await Task.WhenAll(images.Select(image => image.GetAttributeAsync("alt")));
         return string.Join("|", itemNames);
     }

@@ -9,10 +9,13 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
 {
     private protected RedemptionModals Modals => new(Page);
     protected ILocator BeginRunButton => Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run", Exact = true });
+    protected ILocator CurrentOperationProgress => Page.GetByRole(AriaRole.Status, new() { Name = "Current operation", Exact = true });
     protected ILocator CurrentMissionProgress => Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress", Exact = true });
+    protected ILocator MissionsFailedCount => Page.GetByRole(AriaRole.Status, new() { Name = "Missions failed", Exact = true });
     protected ILocator ImportedSaveStatus => Page.GetByRole(AriaRole.Status, new() { NameRegex = new System.Text.RegularExpressions.Regex("^Imported slot") });
     protected ILocator BoosterAccordionToggle => Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters", Exact = true });
     protected ILocator AcquiredBoostersRegion => Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true, Exact = true });
+    protected ILocator AcquiredBoostersItems => AcquiredBoostersRegion.Locator(".item-grid");
 
     protected async Task OpenSetupAsync()
     {
@@ -26,7 +29,11 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
         await BeginRunButton.ClickAsync();
     }
 
-    protected async Task ImportRunAsync(string[]? acquiredItemIds = null, string[]? pendingRewardIds = null)
+    protected async Task ImportRunAsync(
+        string[]? acquiredItemIds = null,
+        string[]? pendingRewardIds = null,
+        int operationIndex = 3,
+        int missionNumber = 1)
     {
         await OpenSetupAsync();
         await Modals.SaveSlots.OpenAsync();
@@ -41,8 +48,8 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
                 State = new
                 {
                     DifficultyId = "normal",
-                    OperationIndex = 3,
-                    MissionNumber = 1,
+                    OperationIndex = operationIndex,
+                    MissionNumber = missionNumber,
                     AcquiredItemIds = acquiredItemIds ?? [],
                     PendingRewardIds = pendingRewardIds ?? []
                 }

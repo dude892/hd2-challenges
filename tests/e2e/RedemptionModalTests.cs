@@ -19,6 +19,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         RewardOptionsModal rewardOptions = Modals.RewardOptions;
         await Expect(rewardOptions.Heading).ToBeVisibleAsync();
         string[] rewards = [.. await rewardOptions.Choices.GetByRole(AriaRole.Button).AllTextContentsAsync()];
+        await Expect(rewardOptions.Choices).ToHaveAttributeAsync("data-item-count", rewards.Length.ToString());
         await rewardOptions.CloseAsync();
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
@@ -30,6 +31,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Modals.MissionComplete.OpenAsync();
         await Expect(rewardOptions.Heading).ToBeVisibleAsync();
         await Expect(rewardOptions.Choices.GetByRole(AriaRole.Button)).ToHaveTextAsync(rewards);
+        await Expect(rewardOptions.Choices).ToHaveAttributeAsync("data-item-count", rewards.Length.ToString());
         await Expect(Modals.MissionComplete.ContinueToRewardsButton).ToHaveCountAsync(0);
 
         if (banRewards)
@@ -52,27 +54,34 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     public async Task PendingPunishmentLocksMissionCompletionUntilClaimed()
     {
         await ImportRunAsync(acquiredItemIds: ["uavrecon"]);
+        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "0");
         await Modals.PunishmentOptions.OpenAsync();
 
         PunishmentOptionsModal punishmentOptions = Modals.PunishmentOptions;
         await Expect(punishmentOptions.Heading).ToBeVisibleAsync();
         await Expect(punishmentOptions.Choices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
+        await Expect(punishmentOptions.Choices).ToHaveAttributeAsync("data-item-count", "1");
         await Expect(punishmentOptions.Choices).ToContainTextAsync("UAV Recon");
         await punishmentOptions.CloseAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
         await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
 
         await Page.ReloadAsync();
+        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "0");
         await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
         await punishmentOptions.OpenAsync();
         await Expect(punishmentOptions.Heading).ToBeVisibleAsync();
         await Expect(punishmentOptions.Choices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
+        await Expect(punishmentOptions.Choices).ToHaveAttributeAsync("data-item-count", "1");
         await Expect(punishmentOptions.Choices).ToContainTextAsync("UAV Recon");
         await punishmentOptions.Choices.GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 
         await Expect(punishmentOptions.Dialog).ToHaveCountAsync(0);
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
         await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
+        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "1");
+        await Page.ReloadAsync();
+        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "1");
         await Expect(AcquiredBoostersRegion
             .GetByText("UAV Recon", new() { Exact = true })).ToHaveCountAsync(0);
     }

@@ -60,7 +60,7 @@ else
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3">
+                    <div class="item-grid mt-3" data-item-count="@Catalog.GetAllWarbonds().Count">
                         @foreach (var warbond in Catalog.GetAllWarbonds())
                         {
                             var isSelected = _state.SelectedWarbonds.Contains(warbond);
@@ -79,7 +79,7 @@ else
                         <h4 class="text-light mb-0">Starting Loadout Preview</h4>
                         <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
                     </div>
-                    <div class="item-grid mt-3" role="group" aria-label="Starting loadout preview">
+                    <div class="item-grid mt-3" role="group" aria-label="Starting loadout preview" data-item-count="@_state.StarterItems.Count">
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
                         {
                             <ItemCard Item="item" Badge="Starter" />
@@ -108,7 +108,8 @@ else
                                 <small class="text-secondary">Operation</small>
                                 <div class="d-flex align-items-center gap-2">
                                     <img class="difficulty-icon" src="@($"svgs/difficulty/{_state.CurrentOperation.DifficultyIndex}.svg")" alt="" />
-                                    <div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div>
+                                    <div class="fs-5 text-light" role="status" aria-label="Current operation"
+                                         data-operation-index="@_state.CurrentOperation.DifficultyIndex">@_state.CurrentOperation.DifficultyLabel</div>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +128,8 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Failures</small>
-                                <div class="fs-5 text-light">@_state.MissionsFailed</div>
+                                <div class="fs-5 text-light" role="status" aria-label="Missions failed"
+                                     data-missions-failed="@_state.MissionsFailed">@_state.MissionsFailed</div>
                             </div>
                         </div>
                     </div>
@@ -157,7 +159,7 @@ else
                                     <div class="row gx-5 gy-3 align-items-start">
                                         <div class="col-12 col-sm-auto">
                                             <h5 class="text-light">Primaries</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" data-item-count="@_state.AcquiredItems.Primaries.Count()" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
                                                 @if (!_state.AcquiredItems.Primaries.Any())
                                                 {
                                                     <div class="text-secondary small">No primary items acquired.</div>
@@ -173,7 +175,7 @@ else
                                         </div>
                                         <div class="col-12 col-sm">
                                             <h5 class="text-light">Secondaries</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" data-item-count="@_state.AcquiredItems.Secondaries.Count()" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
                                                 @if (!_state.AcquiredItems.Secondaries.Any())
                                                 {
                                                     <div class="text-secondary small">No secondary items acquired.</div>
@@ -191,7 +193,7 @@ else
                                     <div class="row gx-5 gy-3 align-items-start">
                                         <div class="col-12 col-sm-auto">
                                             <h5 class="text-light">Throwables</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" data-item-count="@_state.AcquiredItems.Throwables.Count()" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
                                                 @if (!_state.AcquiredItems.Throwables.Any())
                                                 {
                                                     <div class="text-secondary small">No throwable items acquired.</div>
@@ -207,7 +209,7 @@ else
                                         </div>
                                         <div class="col-12 col-sm">
                                             <h5 class="text-light">Armor Passives</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
+                                            <div class="item-grid run-item-grid equipment-content-item-grid" data-item-count="@_state.AcquiredItems.Passives.Count()" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
                                                 @if (!_state.AcquiredItems.Passives.Any())
                                                 {
                                                     <div class="text-secondary small">No armor passives acquired.</div>
@@ -231,7 +233,7 @@ else
                     <div class="col-12 col-lg">
                         <div class="section-card rounded p-3 h-100">
                             <h5 class="text-light">Stratagems</h5>
-                            <div class="item-grid run-item-grid">
+                            <div class="item-grid run-item-grid" data-item-count="@_state.AcquiredItems.Stratagems.Count()">
                                 @if (!_state.AcquiredItems.Stratagems.Any())
                                 {
                                     <div class="text-secondary small">No stratagems acquired.</div>
@@ -260,7 +262,7 @@ else
                             </button>
                             <div id="boosters-collapse" class="booster-accordion-content" role="region" aria-label="Acquired boosters" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
                                 <div class="booster-accordion-content-inner p-3">
-                                    <div class="item-grid run-item-grid">
+                                    <div class="item-grid run-item-grid" data-item-count="@_state.AcquiredItems.Boosters.Count()">
                                         @if (_state.AcquiredItems.Boosters.Any())
                                         {
                                             @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters))
@@ -313,7 +315,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" role="group" aria-label="Reward choices" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Reward choices" data-item-count="@_state.PendingRewardItems.Count" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
                     @foreach (var group in _state.PendingRewardItems.Categories)
                     {
                         @foreach (GameItem item in Catalog.GetItemsInCatalogOrder(group))
@@ -340,7 +342,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" role="group" aria-label="Punishment choices" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Punishment choices" data-item-count="@_state.PendingPunishmentItems.Count" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
                     @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems))
                     {
                         <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
@@ -358,7 +360,7 @@ else
             }
             else
             {
-                <div class="item-grid justify-content-center" role="group" aria-label="Banned items" style="@($"--item-columns: {_state.BannedItems.Count}")">
+                <div class="item-grid justify-content-center" role="group" aria-label="Banned items" data-item-count="@_state.BannedItems.Count" style="@($"--item-columns: {_state.BannedItems.Count}")">
                     @foreach (var group in _state.BannedItems.Categories)
                     {
                         @foreach (var item in Catalog.GetItemsInCatalogOrder(group))
@@ -380,7 +382,7 @@ else
 
             <div class="mb-4">
                 <div class="text-secondary small mb-2">Warbonds</div>
-                <div class="item-grid">
+                <div class="item-grid" data-item-count="@_state.SelectedWarbonds.Count">
                     @foreach (var warbond in _state.SelectedWarbonds)
                     {
                         <WarbondCard Warbond="warbond" IsSelected="true" />
@@ -393,7 +395,7 @@ else
                     <div class="text-secondary small">Starting loadout</div>
                     <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
                 </div>
-                <div class="item-grid mt-3">
+                <div class="item-grid mt-3" data-item-count="@_state.StarterItems.Count">
                     @foreach (var item in Catalog.GetItemsInCatalogOrder(_state.StarterItems))
                     {
                         <ItemCard Item="item" Badge="Starter" />
