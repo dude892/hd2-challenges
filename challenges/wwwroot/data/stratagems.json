@@ -652,7 +652,7 @@
     "tags": ["Sentry", "Gas"],
     "warbond": "entrenchedDivision",
     "id": "gasmortarsentry",
-    "svg": "EmplacementsGasMine.svg",
+    "svg": "TurretsGassentry.svg",
     "antitank": false
   },
   {
