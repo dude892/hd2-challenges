@@ -5,11 +5,11 @@
             "approve": true,
             "matchCommandLine": true
         },
-        "/^dotnet test \\.\\\\tests\\\\hd2-challenges\\.tests\\.csproj(?: --verbosity quiet)?$/": {
+        "/^dotnet test --project \\.\\\\tests\\\\hd2-challenges\\.tests\\.csproj(?: --verbosity quiet)?$/": {
             "approve": true,
             "matchCommandLine": true
         },
-        "/^dotnet test \\.\\\\tests\\\\e2e\\\\hd2-challenges\\.e2e\\.tests\\.csproj(?: --verbosity quiet)?$/": {
+        "/^dotnet test --project \\.\\\\tests\\\\e2e\\\\hd2-challenges\\.e2e\\.tests\\.csproj(?: --verbosity quiet)?$/": {
             "approve": true,
             "matchCommandLine": true
         }

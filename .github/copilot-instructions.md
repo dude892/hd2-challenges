@@ -95,5 +95,10 @@ Use razor.css files to define component-specific styles instead of putting them 
 DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
 
 ## Testing
+- All three test projects use xUnit v3 4.x with Microsoft Testing Platform v2. The repository-root `global.json` selects MTP for the .NET 10 SDK.
+- Run all tests with `dotnet test --solution .\hd2-challenges.slnx`, or target a project with `dotnet test --project .\tests\hd2-challenges.tests.csproj`, `dotnet test --project .\xaml2Svg.tests\hd2Xaml2Svg.tests.csproj`, or `dotnet test --project .\tests\e2e\hd2-challenges.e2e.tests.csproj`.
+- Use `--report-trx` for TRX results and `--filter-class`, `--filter-method`, or `--filter-trait` to select tests. Pass these options directly, without a `--` separator; VSTest's `--logger trx` and `--filter` syntax do not apply.
+- Build the solution before running E2E tests with `--no-build`. Install browsers with `pwsh .\tests\e2e\bin\Debug\net10.0\playwright.ps1 install`. Select an E2E browser with the `BROWSER` environment variable (`chromium`, `firefox`, or `webkit`); Chromium is the default.
+- The E2E collection continues to share one app fixture and runs its tests sequentially. Changing test platforms does not change this isolation or scheduling behavior.
 When making changes, do not just attempt the build, use the new integrated tests. Ensure that all relevant scenarios are covered and that the tests pass successfully. If the final result behavior is not obvious based on the request, ask for more information before creating tests.
 When adjusting or creating a new flow or feature, ensure that all related components are tested and that the changes do not introduce regressions in existing functionality.

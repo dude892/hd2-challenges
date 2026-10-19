@@ -113,7 +113,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         IDownload download = await downloadTask;
         Assert.EndsWith(".json", download.SuggestedFilename);
         string downloadPath = await download.PathAsync();
-        string json = await File.ReadAllTextAsync(downloadPath);
+        string json = await File.ReadAllTextAsync(downloadPath, TestContext.Current.CancellationToken);
         using JsonDocument export = JsonDocument.Parse(json);
         Assert.Equal("warpath-redemption", export.RootElement.GetProperty("mode").GetString());
         await Modals.SaveSlots.ImportSaveInput.SetInputFilesAsync(downloadPath);

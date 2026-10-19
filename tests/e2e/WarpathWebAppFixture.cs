@@ -23,7 +23,7 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
     public CatalogService Catalog { get; private set; } = null!;
     public RedemptionCatalogService RedemptionCatalog { get; private set; } = null!;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         int port = GetAvailablePort();
         BaseUrl = $"http://127.0.0.1:{port}";
@@ -96,7 +96,7 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
         }
     }
 
-    public Task DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         if (_process is { HasExited: false })
         {
@@ -107,7 +107,7 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
         _process?.Dispose();
         _process = null;
         _httpClient.Dispose();
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
     private void AppendOutput(string? line)

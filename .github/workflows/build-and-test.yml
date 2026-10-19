@@ -4,12 +4,13 @@ on:
   pull_request:
   merge_group:
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
 
 concurrency:
-  group: build-and-test-${{ github.event.pull_request.number || github.ref }}
+  group: build-and-test-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -31,7 +32,10 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Run unit tests
-        run: dotnet test tests/hd2-challenges.tests.csproj --configuration Debug --logger trx --results-directory TestResults
+        run: dotnet test --project tests/hd2-challenges.tests.csproj --configuration Debug --report-trx --results-directory TestResults
+
+      - name: Run converter tests
+        run: dotnet test --project xaml2Svg.tests/hd2Xaml2Svg.tests.csproj --configuration Debug --report-trx --results-directory TestResults
 
       - name: Upload test results
         if: always()
@@ -72,7 +76,9 @@ jobs:
         run: pwsh tests/e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
 
       - name: Run E2E tests
-        run: dotnet test tests/e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --logger trx --results-directory TestResults -- Playwright.BrowserName=${{ matrix.browser }}
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: dotnet test --project tests/e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --report-trx --results-directory TestResults
 
       - name: Upload test results
         if: always()

@@ -1,7 +1,7 @@
 using Hd2Challenges.Models;
 using Hd2Challenges.Services;
 using Microsoft.Playwright;
-using Microsoft.Playwright.Xunit;
+using Microsoft.Playwright.Xunit.v3;
 using Xunit;
 
 namespace Hd2Challenges.EndToEnd.Tests;
