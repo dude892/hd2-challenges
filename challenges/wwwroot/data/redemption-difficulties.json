@@ -43,11 +43,9 @@
     "startOperationIndex": 4,
     "scoreModifier": 250,
     "isSuper": true,
-    "loadoutOverrides": {
-      "armorPassives": ["integratedexplosives"]
-    },
     "loadoutAdditions": {
-      "stratagems": ["sh20ballisticshieldbackpack"]
+      "stratagems": ["sh20ballisticshieldbackpack"],
+      "armorPassives": ["integratedexplosives"]
     }
   },
   {
