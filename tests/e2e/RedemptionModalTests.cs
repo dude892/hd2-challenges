@@ -12,151 +12,219 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     public async Task PendingRewardsLockMissionFailureUntilClaimedOrBanned(bool banRewards)
     {
         await StartRunAsync();
-        ILocator complete = Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion", Exact = true });
-        ILocator failed = Page.GetByRole(AriaRole.Button, new() { Name = "Record mission failure", Exact = true });
-        await complete.ClickAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 3 stars", Exact = true }).ClickAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Continue to reward selection" }).ClickAsync();
+        await Modals.MissionComplete.OpenAsync();
+        await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
+        await Modals.RewardOptions.OpenAsync();
 
-        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Reward Options" });
-        await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Reward Options" })).ToBeVisibleAsync();
-        ILocator rewardChoices = modal.GetByRole(AriaRole.Group, new() { Name = "Reward choices" });
-        string[] rewards = [.. await rewardChoices.GetByRole(AriaRole.Button).AllTextContentsAsync()];
-        await modal.GetByRole(AriaRole.Button, new() { Name = "Close Reward Options dialog" }).ClickAsync();
-        await Expect(failed).ToBeDisabledAsync();
-        await Expect(complete).ToBeEnabledAsync();
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 1 of 2");
+        RewardOptionsModal rewardOptions = Modals.RewardOptions;
+        await Expect(rewardOptions.Heading).ToBeVisibleAsync();
+        string[] rewards = [.. await rewardOptions.Choices.GetByRole(AriaRole.Button).AllTextContentsAsync()];
+        await rewardOptions.CloseAsync();
+        await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
+        await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
+        await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
 
         await Page.ReloadAsync();
-        await Expect(failed).ToBeDisabledAsync();
-        await complete.ClickAsync();
-        await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Reward Options" })).ToBeVisibleAsync();
-        await Expect(rewardChoices.GetByRole(AriaRole.Button)).ToHaveTextAsync(rewards);
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Continue to reward selection" })).ToHaveCountAsync(0);
+        await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
+        await Modals.MissionComplete.OpenAsync();
+        await Expect(rewardOptions.Heading).ToBeVisibleAsync();
+        await Expect(rewardOptions.Choices.GetByRole(AriaRole.Button)).ToHaveTextAsync(rewards);
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Continue to Rewards" })).ToHaveCountAsync(0);
 
         if (banRewards)
         {
-            await modal.GetByRole(AriaRole.Button, new() { Name = "Skip all rewards and ban them" }).ClickAsync();
+            await rewardOptions.SkipAndBanAllButton.ClickAsync();
         }
         else
         {
-            await rewardChoices.GetByRole(AriaRole.Button).First.ClickAsync();
+            await rewardOptions.Choices.GetByRole(AriaRole.Button).First.ClickAsync();
         }
 
-        await Expect(modal).ToHaveCountAsync(0);
-        await Expect(failed).ToBeEnabledAsync();
-        await Expect(complete).ToBeEnabledAsync();
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 2 of 2");
+        await Expect(rewardOptions.Dialog).ToHaveCountAsync(0);
+        await Expect(Modals.PunishmentOptions.OpenButton).ToBeEnabledAsync();
+        await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
+        await Expect(Page.GetByText("Mission 2 of 2", new() { Exact = true })).ToBeVisibleAsync();
     }
 
     [Fact]
     public async Task PendingPunishmentLocksMissionCompletionUntilClaimed()
     {
         await ImportRunAsync(acquiredItemIds: ["uavrecon"]);
-        ILocator complete = Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion", Exact = true });
-        ILocator failed = Page.GetByRole(AriaRole.Button, new() { Name = "Record mission failure", Exact = true });
-        await failed.ClickAsync();
+        await Modals.PunishmentOptions.OpenAsync();
 
-        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Punishment Options" });
-        await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Punishment Options" })).ToBeVisibleAsync();
-        ILocator punishmentChoices = modal.GetByRole(AriaRole.Group, new() { Name = "Punishment choices" });
-        await Expect(punishmentChoices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
-        await Expect(punishmentChoices).ToContainTextAsync("UAV Recon");
-        await modal.GetByRole(AriaRole.Button, new() { Name = "Close Punishment Options dialog" }).ClickAsync();
-        await Expect(complete).ToBeDisabledAsync();
-        await Expect(failed).ToBeEnabledAsync();
+        PunishmentOptionsModal punishmentOptions = Modals.PunishmentOptions;
+        await Expect(punishmentOptions.Heading).ToBeVisibleAsync();
+        await Expect(punishmentOptions.Choices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
+        await Expect(punishmentOptions.Choices).ToContainTextAsync("UAV Recon");
+        await punishmentOptions.CloseAsync();
+        await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
+        await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
 
         await Page.ReloadAsync();
-        await Expect(complete).ToBeDisabledAsync();
-        await failed.ClickAsync();
-        await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = "Punishment Options" })).ToBeVisibleAsync();
-        await Expect(punishmentChoices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
-        await Expect(punishmentChoices).ToContainTextAsync("UAV Recon");
-        await modal.GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
+        await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
+        await punishmentOptions.OpenAsync();
+        await Expect(punishmentOptions.Heading).ToBeVisibleAsync();
+        await Expect(punishmentOptions.Choices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
+        await Expect(punishmentOptions.Choices).ToContainTextAsync("UAV Recon");
+        await punishmentOptions.Choices.GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
 
-        await Expect(modal).ToHaveCountAsync(0);
-        await Expect(complete).ToBeEnabledAsync();
-        await Expect(failed).ToBeEnabledAsync();
-        await Expect(Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true })
-            .GetByRole(AriaRole.Img, new() { Name = "UAV Recon", Exact = true })).ToHaveCountAsync(0);
+        await Expect(punishmentOptions.Dialog).ToHaveCountAsync(0);
+        await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
+        await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
+        await Expect(AcquiredBoostersRegion
+            .GetByText("UAV Recon", new() { Exact = true })).ToHaveCountAsync(0);
     }
 
     [Theory]
-    [InlineData("Open save slot manager", "Warpath: Redemption Save Slots")]
-    [InlineData("Open current run settings", "Run Settings")]
-    [InlineData("Record mission completion", "Mission Complete")]
-    public async Task CloseButtonDismissesModalWithoutChangingMission(string accessibleName, string title)
+    [InlineData(BackdropDismissibleModal.SaveSlots)]
+    [InlineData(BackdropDismissibleModal.RunSettings)]
+    [InlineData(BackdropDismissibleModal.MissionComplete)]
+    public async Task CloseButtonDismissesModalWithoutChangingMission(BackdropDismissibleModal modalType)
     {
         await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = accessibleName, Exact = true }).ClickAsync();
+        ModalObject modal = GetBackdropDismissibleModal(modalType);
+        await modal.OpenAsync();
 
-        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = title, Exact = true });
-        await Expect(modal.GetByRole(AriaRole.Heading, new() { Name = title, Exact = true })).ToBeVisibleAsync();
-        await modal.GetByRole(AriaRole.Button, new() { Name = $"Close {title} dialog" }).ClickAsync();
+        await Expect(modal.Heading).ToBeVisibleAsync();
+        await modal.CloseAsync();
 
-        await Expect(modal).ToHaveCountAsync(0);
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 1 of 2");
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion", Exact = true })).ToBeEnabledAsync();
+        await Expect(modal.Dialog).ToHaveCountAsync(0);
+        await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
     }
 
-    [Fact]
-    public async Task RunSettingsStaysOpenForInsideClicksAndClosesOnBackdropClick()
+    [Theory]
+    [InlineData(BackdropDismissibleModal.RunSettings)]
+    [InlineData(BackdropDismissibleModal.SaveSlots)]
+    [InlineData(BackdropDismissibleModal.MissionComplete)]
+    [InlineData(BackdropDismissibleModal.RewardOptions)]
+    [InlineData(BackdropDismissibleModal.PunishmentOptions)]
+    [InlineData(BackdropDismissibleModal.BannedItems)]
+    public async Task BackdropClickClosesModalAndInsideClickDoesNot(BackdropDismissibleModal modalType)
     {
-        await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Open current run settings", Exact = true }).ClickAsync();
+        ModalObject modal = await OpenBackdropDismissibleModalAsync(modalType);
+        await Expect(modal.Dialog).ToBeVisibleAsync();
+        await modal.Heading.ClickAsync();
+        await Expect(modal.Dialog).ToBeVisibleAsync();
 
-        ILocator modal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Run Settings", Exact = true });
-        await modal.GetByRole(AriaRole.Heading, new() { Name = "Run Settings", Exact = true }).ClickAsync();
-        await Expect(modal).ToBeVisibleAsync();
+        await modal.ClickBackdropAsync();
+        await Expect(modal.Dialog).ToHaveCountAsync(0);
+    }
 
-        await modal.Locator("xpath=..").ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
-        await Expect(modal).ToHaveCountAsync(0);
+    private async Task<ModalObject> OpenBackdropDismissibleModalAsync(BackdropDismissibleModal modalType)
+    {
+        switch (modalType)
+        {
+            case BackdropDismissibleModal.RunSettings:
+                await StartRunAsync();
+                await Modals.RunSettings.OpenAsync();
+                return Modals.RunSettings;
+            case BackdropDismissibleModal.SaveSlots:
+                await StartRunAsync();
+                await Modals.SaveSlots.OpenAsync();
+                return Modals.SaveSlots;
+            case BackdropDismissibleModal.MissionComplete:
+                await StartRunAsync();
+                await Modals.MissionComplete.OpenAsync();
+                return Modals.MissionComplete;
+            case BackdropDismissibleModal.RewardOptions:
+                await StartRunAsync();
+                await Modals.MissionComplete.OpenAsync();
+                await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
+                await Modals.RewardOptions.OpenAsync();
+                return Modals.RewardOptions;
+            case BackdropDismissibleModal.PunishmentOptions:
+                await ImportRunAsync(acquiredItemIds: ["uavrecon"]);
+                await Modals.PunishmentOptions.OpenAsync();
+                return Modals.PunishmentOptions;
+            case BackdropDismissibleModal.BannedItems:
+                await StartRunAsync();
+                await Modals.MissionComplete.OpenAsync();
+                await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
+                await Modals.RewardOptions.OpenAsync();
+                await Modals.RewardOptions.SkipAndBanAllButton.ClickAsync();
+                await Modals.BannedItems.OpenAsync();
+                return Modals.BannedItems;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(modalType), modalType, null);
+        }
+    }
+
+    private ModalObject GetBackdropDismissibleModal(BackdropDismissibleModal modalType) => modalType switch
+    {
+        BackdropDismissibleModal.RunSettings => Modals.RunSettings,
+        BackdropDismissibleModal.SaveSlots => Modals.SaveSlots,
+        BackdropDismissibleModal.MissionComplete => Modals.MissionComplete,
+        BackdropDismissibleModal.RewardOptions => Modals.RewardOptions,
+        BackdropDismissibleModal.PunishmentOptions => Modals.PunishmentOptions,
+        BackdropDismissibleModal.BannedItems => Modals.BannedItems,
+        _ => throw new ArgumentOutOfRangeException(nameof(modalType), modalType, null)
+    };
+
+    public enum BackdropDismissibleModal
+    {
+        RunSettings,
+        SaveSlots,
+        MissionComplete,
+        RewardOptions,
+        PunishmentOptions,
+        BannedItems
     }
 
     [Fact]
     public async Task RenameModalValidatesNameAndCancelDiscardsChanges()
     {
         await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Open save slot manager", Exact = true }).ClickAsync();
-        ILocator saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot" }).ClickAsync();
+        await Modals.SaveSlots.OpenAsync();
+        await Modals.RenameSlot.OpenAsync();
 
-        ILocator renameModal = Page.GetByRole(AriaRole.Dialog, new() { Name = "Rename Save Slot" });
-        ILocator nameInput = renameModal.GetByRole(AriaRole.Textbox, new() { Name = "New save slot name" });
-        string originalName = await nameInput.InputValueAsync();
-        ILocator saveButton = renameModal.GetByRole(AriaRole.Button, new() { Name = "Save new save slot name" });
-        await Expect(saveButton).ToBeDisabledAsync();
-        await nameInput.FillAsync("   ");
-        await Expect(saveButton).ToBeDisabledAsync();
-        await nameInput.FillAsync("Unsaved modal test name");
-        await Expect(saveButton).ToBeEnabledAsync();
-        await renameModal.GetByRole(AriaRole.Button, new() { Name = "Cancel save slot rename", Exact = true }).ClickAsync();
+        RenameSlotModal renameModal = Modals.RenameSlot;
+        string originalName = await renameModal.SlotNameInput.InputValueAsync();
+        await Expect(renameModal.SaveNameButton).ToBeDisabledAsync();
+        await renameModal.SlotNameInput.FillAsync("   ");
+        await Expect(renameModal.SaveNameButton).ToBeDisabledAsync();
+        await renameModal.SlotNameInput.FillAsync("Unsaved modal test name");
+        await Expect(renameModal.SaveNameButton).ToBeEnabledAsync();
+        await renameModal.CancelButton.ClickAsync();
 
-        await Expect(renameModal).ToHaveCountAsync(0);
-        await Expect(saveManager).ToBeVisibleAsync();
-        await Expect(saveManager).ToContainTextAsync(originalName);
-        await Expect(saveManager).Not.ToContainTextAsync("Unsaved modal test name");
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot" }).ClickAsync();
-        await Expect(renameModal.GetByRole(AriaRole.Textbox, new() { Name = "New save slot name" })).ToHaveValueAsync(originalName);
+        await Expect(renameModal.Dialog).ToHaveCountAsync(0);
+        await Expect(Modals.SaveSlots.Dialog).ToBeVisibleAsync();
+        await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync(originalName);
+        await Expect(Modals.SaveSlots.Dialog).Not.ToContainTextAsync("Unsaved modal test name");
+        await Modals.RenameSlot.OpenAsync();
+        await Expect(renameModal.SlotNameInput).ToHaveValueAsync(originalName);
+    }
+
+    [Theory]
+    [InlineData(NonDismissibleModal.RenameSlot)]
+    [InlineData(NonDismissibleModal.DeleteConfirmation)]
+    public async Task BackdropClickDoesNotCloseModal(NonDismissibleModal modalType)
+    {
+        await StartRunAsync();
+        await Modals.SaveSlots.OpenAsync();
+        ModalObject modal = modalType == NonDismissibleModal.RenameSlot
+            ? Modals.RenameSlot
+            : Modals.DeleteConfirmation;
+        await modal.OpenAsync();
+
+        await Expect(modal.Dialog).ToBeVisibleAsync();
+        await modal.ClickBackdropAsync();
+        await Expect(modal.Dialog).ToBeVisibleAsync();
     }
 
     [Fact]
-    public async Task DeleteConfirmationIgnoresBackdropAndCancelPreservesSave()
+    public async Task CancelingDeleteConfirmationPreservesSave()
     {
         await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Open save slot manager", Exact = true }).ClickAsync();
-        ILocator saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete this save slot", Exact = true }).ClickAsync();
+        await Modals.SaveSlots.OpenAsync();
+        await Modals.DeleteConfirmation.OpenAsync();
 
-        ILocator confirmation = Page.GetByRole(AriaRole.Dialog, new() { Name = "Delete Current Save?", Exact = true });
-        await Expect(confirmation).ToBeVisibleAsync();
-        await confirmation.Locator("xpath=..").ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
-        await Expect(confirmation).ToBeVisibleAsync();
-        await confirmation.GetByRole(AriaRole.Button, new() { Name = "Cancel save deletion", Exact = true }).ClickAsync();
+        await Expect(Modals.DeleteConfirmation.Dialog).ToBeVisibleAsync();
+        await Modals.DeleteConfirmation.CancelButton.ClickAsync();
 
-        await Expect(confirmation).ToHaveCountAsync(0);
-        await Expect(saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete this save slot", Exact = true })).ToBeVisibleAsync();
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Close Warpath: Redemption Save Slots dialog" }).ClickAsync();
+        await Expect(Modals.DeleteConfirmation.Dialog).ToHaveCountAsync(0);
+        await Expect(Modals.SaveSlots.DeleteButton).ToBeVisibleAsync();
+        await Modals.SaveSlots.CloseAsync();
         await Page.ReloadAsync();
         await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 1 of 2");
     }
@@ -165,17 +233,22 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     public async Task ConfirmingDeleteRemovesSaveAndReturnsToSetup()
     {
         await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Open save slot manager", Exact = true }).ClickAsync();
-        ILocator saveManager = Page.GetByRole(AriaRole.Dialog, new() { Name = "Warpath: Redemption Save Slots" });
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete this save slot", Exact = true }).ClickAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Confirm deleting this save", Exact = true }).ClickAsync();
+        await Modals.SaveSlots.OpenAsync();
+        await Modals.DeleteConfirmation.OpenAsync();
+        await Modals.DeleteConfirmation.ConfirmDeleteButton.ClickAsync();
 
-        await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Delete Current Save?", Exact = true })).ToHaveCountAsync(0);
-        await Expect(saveManager.GetByRole(AriaRole.Button, new() { Name = "Delete this save slot", Exact = true })).ToHaveCountAsync(0);
-        await saveManager.GetByRole(AriaRole.Button, new() { Name = "Close Warpath: Redemption Save Slots dialog" }).ClickAsync();
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run", Exact = true })).ToBeVisibleAsync();
+        await Expect(Modals.DeleteConfirmation.Dialog).ToHaveCountAsync(0);
+        await Expect(Modals.SaveSlots.DeleteButton).ToHaveCountAsync(0);
+        await Modals.SaveSlots.CloseAsync();
+        await Expect(BeginRunButton).ToBeVisibleAsync();
 
         await Page.ReloadAsync();
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run", Exact = true })).ToBeVisibleAsync();
+        await Expect(BeginRunButton).ToBeVisibleAsync();
+    }
+
+    public enum NonDismissibleModal
+    {
+        RenameSlot,
+        DeleteConfirmation
     }
 }

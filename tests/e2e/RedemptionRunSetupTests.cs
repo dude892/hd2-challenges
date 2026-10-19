@@ -17,11 +17,11 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
         string updatedPreview = await GetLoadoutPreviewAsync();
         Assert.NotEqual(initialPreview, updatedPreview);
 
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run" }).ClickAsync();
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Selected difficulty" })).ToContainTextAsync("Quick Warpath");
+        await BeginRunButton.ClickAsync();
+        await Expect(Page.GetByText("Quick Warpath", new() { Exact = true })).ToBeVisibleAsync();
 
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Open current run settings" }).ClickAsync();
-        await Expect(Page.GetByRole(AriaRole.Dialog, new() { Name = "Run Settings" })).ToContainTextAsync("Quick Warpath");
+        await Modals.RunSettings.OpenAsync();
+        await Expect(Modals.RunSettings.Dialog).ToContainTextAsync("Quick Warpath");
     }
 
     private async Task<string> GetLoadoutPreviewAsync()
@@ -38,7 +38,7 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
         await StartRunAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Start a new Warpath: Redemption run" }).ClickAsync();
 
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run" })).ToBeVisibleAsync();
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion" })).ToHaveCountAsync(0);
+        await Expect(BeginRunButton).ToBeVisibleAsync();
+        await Expect(Modals.MissionComplete.OpenButton).ToHaveCountAsync(0);
     }
 }
