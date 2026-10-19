@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Saves\*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
