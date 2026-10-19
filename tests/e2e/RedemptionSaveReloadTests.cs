@@ -1,5 +1,5 @@
-using System.Text;
 using System.Text.Json;
+using Hd2Challenges.Models;
 using Microsoft.Playwright;
 using Xunit;
 
@@ -12,33 +12,42 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
     public async Task AdvancingMissionPersistsAndReloadsTheActiveRun()
     {
         await StartRunAsync();
-        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "3");
+        RedemptionDifficulty difficulty = RedemptionCatalog.GetDifficulty("normal");
+        Operation operation = difficulty.StartOperation;
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", operation.DifficultyIndex.ToString());
         await Modals.MissionComplete.OpenAsync();
         await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
         await Modals.RewardOptions.OpenAsync();
-        await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).Nth(1).ClickAsync();
+        await GetValidatedRewardItemsAsync();
+        string claimedRewardId = (await Modals.RewardOptions.Choices.SelectableChoices.Nth(1).GetAttributeAsync("data-item-id"))!;
+        await Modals.RewardOptions.Choices.SelectableChoices.Nth(1).ClickAsync();
 
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", operation.MissionCount.ToString());
         await Page.ReloadAsync();
-        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "3");
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", operation.DifficultyIndex.ToString());
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", operation.MissionCount.ToString());
+        await ItemGrids.AcquiredItems.AssertContainsItemsAsync(claimedRewardId);
 
         await Modals.SaveSlots.OpenAsync();
-        await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync("Normal Warpath |");
+        await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync($"{difficulty.DisplayName} |");
     }
 
     [Fact]
     public async Task AdvancingPastTheLastMissionUpdatesTheOperationIndex()
     {
-        await ImportRunAsync(operationIndex: 3, missionNumber: 2);
-        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "3");
+        SaveObject save = SaveObject.OperationLastMission;
+        RedemptionState state = save.ResolveState(RedemptionCatalog);
+        Assert.True(state.CurrentOperation.IsLastMission);
+        await ImportRunAsync(save);
+        await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", state.CurrentOperation.DifficultyIndex.ToString());
 
         await Modals.MissionComplete.OpenAsync();
         await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
         await Modals.RewardOptions.OpenAsync();
-        await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).First.ClickAsync();
+        await GetValidatedRewardItemsAsync();
+        await Modals.RewardOptions.Choices.SelectableChoices.First.ClickAsync();
 
         await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "4");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
@@ -79,16 +88,17 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Modals.MissionComplete.OpenAsync();
         await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
         await Modals.RewardOptions.OpenAsync();
-        await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).Nth(1).ClickAsync();
+        await GetValidatedRewardItemsAsync();
+        await Modals.RewardOptions.Choices.SelectableChoices.Nth(1).ClickAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
 
         await Modals.SaveSlots.OpenAsync();
         ILocator snapshot = Modals.SaveSlots.Slots.Filter(new() { HasText = "Snapshot" });
         await snapshot.GetByRole(AriaRole.Button, new() { Name = "Load" }).ClickAsync();
 
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
         await Expect(Page.GetByRole(AriaRole.Heading, new() { Level = 1 })).ToContainTextAsync("Snapshot");
     }
 
@@ -102,17 +112,11 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
 
         IDownload download = await downloadTask;
         Assert.EndsWith(".json", download.SuggestedFilename);
-        string json = await File.ReadAllTextAsync(await download.PathAsync());
+        string downloadPath = await download.PathAsync();
+        string json = await File.ReadAllTextAsync(downloadPath);
         using JsonDocument export = JsonDocument.Parse(json);
         Assert.Equal("warpath-redemption", export.RootElement.GetProperty("mode").GetString());
-        string importedSlotName = export.RootElement.GetProperty("slot").GetProperty("name").GetString()!;
-
-        await Modals.SaveSlots.ImportSaveInput.SetInputFilesAsync(new FilePayload
-        {
-            Name = download.SuggestedFilename,
-            MimeType = "application/json",
-            Buffer = Encoding.UTF8.GetBytes(json)
-        });
+        await Modals.SaveSlots.ImportSaveInput.SetInputFilesAsync(downloadPath);
 
         await Expect(ImportedSaveStatus).ToBeVisibleAsync();
         await Expect(Modals.SaveSlots.Slots).ToHaveCountAsync(2);
@@ -124,23 +128,21 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await StartRunAsync();
         await CompleteFirstMissionAndOpenRewardsAsync();
 
-        int rewardCount = await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).CountAsync();
+        ItemSet rewards = await GetValidatedRewardItemsAsync();
         await Modals.RewardOptions.SkipAndBanAllButton.ClickAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
 
         await Modals.BannedItems.OpenAsync();
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();
-        await Expect(Modals.BannedItems.Items).ToBeVisibleAsync();
-        await Expect(Modals.BannedItems.Items).ToHaveAttributeAsync("data-item-count", rewardCount.ToString());
-        await Expect(Modals.BannedItems.Items.Locator(".item-card")).ToHaveCountAsync(rewardCount);
+        await Expect(Modals.BannedItems.Items.Root).ToBeVisibleAsync();
+        await Modals.BannedItems.Items.AssertMatchesItemsAsync(rewards);
 
         await Page.ReloadAsync();
         await Modals.BannedItems.OpenAsync();
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();
-        await Expect(Modals.BannedItems.Items).ToBeVisibleAsync();
-        await Expect(Modals.BannedItems.Items).ToHaveAttributeAsync("data-item-count", rewardCount.ToString());
-        await Expect(Modals.BannedItems.Items.Locator(".item-card")).ToHaveCountAsync(rewardCount);
+        await Expect(Modals.BannedItems.Items.Root).ToBeVisibleAsync();
+        await Modals.BannedItems.Items.AssertMatchesItemsAsync(rewards);
     }
 
     private async Task CompleteFirstMissionAndOpenRewardsAsync()

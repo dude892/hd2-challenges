@@ -1,21 +1,23 @@
-using System.Text;
-using System.Text.Json;
+using Hd2Challenges.Models;
+using Hd2Challenges.Services;
 using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using Xunit;
 
 namespace Hd2Challenges.EndToEnd.Tests;
 
 public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
 {
     private protected RedemptionModals Modals => new(Page);
+    private protected RedemptionItemGrids ItemGrids => new(Page);
+    protected CatalogService Catalog => webApp.Catalog;
+    protected RedemptionCatalogService RedemptionCatalog => webApp.RedemptionCatalog;
+    protected Operation DefaultStartOperation => RedemptionCatalog.GetDifficulty("normal").StartOperation;
     protected ILocator BeginRunButton => Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run", Exact = true });
     protected ILocator CurrentOperationProgress => Page.GetByRole(AriaRole.Status, new() { Name = "Current operation", Exact = true });
     protected ILocator CurrentMissionProgress => Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress", Exact = true });
     protected ILocator MissionsFailedCount => Page.GetByRole(AriaRole.Status, new() { Name = "Missions failed", Exact = true });
     protected ILocator ImportedSaveStatus => Page.GetByRole(AriaRole.Status, new() { NameRegex = new System.Text.RegularExpressions.Regex("^Imported slot") });
-    protected ILocator BoosterAccordionToggle => Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters", Exact = true });
-    protected ILocator AcquiredBoostersRegion => Page.GetByRole(AriaRole.Region, new() { Name = "Acquired boosters", IncludeHidden = true, Exact = true });
-    protected ILocator AcquiredBoostersItems => AcquiredBoostersRegion.Locator(".item-grid");
 
     protected async Task OpenSetupAsync()
     {
@@ -29,41 +31,28 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
         await BeginRunButton.ClickAsync();
     }
 
-    protected async Task ImportRunAsync(
-        string[]? acquiredItemIds = null,
-        string[]? pendingRewardIds = null,
-        int operationIndex = 3,
-        int missionNumber = 1)
+    private protected async Task ImportRunAsync(SaveObject save)
     {
         await OpenSetupAsync();
         await Modals.SaveSlots.OpenAsync();
 
-        object saveExport = new
-        {
-            Version = 1,
-            Mode = "warpath-redemption",
-            Slot = new
-            {
-                Name = "Test Run",
-                State = new
-                {
-                    DifficultyId = "normal",
-                    OperationIndex = operationIndex,
-                    MissionNumber = missionNumber,
-                    AcquiredItemIds = acquiredItemIds ?? [],
-                    PendingRewardIds = pendingRewardIds ?? []
-                }
-            }
-        };
-        string json = JsonSerializer.Serialize(saveExport, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        await Modals.SaveSlots.ImportSaveInput.SetInputFilesAsync(new FilePayload
-        {
-            Name = "test-run.json",
-            MimeType = "application/json",
-            Buffer = Encoding.UTF8.GetBytes(json)
-        });
+        await Modals.SaveSlots.ImportSaveInput.SetInputFilesAsync(save.FilePath);
 
-        await Expect(ImportedSaveStatus).ToContainTextAsync("Imported slot Test Run.");
+        await Expect(ImportedSaveStatus).ToContainTextAsync($"Imported slot {save.Slot.Name}.");
         await Modals.SaveSlots.CloseAsync();
+    }
+
+    private protected async Task<ItemSet> GetValidatedRewardItemsAsync()
+    {
+        string[] ids = await Modals.RewardOptions.Choices.GetItemIdsAsync();
+        Assert.NotEmpty(ids);
+        Assert.Equal(ids.Length, ids.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+        ItemSet catalogItems = Catalog.GetAllItems();
+        foreach (string id in ids)
+        {
+            Assert.Contains(catalogItems, item => string.Equals(item.Id, id, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return new ItemSet(catalogItems.Where(item => ids.Contains(item.Id, StringComparer.OrdinalIgnoreCase)));
     }
 }

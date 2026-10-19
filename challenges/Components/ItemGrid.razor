@@ -1,0 +1,42 @@
+@using Hd2Challenges.Models
+
+<div class="@ContainerClass">
+    @if (HeaderContent is not null)
+    {
+        @HeaderContent
+    }
+
+        <div class="@_gridCssClass" role="group" aria-label="@AccessibleLabel" data-item-count="@Items.Count"
+            style="@(UseItemColumns ? $"--item-columns: {Items.Count}" : null)">
+        @if (Items.Count == 0)
+        {
+            <div class="text-secondary small">@EmptyMessage</div>
+        }
+        else
+        {
+            @foreach (GameItem item in Items)
+            {
+                <ItemCard Item="item"
+                          Badge="@(BadgeSelector?.Invoke(item))"
+                          OnClick="GetItemClick(item)" />
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<GameItem> Items { get; set; } = default!;
+    [Parameter, EditorRequired] public string AccessibleLabel { get; set; } = string.Empty;
+    [Parameter] public string? ContainerClass { get; set; }
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
+    [Parameter] public string GridClass { get; set; } = string.Empty;
+    [Parameter] public bool UseItemColumns { get; set; }
+    [Parameter] public string EmptyMessage { get; set; } = "No items available.";
+    [Parameter] public Func<GameItem, string?>? BadgeSelector { get; set; }
+    [Parameter] public EventCallback<GameItem> OnItemClick { get; set; }
+    private string _gridCssClass => !string.IsNullOrWhiteSpace(GridClass) ? $"item-grid {GridClass}" : "item-grid";
+
+    private EventCallback GetItemClick(GameItem item) => OnItemClick.HasDelegate
+        ? EventCallback.Factory.Create(this, () => OnItemClick.InvokeAsync(item))
+        : default;
+}

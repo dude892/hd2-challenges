@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Hd2Challenges.Services;
 using Xunit;
 
 namespace Hd2Challenges.EndToEnd.Tests;
@@ -16,8 +17,11 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
 {
     private readonly StringBuilder _processOutput = new();
     private Process? _process;
+    private readonly HttpClient _httpClient = new();
 
     public string BaseUrl { get; private set; } = string.Empty;
+    public CatalogService Catalog { get; private set; } = null!;
+    public RedemptionCatalogService RedemptionCatalog { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
@@ -47,7 +51,7 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
         _process.BeginOutputReadLine();
         _process.BeginErrorReadLine();
 
-        using HttpClient httpClient = new();
+        _httpClient.BaseAddress = new Uri(BaseUrl);
         using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(90));
         while (!timeout.IsCancellationRequested)
         {
@@ -58,10 +62,10 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
 
             try
             {
-                using HttpResponseMessage response = await httpClient.GetAsync(BaseUrl, timeout.Token);
+                using HttpResponseMessage response = await _httpClient.GetAsync(BaseUrl, timeout.Token);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    return;
+                    break;
                 }
             }
             catch (HttpRequestException)
@@ -74,7 +78,22 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
             await Task.Delay(250, timeout.Token);
         }
 
-        throw new TimeoutException($"The Blazor app did not become ready.{Environment.NewLine}{_processOutput}");
+        if (timeout.IsCancellationRequested)
+        {
+            throw new TimeoutException($"The Blazor app did not become ready.{Environment.NewLine}{_processOutput}");
+        }
+
+        Catalog = new(_httpClient);
+        RedemptionCatalog = new(_httpClient, Catalog);
+        try
+        {
+            await RedemptionCatalog.EnsureLoadedAsync();
+        }
+        catch
+        {
+            await DisposeAsync();
+            throw;
+        }
     }
 
     public Task DisposeAsync()
@@ -86,6 +105,8 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
         }
 
         _process?.Dispose();
+        _process = null;
+        _httpClient.Dispose();
         return Task.CompletedTask;
     }
 

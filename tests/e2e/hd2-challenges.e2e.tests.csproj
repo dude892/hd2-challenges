@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\challenges\hd2-challenges.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Saves\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

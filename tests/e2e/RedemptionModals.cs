@@ -48,20 +48,20 @@ internal sealed class MissionCompleteModal(IPage page) : ModalObject(page, "Miss
 internal sealed class RewardOptionsModal(IPage page, MissionCompleteModal missionComplete) : ModalObject(page, "Reward Options")
 {
     public override ILocator OpenButton => missionComplete.ContinueToRewardsButton;
-    public ILocator Choices => Dialog.GetByRole(AriaRole.Group, new() { Name = "Reward choices", Exact = true });
+    public ItemGridObject Choices => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Reward choices", Exact = true }));
     public ILocator SkipAndBanAllButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Skip all rewards and ban them", Exact = true });
 }
 
 internal sealed class PunishmentOptionsModal(IPage page) : ModalObject(page, "Punishment Options")
 {
     public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "Record mission failure", Exact = true });
-    public ILocator Choices => Dialog.GetByRole(AriaRole.Group, new() { Name = "Punishment choices", Exact = true });
+    public ItemGridObject Choices => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Punishment choices", Exact = true }));
 }
 
 internal sealed class BannedItemsModal(IPage page) : ModalObject(page, "Banned Items")
 {
     public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "View banned items", Exact = true });
-    public ILocator Items => Dialog.GetByRole(AriaRole.Group, new() { Name = "Banned items", Exact = true });
+    public ItemGridObject Items => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Banned items", Exact = true }));
 }
 
 internal sealed class RunSettingsModal(IPage page) : ModalObject(page, "Run Settings")

@@ -1,3 +1,4 @@
+using Hd2Challenges.Models;
 using Microsoft.Playwright;
 using Xunit;
 
@@ -11,23 +12,21 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
     {
         await StartRunAsync();
 
-        await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
-        await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
-        await Expect(AcquiredBoostersRegion).ToBeHiddenAsync();
-        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "0");
+        await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToBeHiddenAsync();
 
-        await BoosterAccordionToggle.ClickAsync();
-        await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "false");
-        await Expect(AcquiredBoostersRegion).ToBeVisibleAsync();
-        await Expect(AcquiredBoostersRegion).ToContainTextAsync("No boosters acquired.");
-        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "0");
+        await ItemGrids.BoosterAccordionToggle.ClickAsync();
+        await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "false");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToBeVisibleAsync();
+        await Expect(ItemGrids.AcquiredBoosters.Root).ToContainTextAsync("No boosters acquired.");
 
-        await BoosterAccordionToggle.ClickAsync();
-        await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
-        await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
-        await Expect(AcquiredBoostersRegion).ToBeHiddenAsync();
-        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "0");
+        await ItemGrids.BoosterAccordionToggle.ClickAsync();
+        await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToBeHiddenAsync();
+        await ItemGrids.AcquiredBoosters.AssertCountAsync(0);
     }
 
     [Fact]
@@ -36,34 +35,47 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         await StartRunAsync();
         await Page.ReloadAsync();
 
-        await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
-        await Expect(AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
-        await Expect(AcquiredBoostersRegion).ToBeHiddenAsync();
+        await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
+        await ItemGrids.AcquiredBoosters.AssertCountAsync(0);
+        await Expect(ItemGrids.AcquiredBoostersRegion).ToBeHiddenAsync();
     }
 
     [Fact]
     public async Task ReloadingRunWithAcquiredBoostersKeepsAccordionExpanded()
     {
-        await ImportRunAsync(acquiredItemIds: ["uavrecon"]);
+        SaveObject save = SaveObject.AcquiredBooster;
+        RedemptionState state = save.ResolveState(RedemptionCatalog);
+        ItemSet expectedBoosters = new(state.AcquiredItems.Boosters);
+        Assert.NotEmpty(expectedBoosters);
+        await ImportRunAsync(save);
 
         await Page.ReloadAsync();
-        await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(AcquiredBoostersRegion).ToContainTextAsync("UAV Recon");
-        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "1");
+        await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
+        await ItemGrids.AcquiredBoosters.AssertMatchesItemsAsync(expectedBoosters);
     }
 
     [Fact]
     public async Task ClaimingBoosterRewardAutomaticallyExpandsAccordion()
     {
-        await ImportRunAsync(pendingRewardIds: ["uavrecon"]);
+        SaveObject save = SaveObject.PendingBoosterReward;
+        RedemptionState state = save.ResolveState(RedemptionCatalog);
+        Assert.NotEmpty(state.PendingRewardItems.Boosters);
+        await ImportRunAsync(save);
         await Modals.MissionComplete.OpenAsync();
         await Expect(Modals.RewardOptions.Dialog).ToBeVisibleAsync();
-        await Modals.RewardOptions.Choices
-            .GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
+        await Modals.RewardOptions.Choices.AssertMatchesItemsAsync(state.PendingRewardItems);
+        await GetValidatedRewardItemsAsync();
+        string? claimedRewardId = await Modals.RewardOptions.Choices.SelectableChoices.First.GetAttributeAsync("data-item-id");
+        Assert.Contains(state.PendingRewardItems.Boosters,
+            item => string.Equals(item.Id, claimedRewardId, StringComparison.OrdinalIgnoreCase));
+        await Modals.RewardOptions.Choices.SelectableChoices.First.ClickAsync();
 
-        await Expect(BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
-        await Expect(AcquiredBoostersRegion).ToContainTextAsync("UAV Recon");
-        await Expect(AcquiredBoostersItems).ToHaveAttributeAsync("data-item-count", "1");
+        await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
+        ItemSet expectedBoosters = new(state.AcquiredItems.Boosters.Concat(
+            state.PendingRewardItems.Boosters.Where(
+                item => string.Equals(item.Id, claimedRewardId, StringComparison.OrdinalIgnoreCase))));
+        await ItemGrids.AcquiredBoosters.AssertMatchesItemsAsync(expectedBoosters);
     }
 
 }

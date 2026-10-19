@@ -34,14 +34,11 @@ else
                     </button>
                 </h2>
                 <div id="@collapseId" class="accordion-collapse collapse" data-bs-parent="#item-catalog-accordion">
-                    <div class="accordion-body">
-                        <div class="item-grid">
-                            @foreach (var item in Catalog.GetItemsInCatalogOrder(items))
-                            {
-                                <ItemCard Item="item" />
-                            }
-                        </div>
-                    </div>
+                    <ItemGrid Items="Catalog.GetItemsInCatalogOrder(items)"
+                              AccessibleLabel="@($"Items in the {label} category")"
+                              ContainerClass="accordion-body"
+                              EmptyMessage="No items in this category.">
+                    </ItemGrid>
                 </div>
             </div>
         }

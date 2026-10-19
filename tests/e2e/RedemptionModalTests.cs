@@ -1,3 +1,4 @@
+using Hd2Challenges.Models;
 using Microsoft.Playwright;
 using Xunit;
 
@@ -18,20 +19,21 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
         RewardOptionsModal rewardOptions = Modals.RewardOptions;
         await Expect(rewardOptions.Heading).ToBeVisibleAsync();
-        string[] rewards = [.. await rewardOptions.Choices.GetByRole(AriaRole.Button).AllTextContentsAsync()];
-        await Expect(rewardOptions.Choices).ToHaveAttributeAsync("data-item-count", rewards.Length.ToString());
+        string[] rewardIds = (await GetValidatedRewardItemsAsync()).Select(item => item.Id).ToArray();
+        string[] rewards = [.. await rewardOptions.Choices.SelectableChoices.AllTextContentsAsync()];
         await rewardOptions.CloseAsync();
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
 
         await Page.ReloadAsync();
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
         await Modals.MissionComplete.OpenAsync();
         await Expect(rewardOptions.Heading).ToBeVisibleAsync();
-        await Expect(rewardOptions.Choices.GetByRole(AriaRole.Button)).ToHaveTextAsync(rewards);
-        await Expect(rewardOptions.Choices).ToHaveAttributeAsync("data-item-count", rewards.Length.ToString());
+        await Expect(rewardOptions.Choices.SelectableChoices).ToHaveTextAsync(rewards);
+        Assert.Equal(rewardIds.OrderBy(id => id, StringComparer.OrdinalIgnoreCase),
+            (await rewardOptions.Choices.GetItemIdsAsync()).OrderBy(id => id, StringComparer.OrdinalIgnoreCase));
         await Expect(Modals.MissionComplete.ContinueToRewardsButton).ToHaveCountAsync(0);
 
         if (banRewards)
@@ -40,41 +42,42 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         }
         else
         {
-            await rewardOptions.Choices.GetByRole(AriaRole.Button).First.ClickAsync();
+            await rewardOptions.Choices.SelectableChoices.First.ClickAsync();
         }
 
         await Expect(rewardOptions.Dialog).ToHaveCountAsync(0);
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeEnabledAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
     }
 
     [Fact]
     public async Task PendingPunishmentLocksMissionCompletionUntilClaimed()
     {
-        await ImportRunAsync(acquiredItemIds: ["uavrecon"]);
-        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "0");
+        SaveObject save = SaveObject.AcquiredBooster;
+        RedemptionState state = save.ResolveState(RedemptionCatalog);
+        Assert.NotEmpty(state.AcquiredItems);
+        await ImportRunAsync(save);
+        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", state.MissionsFailed.ToString());
         await Modals.PunishmentOptions.OpenAsync();
 
         PunishmentOptionsModal punishmentOptions = Modals.PunishmentOptions;
         await Expect(punishmentOptions.Heading).ToBeVisibleAsync();
-        await Expect(punishmentOptions.Choices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
-        await Expect(punishmentOptions.Choices).ToHaveAttributeAsync("data-item-count", "1");
-        await Expect(punishmentOptions.Choices).ToContainTextAsync("UAV Recon");
+        await punishmentOptions.Choices.AssertMatchesItemsAsync(state.AcquiredItems);
         await punishmentOptions.CloseAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
         await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
 
         await Page.ReloadAsync();
-        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "0");
+        await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", state.MissionsFailed.ToString());
         await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
         await punishmentOptions.OpenAsync();
         await Expect(punishmentOptions.Heading).ToBeVisibleAsync();
-        await Expect(punishmentOptions.Choices.GetByRole(AriaRole.Button)).ToHaveCountAsync(1);
-        await Expect(punishmentOptions.Choices).ToHaveAttributeAsync("data-item-count", "1");
-        await Expect(punishmentOptions.Choices).ToContainTextAsync("UAV Recon");
-        await punishmentOptions.Choices.GetByRole(AriaRole.Button, new() { Name = "UAV Recon", Exact = true }).ClickAsync();
+        await punishmentOptions.Choices.AssertMatchesItemsAsync(state.AcquiredItems);
+        string? selectedPunishmentId = await punishmentOptions.Choices.SelectableChoices.First.GetAttributeAsync("data-item-id");
+        Assert.NotNull(selectedPunishmentId);
+        await punishmentOptions.Choices.SelectableChoices.First.ClickAsync();
 
         await Expect(punishmentOptions.Dialog).ToHaveCountAsync(0);
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
@@ -82,8 +85,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "1");
         await Page.ReloadAsync();
         await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "1");
-        await Expect(AcquiredBoostersRegion
-            .GetByText("UAV Recon", new() { Exact = true })).ToHaveCountAsync(0);
+        await ItemGrids.AcquiredItems.AssertDoesNotContainItemAsync(selectedPunishmentId);
     }
 
     [Theory]
@@ -101,7 +103,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
         await Expect(modal.Dialog).ToHaveCountAsync(0);
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
     }
 
@@ -144,9 +146,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
                 await Modals.MissionComplete.OpenAsync();
                 await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
                 await Modals.RewardOptions.OpenAsync();
+                await GetValidatedRewardItemsAsync();
                 return Modals.RewardOptions;
             case BackdropDismissibleModal.PunishmentOptions:
-                await ImportRunAsync(acquiredItemIds: ["uavrecon"]);
+                await ImportRunAsync(SaveObject.AcquiredBooster);
                 await Modals.PunishmentOptions.OpenAsync();
                 return Modals.PunishmentOptions;
             case BackdropDismissibleModal.BannedItems:
@@ -154,6 +157,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
                 await Modals.MissionComplete.OpenAsync();
                 await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
                 await Modals.RewardOptions.OpenAsync();
+                await GetValidatedRewardItemsAsync();
                 await Modals.RewardOptions.SkipAndBanAllButton.ClickAsync();
                 await Modals.BannedItems.OpenAsync();
                 return Modals.BannedItems;
@@ -239,7 +243,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Modals.SaveSlots.CloseAsync();
         await Page.ReloadAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
     }
 
     [Fact]

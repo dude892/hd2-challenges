@@ -1,3 +1,4 @@
+using Hd2Challenges.Models;
 using Microsoft.Playwright;
 using Xunit;
 
@@ -6,33 +7,38 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
-    [Fact]
-    public async Task SelectedDifficultyIsShownInRunSettings()
+    [Theory]
+    [InlineData("normal")]
+    [InlineData("solo")]
+    [InlineData("quick")]
+    [InlineData("super")]
+    [InlineData("supersolo")]
+    public async Task SelectedDifficultyIsShownInRunSettings(string difficultyId)
     {
         await OpenSetupAsync();
-        string initialPreview = await GetLoadoutPreviewAsync();
+        RedemptionDifficulty difficulty = RedemptionCatalog.GetDifficulty(difficultyId);
+        ItemSet expectedItems = RedemptionCatalog.GetStarterItems(difficulty, Catalog.GetAllWarbonds());
+        string initialDifficulty = await Page.GetByLabel("Select campaign difficulty").InputValueAsync();
+        string[] initialItemIds = await ItemGrids.StartingLoadoutPreview.GetItemIdsAsync();
 
-        await Page.GetByLabel("Select campaign difficulty").SelectOptionAsync("quick");
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Quick Warpath loadout preview updated." })).ToBeVisibleAsync();
-        string updatedPreview = await GetLoadoutPreviewAsync();
-        Assert.NotEqual(initialPreview, updatedPreview);
+        await Page.GetByLabel("Select campaign difficulty").SelectOptionAsync(difficulty.Id);
+        string[] updatedItemIds = await ItemGrids.StartingLoadoutPreview.GetItemIdsAsync();
+        if(difficultyId != initialDifficulty)
+        {
+            await Expect(Page.GetByRole(AriaRole.Status, new() { Name = $"{difficulty.DisplayName} loadout preview updated." })).ToBeVisibleAsync();
+            Assert.False(initialItemIds.SequenceEqual(updatedItemIds, StringComparer.OrdinalIgnoreCase));
+        }
+        else
+        {
+            Assert.True(initialItemIds.SequenceEqual(updatedItemIds, StringComparer.OrdinalIgnoreCase));
+        }
+        await ItemGrids.StartingLoadoutPreview.AssertMatchesItemsAsync(expectedItems);
 
         await BeginRunButton.ClickAsync();
-        await Expect(Page.GetByText("Quick Warpath", new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(Page.GetByText(difficulty.DisplayName, new() { Exact = true })).ToBeVisibleAsync();
 
         await Modals.RunSettings.OpenAsync();
-        await Expect(Modals.RunSettings.Dialog).ToContainTextAsync("Quick Warpath");
-    }
-
-    private async Task<string> GetLoadoutPreviewAsync()
-    {
-        ILocator preview = Page.GetByRole(AriaRole.Group, new() { Name = "Starting loadout preview" });
-        int itemCount = await preview.Locator(".item-card").CountAsync();
-        await Expect(preview).ToHaveAttributeAsync("data-item-count", itemCount.ToString());
-
-        ILocator[] images = [.. await preview.GetByRole(AriaRole.Img).AllAsync()];
-        string?[] itemNames = await Task.WhenAll(images.Select(image => image.GetAttributeAsync("alt")));
-        return string.Join("|", itemNames);
+        await Expect(Modals.RunSettings.Dialog).ToContainTextAsync(difficulty.DisplayName);
     }
 
     [Fact]
