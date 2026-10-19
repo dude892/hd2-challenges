@@ -9,7 +9,6 @@ on:
     paths:
       - challenges/**
       - xaml2Svg/**
-      - xaml2Svg.tests/**
       - tests/**
       - global.json
       - hd2-challenges.slnx

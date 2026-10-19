@@ -32,10 +32,10 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Run unit tests
-        run: dotnet test --project tests/hd2-challenges.tests.csproj --configuration Debug --report-trx --results-directory TestResults
+        run: dotnet test --project tests/hd2-challenges/hd2-challenges.tests.csproj --configuration Debug --report-trx --results-directory TestResults
 
       - name: Run converter tests
-        run: dotnet test --project xaml2Svg.tests/hd2Xaml2Svg.tests.csproj --configuration Debug --report-trx --results-directory TestResults
+        run: dotnet test --project tests/hd2Xaml2Svg/hd2Xaml2Svg.tests.csproj --configuration Debug --report-trx --results-directory TestResults
 
       - name: Upload test results
         if: always()
@@ -73,12 +73,12 @@ jobs:
         run: dotnet build hd2-challenges.slnx --configuration Debug --no-restore
 
       - name: Install Playwright browser
-        run: pwsh tests/e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
+        run: pwsh tests/hd2-challenges-e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
 
       - name: Run E2E tests
         env:
           BROWSER: ${{ matrix.browser }}
-        run: dotnet test --project tests/e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --report-trx --results-directory TestResults
+        run: dotnet test --project tests/hd2-challenges-e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --report-trx --results-directory TestResults
 
       - name: Upload test results
         if: always()

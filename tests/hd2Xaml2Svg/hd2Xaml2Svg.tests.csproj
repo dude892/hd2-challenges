@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>Exe</OutputType>
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -11,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="bunit" Version="2.11.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.5.1" />
     <PackageReference Include="xunit.v3" Version="4.0.2" />
@@ -22,11 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="e2e\**\*.cs" />
-    <ProjectReference Include="..\challenges\hd2-challenges.csproj" />
-    <Content Include="..\challenges\wwwroot\data\**\*.json"
-             Link="data\%(RecursiveDir)%(Filename)%(Extension)"
-             CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\..\xaml2Svg\hd2Xaml2Svg.csproj" />
   </ItemGroup>
 
 </Project>
