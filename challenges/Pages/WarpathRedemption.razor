@@ -117,7 +117,9 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Mission</small>
-                                <div class="fs-5 text-light" role="status" aria-label="Current mission progress">@_state.CurrentOperation.MissionLabel</div>
+                                  <div class="fs-5 text-light" role="status" aria-label="Current mission progress"
+                                      data-mission-number="@_state.CurrentOperation.MissionNumber"
+                                      data-mission-count="@_state.CurrentOperation.MissionCount">@_state.CurrentOperation.MissionLabel</div>
                             </div>
                         </div>
                     </div>

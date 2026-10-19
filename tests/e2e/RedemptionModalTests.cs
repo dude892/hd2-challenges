@@ -22,14 +22,15 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await rewardOptions.CloseAsync();
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
-        await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
 
         await Page.ReloadAsync();
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
         await Modals.MissionComplete.OpenAsync();
         await Expect(rewardOptions.Heading).ToBeVisibleAsync();
         await Expect(rewardOptions.Choices.GetByRole(AriaRole.Button)).ToHaveTextAsync(rewards);
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Continue to Rewards" })).ToHaveCountAsync(0);
+        await Expect(Modals.MissionComplete.ContinueToRewardsButton).ToHaveCountAsync(0);
 
         if (banRewards)
         {
@@ -43,7 +44,8 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(rewardOptions.Dialog).ToHaveCountAsync(0);
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeEnabledAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
-        await Expect(Page.GetByText("Mission 2 of 2", new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
     }
 
     [Fact]
@@ -89,7 +91,8 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await modal.CloseAsync();
 
         await Expect(modal.Dialog).ToHaveCountAsync(0);
-        await Expect(Page.GetByText("Mission 1 of 2", new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
     }
 
@@ -226,7 +229,8 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(Modals.SaveSlots.DeleteButton).ToBeVisibleAsync();
         await Modals.SaveSlots.CloseAsync();
         await Page.ReloadAsync();
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 1 of 2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
     }
 
     [Fact]

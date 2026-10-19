@@ -17,9 +17,11 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Modals.RewardOptions.OpenAsync();
         await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).Nth(1).ClickAsync();
 
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 2 of 2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
         await Page.ReloadAsync();
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 2 of 2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
 
         await Modals.SaveSlots.OpenAsync();
         await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync("Normal Warpath |");
@@ -58,13 +60,15 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
         await Modals.RewardOptions.OpenAsync();
         await Modals.RewardOptions.Choices.GetByRole(AriaRole.Button).Nth(1).ClickAsync();
-        await Expect(Page.GetByText("Mission 2 of 2", new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
 
         await Modals.SaveSlots.OpenAsync();
         ILocator snapshot = Modals.SaveSlots.Slots.Filter(new() { HasText = "Snapshot" });
         await snapshot.GetByRole(AriaRole.Button, new() { Name = "Load" }).ClickAsync();
 
-        await Expect(Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress" })).ToContainTextAsync("Mission 1 of 2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
         await Expect(Page.GetByRole(AriaRole.Heading, new() { Level = 1 })).ToContainTextAsync("Snapshot");
     }
 
@@ -90,7 +94,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
             Buffer = Encoding.UTF8.GetBytes(json)
         });
 
-        await Expect(Page.GetByRole(AriaRole.Status)).ToContainTextAsync("Imported slot");
+        await Expect(ImportedSaveStatus).ToBeVisibleAsync();
         await Expect(Modals.SaveSlots.Slots).ToHaveCountAsync(2);
     }
 
@@ -101,7 +105,8 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await CompleteFirstMissionAndOpenRewardsAsync();
 
         await Modals.RewardOptions.SkipAndBanAllButton.ClickAsync();
-        await Expect(Page.GetByText("Mission 2 of 2")).ToBeVisibleAsync();
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", "2");
 
         await Modals.BannedItems.OpenAsync();
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();

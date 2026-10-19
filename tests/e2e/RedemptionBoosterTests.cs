@@ -6,8 +6,6 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
-    private ILocator BoosterAccordionToggle => Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired boosters", Exact = true });
-
     [Fact]
     public async Task BoosterAccordionCanBeExpandedAndCollapsedWithoutBoosters()
     {
