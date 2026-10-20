@@ -201,9 +201,10 @@
   },
   {
     "displayName": "P-44 Mist",
-    "tags": ["Pistol", "One-Handed"],
+    "tags": ["Pistol", "One-Handed", "LightArmorPenetrating"],
     "warbond": "scopeOfAuthority",
     "id": "p44mist",
+    "imageURL": "p44mist.webp",
     "antitank": false
   }
 ]

@@ -433,9 +433,10 @@
   },
   {
     "displayName": "R-40 Sightliner",
-    "tags": ["MarksmanRifle"],
+    "tags": ["SniperRifle", "HeavyArmorPenetrating"],
     "warbond": "scopeOfAuthority",
     "id": "r40sightliner",
+    "imageURL": "r40sightliner.webp",
     "antitank": true
   }
 ]

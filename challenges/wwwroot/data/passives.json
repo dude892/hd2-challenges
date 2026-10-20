@@ -170,6 +170,7 @@
   {
     "displayName": "Stationary Shroud",
     "warbond": "scopeOfAuthority",
-    "id": "stationaryshroud"
+    "id": "stationaryShroud",
+    "svg": "stationaryshroud.svg"
   }
 ]

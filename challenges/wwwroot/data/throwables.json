@@ -188,6 +188,7 @@
     "tags": ["Stun", "Sticky"],
     "warbond": "scopeOfAuthority",
     "id": "g11caltrops",
+    "imageURL": "g11caltrops.webp",
     "antitank": false
   }
 ]
