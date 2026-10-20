@@ -111,5 +111,9 @@
   {
     "displayName": "Ironclad Democracy",
     "id": "ironcladDemocracy"
+  },
+  {
+    "displayName": "Scope of Authority",
+    "id": "scopeOfAuthority"
   }
 ]

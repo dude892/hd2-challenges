@@ -304,6 +304,14 @@
     "antitank": false
   },
   {
+    "displayName": "LAS-44 Nova",
+    "tags": ["Weapon", "Laser", "Heat", "HeavyArmorPenetrating"],
+    "warbond": "scopeOfAuthority",
+    "id": "las44nova",
+    "svg": "las44nova.svg",
+    "antitank": true
+  },
+  {
     "displayName": "Commando",
     "tags": ["Weapon", "Expendable", "Anti-Tank"],
     "warbond": "none",
@@ -421,6 +429,14 @@
     "warbond": "redactedRegiment",
     "id": "c4pack",
     "svg": "C4.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "AMW-20 Apex",
+    "tags": ["Weapon", "Backpack", "Bullet", "StationaryReload", "HeavyArmorPenetrating"],
+    "warbond": "scopeOfAuthority",
+    "id": "amw20apex",
+    "svg": "amw20apex.svg",
     "antitank": true
   },
   {

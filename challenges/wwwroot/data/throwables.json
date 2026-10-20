@@ -182,5 +182,13 @@
     "id": "g60antitankseeker",
     "imageURL": "g60antitankseeker.webp",
     "antitank": true
+  },
+  {
+    "displayName": "G-11 Caltrops",
+    "tags": ["Stun", "Sticky"],
+    "warbond": "scopeOfAuthority",
+    "id": "g11caltrops",
+    "imageURL": "g11caltrops.webp",
+    "antitank": false
   }
 ]
