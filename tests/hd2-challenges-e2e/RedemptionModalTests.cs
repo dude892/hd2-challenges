@@ -27,7 +27,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
 
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
         await Modals.MissionComplete.OpenAsync();
         await Expect(rewardOptions.Heading).ToBeVisibleAsync();
@@ -69,7 +69,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
         await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
 
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", state.MissionsFailed.ToString());
         await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
         await punishmentOptions.OpenAsync();
@@ -83,7 +83,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
         await Expect(punishmentOptions.OpenButton).ToBeEnabledAsync();
         await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "1");
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(MissionsFailedCount).ToHaveAttributeAsync("data-missions-failed", "1");
         await ItemGrids.AcquiredItems.AssertDoesNotContainItemAsync(selectedPunishmentId);
     }
@@ -241,7 +241,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Expect(Modals.DeleteConfirmation.Dialog).ToHaveCountAsync(0);
         await Expect(Modals.SaveSlots.DeleteButton).ToBeVisibleAsync();
         await Modals.SaveSlots.CloseAsync();
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
     }
@@ -259,7 +259,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await Modals.SaveSlots.CloseAsync();
         await Expect(BeginRunButton).ToBeVisibleAsync();
 
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(BeginRunButton).ToBeVisibleAsync();
     }
 

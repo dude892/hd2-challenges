@@ -33,7 +33,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
     public async Task ReloadingRunWithoutBoostersKeepsAccordionCollapsed()
     {
         await StartRunAsync();
-        await Page.ReloadAsync();
+        await ReloadAsync();
 
         await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(ItemGrids.AcquiredBoostersRegion).ToHaveAttributeAsync("aria-hidden", "true");
@@ -50,7 +50,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
         Assert.NotEmpty(expectedBoosters);
         await ImportRunAsync(save);
 
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(ItemGrids.BoosterAccordionToggle).ToHaveAttributeAsync("aria-expanded", "true");
         await ItemGrids.AcquiredBoosters.AssertMatchesItemsAsync(expectedBoosters);
     }

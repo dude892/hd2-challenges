@@ -24,7 +24,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
 
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", operation.MissionCount.ToString());
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", operation.DifficultyIndex.ToString());
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", operation.MissionCount.ToString());
@@ -51,7 +51,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
 
         await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "4");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Expect(CurrentOperationProgress).ToHaveAttributeAsync("data-operation-index", "4");
         await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
     }
@@ -67,7 +67,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Modals.RenameSlot.SaveNameButton.ClickAsync();
         await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync("Campaign One");
 
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Modals.SaveSlots.OpenAsync();
         await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync("Campaign One");
     }
@@ -138,7 +138,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Expect(Modals.BannedItems.Items.Root).ToBeVisibleAsync();
         await Modals.BannedItems.Items.AssertMatchesItemsAsync(rewards);
 
-        await Page.ReloadAsync();
+        await ReloadAsync();
         await Modals.BannedItems.OpenAsync();
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();
         await Expect(Modals.BannedItems.Items.Root).ToBeVisibleAsync();

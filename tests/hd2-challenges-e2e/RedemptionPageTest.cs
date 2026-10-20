@@ -31,6 +31,12 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
         await BeginRunButton.ClickAsync();
     }
 
+    protected async Task ReloadAsync()
+    {
+        await Page.ReloadAsync();
+        await Modals.SaveSlots.OpenButton.WaitForAsync();
+    }
+
     private protected async Task ImportRunAsync(SaveObject save)
     {
         await OpenSetupAsync();
