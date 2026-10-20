@@ -84,7 +84,7 @@ public sealed class RedemptionFlowTests
 
         Assert.Contains(normalState.StarterItems, item => item.Id == "p2peacemaker");
         Assert.Contains(superState.StarterItems.Passives, item => item.Id == "integratedexplosives");
-        Assert.DoesNotContain(superState.StarterItems.Passives, item => item.Id == "extrapadding");
+        Assert.Contains(superState.StarterItems.Passives, item => item.Id == "extrapadding");
         Assert.Contains(superState.StarterItems.Stratagems, item => item.Id == "sh20ballisticshieldbackpack");
 
         Warbond alwaysEnabled = Assert.Single(allWarbonds, warbond => warbond.AlwaysEnabled);
