@@ -166,5 +166,10 @@
     "warbond": "truthEnforcers",
     "id": "unflinching",
     "svg": "Reducedpainflinch.svg"
+  },
+  {
+    "displayName": "Stationary Shroud",
+    "warbond": "scopeOfAuthority",
+    "id": "stationaryshroud"
   }
 ]

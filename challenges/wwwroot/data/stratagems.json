@@ -734,5 +734,19 @@
     "id": "incendiarymines",
     "svg": "EmplacementsMinedeployerIncendiary.svg",
     "antitank": false
+  },
+  {
+    "displayName": "AMW-20 Apex",
+    "tags": ["Weapon", "Backpack", "Bullet"],
+    "warbond": "scopeOfAuthority",
+    "id": "amw20apex",
+    "antitank": true
+  },
+  {
+    "displayName": "LASS-44 Nova",
+    "tags": ["Weapon", "Laser"],
+    "warbond": "scopeOfAuthority",
+    "id": "lass44nova",
+    "antitank": true
   }
 ]

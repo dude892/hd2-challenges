@@ -430,5 +430,12 @@
     "id": "gl15evictor",
     "imageURL": "gl15evictor.webp",
     "antitank": false
+  },
+  {
+    "displayName": "R-40 Sightliner",
+    "tags": ["MarksmanRifle"],
+    "warbond": "scopeOfAuthority",
+    "id": "r40sightliner",
+    "antitank": true
   }
 ]

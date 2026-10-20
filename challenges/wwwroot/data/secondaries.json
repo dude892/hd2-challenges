@@ -198,5 +198,12 @@
     "id": "p34breacher",
     "imageURL": "p34breacher.webp",
     "antitank": true
+  },
+  {
+    "displayName": "P-44 Mist",
+    "tags": ["Pistol", "One-Handed"],
+    "warbond": "scopeOfAuthority",
+    "id": "p44mist",
+    "antitank": false
   }
 ]
