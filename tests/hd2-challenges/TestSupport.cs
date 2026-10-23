@@ -51,6 +51,37 @@ internal sealed class CatalogTestContext : IDisposable
     }
 }
 
+internal sealed class RedemptionSaveTestContext : IDisposable
+{
+    private readonly CatalogTestContext _catalogContext;
+
+    private RedemptionSaveTestContext(
+        CatalogTestContext catalogContext,
+        SaveLibraryService genericSaveLibrary,
+        RedemptionSaveLibraryService saveLibrary)
+    {
+        _catalogContext = catalogContext;
+        Catalog = catalogContext;
+        GenericSaveLibrary = genericSaveLibrary;
+        SaveLibrary = saveLibrary;
+    }
+
+    public CatalogTestContext Catalog { get; }
+    public SaveLibraryService GenericSaveLibrary { get; }
+    public RedemptionSaveLibraryService SaveLibrary { get; }
+
+    public static async Task<RedemptionSaveTestContext> CreateAsync()
+    {
+        CatalogTestContext catalogContext = await CatalogTestContext.CreateAsync();
+        SaveLibraryService genericSaveLibrary = new(new BrowserStorageService(new InMemoryJsRuntime()));
+        RedemptionSaveLibraryService saveLibrary = new(
+            genericSaveLibrary, catalogContext.RedemptionCatalog, catalogContext.Catalog);
+        return new RedemptionSaveTestContext(catalogContext, genericSaveLibrary, saveLibrary);
+    }
+
+    public void Dispose() => _catalogContext.Dispose();
+}
+
 internal sealed class InMemoryJsRuntime : Microsoft.JSInterop.IJSRuntime
 {
     private readonly Dictionary<string, string> _storage = new(StringComparer.Ordinal);

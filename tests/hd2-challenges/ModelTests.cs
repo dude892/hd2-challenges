@@ -16,7 +16,7 @@ public sealed class ModelTests
     }
 
     [Fact]
-    public void ItemSetKeepsCategoriesAndMutationsIndependentAcrossClones()
+    public void ItemSetCloneIsIndependentFromOriginalMutations()
     {
         GameItem primary = new() { Id = "primary" };
         primary.PostInitSetup(ItemKind.Primary, []);
@@ -26,16 +26,30 @@ public sealed class ModelTests
 
         ItemSet clone = original.Clone();
         clone.RemoveItem(primary);
-        clone.ClearSet(ItemKind.Booster);
 
         Assert.Equal(2, original.Count);
-        Assert.Empty(clone);
+        Assert.Single(clone);
         Assert.Contains(primary, original.Primaries);
         Assert.Contains(booster, original.Boosters);
     }
 
     [Fact]
-    public void ItemSetOverridesReplaceOnlyPopulatedCategoriesAndAdditionsUnionItems()
+    public void ItemSetClearCategoryRemovesOnlyItemsInThatCategory()
+    {
+        GameItem primary = new() { Id = "primary" };
+        primary.PostInitSetup(ItemKind.Primary, []);
+        GameItem booster = new() { Id = "booster" };
+        booster.PostInitSetup(ItemKind.Booster, []);
+        ItemSet items = new([primary, booster]);
+
+        items.ClearSet(ItemKind.Booster);
+
+        Assert.Contains(primary, items);
+        Assert.DoesNotContain(booster, items);
+    }
+
+    [Fact]
+    public void ItemSetOverridesReplaceOnlyPopulatedCategories()
     {
         GameItem originalPrimary = new() { Id = "original-primary" };
         originalPrimary.PostInitSetup(ItemKind.Primary, []);
@@ -45,43 +59,74 @@ public sealed class ModelTests
 
         GameItem overridePrimary = new() { Id = "override-primary" };
         overridePrimary.PostInitSetup(ItemKind.Primary, []);
-        GameItem addedBooster = new() { Id = "added-booster" };
-        addedBooster.PostInitSetup(ItemKind.Booster, []);
-        loadout.ApplyOverrides(new ItemSet([overridePrimary]))
-            .ApplyAdditions(new ItemSet([originalBooster, addedBooster]));
+        loadout.ApplyOverrides(new ItemSet([overridePrimary]));
 
         Assert.DoesNotContain(originalPrimary, loadout);
         Assert.Contains(overridePrimary, loadout);
         Assert.Contains(originalBooster, loadout);
-        Assert.Contains(addedBooster, loadout);
-        Assert.Equal(3, loadout.Count);
+        Assert.Equal(2, loadout.Count);
     }
 
     [Fact]
-    public void OperationClampsValuesAndResetsStarsWhenMissionChanges()
+    public void ItemSetAdditionsUnionItemsWithoutReplacingExistingCategories()
     {
-        Operation operation = new(new OperationDefinition
-        {
-            DisplayName = "Hard",
-            MaxStars = 3,
-            MissionCount = 2
-        }, 0, 99);
+        GameItem originalPrimary = new() { Id = "original-primary" };
+        originalPrimary.PostInitSetup(ItemKind.Primary, []);
+        GameItem addedBooster = new() { Id = "added-booster" };
+        addedBooster.PostInitSetup(ItemKind.Booster, []);
+        ItemSet loadout = new([originalPrimary]);
+
+        loadout.ApplyAdditions(new ItemSet([addedBooster]));
+
+        Assert.Contains(originalPrimary, loadout);
+        Assert.Contains(addedBooster, loadout);
+        Assert.Equal(2, loadout.Count);
+    }
+
+    [Fact]
+    public void OperationClampsDifficultyIndex()
+    {
+        Operation operation = new(new OperationDefinition { MissionCount = 2 }, 0, 1);
 
         Assert.Equal(1, operation.DifficultyIndex);
+    }
+
+    [Fact]
+    public void OperationClampsMissionNumber()
+    {
+        Operation operation = new(new OperationDefinition { MissionCount = 2 }, 1, 99);
+
         Assert.Equal(2, operation.MissionNumber);
-        operation.SelectedStars = 99;
+        Assert.False(operation.IsFirstMission);
+        Assert.True(operation.IsLastMission);
+    }
+
+    [Fact]
+    public void OperationClampsSelectedStars()
+    {
+        Operation operation = new(new OperationDefinition { MaxStars = 3, MissionCount = 1 }, 1, 1)
+        {
+            SelectedStars = 99
+        };
+
         Assert.Equal(3, operation.SelectedStars);
+    }
+
+    [Fact]
+    public void OperationResetsSelectedStarsWhenMissionChanges()
+    {
+        Operation operation = new(new OperationDefinition { MaxStars = 3, MissionCount = 2 }, 1, 2)
+        {
+            SelectedStars = 2
+        };
 
         operation.MissionNumber = 1;
 
-        Assert.Equal(1, operation.MissionNumber);
         Assert.Equal(0, operation.SelectedStars);
-        Assert.True(operation.IsFirstMission);
-        Assert.False(operation.IsLastMission);
     }
 
     [Fact]
-    public void SaveLibraryManagesWorkingCurrentAndReplacementSlots()
+    public void SaveLibraryCommitMakesWorkingSlotCurrent()
     {
         SaveSlot<string> working = new() { Name = "setup", State = "draft" };
         SaveLibrary<string> library = new() { WorkingSlot = working };
@@ -91,15 +136,67 @@ public sealed class ModelTests
         Assert.Null(library.WorkingSlot);
         Assert.Same(working, library.CurrentSlot);
 
+    }
+
+    [Fact]
+    public void SaveLibraryAddSlotMakesAddedSlotCurrent()
+    {
         SaveSlot<string> other = new() { Name = "other", State = "saved" };
+        SaveLibrary<string> library = new();
+
         library.AddSlot(other);
+
         Assert.Same(other, library.CurrentSlot);
-        Assert.Same(working, library.SelectSlot(working.Id));
+    }
+
+    [Fact]
+    public void SaveLibrarySelectSlotMakesSelectedSlotCurrent()
+    {
+        SaveSlot<string> first = new() { Name = "first", State = "draft" };
+        SaveSlot<string> second = new() { Name = "second", State = "saved" };
+        SaveLibrary<string> library = new();
+        library.AddSlot(first);
+        library.AddSlot(second);
+
+        Assert.Same(first, library.SelectSlot(first.Id));
+        Assert.Same(first, library.CurrentSlot);
+    }
+
+    [Fact]
+    public void SaveLibraryRenameTrimsName()
+    {
+        SaveSlot<string> working = new() { Name = "setup", State = "draft" };
+        SaveLibrary<string> library = new() { WorkingSlot = working };
+        library.CommitWorkingSlot();
 
         Assert.True(library.RenameSlot(working.Id, "  Renamed  "));
         Assert.Equal("Renamed", working.Name);
+    }
+
+    [Fact]
+    public void SaveLibraryRejectsBlankRename()
+    {
+        SaveSlot<string> working = new() { Name = "setup", State = "draft" };
+        SaveLibrary<string> library = new() { WorkingSlot = working };
+        library.CommitWorkingSlot();
+
         Assert.False(library.RenameSlot(working.Id, " "));
+    }
+
+    [Fact]
+    public void SaveLibraryRejectsRenameForUnknownSlot()
+    {
+        SaveLibrary<string> library = new();
+
         Assert.False(library.RenameSlot(Guid.NewGuid(), "Missing"));
+    }
+
+    [Fact]
+    public void SaveLibraryDeletingCurrentSlotCreatesWorkingReplacement()
+    {
+        SaveSlot<string> working = new() { Name = "setup", State = "draft" };
+        SaveLibrary<string> library = new() { WorkingSlot = working };
+        library.CommitWorkingSlot();
 
         (bool deleted, bool replacementCreated) = library.DeleteSlot(working.Id, () => new SaveSlot<string> { Name = "replacement" });
 
