@@ -33,13 +33,13 @@
     flex: 0 0 auto;
 }
 
-.run-item-grid {
+::deep .run-item-grid {
     --run-item-card-width: 140px;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--run-item-card-width)), var(--run-item-card-width)));
 }
 
-.equipment-content-item-grid {
-    grid-template-columns: repeat(var(--equipment-card-count), var(--run-item-card-width));
+::deep .equipment-content-item-grid {
+    grid-template-columns: repeat(var(--item-columns), var(--run-item-card-width));
 }
 
 .booster-accordion-toggle {
@@ -93,7 +93,7 @@
 }
 
 @media (max-width: 575.98px) {
-    .equipment-content-item-grid {
+    ::deep .equipment-content-item-grid {
         grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--run-item-card-width)), var(--run-item-card-width)));
     }
 }

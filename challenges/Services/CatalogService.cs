@@ -6,13 +6,13 @@ namespace Hd2Challenges.Services;
 public sealed class CatalogService(HttpClient httpClient)
 {
     private bool _loaded;
+    private IReadOnlyList<GameItem> Stratagems { get; set; } = [];
 
     private IReadOnlyList<GameItem> Primaries { get; set; } = [];
     private IReadOnlyList<GameItem> Secondaries { get; set; } = [];
     private IReadOnlyList<GameItem> Throwables { get; set; } = [];
-    private IReadOnlyList<GameItem> Boosters { get; set; } = [];
-    private IReadOnlyList<GameItem> Stratagems { get; set; } = [];
     private IReadOnlyList<GameItem> Passives { get; set; } = [];
+    private IReadOnlyList<GameItem> Boosters { get; set; } = [];
     
     private readonly ItemSet AllItemsSet = new();
     private IReadOnlyList<OperationDefinition> _operationDefinitions { get; set; } = [];
@@ -28,19 +28,18 @@ public sealed class CatalogService(HttpClient httpClient)
 
         Warbonds = await httpClient.GetFromJsonAsync<List<Warbond>>("data/warbonds.json") ?? [];
 
+        Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         Primaries = await LoadItemsAsync("data/primaries.json", ItemKind.Primary);
         Secondaries = await LoadItemsAsync("data/secondaries.json", ItemKind.Secondary);
         Throwables = await LoadItemsAsync("data/throwables.json", ItemKind.Throwable);
-        Boosters = await LoadItemsAsync("data/boosters.json", ItemKind.Booster);
-        Stratagems = await LoadItemsAsync("data/stratagems.json", ItemKind.Stratagem);
         Passives = await LoadItemsAsync("data/passives.json", ItemKind.Passive);
+        Boosters = await LoadItemsAsync("data/boosters.json", ItemKind.Booster);
 
-        AllItemsSet.Stratagems = [.. Stratagems];
-        AllItemsSet.Primaries = [.. Primaries];
-        AllItemsSet.Secondaries = [.. Secondaries];
-        AllItemsSet.Throwables = [.. Throwables];
-        AllItemsSet.Passives = [.. Passives];
-        AllItemsSet.Boosters = [.. Boosters];
+        AllItemsSet.AddItems(
+            new ItemSet(
+                Stratagems.Concat(Primaries).Concat(Secondaries).Concat(Throwables).Concat(Passives).Concat(Boosters)
+            )
+        );
 
         _operationDefinitions = await httpClient.GetFromJsonAsync<List<OperationDefinition>>("data/operations.json") ?? [];
         
@@ -52,7 +51,7 @@ public sealed class CatalogService(HttpClient httpClient)
     public Operation GetOperation(int index) => GetOperation(index, 1);
 
     public HashSet<Warbond> GetAllWarbonds() => [.. Warbonds];
-    public HashSet<Warbond> GetWarbonds(IEnumerable<string> ids) => [.. Warbonds.Where(w => ids.Contains(w.Id)).Concat(Warbonds.Where(item => item.Id == "helldiversMobilize"))];
+    public HashSet<Warbond> GetWarbonds(IEnumerable<string> ids) => [.. Warbonds.Where(warbond => ids.Contains(warbond.Id) || warbond.AlwaysEnabled)];
     public ItemSet GetAllItems() => AllItemsSet.Clone();
 
     public IReadOnlyList<GameItem> GetItemsInCatalogOrder(IEnumerable<GameItem> items)
@@ -69,15 +68,7 @@ public sealed class CatalogService(HttpClient httpClient)
         ];
     }
 
-    public ItemSet GetItemSet(IEnumerable<string> ids) => new()
-    {
-        Stratagems = [.. AllItemsSet.Stratagems.Where(item => ids.Contains(item.Id))],
-        Primaries = [.. AllItemsSet.Primaries.Where(item => ids.Contains(item.Id))],
-        Secondaries = [.. AllItemsSet.Secondaries.Where(item => ids.Contains(item.Id))],
-        Throwables = [.. AllItemsSet.Throwables.Where(item => ids.Contains(item.Id))],
-        Passives = [.. AllItemsSet.Passives.Where(item => ids.Contains(item.Id))],
-        Boosters = [.. AllItemsSet.Boosters.Where(item => ids.Contains(item.Id))]
-    };
+    public ItemSet GetItemSet(IEnumerable<string> ids) => new(AllItemsSet.Where(item => ids.Contains(item.Id)));
 
     public ItemSet FilterAllItems(IEnumerable<ItemSet> itemSets)
     {
@@ -98,13 +89,15 @@ public sealed class CatalogService(HttpClient httpClient)
 
     private async Task<IReadOnlyList<GameItem>> LoadItemsAsync(string path, ItemKind kind)
     {
-        var items = await httpClient.GetFromJsonAsync<List<GameItem>>(path) ?? [];
+        var definitions = await httpClient.GetFromJsonAsync<List<GameItemDefinition>>(path) ?? [];
 
-        foreach (var item in items)
-        {
-            item.PostInitSetup(kind, Warbonds);
-        }
-
-        return items;
+        return
+        [
+            .. definitions.Select(definition => new GameItem(
+                definition,
+                kind,
+                Warbonds.FirstOrDefault(warbond => string.Equals(
+                    warbond.Id, definition.WarbondId, StringComparison.OrdinalIgnoreCase))))
+        ];
     }
 }
