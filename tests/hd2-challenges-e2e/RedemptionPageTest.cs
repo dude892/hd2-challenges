@@ -50,6 +50,7 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
 
     private protected async Task<ItemSet> GetValidatedRewardItemsAsync()
     {
+        await Expect(Modals.RewardOptions.Choices.Cards.First).ToBeVisibleAsync();
         string[] ids = await Modals.RewardOptions.Choices.GetItemIdsAsync();
         Assert.NotEmpty(ids);
         Assert.Equal(ids.Length, ids.Distinct(StringComparer.OrdinalIgnoreCase).Count());
