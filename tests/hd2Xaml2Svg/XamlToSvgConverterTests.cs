@@ -1,6 +1,5 @@
 using System.IO;
 using System.Xml.Linq;
-using Hd2Xaml2Svg;
 using Xunit;
 
 namespace Hd2Xaml2Svg.Tests;
@@ -27,7 +26,7 @@ public sealed class XamlToSvgConverterTests
 
         XamlToSvgConverter.ProcessXamlFile(inputPath, temporaryDirectory.Path);
 
-        string svgPath = System.IO.Path.Combine(temporaryDirectory.Path, "stratagem", "Sample.svg");
+        string svgPath = Path.Combine(temporaryDirectory.Path, "stratagem", "Sample.svg");
         XDocument document = XDocument.Load(svgPath);
         XNamespace svg = "http://www.w3.org/2000/svg";
         XElement root = document.Root!;
@@ -57,9 +56,9 @@ public sealed class XamlToSvgConverterTests
               <DataTemplate x:Key="BoosterSample"><Viewbox><Canvas><TextBlock Text="Unsupported" /></Canvas></Viewbox></DataTemplate>
             </ResourceDictionary>
             """);
-        string outputDirectory = System.IO.Path.Combine(temporaryDirectory.Path, "booster");
+        string outputDirectory = Path.Combine(temporaryDirectory.Path, "booster");
         Directory.CreateDirectory(outputDirectory);
-        string staleSvgPath = System.IO.Path.Combine(outputDirectory, "Sample.svg");
+        string staleSvgPath = Path.Combine(outputDirectory, "Sample.svg");
         File.WriteAllText(staleSvgPath, "stale");
 
         XamlToSvgConverter.ProcessXamlFile(inputPath, temporaryDirectory.Path);
@@ -90,19 +89,19 @@ public sealed class SvgGalleryGeneratorTests
         string root = Directory.CreateTempSubdirectory().FullName;
         try
         {
-            string populatedFolder = System.IO.Path.Combine(root, "icons&items");
-            string emptyFolder = System.IO.Path.Combine(root, "empty");
+            string populatedFolder = Path.Combine(root, "icons&items");
+            string emptyFolder = Path.Combine(root, "empty");
             Directory.CreateDirectory(populatedFolder);
             Directory.CreateDirectory(emptyFolder);
-            File.WriteAllText(System.IO.Path.Combine(populatedFolder, "A&B.svg"), "<svg />");
+            File.WriteAllText(Path.Combine(populatedFolder, "A&B.svg"), "<svg />");
 
             SvgGalleryGenerator.GenerateGalleries(root);
 
-            string gallery = File.ReadAllText(System.IO.Path.Combine(populatedFolder, "index.html"));
+            string gallery = File.ReadAllText(Path.Combine(populatedFolder, "index.html"));
             Assert.Contains("icons&amp;items SVG Gallery", gallery);
             Assert.Contains("A%26B.svg", gallery);
             Assert.Contains("A&amp;B", gallery);
-            Assert.False(File.Exists(System.IO.Path.Combine(emptyFolder, "index.html")));
+            Assert.False(File.Exists(Path.Combine(emptyFolder, "index.html")));
         }
         finally
         {
