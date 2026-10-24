@@ -75,11 +75,11 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
             catch (HttpRequestException)
             {
             }
-            catch (TaskCanceledException) when (!timeout.IsCancellationRequested)
+            catch (OperationCanceledException)
             {
             }
 
-            await Task.Delay(250, timeout.Token);
+            await Task.Delay(250);
         }
 
         if (timeout.IsCancellationRequested)
