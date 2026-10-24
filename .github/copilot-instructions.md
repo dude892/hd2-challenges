@@ -56,7 +56,7 @@ Keep service boundaries narrow: expose only the operations and data consumers ne
 - `WarpathRedemption.razor` loads the catalog first, resolves a `RedemptionStateDefinition` into a `RedemptionState`, and persists definitions back to browser local storage after state changes through `RedemptionSaveLibraryService`.
 - `RedemptionSaveLibraryService` uses local-storage key `blazor-warpath-redemption` and export mode `warpath-redemption`.
 - Imported and exported save files use the same definition-based representation. Keep runtime-only properties out of save DTOs and resolve IDs through `CatalogService` when loading.
-- The current local-storage key and save format are allowed to evolve without backward migration support until the site is deployed. Do not add compatibility shims or migration code speculatively.
+- The site is deployed and browser saves and exported files are user data. Treat changes to the local-storage key or save format as compatibility-sensitive: preserve existing data or provide an explicit migration/import path when changing the schema. Do not change the key or format casually.
 
 ## Change Guidelines
 
@@ -64,7 +64,8 @@ Keep service boundaries narrow: expose only the operations and data consumers ne
 - When adding catalog data, update the corresponding definition/model and the relevant JSON file together.
 - When adding persisted state, update both the definition representation and the runtime construction/`ToDefinition()` path.
 - Keep random reward selection and mission progression in the domain services, not in Razor markup.
-- Validate changes with `dotnet build`; for behavior changes, add or update focused tests when a test project is introduced.
+- Validate code changes with the focused tests for the affected behavior, and build the solution when changes affect project integration, generated assets, or deployment. Add or update tests in the existing test projects; do not create another test project unless the scope requires it.
+- Avoid unexplained numeric literals. Use named constants for values that have domain meaning or are shared; keep obvious one-off values local rather than extracting constants mechanically.
 
 ## Tools Available
 
@@ -92,15 +93,13 @@ Consider also the testability and maintainability of the code when deciding wher
 If something is not relying on the capabilities of a service, it is likely better suited to a model. Any logic that primarily manipulates or represents data without side effects should generally reside in a model rather than a service.
 Do not put application state management logic directly in Razor components; delegate it to services instead.
 Do not put random wrappers around service calls in Razor components; call the service methods directly instead.
-DO NOT EVER MAKE MAGIC NUMBER OR USE CONSTANTS DIRECTLY IN THE CODE, THIS INCLUDES MAKING A VARIABLE OF ANY KIND.
 Use razor.css files to define component-specific styles instead of putting them in global CSS files.
 DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
 
 ## Testing
-- All three test projects use xUnit v3 4.x with Microsoft Testing Platform v2. The repository-root `global.json` selects MTP for the .NET 10 SDK.
-- Run all tests with `dotnet test --solution .\hd2-challenges.slnx`, or target a project with `dotnet test --project .\tests\hd2-challenges\hd2-challenges.tests.csproj`, `dotnet test --project .\tests\hd2Xaml2Svg\hd2Xaml2Svg.tests.csproj`, or `dotnet test --project .\tests\hd2-challenges-e2e\hd2-challenges.e2e.tests.csproj`.
-- Use `--report-trx` for TRX results and `--filter-class`, `--filter-method`, or `--filter-trait` to select tests. Pass these options directly, without a `--` separator; VSTest's `--logger trx` and `--filter` syntax do not apply.
-- Build the solution before running E2E tests with `--no-build`. Install browsers with `pwsh .\tests\hd2-challenges-e2e\bin\Debug\net10.0\playwright.ps1 install`. Select an E2E browser with the `BROWSER` environment variable (`chromium`, `firefox`, or `webkit`); Chromium is the default.
-- E2E tests share one app fixture and use `tests/hd2-challenges-e2e/xunit.runner.json` to enable method-level parallelism (`parallelMode: all`) with four scheduler threads and the conservative algorithm. The thread setting is not a hard cap on overlapping asynchronous browser operations. Keep shared catalog objects read-only; use per-test state and Playwright's isolated browser contexts for mutations. Regular and converter tests retain default collection-level parallelism.
-When making changes, do not just attempt the build, use the new integrated tests. Ensure that all relevant scenarios are covered and that the tests pass successfully. If the final result behavior is not obvious based on the request, ask for more information before creating tests.
-When adjusting or creating a new flow or feature, ensure that all related components are tested and that the changes do not introduce regressions in existing functionality.
+- The solution contains three test projects, all using xUnit v3 4.x with Microsoft Testing Platform (MTP) v2 on .NET 10. The repository-root `global.json` selects MTP. `tests/hd2-challenges` contains model, service, persistence/adapter, and bUnit component tests; `tests/hd2Xaml2Svg` covers XAML-to-SVG conversion; `tests/hd2-challenges-e2e` uses Playwright to exercise the running Blazor app, including catalog and Redemption flows, save/import/export, and reload persistence.
+- Run the full suite with `dotnet test --solution .\hd2-challenges.slnx`. For a focused project run, use `dotnet test --project .\tests\hd2-challenges\hd2-challenges.tests.csproj`, `dotnet test --project .\tests\hd2Xaml2Svg\hd2Xaml2Svg.tests.csproj`, or `dotnet test --project .\tests\hd2-challenges-e2e\hd2-challenges.e2e.tests.csproj`.
+- Use MTP options directly, without a `--` separator: `--report-trx` for TRX results and `--filter-class`, `--filter-method`, or `--filter-trait` to select tests. VSTest's `--logger trx` and `--filter` syntax do not apply.
+- The app build runs the WPF converter, so builds and tests require Windows and the .NET 10 SDK. Before running E2E tests with `--no-build`, build the solution in the matching configuration. Install a browser with `pwsh .\tests\hd2-challenges-e2e\bin\Debug\net10.0\playwright.ps1 install chromium` (substitute `firefox` or `webkit` as needed). `BROWSER` selects the browser; Chromium is the default. The E2E fixture starts the already-built app itself.
+- Local E2E runs use `tests/hd2-challenges-e2e/xunit.runner.json` (`parallelMode: all`, `maxParallelThreads: 8`, conservative scheduling); CI uses `xunit.runner.ci.json` with parallelism off. E2E tests share one app fixture and use Playwright's isolated browser contexts. Keep shared catalog objects read-only and use per-test state for mutations. The CI workflow runs E2E tests separately in Chromium, Firefox, and WebKit.
+- Add or update focused tests for behavior changes and cover affected user-visible flows when practical. Run the relevant test project after edits; use the full suite when changing shared behavior or project integration. Do not rely on a build alone for behavioral changes.
