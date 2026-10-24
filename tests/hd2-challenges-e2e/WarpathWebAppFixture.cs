@@ -40,6 +40,10 @@ public sealed class WarpathWebAppFixture : IAsyncLifetime
         startInfo.ArgumentList.Add("run");
         startInfo.ArgumentList.Add("--project");
         startInfo.ArgumentList.Add(projectPath);
+        startInfo.ArgumentList.Add("--configuration");
+        startInfo.ArgumentList.Add(typeof(WarpathWebAppFixture).Assembly
+            .GetCustomAttributes(typeof(System.Reflection.AssemblyConfigurationAttribute), false)
+            .Cast<System.Reflection.AssemblyConfigurationAttribute>().Single().Configuration);
         startInfo.ArgumentList.Add("--no-build");
         startInfo.ArgumentList.Add("--no-launch-profile");
         startInfo.ArgumentList.Add("--urls");

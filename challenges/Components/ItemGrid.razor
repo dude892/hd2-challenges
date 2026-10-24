@@ -6,8 +6,8 @@
         @HeaderContent
     }
 
-        <div class="@_gridCssClass" role="group" aria-label="@AccessibleLabel" data-item-count="@Items.Count"
-            style="@(UseItemColumns ? $"--item-columns: {Items.Count}" : null)">
+    <div class="@_gridCssClass" role="group" aria-label="@AccessibleLabel" data-item-count="@Items.Count"
+        style="@(UseItemColumns ? $"--item-columns: {(MaxItemColumns > 0 ? Math.Min(Items.Count, MaxItemColumns) : Items.Count)}" : null)">
         @if (Items.Count == 0)
         {
             <div class="text-secondary small">@EmptyMessage</div>
@@ -31,6 +31,7 @@
     [Parameter] public RenderFragment? HeaderContent { get; set; }
     [Parameter] public string GridClass { get; set; } = string.Empty;
     [Parameter] public bool UseItemColumns { get; set; }
+    [Parameter] public int MaxItemColumns { get; set; } = 0;
     [Parameter] public string EmptyMessage { get; set; } = "No items available.";
     [Parameter] public Func<GameItem, string?>? BadgeSelector { get; set; }
     [Parameter] public EventCallback<GameItem> OnItemClick { get; set; }
