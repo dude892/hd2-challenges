@@ -23,4 +23,6 @@ public sealed class SaveObject
 
         Slot = save.Slot;
     }
+
+    public override string ToString() => Slot.Name;
 }

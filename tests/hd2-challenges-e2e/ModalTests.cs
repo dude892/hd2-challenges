@@ -7,14 +7,14 @@ public sealed class ModalTests(WarpathWebAppFixture webApp) : RedemptionPageTest
 {
     public static TheoryData<Type> ModalTypes { get; } =
     [
-        typeof(RunSettingsModal),
-        typeof(SaveSlotsModal),
-        typeof(MissionCompleteModal),
-        typeof(RewardOptionsModal),
-        typeof(PunishmentOptionsModal),
-        typeof(BannedItemsModal),
-        typeof(RenameSlotModal),
-        typeof(DeleteConfirmationModal)
+        (new TheoryDataRow<Type>(typeof(RunSettingsModal)) { Label = "modalType: RunSettingsModal" }),
+        (new TheoryDataRow<Type>(typeof(SaveSlotsModal)) { Label = "modalType: SaveSlotsModal" }),
+        (new TheoryDataRow<Type>(typeof(MissionCompleteModal)) { Label = "modalType: MissionCompleteModal" }),
+        (new TheoryDataRow<Type>(typeof(RewardOptionsModal)) { Label = "modalType: RewardOptionsModal" }),
+        (new TheoryDataRow<Type>(typeof(PunishmentOptionsModal)) { Label = "modalType: PunishmentOptionsModal" }),
+        (new TheoryDataRow<Type>(typeof(BannedItemsModal)) { Label = "modalType: BannedItemsModal" }),
+        (new TheoryDataRow<Type>(typeof(RenameSlotModal)) { Label = "modalType: RenameSlotModal" }),
+        (new TheoryDataRow<Type>(typeof(DeleteConfirmationModal)) { Label = "modalType: DeleteConfirmationModal" })
     ];
 
     private async Task<ModalObject> OpenModalAsync(Type modalType)
