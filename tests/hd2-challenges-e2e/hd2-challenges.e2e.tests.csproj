@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Local runs use xunit.runner.json; CI explicitly selects the serial xunit.runner.ci.json profile. -->
+    <!-- Local runs use xunit.runner.json; CI selects xunit.runner.ci.json to limit each shard to two concurrent tests. -->
     <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="xunit.runner.ci.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Saves\*.json" CopyToOutputDirectory="PreserveNewest" />
