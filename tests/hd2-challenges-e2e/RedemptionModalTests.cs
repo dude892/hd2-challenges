@@ -7,18 +7,88 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
-    [Fact]
-    public async Task MissionRatingExposesItsPressedState()
+    public static TheoryData<string> OperationRatings { get; } = new()
     {
-        await StartRunAsync();
-        await Modals.MissionComplete.OpenAsync();
+        "operation-index-1.json",
+        "operation-index-2.json",
+        "operation-index-3.json",
+        "operation-index-5.json",
+        "operation-index-7.json"
+    };
 
-        ILocator threeStars = Modals.MissionComplete.ThreeStarsButton;
-        await Expect(threeStars).ToHaveAttributeAsync("aria-pressed", "false");
-        await threeStars.ClickAsync();
-        await Expect(threeStars).ToHaveAttributeAsync("aria-pressed", "true");
-        await threeStars.ClickAsync();
-        await Expect(threeStars).ToHaveAttributeAsync("aria-pressed", "false");
+    [Theory]
+    [MemberData(nameof(OperationRatings))]
+    public async Task MissionRatingButtonsMatchOperationMaximum(string saveFileName)
+    {
+        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+
+        foreach (var (button, stars) in Modals.MissionComplete.Ratings)
+        {
+            if (stars > operation.MaxStars)
+            {
+                await Expect(button).ToHaveCountAsync(0);
+            }
+            else
+            {
+                await Expect(button).ToBeVisibleAsync();
+            }
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(OperationRatings))]
+    public async Task MissionRatingsAreInitiallyUnselected(string saveFileName)
+    {
+        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+
+        foreach (var (button, _) in Modals.MissionComplete.GetRatings(operation))
+        {
+            await Expect(button).ToHaveAttributeAsync("aria-pressed", "false");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(OperationRatings))]
+    public async Task ClickingMissionRatingSelectsExactlyTheStarsUpToThatRating(string saveFileName)
+    {
+        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+        var availableRatings = Modals.MissionComplete.GetRatings(operation);
+
+        foreach (var (button, stars) in availableRatings.Reverse())
+        {
+            await button.ClickAsync();
+            foreach (var (ratingButton, ratingStars) in availableRatings)
+            {
+                await Expect(ratingButton).ToHaveAttributeAsync("aria-pressed", ratingStars <= stars ? "true" : "false");
+            }
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(OperationRatings))]
+    public async Task ClickingSelectedMissionRatingClearsAllStars(string saveFileName)
+    {
+        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+        var availableRatings = Modals.MissionComplete.GetRatings(operation);
+
+        foreach (var (button, _) in availableRatings)
+        {
+            await button.ClickAsync();
+            await button.ClickAsync();
+            foreach (var (ratingButton, _) in availableRatings)
+            {
+                await Expect(ratingButton).ToHaveAttributeAsync("aria-pressed", "false");
+            }
+        }
+    }
+
+    private async Task<Operation> OpenMissionRatingsAsync(string saveFileName)
+    {
+        SaveObject save = new(saveFileName);
+        Operation operation = save.ResolveState(RedemptionCatalog).CurrentOperation;
+        await ImportRunAsync(save);
+        await Modals.MissionComplete.OpenAsync();
+        return operation;
     }
 
     [Theory]

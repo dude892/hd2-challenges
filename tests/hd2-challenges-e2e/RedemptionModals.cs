@@ -1,3 +1,4 @@
+using Hd2Challenges.Models;
 using Microsoft.Playwright;
 
 namespace Hd2Challenges.EndToEnd.Tests;
@@ -41,8 +42,24 @@ internal abstract class ModalObject
 internal sealed class MissionCompleteModal(IPage page) : ModalObject(page, "Mission Complete")
 {
     public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "Mission Complete", Exact = true });
+    public ILocator OneStarButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 1 star", Exact = true });
+    public ILocator TwoStarsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 2 stars", Exact = true });
     public ILocator ThreeStarsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 3 stars", Exact = true });
+    public ILocator FourStarsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 4 stars", Exact = true });
+    public ILocator FiveStarsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 5 stars", Exact = true });
     public ILocator ContinueToRewardsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Continue to Rewards", Exact = true });
+
+    public (ILocator Button, int Stars)[] Ratings =>
+    [
+        (OneStarButton, 1),
+        (TwoStarsButton, 2),
+        (ThreeStarsButton, 3),
+        (FourStarsButton, 4),
+        (FiveStarsButton, 5)
+    ];
+
+    public IEnumerable<(ILocator Button, int Stars)> GetRatings(Operation operation) =>
+        Ratings.Where(rating => rating.Stars <= operation.MaxStars);
 }
 
 internal sealed class RewardOptionsModal(IPage page, MissionCompleteModal missionComplete) : ModalObject(page, "Reward Options")
