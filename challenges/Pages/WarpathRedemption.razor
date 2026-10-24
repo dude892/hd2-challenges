@@ -26,12 +26,12 @@ else
             </h1>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-light" aria-label="Open save slot manager" @onclick="(() => _showSaveManager = true)">Save Slots</button>
+            <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" aria-label="Open current run settings" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" aria-label="Download current run summary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
-                <button class="btn btn-warning" aria-label="Start a new Warpath: Redemption run" @onclick="RestartRedemptionRunAsync">Start New Run</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
     </div>
@@ -41,7 +41,7 @@ else
         <div class="row g-4">
             <div class="col-xl-4 d-grid row-gap-3">
                 <div class="row">
-                    <button class="btn btn-success" aria-label="Begin Warpath: Redemption run" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
+                    <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
                 </div>
 
                 <div class="row section-card rounded p-3">
@@ -136,8 +136,8 @@ else
                     </div>
                     <div class="col-md-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" aria-label="Record mission completion" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" aria-label="Record mission failure" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
                             <button class="btn btn-primary btn-lg btn-block" aria-label="View banned items" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
@@ -248,7 +248,7 @@ else
                         <button type="button"
                                 class="mission-star-button @(_state.CurrentOperation.SelectedStars >= star ? "selected" : null)"
                                 aria-label="Set mission rating to @star star@(star == 1 ? string.Empty : "s")"
-                                aria-pressed="@(_state.CurrentOperation.SelectedStars >= star)"
+                                aria-pressed="@(_state.CurrentOperation.SelectedStars >= star ? "true" : "false")"
                                 @onclick="() => { if(_state.CurrentOperation.SelectedStars == star) _state.CurrentOperation.SelectedStars = 0; else _state.CurrentOperation.SelectedStars = star; }">
                             @(_state.CurrentOperation.SelectedStars >= star ? "★" : "☆")
                         </button>
@@ -257,7 +257,7 @@ else
             </div>
         </MainContent>
         <FooterContent>
-            <button class="btn btn-success" aria-label="Continue to reward selection" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
+            <button class="btn btn-success" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
         </FooterContent>
     </Modal>
 
@@ -273,7 +273,7 @@ else
         <FooterContent>
             @if (_state.PendingRewardItems.Count > 0)
             {
-                <button class="btn btn-warning" aria-label="Skip all rewards and ban them" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
+                <button class="btn btn-warning" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
             }
         </FooterContent>
     </Modal>
@@ -335,10 +335,10 @@ else
 
     <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" CssClass="save-slot-modal" OnClose="@(() => _showSaveManager = false)">
         <HeaderButtons>
-            <button class="btn btn-primary btn-sm" aria-label="Create save snapshot" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
+            <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
             <label class="btn btn-outline-light btn-sm mb-0">
                 Import Save
-                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" aria-label="Select a save file to import" />
+                <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
             </label>
         </HeaderButtons>
         <MainContent>
@@ -372,7 +372,7 @@ else
             </MainContent>
             <FooterContent>
                 <button class="btn btn-outline-light" aria-label="Cancel save deletion" @onclick="() => _slotToDelete = null">Cancel</button>
-                <button class="btn btn-danger" aria-label="Confirm deleting this save" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
+                <button class="btn btn-danger" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
             </FooterContent>
         </Modal>
     }

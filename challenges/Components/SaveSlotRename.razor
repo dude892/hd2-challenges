@@ -1,6 +1,6 @@
 @using System.ComponentModel.DataAnnotations
 
-<button class="btn btn-sm btn-outline-secondary" aria-label="Rename this save slot" @onclick="OpenModal">Edit name</button>
+<button class="btn btn-sm btn-outline-secondary" @onclick="OpenModal">Edit name</button>
 
 <Modal Title="Rename Save Slot" Open="_showModal" CssClass="save-slot-rename-modal" OnClose="CloseModal" CloseOnBackdrop="false">
     <MainContent>
@@ -15,7 +15,7 @@
     </MainContent>
     <FooterContent>
         <button class="btn btn-outline-light" aria-label="Cancel save slot rename" @onclick="CloseModal">Cancel</button>
-        <button class="btn btn-primary" type="submit" form="@FormId" aria-label="Save new save slot name" disabled="@(!CanSave)">Save name</button>
+        <button class="btn btn-primary" type="submit" form="@FormId" disabled="@(!CanSave)">Save name</button>
     </FooterContent>
 </Modal>
 

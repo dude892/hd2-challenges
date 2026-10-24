@@ -7,6 +7,20 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
+    [Fact]
+    public async Task MissionRatingExposesItsPressedState()
+    {
+        await StartRunAsync();
+        await Modals.MissionComplete.OpenAsync();
+
+        ILocator threeStars = Modals.MissionComplete.ThreeStarsButton;
+        await Expect(threeStars).ToHaveAttributeAsync("aria-pressed", "false");
+        await threeStars.ClickAsync();
+        await Expect(threeStars).ToHaveAttributeAsync("aria-pressed", "true");
+        await threeStars.ClickAsync();
+        await Expect(threeStars).ToHaveAttributeAsync("aria-pressed", "false");
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

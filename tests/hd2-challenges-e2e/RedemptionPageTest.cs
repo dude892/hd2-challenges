@@ -13,7 +13,7 @@ public abstract class RedemptionPageTest(WarpathWebAppFixture webApp) : PageTest
     protected CatalogService Catalog => webApp.Catalog;
     protected RedemptionCatalogService RedemptionCatalog => webApp.RedemptionCatalog;
     protected Operation DefaultStartOperation => RedemptionCatalog.GetDifficulty("normal").StartOperation;
-    protected ILocator BeginRunButton => Page.GetByRole(AriaRole.Button, new() { Name = "Begin Warpath: Redemption run", Exact = true });
+    protected ILocator BeginRunButton => Page.GetByRole(AriaRole.Button, new() { Name = "Begin Run", Exact = true });
     protected ILocator CurrentOperationProgress => Page.GetByRole(AriaRole.Status, new() { Name = "Current operation", Exact = true });
     protected ILocator CurrentMissionProgress => Page.GetByRole(AriaRole.Status, new() { Name = "Current mission progress", Exact = true });
     protected ILocator MissionsFailedCount => Page.GetByRole(AriaRole.Status, new() { Name = "Missions failed", Exact = true });

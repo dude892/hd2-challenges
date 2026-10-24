@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Hd2Challenges.Models;
 using Microsoft.Playwright;
 using Xunit;
@@ -7,6 +8,29 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
+    [Fact]
+    public async Task ActionNamesContainTheirVisibleLabels()
+    {
+        await OpenSetupAsync();
+        await Expect(Page.GetByText("Save Slots", new() { Exact = true })).ToHaveAccessibleNameAsync("Save Slots");
+        await Expect(BeginRunButton).ToHaveTextAsync("Begin Run");
+        await BeginRunButton.ClickAsync();
+
+        string[] labels =
+        [
+            "Save Slots", "Run Settings", "Download Summary", "Start New Run",
+            "Mission Complete", "Mission Failed", "Banned Items", "Equipment", "Boosters"
+        ];
+        foreach (string label in labels)
+        {
+            ILocator button = Page.GetByRole(AriaRole.Button, new()
+            {
+                NameRegex = new Regex(Regex.Escape(label), RegexOptions.IgnoreCase)
+            });
+            await Expect(button).ToHaveTextAsync(label);
+        }
+    }
+
     [Theory]
     [InlineData("normal")]
     [InlineData("solo")]
@@ -45,7 +69,7 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
     public async Task StartingNewRunReturnsToTheSetupScreen()
     {
         await StartRunAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Start a new Warpath: Redemption run" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Start New Run", Exact = true }).ClickAsync();
 
         await Expect(BeginRunButton).ToBeVisibleAsync();
         await Expect(Modals.MissionComplete.OpenButton).ToHaveCountAsync(0);
