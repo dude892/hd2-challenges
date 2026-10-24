@@ -40,21 +40,21 @@ internal abstract class ModalObject
 
 internal sealed class MissionCompleteModal(IPage page) : ModalObject(page, "Mission Complete")
 {
-    public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "Record mission completion", Exact = true });
+    public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "Mission Complete - Record mission completion", Exact = true });
     public ILocator ThreeStarsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Set mission rating to 3 stars", Exact = true });
-    public ILocator ContinueToRewardsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Continue to reward selection", Exact = true });
+    public ILocator ContinueToRewardsButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Continue to Rewards - Continue to reward selection", Exact = true });
 }
 
 internal sealed class RewardOptionsModal(IPage page, MissionCompleteModal missionComplete) : ModalObject(page, "Reward Options")
 {
     public override ILocator OpenButton => missionComplete.ContinueToRewardsButton;
     public ItemGridObject Choices => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Reward choices", Exact = true }));
-    public ILocator SkipAndBanAllButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Skip all rewards and ban them", Exact = true });
+    public ILocator SkipAndBanAllButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Skip and Ban All - Skip all rewards and ban them", Exact = true });
 }
 
 internal sealed class PunishmentOptionsModal(IPage page) : ModalObject(page, "Punishment Options")
 {
-    public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "Record mission failure", Exact = true });
+    public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "Mission Failed - Record mission failure", Exact = true });
     public ItemGridObject Choices => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Punishment choices", Exact = true }));
 }
 
@@ -75,7 +75,7 @@ internal sealed class SaveSlotsModal(IPage page) : ModalObject(page, "Warpath: R
     public ILocator CreateSnapshotButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Create save snapshot", Exact = true });
     public ILocator ImportSaveInput => Dialog.GetByLabel("Select a save file to import");
     public ILocator Slots => Dialog.GetByRole(AriaRole.Group);
-    public ILocator EditNameButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Rename this save slot", Exact = true });
+    public ILocator EditNameButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Edit name - Rename this save slot", Exact = true });
     public ILocator DeleteButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Delete this save slot", Exact = true });
     public ILocator ExportButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Export this save slot", Exact = true });
 }
@@ -92,5 +92,5 @@ internal sealed class DeleteConfirmationModal(IPage page, SaveSlotsModal saveSlo
 {
     public override ILocator OpenButton => saveSlots.DeleteButton;
     public ILocator CancelButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Cancel save deletion", Exact = true });
-    public ILocator ConfirmDeleteButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Confirm deleting this save", Exact = true });
+    public ILocator ConfirmDeleteButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Delete Save - Confirm deleting this save", Exact = true });
 }

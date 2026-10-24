@@ -136,8 +136,8 @@ else
                     </div>
                     <div class="col-md-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" aria-label="Record mission completion" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" aria-label="Record mission failure" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-success btn-lg btn-block" aria-label="Mission Complete - Record mission completion" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" aria-label="Mission Failed - Record mission failure" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
                             <button class="btn btn-primary btn-lg btn-block" aria-label="View banned items" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
@@ -257,7 +257,7 @@ else
             </div>
         </MainContent>
         <FooterContent>
-            <button class="btn btn-success" aria-label="Continue to reward selection" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
+            <button class="btn btn-success" aria-label="Continue to Rewards - Continue to reward selection" @onclick="(() => ConfirmRedemptionMissionCompleteAsync(_state.CurrentOperation.SelectedStars))">Continue to Rewards</button>
         </FooterContent>
     </Modal>
 
@@ -273,7 +273,7 @@ else
         <FooterContent>
             @if (_state.PendingRewardItems.Count > 0)
             {
-                <button class="btn btn-warning" aria-label="Skip all rewards and ban them" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
+                <button class="btn btn-warning" aria-label="Skip and Ban All - Skip all rewards and ban them" @onclick="SkipAndBanRedemptionRewardsAsync">Skip and Ban All</button>
             }
         </FooterContent>
     </Modal>
@@ -372,7 +372,7 @@ else
             </MainContent>
             <FooterContent>
                 <button class="btn btn-outline-light" aria-label="Cancel save deletion" @onclick="() => _slotToDelete = null">Cancel</button>
-                <button class="btn btn-danger" aria-label="Confirm deleting this save" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
+                <button class="btn btn-danger" aria-label="Delete Save - Confirm deleting this save" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
             </FooterContent>
         </Modal>
     }
