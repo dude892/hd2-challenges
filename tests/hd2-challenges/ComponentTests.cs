@@ -47,8 +47,8 @@ public sealed class ComponentTests
         using BunitContext context = new();
         GameItem[] initialItems =
         [
-            new() { Id = "item-one", DisplayName = "Item One" },
-            new() { Id = "item-two", DisplayName = "Item Two" }
+            new(new GameItemDefinition { Id = "item-one", DisplayName = "Item One" }, ItemKind.Primary, null),
+            new(new GameItemDefinition { Id = "item-two", DisplayName = "Item Two" }, ItemKind.Primary, null)
         ];
         IRenderedComponent<ItemGrid> component = context.Render<ItemGrid>(parameters => parameters
             .Add(grid => grid.Items, initialItems)
@@ -60,7 +60,7 @@ public sealed class ComponentTests
         Assert.Equal("--item-columns: 2", root.GetAttribute("style"));
         Assert.Equal(["item-one", "item-two"], component.FindAll("[data-item-id]").Select(card => card.GetAttribute("data-item-id")));
 
-        GameItem[] updatedItems = [new() { Id = "item-three", DisplayName = "Item Three" }];
+        GameItem[] updatedItems = [new(new GameItemDefinition { Id = "item-three", DisplayName = "Item Three" }, ItemKind.Primary, null)];
         component.Render(parameters => parameters.Add(grid => grid.Items, updatedItems));
 
         Assert.Equal("1", root.GetAttribute("data-item-count"));

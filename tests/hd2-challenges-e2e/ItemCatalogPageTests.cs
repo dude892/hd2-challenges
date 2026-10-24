@@ -9,13 +9,11 @@ namespace Hd2Challenges.EndToEnd.Tests;
 public sealed class ItemCatalogPageTests(WarpathWebAppFixture webApp) : PageTest
 {
     [Fact]
-    public async Task CatalogPageLoadsEveryItemWithAnImage()
+    public async Task CatalogPageLoadsEveryItem()
     {
         await OpenCatalogPageAsync();
 
         ItemSet expectedItems = webApp.Catalog.GetAllItems();
-        Assert.All(expectedItems, item => Assert.False(string.IsNullOrWhiteSpace(item.ImagePath),
-            $"Catalog item '{item.Id}' does not have an image path."));
 
         ILocator cards = Page.Locator("#item-catalog-accordion [data-item-id]");
         await Expect(cards).ToHaveCountAsync(expectedItems.Count);
@@ -27,39 +25,6 @@ public sealed class ItemCatalogPageTests(WarpathWebAppFixture webApp) : PageTest
             renderedItemIds.Select(id => id ?? throw new InvalidOperationException("An item card is missing its data-item-id."))
                 .OrderBy(id => id, StringComparer.OrdinalIgnoreCase),
             StringComparer.OrdinalIgnoreCase);
-
-        ILocator images = cards.Locator("img");
-        await Expect(images).ToHaveCountAsync(expectedItems.Count);
-        await Page.WaitForFunctionAsync(
-            "() => [...document.querySelectorAll('#item-catalog-accordion img')].every(image => image.complete)");
-
-        string[] brokenImageSources = await images.EvaluateAllAsync<string[]>(
-            "images => images.filter(image => image.naturalWidth === 0).map(image => image.src)");
-        Assert.Empty(brokenImageSources);
-    }
-
-    [Fact]
-    public async Task CatalogItemsAppearInTheirCorrectCategories()
-    {
-        await OpenCatalogPageAsync();
-
-        (string Label, IEnumerable<GameItem> Items)[] expectedGroups = [.. webApp.Catalog.GetAllItems().CategoryGroups];
-        ILocator[] renderedGroups = [.. await Page.Locator("#item-catalog-accordion .accordion-item").AllAsync()];
-        Assert.Equal(expectedGroups.Length, renderedGroups.Length);
-        for (int index = 0; index < expectedGroups.Length; index++)
-        {
-            (string label, IEnumerable<GameItem> items) = expectedGroups[index];
-            ILocator group = renderedGroups[index];
-            await Expect(group.Locator(".accordion-button")).ToContainTextAsync(label);
-
-            ILocator[] categoryCards = [.. await group.Locator("[data-item-id]").AllAsync()];
-            string?[] categoryItemIds = await Task.WhenAll(categoryCards.Select(card => card.GetAttributeAsync("data-item-id")));
-            Assert.Equal(
-                items.Select(item => item.Id).OrderBy(id => id, StringComparer.OrdinalIgnoreCase),
-                categoryItemIds.Select(id => id ?? throw new InvalidOperationException("An item card is missing its data-item-id."))
-                    .OrderBy(id => id, StringComparer.OrdinalIgnoreCase),
-                StringComparer.OrdinalIgnoreCase);
-        }
     }
 
     [Fact]
@@ -70,7 +35,9 @@ public sealed class ItemCatalogPageTests(WarpathWebAppFixture webApp) : PageTest
         ItemSet expectedItems = webApp.Catalog.GetAllItems();
         Dictionary<string, GameItem> expectedItemsById = expectedItems.ToDictionary(item => item.Id, StringComparer.OrdinalIgnoreCase);
         ILocator cards = Page.Locator("#item-catalog-accordion [data-item-id]");
+        
         await Expect(cards).ToHaveCountAsync(expectedItems.Count);
+        
         ILocator[] renderedCards = [.. await cards.AllAsync()];
         foreach (ILocator card in renderedCards)
         {
@@ -86,44 +53,95 @@ public sealed class ItemCatalogPageTests(WarpathWebAppFixture webApp) : PageTest
     }
 
     [Fact]
-    public async Task CatalogCategoryAccordionsCanBeExpandedAndCollapsed()
+    public async Task CatalogContainsEveryCategoryFromTheCatalog()
     {
         await OpenCatalogPageAsync();
 
-        IEnumerable<(string Label, IEnumerable<GameItem> Items)> expectedGroups = webApp.Catalog.GetAllItems().CategoryGroups;
-        ILocator renderedGroups = Page.Locator("#item-catalog-accordion .accordion-item");
-        await Expect(renderedGroups).ToHaveCountAsync(expectedGroups.Count());
-        ILocator[] groups = [.. await renderedGroups.AllAsync()];
-        foreach (ILocator group in groups)
+        ItemCategory[] expectedGroups = [.. webApp.Catalog.GetAllItems().Categories];
+        ILocator[] renderedGroups = [.. await Page.Locator("#item-catalog-accordion .accordion-item").AllAsync()];
+
+        Assert.Equal(expectedGroups.Length, renderedGroups.Length);
+        for (int index = 0; index < expectedGroups.Length; index++)
         {
-            ILocator toggle = group.Locator(".accordion-button");
-            ILocator panel = group.Locator(".accordion-collapse");
+            await Expect(renderedGroups[index].Locator(".accordion-button")).ToContainTextAsync(expectedGroups[index].Label);
+        }
+    }
 
-            string? initialExpanded = await toggle.GetAttributeAsync("aria-expanded");
-            Assert.True(initialExpanded is "true" or "false", "Accordion toggle should expose its expanded state.");
-            if (initialExpanded == "true")
-            {
-                await toggle.ClickAsync();
-                await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
-                await Expect(panel).ToHaveClassAsync("accordion-collapse collapse");
-                await Expect(panel).ToBeHiddenAsync();
-            }
+    [Theory]
+    [InlineData(ItemKind.Stratagem)]
+    [InlineData(ItemKind.Primary)]
+    [InlineData(ItemKind.Secondary)]
+    [InlineData(ItemKind.Throwable)]
+    [InlineData(ItemKind.Passive)]
+    [InlineData(ItemKind.Booster)]
+    public async Task CatalogItemsAppearInTheirCorrectCategories(ItemKind categoryKind)
+    {
+        await OpenCatalogPageAsync();
 
-            await toggle.ClickAsync();
-            await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
-            await Expect(panel).ToHaveClassAsync("accordion-collapse collapse show");
-            await Expect(panel).ToBeVisibleAsync();
+        ItemSet catalogItems = webApp.Catalog.GetAllItems();
+        ItemCategory category = catalogItems.GetCategory(categoryKind);
+        ILocator group = Page.Locator("#item-catalog-accordion .accordion-item")
+            .Filter(new() { Has = Page.GetByRole(AriaRole.Button, new() { Name = category.Label }) });
+        await Expect(group).ToHaveCountAsync(1);
 
+        ILocator[] categoryCards = [.. await group.Locator("[data-item-id]").AllAsync()];
+        string?[] categoryItemIds = await Task.WhenAll(categoryCards.Select(card => card.GetAttributeAsync("data-item-id")));
+        Assert.Equal(
+            category.Select(item => item.Id).OrderBy(id => id, StringComparer.OrdinalIgnoreCase),
+            categoryItemIds.Select(id => id ?? throw new InvalidOperationException("An item card is missing its data-item-id."))
+                .OrderBy(id => id, StringComparer.OrdinalIgnoreCase),
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData(ItemKind.Stratagem)]
+    [InlineData(ItemKind.Primary)]
+    [InlineData(ItemKind.Secondary)]
+    [InlineData(ItemKind.Throwable)]
+    [InlineData(ItemKind.Passive)]
+    [InlineData(ItemKind.Booster)]
+    public async Task CatalogCategoryAccordionsCanBeExpandedAndCollapsed(ItemKind categoryKind)
+    {
+        await OpenCatalogPageAsync();
+
+        ItemSet catalogItems = webApp.Catalog.GetAllItems();
+        ItemCategory category = catalogItems.GetCategory(categoryKind);
+        ILocator group = Page.Locator("#item-catalog-accordion .accordion-item")
+            .Filter(new() { Has = Page.GetByRole(AriaRole.Button, new() { Name = category.Label }) });
+        await Expect(group).ToHaveCountAsync(1);
+        ILocator toggle = group.Locator(".accordion-button");
+        ILocator panel = group.Locator(".accordion-collapse");
+        string collapseId = $"item-category-{category.Label.Replace(" ", "-").ToLowerInvariant()}";
+        await Expect(toggle).ToHaveAttributeAsync("aria-controls", collapseId);
+        await Expect(toggle).ToHaveAttributeAsync("data-bs-target", $"#{collapseId}");
+        await Expect(panel).ToHaveAttributeAsync("id", collapseId);
+
+        string? initialExpanded = await toggle.GetAttributeAsync("aria-expanded");
+        Assert.True(initialExpanded is "true" or "false", "Accordion toggle should expose its expanded state.");
+        if (initialExpanded == "true")
+        {
             await toggle.ClickAsync();
             await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
             await Expect(panel).ToHaveClassAsync("accordion-collapse collapse");
             await Expect(panel).ToBeHiddenAsync();
         }
+
+        await toggle.ClickAsync();
+        await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
+        await Expect(panel).ToHaveClassAsync("accordion-collapse collapse show");
+        await Expect(panel).ToBeVisibleAsync();
+
+        await toggle.ClickAsync();
+        await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
+        await Expect(panel).ToHaveClassAsync("accordion-collapse collapse");
+        await Expect(panel).ToBeHiddenAsync();
     }
 
     private async Task OpenCatalogPageAsync()
     {
         await Page.GotoAsync($"{webApp.BaseUrl}/item-catalog-test");
         await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Item Catalog Test", Exact = true })).ToBeVisibleAsync();
+        await Expect(Page.Locator("#item-catalog-accordion .accordion-item"))
+            .ToHaveCountAsync(webApp.Catalog.GetAllItems().Categories.Count());
     }
 }

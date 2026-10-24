@@ -21,21 +21,21 @@
 else
 {
     <div class="accordion" id="item-catalog-accordion" data-bs-theme="dark">
-        @foreach (var (label, items) in _items.CategoryGroups)
+        @foreach (var category in _items.Categories)
         {
-            var collapseId = $"item-category-{label.Replace(" ", "-").ToLowerInvariant()}";
+            var collapseId = $"item-category-{category.Label.Replace(" ", "-").ToLowerInvariant()}";
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed item-category-accordion-button" type="button"
                             data-bs-toggle="collapse" data-bs-target="@( $"#{collapseId}" )"
                             aria-expanded="false" aria-controls="@collapseId">
-                        <span>@label</span>
-                        <span class="item-category-accordion-count text-secondary">@items.Count() items</span>
+                        <span>@category.Label</span>
+                        <span class="item-category-accordion-count text-secondary">@category.Count items</span>
                     </button>
                 </h2>
                 <div id="@collapseId" class="accordion-collapse collapse" data-bs-parent="#item-catalog-accordion">
-                    <ItemGrid Items="Catalog.GetItemsInCatalogOrder(items)"
-                              AccessibleLabel="@($"Items in the {label} category")"
+                    <ItemGrid Items="Catalog.GetItemsInCatalogOrder(category)"
+                              AccessibleLabel="@($"Items in the {category.Label} category")"
                               ContainerClass="accordion-body"
                               EmptyMessage="No items in this category.">
                     </ItemGrid>

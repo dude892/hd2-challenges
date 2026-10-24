@@ -165,7 +165,7 @@ else
                                                   UseItemColumns="true"
                                                   EmptyMessage="No primary items acquired."
                                                   BadgeSelector="GetStarterBadge">
-                                            <HeaderContent><h5 class="text-light">Primaries</h5></HeaderContent>
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Primaries.Label</h5></HeaderContent>
                                         </ItemGrid>
                                         <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries)"
                                                   AccessibleLabel="Acquired secondary items"
@@ -174,7 +174,7 @@ else
                                                   UseItemColumns="true"
                                                   EmptyMessage="No secondary items acquired."
                                                   BadgeSelector="GetStarterBadge">
-                                            <HeaderContent><h5 class="text-light">Secondaries</h5></HeaderContent>
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Secondaries.Label</h5></HeaderContent>
                                         </ItemGrid>
                                     </div>
                                     <div class="row gx-5 gy-3 align-items-start">
@@ -185,7 +185,7 @@ else
                                                   UseItemColumns="true"
                                                   EmptyMessage="No throwable items acquired."
                                                   BadgeSelector="GetStarterBadge">
-                                            <HeaderContent><h5 class="text-light">Throwables</h5></HeaderContent>
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Throwables.Label</h5></HeaderContent>
                                         </ItemGrid>
                                         <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives)"
                                                   AccessibleLabel="Acquired armor passives"
@@ -194,7 +194,7 @@ else
                                                   UseItemColumns="true"
                                                   EmptyMessage="No armor passives acquired."
                                                   BadgeSelector="GetStarterBadge">
-                                            <HeaderContent><h5 class="text-light">Armor Passives</h5></HeaderContent>
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Passives.Label</h5></HeaderContent>
                                         </ItemGrid>
                                     </div>
                                 </div>
@@ -209,7 +209,7 @@ else
                               GridClass="run-item-grid"
                               EmptyMessage="No stratagems acquired."
                               BadgeSelector="GetStarterBadge">
-                        <HeaderContent><h5 class="text-light">Stratagems</h5></HeaderContent>
+                        <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Stratagems.Label</h5></HeaderContent>
                     </ItemGrid>
                     <div class="@($"col-12 col-lg-auto booster-accordion{(_showBoosterAccordion ? " expanded" : string.Empty)}")" data-bs-theme="dark">
                         <div class="section-card rounded d-flex h-100 booster-accordion-container">
@@ -219,7 +219,7 @@ else
                                     @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
                                 <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                                 <span class="booster-accordion-label">
-                                    <span class="text-light">Boosters</span>
+                                    <span class="text-light">@_state.AcquiredItems.Boosters.Label</span>
                                 </span>
                                 <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                             </button>

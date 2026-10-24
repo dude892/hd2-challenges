@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Hd2Challenges.Models;
 
 public enum ItemKind
@@ -8,23 +6,40 @@ public enum ItemKind
     Primary,
     Secondary,
     Throwable,
-    Booster,
-    Passive
+    Passive,
+    Booster
 }
 
+/// <summary>An immutable catalog item with resolved kind and warbond references.</summary>
 public sealed class GameItem : IEquatable<GameItem>
 {
-    public string DisplayName { get; init; } = string.Empty;
-    public List<string> Tags { get; init; } = [];
-    public string Id { get; init; } = string.Empty;
-    public string ImageURL { get; init; } = string.Empty;
-    public string Svg { get; init; } = string.Empty;
-    public bool Antitank { get; init; } = false;
+    public GameItem(GameItemDefinition definition, ItemKind kind, Warbond? warbond)
+    {
+        ArgumentNullException.ThrowIfNull(definition);
+        if (!Enum.IsDefined(kind))
+        {
+            throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
+        }
 
-    [JsonIgnore]
-    public ItemKind Kind { get; private set; }
+        DisplayName = definition.DisplayName;
+        Tags = Array.AsReadOnly(definition.Tags.ToArray());
+        Id = definition.Id;
+        ImageURL = definition.ImageURL;
+        Svg = definition.Svg;
+        Antitank = definition.Antitank;
+        Kind = kind;
+        Warbond = warbond;
+    }
 
-    [JsonIgnore]
+    public string DisplayName { get; }
+    public IReadOnlyList<string> Tags { get; }
+    public string Id { get; }
+    public string ImageURL { get; }
+    public string Svg { get; }
+    public bool Antitank { get; }
+    public ItemKind Kind { get; }
+    public Warbond? Warbond { get; }
+
     public string? ImagePath
     {
         get
@@ -49,19 +64,6 @@ public sealed class GameItem : IEquatable<GameItem>
                 return null;
             }
         }
-    }
-
-    [JsonIgnore]
-    public Warbond? Warbond { get; private set; }
-
-    [JsonInclude]
-    [JsonPropertyName("warbond")]
-    private string _warbond { get; set; } = "none";
-
-    public void PostInitSetup(ItemKind kind, IReadOnlyList<Warbond> warbonds)
-    {
-        Kind = kind;
-        Warbond = warbonds.FirstOrDefault(w => string.Equals(w.Id, _warbond, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool Equals(GameItem? other) => other is GameItem gi && string.Equals(Id, gi.Id, StringComparison.OrdinalIgnoreCase);

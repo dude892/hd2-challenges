@@ -7,8 +7,8 @@ public sealed class ModelTests
     [Fact]
     public void GameItemEqualityUsesCaseInsensitiveIds()
     {
-        GameItem item = new() { Id = "Weapon-1" };
-        GameItem sameItem = new() { Id = "weapon-1" };
+        GameItem item = new(new GameItemDefinition { Id = "Weapon-1" }, ItemKind.Primary, null);
+        GameItem sameItem = new(new GameItemDefinition { Id = "weapon-1" }, ItemKind.Primary, null);
 
         Assert.Equal(item, sameItem);
         Assert.Equal(item.GetHashCode(), sameItem.GetHashCode());
@@ -18,10 +18,8 @@ public sealed class ModelTests
     [Fact]
     public void ItemSetCloneIsIndependentFromOriginalMutations()
     {
-        GameItem primary = new() { Id = "primary" };
-        primary.PostInitSetup(ItemKind.Primary, []);
-        GameItem booster = new() { Id = "booster" };
-        booster.PostInitSetup(ItemKind.Booster, []);
+        GameItem primary = new(new GameItemDefinition { Id = "primary" }, ItemKind.Primary, null);
+        GameItem booster = new(new GameItemDefinition { Id = "booster" }, ItemKind.Booster, null);
         ItemSet original = new([primary, booster]);
 
         ItemSet clone = original.Clone();
@@ -36,10 +34,8 @@ public sealed class ModelTests
     [Fact]
     public void ItemSetClearCategoryRemovesOnlyItemsInThatCategory()
     {
-        GameItem primary = new() { Id = "primary" };
-        primary.PostInitSetup(ItemKind.Primary, []);
-        GameItem booster = new() { Id = "booster" };
-        booster.PostInitSetup(ItemKind.Booster, []);
+        GameItem primary = new(new GameItemDefinition { Id = "primary" }, ItemKind.Primary, null);
+        GameItem booster = new(new GameItemDefinition { Id = "booster" }, ItemKind.Booster, null);
         ItemSet items = new([primary, booster]);
 
         items.ClearSet(ItemKind.Booster);
@@ -51,14 +47,11 @@ public sealed class ModelTests
     [Fact]
     public void ItemSetOverridesReplaceOnlyPopulatedCategories()
     {
-        GameItem originalPrimary = new() { Id = "original-primary" };
-        originalPrimary.PostInitSetup(ItemKind.Primary, []);
-        GameItem originalBooster = new() { Id = "original-booster" };
-        originalBooster.PostInitSetup(ItemKind.Booster, []);
+        GameItem originalPrimary = new(new GameItemDefinition { Id = "original-primary" }, ItemKind.Primary, null);
+        GameItem originalBooster = new(new GameItemDefinition { Id = "original-booster" }, ItemKind.Booster, null);
         ItemSet loadout = new([originalPrimary, originalBooster]);
 
-        GameItem overridePrimary = new() { Id = "override-primary" };
-        overridePrimary.PostInitSetup(ItemKind.Primary, []);
+        GameItem overridePrimary = new(new GameItemDefinition { Id = "override-primary" }, ItemKind.Primary, null);
         loadout.ApplyOverrides(new ItemSet([overridePrimary]));
 
         Assert.DoesNotContain(originalPrimary, loadout);
@@ -70,10 +63,8 @@ public sealed class ModelTests
     [Fact]
     public void ItemSetAdditionsUnionItemsWithoutReplacingExistingCategories()
     {
-        GameItem originalPrimary = new() { Id = "original-primary" };
-        originalPrimary.PostInitSetup(ItemKind.Primary, []);
-        GameItem addedBooster = new() { Id = "added-booster" };
-        addedBooster.PostInitSetup(ItemKind.Booster, []);
+        GameItem originalPrimary = new(new GameItemDefinition { Id = "original-primary" }, ItemKind.Primary, null);
+        GameItem addedBooster = new(new GameItemDefinition { Id = "added-booster" }, ItemKind.Booster, null);
         ItemSet loadout = new([originalPrimary]);
 
         loadout.ApplyAdditions(new ItemSet([addedBooster]));

@@ -204,6 +204,12 @@ public sealed class RedemptionFlowTests
         Assert.True(restored.AcquiredItems.ContainsItems(state.StarterItems));
         Assert.Equal(state.PendingRewardItems.Select(item => item.Id), restored.PendingRewardItems.Select(item => item.Id));
         Assert.Equal(state.SelectedWarbonds.Select(item => item.Id).ToHashSet(), restored.SelectedWarbonds.Select(item => item.Id).ToHashSet());
+        Assert.All(state.AcquiredItems.Categories, category =>
+        {
+            ItemCategory restoredCategory = restored.AcquiredItems.GetCategory(category.Kind);
+            Assert.Equal(category.Label, restoredCategory.Label);
+            Assert.Equal(category.ToHashSet(), restoredCategory.ToHashSet());
+        });
     }
 
     [Fact]
@@ -564,6 +570,18 @@ public sealed class RedemptionFlowTests
 
         Assert.Contains($"Current Score: {difficulty.ScoreModifier - 100}", state.SummaryText);
         Assert.Contains(mandatory.DisplayName, state.SummaryText);
+        Assert.Contains(
+            string.Join(Environment.NewLine, new[]
+            {
+                "Acquired Items:",
+                "Stratagems:", "  - None", "",
+                "Primary Weapons:", "  - None", "",
+                "Secondary Weapons:", "  - None", "",
+                "Throwables:", "  - None", "",
+                "Armor Passives:", "  - None", "",
+                "Boosters:", "  - None"
+            }),
+            state.SummaryText);
     }
 
     [Fact]
@@ -584,8 +602,7 @@ public sealed class RedemptionFlowTests
     {
         Warbond mandatory = new() { Id = "mandatory", AlwaysEnabled = true };
         Warbond optional = new() { Id = "optional" };
-        GameItem optionalStarter = new() { Id = "optional-starter" };
-        optionalStarter.PostInitSetup(ItemKind.Primary, [optional]);
+        GameItem optionalStarter = new(new GameItemDefinition { Id = "optional-starter" }, ItemKind.Primary, null);
         RedemptionDifficulty difficulty = new(
             new RedemptionDifficultyDefinition { Id = "test", DisplayName = "Test" },
             _ => new ItemSet(),

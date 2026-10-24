@@ -2,36 +2,26 @@ namespace Hd2Challenges.Models;
 
 public sealed class ItemSet : IEnumerable<GameItem>
 {
-    public HashSet<GameItem> Stratagems { get; set; } = [];
-    public HashSet<GameItem> Primaries { get; set; } = [];
-    public HashSet<GameItem> Secondaries { get; set; } = [];
-    public HashSet<GameItem> Throwables { get; set; } = [];
-    public HashSet<GameItem> Passives { get; set; } = [];
-    public HashSet<GameItem> Boosters { get; set; } = [];
+    public ItemCategory Stratagems { get; } = new(ItemKind.Stratagem);
+    public ItemCategory Primaries { get; } = new(ItemKind.Primary);
+    public ItemCategory Secondaries { get; } = new(ItemKind.Secondary);
+    public ItemCategory Throwables { get; } = new(ItemKind.Throwable);
+    public ItemCategory Passives { get; } = new(ItemKind.Passive);
+    public ItemCategory Boosters { get; } = new(ItemKind.Booster);
     
     public ItemSet() { }
 
     public ItemSet(IEnumerable<GameItem> items)
     {
-        Stratagems = [.. items.Where(item => item.Kind == ItemKind.Stratagem)];
-        Primaries = [.. items.Where(item => item.Kind == ItemKind.Primary)];
-        Secondaries = [.. items.Where(item => item.Kind == ItemKind.Secondary)];
-        Throwables = [.. items.Where(item => item.Kind == ItemKind.Throwable)];
-        Passives = [.. items.Where(item => item.Kind == ItemKind.Passive)];
-        Boosters = [.. items.Where(item => item.Kind == ItemKind.Booster)];
+        foreach (var item in items)
+        {
+            AddItem(item);
+        }
     }
 
-    public ItemSet Clone() => new()
-    {
-        Stratagems = [.. Stratagems],
-        Primaries = [.. Primaries],
-        Secondaries = [.. Secondaries],
-        Throwables = [.. Throwables],
-        Passives = [.. Passives],
-        Boosters = [.. Boosters]
-    };
+    public ItemSet Clone() => new(this);
 
-    public IEnumerable<HashSet<GameItem>> Categories
+    public IEnumerable<ItemCategory> Categories
     {
         get
         {
@@ -44,15 +34,16 @@ public sealed class ItemSet : IEnumerable<GameItem>
         }
     }
 
-    public IEnumerable<(string Label, IEnumerable<GameItem> Items)> CategoryGroups =>
-    [
-        ("Stratagems", Stratagems),
-        ("Primaries", Primaries),
-        ("Secondaries", Secondaries),
-        ("Throwables", Throwables),
-        ("Armor Passives", Passives),
-        ("Boosters", Boosters)
-    ];
+    public ItemCategory GetCategory(ItemKind kind) => kind switch
+    {
+        ItemKind.Stratagem => Stratagems,
+        ItemKind.Primary => Primaries,
+        ItemKind.Secondary => Secondaries,
+        ItemKind.Throwable => Throwables,
+        ItemKind.Passive => Passives,
+        ItemKind.Booster => Boosters,
+        _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+    };
 
     public HashSet<GameItem> AllItems => [.. Categories.SelectMany(category => category)];
 
@@ -70,15 +61,7 @@ public sealed class ItemSet : IEnumerable<GameItem>
 
     public ItemSet AddItem(GameItem item)
     {
-        switch (item.Kind)
-        {
-            case ItemKind.Stratagem: Stratagems.Add(item); break;
-            case ItemKind.Primary: Primaries.Add(item); break;
-            case ItemKind.Secondary: Secondaries.Add(item); break;
-            case ItemKind.Throwable: Throwables.Add(item); break;
-            case ItemKind.Passive: Passives.Add(item); break;
-            case ItemKind.Booster: Boosters.Add(item); break;
-        }
+        GetCategory(item.Kind).Add(item);
 
         return this;
     }
@@ -87,27 +70,17 @@ public sealed class ItemSet : IEnumerable<GameItem>
     {
         if (items == null) return this;
 
-        Stratagems.UnionWith(items.Stratagems);
-        Primaries.UnionWith(items.Primaries);
-        Secondaries.UnionWith(items.Secondaries);
-        Throwables.UnionWith(items.Throwables);
-        Passives.UnionWith(items.Passives);
-        Boosters.UnionWith(items.Boosters);
+        foreach (var category in Categories)
+        {
+            category.UnionWith(items.GetCategory(category.Kind));
+        }
 
         return this;
     }
 
     public ItemSet RemoveItem(GameItem item)
     {
-        switch (item.Kind)
-        {
-            case ItemKind.Stratagem: Stratagems.Remove(item); break;
-            case ItemKind.Primary: Primaries.Remove(item); break;
-            case ItemKind.Secondary: Secondaries.Remove(item); break;
-            case ItemKind.Throwable: Throwables.Remove(item); break;
-            case ItemKind.Passive: Passives.Remove(item); break;
-            case ItemKind.Booster: Boosters.Remove(item); break;
-        }
+        GetCategory(item.Kind).Remove(item);
 
         return this;
     }
@@ -116,12 +89,10 @@ public sealed class ItemSet : IEnumerable<GameItem>
     {
         if (items == null) return this;
 
-        Stratagems.ExceptWith(items.Stratagems);
-        Primaries.ExceptWith(items.Primaries);
-        Secondaries.ExceptWith(items.Secondaries);
-        Throwables.ExceptWith(items.Throwables);
-        Passives.ExceptWith(items.Passives);
-        Boosters.ExceptWith(items.Boosters);
+        foreach (var category in Categories)
+        {
+            category.ExceptWith(items.GetCategory(category.Kind));
+        }
 
         return this;
     }
@@ -140,27 +111,17 @@ public sealed class ItemSet : IEnumerable<GameItem>
 
     public ItemSet Clear()
     {
-        Stratagems.Clear();
-        Primaries.Clear();
-        Secondaries.Clear();
-        Throwables.Clear();
-        Passives.Clear();
-        Boosters.Clear();
+        foreach (var category in Categories)
+        {
+            category.Clear();
+        }
 
         return this;
     }
 
     public ItemSet ClearSet(ItemKind kind)
     {
-        switch (kind)
-        {
-            case ItemKind.Stratagem: Stratagems.Clear(); break;
-            case ItemKind.Primary: Primaries.Clear(); break;
-            case ItemKind.Secondary: Secondaries.Clear(); break;
-            case ItemKind.Throwable: Throwables.Clear(); break;
-            case ItemKind.Passive: Passives.Clear(); break;
-            case ItemKind.Booster: Boosters.Clear(); break;
-        }
+        GetCategory(kind).Clear();
 
         return this;
     }
@@ -169,27 +130,14 @@ public sealed class ItemSet : IEnumerable<GameItem>
     {
         if (overrides == null) return this;
         
-        if (overrides.Stratagems.Count != 0) Stratagems = [.. overrides.Stratagems];
-        if (overrides.Primaries.Count != 0) Primaries = [.. overrides.Primaries];
-        if (overrides.Secondaries.Count != 0) Secondaries = [.. overrides.Secondaries];
-        if (overrides.Throwables.Count != 0) Throwables = [.. overrides.Throwables];
-        if (overrides.Passives.Count != 0) Passives = [.. overrides.Passives];
-        if (overrides.Boosters.Count != 0) Boosters = [.. overrides.Boosters];
+        foreach (var category in Categories)
+        {
+            var replacement = overrides.GetCategory(category.Kind);
+            if (replacement.Count != 0) category.ReplaceWith(replacement);
+        }
 
         return this;
     }
 
-    public ItemSet ApplyAdditions(ItemSet additions)
-    {
-        if (additions == null) return this;
-
-        Stratagems.UnionWith(additions.Stratagems);
-        Primaries.UnionWith(additions.Primaries);
-        Secondaries.UnionWith(additions.Secondaries);
-        Throwables.UnionWith(additions.Throwables);
-        Passives.UnionWith(additions.Passives);
-        Boosters.UnionWith(additions.Boosters);
-
-        return this;
-    }
+    public ItemSet ApplyAdditions(ItemSet additions) => AddItems(additions);
 }
