@@ -67,20 +67,11 @@ jobs:
         with:
           name: test-build
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
-        with:
-          dotnet-version: 10.0.x
-          cache: true
-          cache-dependency-path: |
-            global.json
-            **/*.csproj
-
       - name: Run unit tests
-        run: dotnet test --project tests/hd2-challenges/hd2-challenges.tests.csproj --configuration Debug --no-build --report-trx --results-directory TestResults
+        run: '& "$PWD\tests\hd2-challenges\bin\Debug\net10.0\hd2-challenges.tests.exe" --report-trx --results-directory "$PWD\TestResults"'
 
       - name: Run converter tests
-        run: dotnet test --project tests/hd2Xaml2Svg/hd2Xaml2Svg.tests.csproj --configuration Debug --no-build --report-trx --results-directory TestResults
+        run: '& "$PWD\tests\hd2Xaml2Svg\bin\Debug\net10.0-windows\hd2Xaml2Svg.tests.exe" --report-trx --results-directory "$PWD\TestResults"'
 
       - name: Upload test results
         if: always()
@@ -115,22 +106,13 @@ jobs:
         with:
           name: test-build
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
-        with:
-          dotnet-version: 10.0.x
-          cache: true
-          cache-dependency-path: |
-            global.json
-            **/*.csproj
-
       - name: Install Playwright browser
         run: pwsh tests/hd2-challenges-e2e/bin/Debug/net10.0/playwright.ps1 install ${{ matrix.browser }}
 
       - name: Run E2E tests
         env:
           BROWSER: ${{ matrix.browser }}
-        run: dotnet test --project tests/hd2-challenges-e2e/hd2-challenges.e2e.tests.csproj --configuration Debug --no-build --xunit-config-filename "$PWD\tests\hd2-challenges-e2e\xunit.runner.ci.json" ${{ matrix.shard.filter }} "*ModalTests" --report-trx --results-directory TestResults
+        run: '& "$PWD\tests\hd2-challenges-e2e\bin\Debug\net10.0\hd2-challenges.e2e.tests.exe" --xunit-config-filename "$PWD\tests\hd2-challenges-e2e\xunit.runner.ci.json" ${{ matrix.shard.filter }} "*ModalTests" --report-trx --results-directory "$PWD\TestResults"'
 
       - name: Upload test results
         if: always()
