@@ -44,7 +44,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
     [Fact]
     public async Task ReloadingRunWithAcquiredBoostersKeepsAccordionExpanded()
     {
-        SaveObject save = SaveObject.AcquiredBooster;
+        SaveObject save = RedemptionSaves.AcquiredBooster;
         RedemptionState state = save.ResolveState(RedemptionCatalog);
         ItemSet expectedBoosters = new(state.AcquiredItems.Boosters);
         Assert.NotEmpty(expectedBoosters);
@@ -58,7 +58,7 @@ public sealed class RedemptionBoosterTests(WarpathWebAppFixture webApp) : Redemp
     [Fact]
     public async Task ClaimingBoosterRewardAutomaticallyExpandsAccordion()
     {
-        SaveObject save = SaveObject.PendingBoosterReward;
+        SaveObject save = RedemptionSaves.PendingBoosterReward;
         RedemptionState state = save.ResolveState(RedemptionCatalog);
         Assert.NotEmpty(state.PendingRewardItems.Boosters);
         await ImportRunAsync(save);

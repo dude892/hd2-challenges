@@ -13,30 +13,12 @@ internal sealed class RedemptionModals(IPage page)
     public SaveSlotsModal SaveSlots => new(page);
     public RenameSlotModal RenameSlot => new(page, SaveSlots);
     public DeleteConfirmationModal DeleteConfirmation => new(page, SaveSlots);
-}
 
-internal abstract class ModalObject
-{
-    private readonly string _title;
-
-    protected ModalObject(IPage page, string title)
-    {
-        Page = page;
-        _title = title;
-    }
-
-    protected IPage Page { get; }
-    public ILocator Dialog => Page.GetByRole(AriaRole.Dialog, new() { Name = _title, Exact = true });
-    public ILocator Heading => Dialog.GetByRole(AriaRole.Heading, new() { Name = _title, Exact = true });
-    public ILocator CloseButton => Dialog.GetByRole(AriaRole.Button, new() { Name = $"Close {_title} dialog", Exact = true });
-    public ILocator Backdrop => Dialog.Locator("xpath=..");
-    public abstract ILocator OpenButton { get; }
-
-    public Task OpenAsync() => OpenButton.ClickAsync();
-
-    public Task CloseAsync() => CloseButton.ClickAsync();
-
-    public Task ClickBackdropAsync() => Backdrop.ClickAsync(new() { Position = new() { X = 0, Y = 0 } });
+    public IEnumerable<ModalObject> All =>
+    [
+        MissionComplete, RewardOptions, PunishmentOptions, BannedItems,
+        RunSettings, SaveSlots, RenameSlot, DeleteConfirmation
+    ];
 }
 
 internal sealed class MissionCompleteModal(IPage page) : ModalObject(page, "Mission Complete")
@@ -67,6 +49,14 @@ internal sealed class RewardOptionsModal(IPage page, MissionCompleteModal missio
     public override ILocator OpenButton => missionComplete.ContinueToRewardsButton;
     public ItemGridObject Choices => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Reward choices", Exact = true }));
     public ILocator SkipAndBanAllButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Skip and Ban All", Exact = true });
+
+    public override async Task PrepareAndOpenAsync(Func<Task> startRun)
+    {
+        await missionComplete.PrepareAndOpenAsync(startRun);
+        await missionComplete.ThreeStarsButton.ClickAsync();
+        await OpenAsync();
+        await Choices.Cards.First.WaitForAsync();
+    }
 }
 
 internal sealed class PunishmentOptionsModal(IPage page) : ModalObject(page, "Punishment Options")
@@ -79,6 +69,14 @@ internal sealed class BannedItemsModal(IPage page) : ModalObject(page, "Banned I
 {
     public override ILocator OpenButton => Page.GetByRole(AriaRole.Button, new() { Name = "View banned items", Exact = true });
     public ItemGridObject Items => new(Dialog.GetByRole(AriaRole.Group, new() { Name = "Banned items", Exact = true }));
+
+    public override async Task PrepareAndOpenAsync(Func<Task> startRun)
+    {
+        RewardOptionsModal rewards = new(Page, new MissionCompleteModal(Page));
+        await rewards.PrepareAndOpenAsync(startRun);
+        await rewards.SkipAndBanAllButton.ClickAsync();
+        await OpenAsync();
+    }
 }
 
 internal sealed class RunSettingsModal(IPage page) : ModalObject(page, "Run Settings")
@@ -99,15 +97,29 @@ internal sealed class SaveSlotsModal(IPage page) : ModalObject(page, "Warpath: R
 
 internal sealed class RenameSlotModal(IPage page, SaveSlotsModal saveSlots) : ModalObject(page, "Rename Save Slot")
 {
+    public override bool Dismissable => false;
     public override ILocator OpenButton => saveSlots.EditNameButton;
     public ILocator SlotNameInput => Dialog.GetByRole(AriaRole.Textbox, new() { Name = "New save slot name", Exact = true });
     public ILocator SaveNameButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Save name", Exact = true });
     public ILocator CancelButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Cancel save slot rename", Exact = true });
+
+    public override async Task PrepareAndOpenAsync(Func<Task> startRun)
+    {
+        await saveSlots.PrepareAndOpenAsync(startRun);
+        await OpenAsync();
+    }
 }
 
 internal sealed class DeleteConfirmationModal(IPage page, SaveSlotsModal saveSlots) : ModalObject(page, "Delete Current Save?")
 {
+    public override bool Dismissable => false;
     public override ILocator OpenButton => saveSlots.DeleteButton;
     public ILocator CancelButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Cancel save deletion", Exact = true });
     public ILocator ConfirmDeleteButton => Dialog.GetByRole(AriaRole.Button, new() { Name = "Delete Save", Exact = true });
+
+    public override async Task PrepareAndOpenAsync(Func<Task> startRun)
+    {
+        await saveSlots.PrepareAndOpenAsync(startRun);
+        await OpenAsync();
+    }
 }

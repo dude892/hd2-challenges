@@ -1,5 +1,4 @@
 using Hd2Challenges.Models;
-using Microsoft.Playwright;
 using Xunit;
 
 namespace Hd2Challenges.EndToEnd.Tests;
@@ -7,20 +6,21 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
-    public static TheoryData<string> OperationRatings { get; } = new()
-    {
-        "operation-index-1.json",
-        "operation-index-2.json",
-        "operation-index-3.json",
-        "operation-index-5.json",
-        "operation-index-7.json"
-    };
+    public static TheoryData<SaveObject> OperationRatings =>
+    [
+        RedemptionSaves.OperationIndex1,
+        RedemptionSaves.OperationIndex2,
+        RedemptionSaves.OperationIndex3,
+        RedemptionSaves.OperationIndex5,
+        RedemptionSaves.OperationIndex7
+    ];
 
     [Theory]
     [MemberData(nameof(OperationRatings))]
-    public async Task MissionRatingButtonsMatchOperationMaximum(string saveFileName)
+    public async Task MissionRatingButtonsMatchOperationMaximum(SaveObject save)
     {
-        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+        Operation operation = save.ResolveState(RedemptionCatalog).CurrentOperation;
+        await Modals.MissionComplete.PrepareAndOpenAsync(save, ImportRunAsync);
 
         foreach (var (button, stars) in Modals.MissionComplete.Ratings)
         {
@@ -37,9 +37,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
     [Theory]
     [MemberData(nameof(OperationRatings))]
-    public async Task MissionRatingsAreInitiallyUnselected(string saveFileName)
+    public async Task MissionRatingsAreInitiallyUnselected(SaveObject save)
     {
-        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+        Operation operation = save.ResolveState(RedemptionCatalog).CurrentOperation;
+        await Modals.MissionComplete.PrepareAndOpenAsync(save, ImportRunAsync);
 
         foreach (var (button, _) in Modals.MissionComplete.GetRatings(operation))
         {
@@ -49,9 +50,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
     [Theory]
     [MemberData(nameof(OperationRatings))]
-    public async Task ClickingMissionRatingSelectsExactlyTheStarsUpToThatRating(string saveFileName)
+    public async Task ClickingMissionRatingSelectsExactlyTheStarsUpToThatRating(SaveObject save)
     {
-        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+        Operation operation = save.ResolveState(RedemptionCatalog).CurrentOperation;
+        await Modals.MissionComplete.PrepareAndOpenAsync(save, ImportRunAsync);
         var availableRatings = Modals.MissionComplete.GetRatings(operation);
 
         foreach (var (button, stars) in availableRatings.Reverse())
@@ -66,9 +68,10 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
 
     [Theory]
     [MemberData(nameof(OperationRatings))]
-    public async Task ClickingSelectedMissionRatingClearsAllStars(string saveFileName)
+    public async Task ClickingSelectedMissionRatingClearsAllStars(SaveObject save)
     {
-        Operation operation = await OpenMissionRatingsAsync(saveFileName);
+        Operation operation = save.ResolveState(RedemptionCatalog).CurrentOperation;
+        await Modals.MissionComplete.PrepareAndOpenAsync(save, ImportRunAsync);
         var availableRatings = Modals.MissionComplete.GetRatings(operation);
 
         foreach (var (button, _) in availableRatings)
@@ -80,15 +83,6 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
                 await Expect(ratingButton).ToHaveAttributeAsync("aria-pressed", "false");
             }
         }
-    }
-
-    private async Task<Operation> OpenMissionRatingsAsync(string saveFileName)
-    {
-        SaveObject save = new(saveFileName);
-        Operation operation = save.ResolveState(RedemptionCatalog).CurrentOperation;
-        await ImportRunAsync(save);
-        await Modals.MissionComplete.OpenAsync();
-        return operation;
     }
 
     [Theory]
@@ -139,7 +133,7 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
     [Fact]
     public async Task PendingPunishmentLocksMissionCompletionUntilClaimed()
     {
-        SaveObject save = SaveObject.AcquiredBooster;
+        SaveObject save = RedemptionSaves.AcquiredBooster;
         RedemptionState state = save.ResolveState(RedemptionCatalog);
         Assert.NotEmpty(state.AcquiredItems);
         await ImportRunAsync(save);
@@ -172,184 +166,4 @@ public sealed class RedemptionModalTests(WarpathWebAppFixture webApp) : Redempti
         await ItemGrids.AcquiredItems.AssertDoesNotContainItemAsync(selectedPunishmentId);
     }
 
-    [Theory]
-    [InlineData(BackdropDismissibleModal.SaveSlots)]
-    [InlineData(BackdropDismissibleModal.RunSettings)]
-    [InlineData(BackdropDismissibleModal.MissionComplete)]
-    public async Task CloseButtonDismissesModalWithoutChangingMission(BackdropDismissibleModal modalType)
-    {
-        await StartRunAsync();
-        ModalObject modal = GetBackdropDismissibleModal(modalType);
-        await modal.OpenAsync();
-
-        await Expect(modal.Heading).ToBeVisibleAsync();
-        await modal.CloseAsync();
-
-        await Expect(modal.Dialog).ToHaveCountAsync(0);
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
-        await Expect(Modals.MissionComplete.OpenButton).ToBeEnabledAsync();
-    }
-
-    [Theory]
-    [InlineData(BackdropDismissibleModal.RunSettings)]
-    [InlineData(BackdropDismissibleModal.SaveSlots)]
-    [InlineData(BackdropDismissibleModal.MissionComplete)]
-    [InlineData(BackdropDismissibleModal.RewardOptions)]
-    [InlineData(BackdropDismissibleModal.PunishmentOptions)]
-    [InlineData(BackdropDismissibleModal.BannedItems)]
-    public async Task BackdropClickClosesModalAndInsideClickDoesNot(BackdropDismissibleModal modalType)
-    {
-        ModalObject modal = await OpenBackdropDismissibleModalAsync(modalType);
-        await Expect(modal.Dialog).ToBeVisibleAsync();
-        await modal.Heading.ClickAsync();
-        await Expect(modal.Dialog).ToBeVisibleAsync();
-
-        await modal.ClickBackdropAsync();
-        await Expect(modal.Dialog).ToHaveCountAsync(0);
-    }
-
-    private async Task<ModalObject> OpenBackdropDismissibleModalAsync(BackdropDismissibleModal modalType)
-    {
-        switch (modalType)
-        {
-            case BackdropDismissibleModal.RunSettings:
-                await StartRunAsync();
-                await Modals.RunSettings.OpenAsync();
-                return Modals.RunSettings;
-            case BackdropDismissibleModal.SaveSlots:
-                await StartRunAsync();
-                await Modals.SaveSlots.OpenAsync();
-                return Modals.SaveSlots;
-            case BackdropDismissibleModal.MissionComplete:
-                await StartRunAsync();
-                await Modals.MissionComplete.OpenAsync();
-                return Modals.MissionComplete;
-            case BackdropDismissibleModal.RewardOptions:
-                await StartRunAsync();
-                await Modals.MissionComplete.OpenAsync();
-                await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
-                await Modals.RewardOptions.OpenAsync();
-                await GetValidatedRewardItemsAsync();
-                return Modals.RewardOptions;
-            case BackdropDismissibleModal.PunishmentOptions:
-                await ImportRunAsync(SaveObject.AcquiredBooster);
-                await Modals.PunishmentOptions.OpenAsync();
-                return Modals.PunishmentOptions;
-            case BackdropDismissibleModal.BannedItems:
-                await StartRunAsync();
-                await Modals.MissionComplete.OpenAsync();
-                await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
-                await Modals.RewardOptions.OpenAsync();
-                await GetValidatedRewardItemsAsync();
-                await Modals.RewardOptions.SkipAndBanAllButton.ClickAsync();
-                await Modals.BannedItems.OpenAsync();
-                return Modals.BannedItems;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(modalType), modalType, null);
-        }
-    }
-
-    private ModalObject GetBackdropDismissibleModal(BackdropDismissibleModal modalType) => modalType switch
-    {
-        BackdropDismissibleModal.RunSettings => Modals.RunSettings,
-        BackdropDismissibleModal.SaveSlots => Modals.SaveSlots,
-        BackdropDismissibleModal.MissionComplete => Modals.MissionComplete,
-        BackdropDismissibleModal.RewardOptions => Modals.RewardOptions,
-        BackdropDismissibleModal.PunishmentOptions => Modals.PunishmentOptions,
-        BackdropDismissibleModal.BannedItems => Modals.BannedItems,
-        _ => throw new ArgumentOutOfRangeException(nameof(modalType), modalType, null)
-    };
-
-    public enum BackdropDismissibleModal
-    {
-        RunSettings,
-        SaveSlots,
-        MissionComplete,
-        RewardOptions,
-        PunishmentOptions,
-        BannedItems
-    }
-
-    [Fact]
-    public async Task RenameModalValidatesNameAndCancelDiscardsChanges()
-    {
-        await StartRunAsync();
-        await Modals.SaveSlots.OpenAsync();
-        await Modals.RenameSlot.OpenAsync();
-
-        RenameSlotModal renameModal = Modals.RenameSlot;
-        string originalName = await renameModal.SlotNameInput.InputValueAsync();
-        await Expect(renameModal.SaveNameButton).ToBeDisabledAsync();
-        await renameModal.SlotNameInput.FillAsync("   ");
-        await Expect(renameModal.SaveNameButton).ToBeDisabledAsync();
-        await renameModal.SlotNameInput.FillAsync("Unsaved modal test name");
-        await Expect(renameModal.SaveNameButton).ToBeEnabledAsync();
-        await renameModal.CancelButton.ClickAsync();
-
-        await Expect(renameModal.Dialog).ToHaveCountAsync(0);
-        await Expect(Modals.SaveSlots.Dialog).ToBeVisibleAsync();
-        await Expect(Modals.SaveSlots.Dialog).ToContainTextAsync(originalName);
-        await Expect(Modals.SaveSlots.Dialog).Not.ToContainTextAsync("Unsaved modal test name");
-        await Modals.RenameSlot.OpenAsync();
-        await Expect(renameModal.SlotNameInput).ToHaveValueAsync(originalName);
-    }
-
-    [Theory]
-    [InlineData(NonDismissibleModal.RenameSlot)]
-    [InlineData(NonDismissibleModal.DeleteConfirmation)]
-    public async Task BackdropClickDoesNotCloseModal(NonDismissibleModal modalType)
-    {
-        await StartRunAsync();
-        await Modals.SaveSlots.OpenAsync();
-        ModalObject modal = modalType == NonDismissibleModal.RenameSlot
-            ? Modals.RenameSlot
-            : Modals.DeleteConfirmation;
-        await modal.OpenAsync();
-
-        await Expect(modal.Dialog).ToBeVisibleAsync();
-        await modal.ClickBackdropAsync();
-        await Expect(modal.Dialog).ToBeVisibleAsync();
-    }
-
-    [Fact]
-    public async Task CancelingDeleteConfirmationPreservesSave()
-    {
-        await StartRunAsync();
-        await Modals.SaveSlots.OpenAsync();
-        await Modals.DeleteConfirmation.OpenAsync();
-
-        await Expect(Modals.DeleteConfirmation.Dialog).ToBeVisibleAsync();
-        await Modals.DeleteConfirmation.CancelButton.ClickAsync();
-
-        await Expect(Modals.DeleteConfirmation.Dialog).ToHaveCountAsync(0);
-        await Expect(Modals.SaveSlots.DeleteButton).ToBeVisibleAsync();
-        await Modals.SaveSlots.CloseAsync();
-        await ReloadAsync();
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "1");
-        await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-count", DefaultStartOperation.MissionCount.ToString());
-    }
-
-    [Fact]
-    public async Task ConfirmingDeleteRemovesSaveAndReturnsToSetup()
-    {
-        await StartRunAsync();
-        await Modals.SaveSlots.OpenAsync();
-        await Modals.DeleteConfirmation.OpenAsync();
-        await Modals.DeleteConfirmation.ConfirmDeleteButton.ClickAsync();
-
-        await Expect(Modals.DeleteConfirmation.Dialog).ToHaveCountAsync(0);
-        await Expect(Modals.SaveSlots.DeleteButton).ToHaveCountAsync(0);
-        await Modals.SaveSlots.CloseAsync();
-        await Expect(BeginRunButton).ToBeVisibleAsync();
-
-        await ReloadAsync();
-        await Expect(BeginRunButton).ToBeVisibleAsync();
-    }
-
-    public enum NonDismissibleModal
-    {
-        RenameSlot,
-        DeleteConfirmation
-    }
 }

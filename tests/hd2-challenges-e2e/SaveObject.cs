@@ -4,12 +4,8 @@ using Hd2Challenges.Services;
 
 namespace Hd2Challenges.EndToEnd.Tests;
 
-internal sealed class SaveObject
+public sealed class SaveObject
 {
-    public static SaveObject AcquiredBooster => new("acquired-booster.json");
-    public static SaveObject PendingBoosterReward => new("pending-booster-reward.json");
-    public static SaveObject OperationLastMission => new("operation-last-mission.json");
-
     public string FilePath { get; }
     public SaveSlot<RedemptionStateDefinition> Slot { get; }
 

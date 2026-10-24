@@ -8,6 +8,15 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class ItemCatalogPageTests(WarpathWebAppFixture webApp) : PageTest
 {
+
+    private async Task OpenCatalogPageAsync()
+    {
+        await Page.GotoAsync($"{webApp.BaseUrl}/item-catalog-test");
+        await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Item Catalog Test", Exact = true })).ToBeVisibleAsync();
+        await Expect(Page.Locator("#item-catalog-accordion .accordion-item"))
+            .ToHaveCountAsync(webApp.Catalog.GetAllItems().Categories.Count());
+    }
+    
     [Fact]
     public async Task CatalogPageLoadsEveryItem()
     {
@@ -135,13 +144,5 @@ public sealed class ItemCatalogPageTests(WarpathWebAppFixture webApp) : PageTest
         await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "false");
         await Expect(panel).ToHaveClassAsync("accordion-collapse collapse");
         await Expect(panel).ToBeHiddenAsync();
-    }
-
-    private async Task OpenCatalogPageAsync()
-    {
-        await Page.GotoAsync($"{webApp.BaseUrl}/item-catalog-test");
-        await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Item Catalog Test", Exact = true })).ToBeVisibleAsync();
-        await Expect(Page.Locator("#item-catalog-accordion .accordion-item"))
-            .ToHaveCountAsync(webApp.Catalog.GetAllItems().Categories.Count());
     }
 }

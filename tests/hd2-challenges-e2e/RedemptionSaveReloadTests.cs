@@ -8,6 +8,14 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
+    private async Task CompleteFirstMissionAndOpenRewardsAsync()
+    {
+        await Modals.MissionComplete.OpenAsync();
+        await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
+        await Modals.RewardOptions.OpenAsync();
+        await Expect(Modals.RewardOptions.Dialog).ToBeVisibleAsync();
+    }
+
     [Fact]
     public async Task AdvancingMissionPersistsAndReloadsTheActiveRun()
     {
@@ -37,7 +45,7 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
     [Fact]
     public async Task AdvancingPastTheLastMissionUpdatesTheOperationIndex()
     {
-        SaveObject save = SaveObject.OperationLastMission;
+        SaveObject save = RedemptionSaves.OperationLastMission;
         RedemptionState state = save.ResolveState(RedemptionCatalog);
         Assert.True(state.CurrentOperation.IsLastMission);
         await ImportRunAsync(save);
@@ -143,13 +151,5 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
         await Expect(Modals.BannedItems.Dialog).ToBeVisibleAsync();
         await Expect(Modals.BannedItems.Items.Root).ToBeVisibleAsync();
         await Modals.BannedItems.Items.AssertMatchesItemsAsync(rewards);
-    }
-
-    private async Task CompleteFirstMissionAndOpenRewardsAsync()
-    {
-        await Modals.MissionComplete.OpenAsync();
-        await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
-        await Modals.RewardOptions.OpenAsync();
-        await Expect(Modals.RewardOptions.Dialog).ToBeVisibleAsync();
     }
 }

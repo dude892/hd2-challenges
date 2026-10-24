@@ -17,6 +17,7 @@ applyTo: "tests/**/*.cs"
 
 ## Isolation and Parallelism
 
+- Whenever adding, renaming, or removing an E2E save fixture under `tests/hd2-challenges-e2e/Saves`, update its named static property in `SaveFixtures` in the same change. Tests must use these named fixtures instead of duplicating filenames. Each property and theory-data source must create fresh `SaveObject` instances; do not cache mutable save instances.
 - Local E2E runs use `tests/hd2-challenges-e2e/xunit.runner.json` (`parallelMode: all`, `maxParallelThreads: 8`, conservative scheduling); CI uses `xunit.runner.ci.json` with parallelism off.
 - E2E tests share one app fixture and use Playwright's isolated browser contexts. Keep shared catalog objects read-only and use per-test state for mutations.
 - The CI workflow runs E2E tests separately in Chromium, Firefox, and WebKit.
