@@ -159,17 +159,17 @@ public sealed class RedemptionState
 
             builder.AppendLine();
             builder.AppendLine("Acquired Items:");
-            foreach (var (label, items) in AcquiredItems.CategoryGroups)
+            foreach (var category in AcquiredItems.Categories)
             {
-                builder.AppendLine($"{label}:");
+                builder.AppendLine($"{category.Label}:");
 
-                if (!items.Any())
+                if (category.Count == 0)
                 {
                     builder.AppendLine("  - None");
                 }
                 else
                 {
-                    foreach (var item in items)
+                    foreach (var item in category)
                     {
                         builder.AppendLine($"  - {item.DisplayName}");
                     }

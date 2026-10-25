@@ -3,8 +3,7 @@
 ## Project Context
 
 - This is a Blazor WebAssembly application targeting .NET 10 for Helldivers 2 challenge tracking.
-- The website has not been deployed yet. Optimize for the current local application and the current data shape.
-- Do not spend implementation effort on preserving previous save states, migrating old data, or supporting legacy export formats yet. Add migration/version compatibility only when deployment or an explicit requirement makes it necessary.
+- The website has now been deployed and is under active use, take care to maintain backward compatibility and avoid breaking changes.
 - Keep changes focused and consistent with the existing C# and Razor patterns. Avoid introducing a server, database, API, or new persistence layer unless explicitly requested.
 - While the main focus of the app right now is on the "Warpath: Redemption" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
 - Do not take the following instructions as exhaustive; they are meant to guide the development process and maintain consistency within the project, and should be adapted as needed for specific scenarios.
@@ -57,7 +56,7 @@ Keep service boundaries narrow: expose only the operations and data consumers ne
 - `WarpathRedemption.razor` loads the catalog first, resolves a `RedemptionStateDefinition` into a `RedemptionState`, and persists definitions back to browser local storage after state changes through `RedemptionSaveLibraryService`.
 - `RedemptionSaveLibraryService` uses local-storage key `blazor-warpath-redemption` and export mode `warpath-redemption`.
 - Imported and exported save files use the same definition-based representation. Keep runtime-only properties out of save DTOs and resolve IDs through `CatalogService` when loading.
-- The current local-storage key and save format are allowed to evolve without backward migration support until the site is deployed. Do not add compatibility shims or migration code speculatively.
+- The site is deployed and browser saves and exported files are user data. Treat changes to the local-storage key or save format as compatibility-sensitive: preserve existing data or provide an explicit migration/import path when changing the schema. Do not change the key or format casually.
 
 ## Change Guidelines
 
@@ -65,17 +64,25 @@ Keep service boundaries narrow: expose only the operations and data consumers ne
 - When adding catalog data, update the corresponding definition/model and the relevant JSON file together.
 - When adding persisted state, update both the definition representation and the runtime construction/`ToDefinition()` path.
 - Keep random reward selection and mission progression in the domain services, not in Razor markup.
-- Validate changes with `dotnet build`; for behavior changes, add or update focused tests when a test project is introduced.
+- Validate code changes with the focused tests for the affected behavior, and build the solution when changes affect project integration, generated assets, or deployment. Add or update tests in the existing test projects; do not create another test project unless the scope requires it.
+- Avoid unexplained numeric literals. Use named constants for values that have domain meaning or are shared; keep obvious one-off values local rather than extracting constants mechanically.
 
-## Querying Microsoft Documentation
+## Tools Available
+
+### Querying Microsoft Documentation
 
 You have access to MCP tools called `microsoft_docs_search`, `microsoft_docs_fetch`, and `microsoft_code_sample_search` - these tools allow you to search through and fetch Microsoft's latest official documentation and code samples, and that information might be more detailed or newer than what's in your training data set.
 
 When handling questions around how to work with native Microsoft technologies, such as C#, F#, ASP.NET Core, Microsoft.Extensions, NuGet, Entity Framework, the `dotnet` runtime - please use these tools for research purposes when dealing with specific / narrowly defined questions that may occur.
 
-## Glider MCP Usage
+### Glider MCP Usage
 
 Use Glider for compiler-backed C#/.NET navigation, diagnostics, dependencies, impact analysis, edits, and refactors. Start navigation with find_code and preview supported changes. Before semantic work, call server_status and confirm the loaded solution or project belongs to the current repository or worktree. Changing directories does not retarget Glider. Call load with the intended .sln, .slnx, or .csproj if the loaded workspace differs.
+
+### Other Tools
+PowerShell - for running scripts and automating tasks within the development environment.
+Python is not installed and should not be used in scripts for processing.
+This is a Windows system and does not have access to any unix tools or environments.
 
 ## Design Concerns
 
@@ -86,12 +93,13 @@ Consider also the testability and maintainability of the code when deciding wher
 If something is not relying on the capabilities of a service, it is likely better suited to a model. Any logic that primarily manipulates or represents data without side effects should generally reside in a model rather than a service.
 Do not put application state management logic directly in Razor components; delegate it to services instead.
 Do not put random wrappers around service calls in Razor components; call the service methods directly instead.
-DO NOT EVER MAKE MAGIC NUMBER OR USE CONSTANTS DIRECTLY IN THE CODE, THIS INCLUDES MAKING A VARIABLE OF ANY KIND.
 Use razor.css files to define component-specific styles instead of putting them in global CSS files.
-
-
 DO NOT JUST RANDOMLY CHANGE THE FORMATTING OF A DOCUMENT FOR STUFF THAT IS NOT BEING MODIFIED OR UPDATED.
 
-
 ## Testing
-When making changes, do not just attempt the build, but test thoroughly via the integrated browser. Always attempt to do so, and make sure to verify that the changes behave as expected, and don't forget to close the browser tab after testing to ensure a new one is opened on later changes.
+- When creating or modifying C# tests, fixtures, or test helpers, follow [Testing Guidelines](instructions/testing.instructions.md) for test design, catalog-driven expectations, isolation, and class layout.
+- The solution contains three test projects, all using xUnit v3 4.x with Microsoft Testing Platform (MTP) v2 on .NET 10. The repository-root `global.json` selects MTP. `tests/hd2-challenges` contains model, service, persistence/adapter, and bUnit component tests; `tests/hd2Xaml2Svg` covers XAML-to-SVG conversion; `tests/hd2-challenges-e2e` uses Playwright to exercise the running Blazor app, including catalog and Redemption flows, save/import/export, and reload persistence.
+- Run the full suite with `dotnet test --solution .\hd2-challenges.slnx`. For a focused project run, use `dotnet test --project .\tests\hd2-challenges\hd2-challenges.tests.csproj`, `dotnet test --project .\tests\hd2Xaml2Svg\hd2Xaml2Svg.tests.csproj`, or `dotnet test --project .\tests\hd2-challenges-e2e\hd2-challenges.e2e.tests.csproj`.
+- Use MTP options directly, without a `--` separator: `--report-trx` for TRX results and `--filter-class`, `--filter-method`, or `--filter-trait` to select tests. VSTest's `--logger trx` and `--filter` syntax do not apply.
+- The app build runs the WPF converter, so builds and tests require Windows and the .NET 10 SDK. Before running E2E tests with `--no-build`, build the solution in the matching configuration. Install a browser with `pwsh .\tests\hd2-challenges-e2e\bin\Debug\net10.0\playwright.ps1 install chromium` (substitute `firefox` or `webkit` as needed). `BROWSER` selects the browser; Chromium is the default. The E2E fixture starts the already-built app itself.
+- Add or update focused tests for behavior changes and cover affected user-visible flows when practical. Run the relevant test project after edits; use the full suite when changing shared behavior or project integration. Do not rely on a build alone for behavioral changes.

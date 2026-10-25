@@ -1,7 +1,7 @@
 @if (Open)
 {
     <div class="app-modal-backdrop" @onclick="HandleBackdropClick">
-        <div class="app-modal @CssClass" @onclick:stopPropagation="true">
+        <div class="app-modal @CssClass" role="dialog" aria-label="@Title" @onclick:stopPropagation="true">
             <div class="card bg-dark text-light border-secondary">
                 <div class="card-header d-flex justify-content-between align-items-center gap-2">
                     <h5 class="mb-0">@Title</h5>
@@ -9,12 +9,12 @@
                     {
                         <div class="d-flex gap-2">
                             @HeaderButtons
-                            <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+                            <button type="button" class="btn btn-sm btn-outline-light" aria-label="Close @Title dialog" @onclick="OnClose">×</button>
                         </div>
                     }
                     else
                     {
-                        <button type="button" class="btn btn-sm btn-outline-light" @onclick="OnClose">×</button>
+                        <button type="button" class="btn btn-sm btn-outline-light" aria-label="Close @Title dialog" @onclick="OnClose">×</button>
                     }
                 </div>
 
