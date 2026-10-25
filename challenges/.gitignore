@@ -1,2 +1,3 @@
 wwwroot/svgs/**
-!wwwroot/svgs/**.svg
+!wwwroot/svgs/**/
+!wwwroot/svgs/**/*.svg

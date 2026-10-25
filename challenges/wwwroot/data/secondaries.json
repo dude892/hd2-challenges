@@ -190,5 +190,21 @@
     "id": "sg22bushwhacker",
     "imageURL": "sg22bushwhacker.webp",
     "antitank": false
+  },
+  {
+    "displayName": "P-34 Breacher",
+    "tags": ["One-Handed", "Explosive", "Anti-Tank", "Sticky", "Pistol"],
+    "warbond": "ironcladDemocracy",
+    "id": "p34breacher",
+    "imageURL": "p34breacher.webp",
+    "antitank": true
+  },
+  {
+    "displayName": "P-44 Mist",
+    "tags": ["Pistol", "One-Handed", "LightArmorPenetrating"],
+    "warbond": "scopeOfAuthority",
+    "id": "p44mist",
+    "imageURL": "p44mist.webp",
+    "antitank": false
   }
 ]

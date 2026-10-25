@@ -1,3 +1,17 @@
 {
-    "dotnet.defaultSolution": "hd2-challenges.slnx"
+    "dotnet.defaultSolution": "hd2-challenges.slnx",
+    "chat.tools.terminal.autoApprove": {
+        "/^dotnet run --project \\.\\\\challenges\\\\hd2-challenges\\.csproj(?: -c Release --no-build)?$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet test --project \\.\\\\tests\\\\hd2-challenges\\\\hd2-challenges\\.tests\\.csproj(?: --verbosity quiet)?$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet test --project \\.\\\\tests\\\\hd2-challenges-e2e\\\\hd2-challenges\\.e2e\\.tests\\.csproj(?: --verbosity quiet)?$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
 }

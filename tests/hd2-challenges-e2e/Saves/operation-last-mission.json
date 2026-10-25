@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "mode": "warpath-redemption",
+  "slot": {
+    "id": "e66e481e-75c5-4f59-bf40-67a04600f45a",
+    "name": "Test Run",
+    "updatedAt": "2026-10-19T00:00:00+00:00",
+    "state": {
+      "difficultyId": "normal",
+      "operationIndex": 3,
+      "missionNumber": 2,
+      "missionsFailed": 0,
+      "runCompleted": false,
+      "selectedWarbonds": [],
+      "acquiredItemIds": [],
+      "bannedItemIds": [],
+      "pendingRewardIds": [],
+      "pendingPunishmentIds": []
+    }
+  }
+}

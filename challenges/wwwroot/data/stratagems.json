@@ -1,138 +1,114 @@
 [
-  {
-    "displayName": "Autocannon",
-    "tags": ["Weapon", "Backpack", "Explosive"],
+    {
+    "displayName": "Orbital Precision Strike",
+    "tags": ["Orbital", "Anti-Tank"],
     "warbond": "none",
-    "id": "ac8autocannon",
-    "svg": "WeaponAutocannon.svg",
+    "id": "orbitalprecisionstrike",
+    "svg": "OrbitalStrikeprecision.svg",
     "antitank": true
   },
   {
-    "displayName": "Guard Dog Bullets",
-    "tags": ["Backpack", "Bullet"],
+    "displayName": "Orbital Gatling Barrage",
+    "tags": ["Orbital", "Bullet"],
     "warbond": "none",
-    "id": "ad334guarddog",
-    "svg": "SupportdroneMachinegun.svg",
+    "id": "orbitalgatlingbarrage",
+    "svg": "OrbitalGatlingbarrage.svg",
     "antitank": false
   },
   {
-    "displayName": "Flame Sentry",
-    "tags": ["Sentry", "Fire"],
-    "warbond": "urbanLegends",
-    "id": "aflam40flamesentry",
-    "svg": "TurretFlamethrower.svg",
+    "displayName": "Orbital Airburst Strike",
+    "tags": ["Orbital"],
+    "warbond": "none",
+    "id": "orbitalairburststrike",
+    "svg": "OrbitalStrikeairburst.svg",
     "antitank": false
   },
   {
-    "displayName": "Anti-Personnel Mines",
-    "tags": ["Emplacement"],
+    "displayName": "Orbital Napalm Barrage",
+    "tags": ["Orbital", "Fire"],
     "warbond": "none",
-    "id": "antipersonnelminefield",
-    "svg": "EmplacementsMinedeployer.svg",
+    "id": "orbitalnapalmbarrage",
+    "svg": "OrbitalNapalm.svg",
     "antitank": false
   },
   {
-    "displayName": "Anti-Tank Mines",
-    "tags": ["Emplacement", "Anti-Tank"],
+    "displayName": "Orbital 120mm Barrage",
+    "tags": ["Orbital"],
     "warbond": "none",
-    "id": "antitankmines",
-    "svg": "EmplacementsAntitankmine.svg",
+    "id": "orbital120mmhebarrage",
+    "svg": "OrbitalStrike120mmhe.svg",
     "antitank": true
   },
   {
-    "displayName": "Anti-Material Rifle",
-    "tags": ["Weapon", "Bullet"],
+    "displayName": "Orbital Walking Barrage",
+    "tags": ["Orbital"],
     "warbond": "none",
-    "id": "apw1antimaterielrifle",
-    "svg": "WeaponSniperrifle.svg",
+    "id": "orbitalwalkingbarrage",
+    "svg": "OrbitalBarragewalking.svg",
     "antitank": true
   },
   {
-    "displayName": "Arc Thrower",
-    "tags": ["Weapon", "Arc"],
+    "displayName": "Orbital 380mm Barrage",
+    "tags": ["Orbital"],
     "warbond": "none",
-    "id": "arc3arcthrower",
-    "svg": "WeaponArcthrower.svg",
+    "id": "orbital380mmhebarrage",
+    "svg": "OrbitalBarrage380mmhd.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Orbital Railcannon Strike",
+    "tags": ["Orbital", "Anti-Tank"],
+    "warbond": "none",
+    "id": "orbitalrailcannonstrike",
+    "svg": "OrbitalRailcannon.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Orbital Laser",
+    "tags": ["Orbital", "Laser", "Anti-Tank"],
+    "warbond": "none",
+    "id": "orbitallaser",
+    "svg": "OrbitalLaser.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Orbital EMS Strike",
+    "tags": ["Orbital", "Stun"],
+    "warbond": "none",
+    "id": "orbitalemsstrike",
+    "svg": "OrbitalStrikeems.svg",
     "antitank": false
   },
   {
-    "displayName": "Autocannon Sentry",
-    "tags": ["Sentry", "Explosive", "Anti-Tank"],
+    "displayName": "Orbital Gas Strike",
+    "tags": ["Orbital", "Gas"],
     "warbond": "none",
-    "id": "autocannonsentry",
-    "svg": "TurretsAutocannon.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Guard Dog Laser",
-    "tags": ["Backpack", "Laser"],
-    "warbond": "none",
-    "id": "axlas5guarddogrover",
-    "imageURL": "axlas5guarddogrover.svg",
+    "id": "orbitalgasstrike",
+    "svg": "OrbitalStrikegas.svg",
     "antitank": false
   },
   {
-    "displayName": "Guard Dog Breath",
-    "tags": ["Backpack", "Gas"],
-    "warbond": "chemicalAgents",
-    "id": "axtx13guarddogdogbreath",
-    "svg": "DroneGasProjector.svg",
+    "displayName": "Orbital Smoke Strike",
+    "tags": ["Orbital", "Smoke"],
+    "warbond": "none",
+    "id": "orbitalsmokestrike",
+    "svg": "OrbitalSmoke.svg",
     "antitank": false
   },
   {
-    "displayName": "Supply Pack",
-    "tags": ["Backpack"],
+    "displayName": "Eagle 500kg Bomb",
+    "tags": ["Eagle", "Anti-Tank"],
     "warbond": "none",
-    "id": "b1supplypack",
-    "svg": "SupportbackpackAmmo.svg",
-    "antitank": false
+    "id": "eagle500kgbomb",
+    "svg": "Eagle500kgbomb.svg",
+    "antitank": true
   },
   {
-    "displayName": "Bastion",
-    "tags": ["Vehicle"],
+    "displayName": "Eagle Strafing Run",
+    "tags": ["Eagle"],
     "warbond": "none",
-    "id": "bastiontank",
-    "svg": "Bastion.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Belt-Fed Grenade Launcher",
-    "tags": ["Weapon", "Backpack", "Anti-Tank", "Explosive"],
-    "warbond": "siegeBreakers",
-    "id": "beltfedgrenadelauncher",
-    "svg": "Grenadelauncher.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Breaching Hammer",
-    "tags": ["Weapon", "Melee", "Anti-Tank"],
-    "warbond": "siegeBreakers",
-    "id": "breachinghammer",
-    "svg": "Hammer.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "C4 Pack",
-    "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
-    "warbond": "redactedRegiment",
-    "id": "c4pack",
-    "svg": "C4.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Cremator",
-    "tags": ["Weapon", "Backpack", "Fire", "Anti-Tank"],
-    "warbond": "entrenchedDivision",
-    "id": "cremator",
-    "svg": "Cremator.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Defoliation Tool",
-    "tags": ["Weapon", "Melee"],
-    "warbond": "pythonCommandos",
-    "id": "defoliationtool",
-    "svg": "Defoliationtool.svg",
+    "id": "eaglestrafingrun",
+    "svg": "EagleAirSupport.svg",
     "antitank": false
   },
   {
@@ -141,14 +117,6 @@
     "warbond": "none",
     "id": "eagle110mmrocketpods",
     "svg": "EagleRockepods.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Eagle 500kg Bomb",
-    "tags": ["Eagle", "Anti-Tank"],
-    "warbond": "none",
-    "id": "eagle500kgbomb",
-    "svg": "Eagle500kgbomb.svg",
     "antitank": true
   },
   {
@@ -172,7 +140,7 @@
     "tags": ["Eagle", "Gas"],
     "warbond": "none",
     "id": "eaglegasstrike",
-    "imageURL": "eaglegasstrike.svg",
+    "svg": "eaglegasstrike.svg",
     "antitank": true
   },
   {
@@ -192,44 +160,76 @@
     "antitank": false
   },
   {
-    "displayName": "Eagle Strafing Run",
-    "tags": ["Eagle"],
-    "warbond": "none",
-    "id": "eaglestrafingrun",
-    "svg": "EagleAirSupport.svg",
+    "displayName": "Defoliation Tool",
+    "tags": ["Weapon", "Melee"],
+    "warbond": "pythonCommandos",
+    "id": "defoliationtool",
+    "svg": "Defoliationtool.svg",
     "antitank": false
   },
   {
-    "displayName": "Anti-Tank Emplacement",
-    "tags": ["Emplacement", "Explosive", "Anti-Tank"],
-    "warbond": "urbanLegends",
-    "id": "eat12antitankemplacement",
-    "svg": "EmplacementAntiTank.svg",
+    "displayName": "Breaching Hammer",
+    "tags": ["Weapon", "Melee", "Anti-Tank"],
+    "warbond": "siegeBreakers",
+    "id": "breachinghammer",
+    "svg": "Hammer.svg",
     "antitank": true
   },
   {
-    "displayName": "Expendable Anti-Tank",
-    "tags": ["Weapon", "Expendable", "Anti-Tank"],
+    "displayName": "One True Flag",
+    "tags": ["Weapon", "Melee"],
+    "warbond": "mastersOfCeremony",
+    "id": "onetrueflag",
+    "svg": "Onetrueflag.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Machine Gun",
+    "tags": ["Weapon", "Bullet"],
     "warbond": "none",
-    "id": "eat17expendableantitank",
-    "svg": "WeaponOneshotantitank.svg",
+    "id": "mg43machinegun",
+    "svg": "SupportweaponMachinegun.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Stalwart",
+    "tags": ["Weapon", "Bullet"],
+    "warbond": "none",
+    "id": "m105stalwart",
+    "svg": "WeaponLightmachinegun.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Heavy Machine Gun",
+    "tags": ["Weapon", "Bullet"],
+    "warbond": "none",
+    "id": "mg206heavymachinegun",
+    "svg": "WeaponHeavymachinegun.svg",
     "antitank": true
   },
   {
-    "displayName": "Expendable Napalm",
-    "tags": ["Weapon", "Expendable", "Fire"],
+    "displayName": "Railgun",
+    "tags": ["Weapon", "Anti-Tank"],
+    "warbond": "none",
+    "id": "rs422railgun",
+    "svg": "WeaponRailgun.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Speargun",
+    "tags": ["Weapon", "Gas"],
     "warbond": "dustDevils",
-    "id": "eat700expendablenapalm",
-    "imageURL": "eat700expendablenapalm.svg",
+    "id": "speargun",
+    "svg": "Speargun.svg",
     "antitank": false
   },
   {
-    "displayName": "EMS Mortar Sentry",
-    "tags": ["Sentry", "Stun"],
+    "displayName": "Anti-Material Rifle",
+    "tags": ["Weapon", "Bullet"],
     "warbond": "none",
-    "id": "emsmortarsentry",
-    "svg": "TurretsMortarStaticfield.svg",
-    "antitank": false
+    "id": "apw1antimaterielrifle",
+    "svg": "WeaponSniperrifle.svg",
+    "antitank": true
   },
   {
     "displayName": "Epoch",
@@ -240,92 +240,20 @@
     "antitank": true
   },
   {
-    "displayName": "Patriot Exosuit",
-    "tags": ["Vehicle", "Anti-Tank", "Exosuit", "Expendable"],
-    "warbond": "none",
-    "id": "exo45patriotexosuit",
-    "svg": "VehicleCombatwalker.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Emancipator Exosuit",
-    "tags": ["Vehicle", "Anti-Tank", "Exosuit", "Expendable"],
-    "warbond": "none",
-    "id": "exo49emancipatorexosuit",
-    "svg": "VehicleCombatwalkerobsidian.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Lumberer Exosuit",
-    "tags": ["Vehicle", "Fire", "Anti-Tank", "Expendable", "Exosuit"],
-    "warbond": "exoExperts",
-    "id": "exo51lumbererexosuit",
-    "svg": "VehicleCombatwalkerLumberer.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Breakthrough Exosuit",
-    "tags": ["Vehicle", "Expendable", "Anti-Tank", "Exosuit"],
-    "warbond": "exoExperts",
-    "id": "exo55breakthroughexosuit",
-    "svg": "VehicleCombatwalkerBreacher.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Spear",
-    "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
-    "warbond": "none",
-    "id": "faf14spear",
-    "svg": "WeaponSpear.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Fast Recon Vehicle",
-    "tags": ["Vehicle", "Movement"],
-    "warbond": "none",
-    "id": "fastreconvehicle",
-    "imageURL": "fastreconvehicle.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Flamethrower",
-    "tags": ["Weapon", "Fire"],
-    "warbond": "none",
-    "id": "flam40flamethrower",
-    "svg": "WeaponFlamethrower.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Gas Mines",
-    "tags": ["Emplacement", "Gas"],
-    "warbond": "none",
-    "id": "gasmines",
-    "imageURL": "gasmines.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Gas Mortar Sentry",
-    "tags": ["Sentry", "Gas"],
-    "warbond": "entrenchedDivision",
-    "id": "gasmortarsentry",
-    "svg": "EmplacementsGasMine.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Gatling Sentry",
-    "tags": ["Sentry", "Bullet"],
-    "warbond": "none",
-    "id": "gatlingsentry",
-    "svg": "TurretsGatling.svg",
-    "antitank": false
-  },
-  {
     "displayName": "Grenade Launcher",
     "tags": ["Weapon", "Explosive"],
     "warbond": "none",
     "id": "gl21grenadelauncher",
     "svg": "WeaponGrenadelauncher.svg",
     "antitank": false
+  },
+  {
+    "displayName": "Meltagun",
+    "tags": ["Weapon", "Anti-Tank"],
+    "warbond": "warhammer40k",
+    "id": "meltagun",
+    "svg": "meltagun.svg",
+    "antitank": true
   },
   {
     "displayName": "De-Escalator",
@@ -336,51 +264,19 @@
     "antitank": true
   },
   {
-    "displayName": "Recoilless Rifle",
-    "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
-    "warbond": "none",
-    "id": "gr8recoillessrifle",
-    "svg": "WeaponRecoillessrifle.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Grenadier Battlement",
-    "tags": ["Emplacement", "Explosive"],
-    "warbond": "none",
-    "id": "grenadierbattlement",
-    "svg": "EmplacementsCoverwall.svg",
+    "displayName": "Sterilizer",
+    "tags": ["Weapon", "Gas"],
+    "warbond": "chemicalAgents",
+    "id": "tx41sterilizer",
+    "svg": "WeaponChemGun.svg",
     "antitank": false
   },
   {
-    "displayName": "Guard Dog Arc",
-    "tags": ["Backpack", "Arc"],
-    "warbond": "forceOfLaw",
-    "id": "guarddogarc",
-    "svg": "DroneStun.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Guard Dog Flames",
-    "tags": ["Backpack", "Fire"],
-    "warbond": "pythonCommandos",
-    "id": "guarddogflames",
-    "imageURL": "guarddogflames.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "HMG Emplacement",
-    "tags": ["Emplacement", "Bullet"],
+    "displayName": "Flamethrower",
+    "tags": ["Weapon", "Fire"],
     "warbond": "none",
-    "id": "hmgemplacement",
-    "svg": "MannedMachinegun.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Incendiary Mines",
-    "tags": ["Emplacement", "Fire"],
-    "warbond": "none",
-    "id": "incendiarymines",
-    "svg": "EmplacementsMinedeployerIncendiary.svg",
+    "id": "flam40flamethrower",
+    "svg": "WeaponFlamethrower.svg",
     "antitank": false
   },
   {
@@ -400,11 +296,27 @@
     "antitank": true
   },
   {
-    "displayName": "Laser Sentry",
-    "tags": ["Sentry", "Laser"],
-    "warbond": "controlGroup",
-    "id": "lasersentry",
-    "imageURL": "lasersentry.svg",
+    "displayName": "Arc Thrower",
+    "tags": ["Weapon", "Arc"],
+    "warbond": "none",
+    "id": "arc3arcthrower",
+    "svg": "WeaponArcthrower.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "LAS-44 Nova",
+    "tags": ["Weapon", "Laser", "Heat", "HeavyArmorPenetrating"],
+    "warbond": "scopeOfAuthority",
+    "id": "las44nova",
+    "svg": "las44nova.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Commando",
+    "tags": ["Weapon", "Expendable", "Anti-Tank"],
+    "warbond": "none",
+    "id": "mls4xcommandorocketlauncher",
+    "svg": "WeaponCommando.svg",
     "antitank": true
   },
   {
@@ -416,68 +328,20 @@
     "antitank": true
   },
   {
-    "displayName": "Jump Pack",
-    "tags": ["Backpack", "Movement"],
-    "warbond": "none",
-    "id": "lift850jumppack",
-    "imageURL": "lift850jumppack.svg",
+    "displayName": "Expendable Napalm",
+    "tags": ["Weapon", "Expendable", "Fire"],
+    "warbond": "dustDevils",
+    "id": "eat700expendablenapalm",
+    "svg": "eat700expendablenapalm.svg",
     "antitank": false
   },
   {
-    "displayName": "Hover Pack",
-    "tags": ["Backpack", "Movement"],
-    "warbond": "borderlineJustice",
-    "id": "lift860hoverpack",
-    "svg": "Hoverpack.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Stalwart",
-    "tags": ["Weapon", "Bullet"],
-    "warbond": "none",
-    "id": "m105stalwart",
-    "svg": "WeaponLightmachinegun.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Machine Gun Sentry",
-    "tags": ["Sentry", "Bullet"],
-    "warbond": "none",
-    "id": "machinegunsentry",
-    "svg": "TurretsMachinegun.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Maxigun",
-    "tags": ["Weapon", "Backpack", "Bullet"],
-    "warbond": "pythonCommandos",
-    "id": "maxigun",
-    "imageURL": "maxigun.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Meltagun",
-    "tags": ["Weapon", "Anti-Tank"],
-    "warbond": "warhammer40k",
-    "id": "meltagun",
-    "imageURL": "meltagun.svg",
+    "displayName": "Solo Silo",
+    "tags": ["Weapon", "Expendable", "Anti-Tank"],
+    "warbond": "dustDevils",
+    "id": "solosilo",
+    "svg": "Minimissilesilo.svg",
     "antitank": true
-  },
-  {
-    "displayName": "Heavy Machine Gun",
-    "tags": ["Weapon", "Bullet"],
-    "warbond": "none",
-    "id": "mg206heavymachinegun",
-    "svg": "WeaponHeavymachinegun.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Machine Gun",
-    "tags": ["Weapon", "Bullet"],
-    "warbond": "none",
-    "id": "mg43machinegun",
-    "svg": "SupportweaponMachinegun.svg",
-    "antitank": false
   },
   {
     "displayName": "Bullet Storm",
@@ -488,131 +352,19 @@
     "antitank": false
   },
   {
-    "displayName": "Commando",
+    "displayName": "Expendable Anti-Tank",
     "tags": ["Weapon", "Expendable", "Anti-Tank"],
     "warbond": "none",
-    "id": "mls4xcommandorocketlauncher",
-    "svg": "WeaponCommando.svg",
+    "id": "eat17expendableantitank",
+    "svg": "WeaponOneshotantitank.svg",
     "antitank": true
   },
   {
-    "displayName": "Mortar Sentry",
-    "tags": ["Sentry"],
+    "displayName": "Autocannon",
+    "tags": ["Weapon", "Backpack", "Explosive"],
     "warbond": "none",
-    "id": "mortarsentry",
-    "svg": "TurretsMortar.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "One True Flag",
-    "tags": ["Weapon", "Melee"],
-    "warbond": "mastersOfCeremony",
-    "id": "onetrueflag",
-    "svg": "Onetrueflag.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital 120mm Barrage",
-    "tags": ["Orbital"],
-    "warbond": "none",
-    "id": "orbital120mmhebarrage",
-    "svg": "OrbitalStrike120mmhe.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Orbital 380mm Barrage",
-    "tags": ["Orbital"],
-    "warbond": "none",
-    "id": "orbital380mmhebarrage",
-    "svg": "OrbitalBarrage380mmhd.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Orbital Airburst Strike",
-    "tags": ["Orbital"],
-    "warbond": "none",
-    "id": "orbitalairburststrike",
-    "svg": "OrbitalStrikeairburst.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital EMS Strike",
-    "tags": ["Orbital", "Stun"],
-    "warbond": "none",
-    "id": "orbitalemsstrike",
-    "svg": "OrbitalStrikeems.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital Gas Strike",
-    "tags": ["Orbital", "Gas"],
-    "warbond": "none",
-    "id": "orbitalgasstrike",
-    "svg": "OrbitalStrikegas.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital Gatling Barrage",
-    "tags": ["Orbital", "Bullet"],
-    "warbond": "none",
-    "id": "orbitalgatlingbarrage",
-    "svg": "OrbitalGatlingbarrage.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital Laser",
-    "tags": ["Orbital", "Laser", "Anti-Tank"],
-    "warbond": "none",
-    "id": "orbitallaser",
-    "svg": "OrbitalLaser.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Orbital Napalm Barrage",
-    "tags": ["Orbital", "Fire"],
-    "warbond": "none",
-    "id": "orbitalnapalmbarrage",
-    "svg": "OrbitalNapalm.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital Precision Strike",
-    "tags": ["Orbital", "Anti-Tank"],
-    "warbond": "none",
-    "id": "orbitalprecisionstrike",
-    "svg": "OrbitalStrikeprecision.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Orbital Railcannon Strike",
-    "tags": ["Orbital", "Anti-Tank"],
-    "warbond": "none",
-    "id": "orbitalrailcannonstrike",
-    "svg": "OrbitalRailcannon.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Orbital Smoke Strike",
-    "tags": ["Orbital", "Smoke"],
-    "warbond": "none",
-    "id": "orbitalsmokestrike",
-    "svg": "OrbitalSmoke.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Orbital Walking Barrage",
-    "tags": ["Orbital"],
-    "warbond": "none",
-    "id": "orbitalwalkingbarrage",
-    "svg": "OrbitalBarragewalking.svg",
-    "antitank": true
-  },
-  {
-    "displayName": "Portable Hellbomb",
-    "tags": ["Backpack", "Anti-Tank", "Explosive"],
-    "warbond": "servantsOfFreedom",
-    "id": "portablehellbomb",
-    "imageURL": "portablehellbomb.svg",
+    "id": "ac8autocannon",
+    "svg": "WeaponAutocannon.svg",
     "antitank": true
   },
   {
@@ -624,27 +376,107 @@
     "antitank": false
   },
   {
-    "displayName": "Rocket Sentry",
-    "tags": ["Sentry", "Explosive", "Anti-Tank"],
+    "displayName": "Spear",
+    "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
     "warbond": "none",
-    "id": "rocketsentry",
-    "svg": "TurretsRocket.svg",
+    "id": "faf14spear",
+    "svg": "WeaponSpear.svg",
     "antitank": true
   },
   {
-    "displayName": "Railgun",
-    "tags": ["Weapon", "Anti-Tank"],
-    "warbond": "none",
-    "id": "rs422railgun",
-    "svg": "WeaponRailgun.svg",
+    "displayName": "Cremator",
+    "tags": ["Weapon", "Backpack", "Fire", "Anti-Tank"],
+    "warbond": "entrenchedDivision",
+    "id": "cremator",
+    "svg": "Cremator.svg",
     "antitank": true
   },
   {
-    "displayName": "Ballistic Shield",
+    "displayName": "W.A.S.P. Launcher",
+    "tags": ["Weapon", "Backpack", "Explosive"],
+    "warbond": "none",
+    "id": "wasplauncher",
+    "svg": "WeaponWaspSpear.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Maxigun",
+    "tags": ["Weapon", "Backpack", "Bullet"],
+    "warbond": "pythonCommandos",
+    "id": "maxigun",
+    "svg": "maxigun.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Belt-Fed Grenade Launcher",
+    "tags": ["Weapon", "Backpack", "Anti-Tank", "Explosive"],
+    "warbond": "siegeBreakers",
+    "id": "beltfedgrenadelauncher",
+    "svg": "Grenadelauncher.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Recoilless Rifle",
+    "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
+    "warbond": "none",
+    "id": "gr8recoillessrifle",
+    "svg": "WeaponRecoillessrifle.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "C4 Pack",
+    "tags": ["Weapon", "Backpack", "Explosive", "Anti-Tank"],
+    "warbond": "redactedRegiment",
+    "id": "c4pack",
+    "svg": "C4.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "AMW-20 Apex",
+    "tags": ["Weapon", "Backpack", "Bullet", "StationaryReload", "HeavyArmorPenetrating"],
+    "warbond": "scopeOfAuthority",
+    "id": "amw20apex",
+    "svg": "amw20apex.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Supply Pack",
     "tags": ["Backpack"],
     "warbond": "none",
-    "id": "sh20ballisticshieldbackpack",
-    "svg": "BackpackShieldballistic.svg",
+    "id": "b1supplypack",
+    "svg": "SupportbackpackAmmo.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Portable Hellbomb",
+    "tags": ["Backpack", "Anti-Tank", "Explosive"],
+    "warbond": "servantsOfFreedom",
+    "id": "portablehellbomb",
+    "svg": "portablehellbomb.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Warp Pack",
+    "tags": ["Backpack", "Movement"],
+    "warbond": "controlGroup",
+    "id": "warppack",
+    "svg": "SupportbackpackDisplacementBackpack.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Hover Pack",
+    "tags": ["Backpack", "Movement"],
+    "warbond": "borderlineJustice",
+    "id": "lift860hoverpack",
+    "svg": "Hoverpack.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Jump Pack",
+    "tags": ["Backpack", "Movement"],
+    "warbond": "none",
+    "id": "lift850jumppack",
+    "svg": "lift850jumppack.svg",
     "antitank": false
   },
   {
@@ -664,27 +496,51 @@
     "antitank": false
   },
   {
-    "displayName": "Shield Generator Relay",
-    "tags": ["Emplacement"],
+    "displayName": "Ballistic Shield",
+    "tags": ["Backpack"],
     "warbond": "none",
-    "id": "shieldgeneratorrelay",
-    "svg": "EmplacementsEnergyshield.svg",
+    "id": "sh20ballisticshieldbackpack",
+    "svg": "BackpackShieldballistic.svg",
     "antitank": false
   },
   {
-    "displayName": "Solo Silo",
-    "tags": ["Weapon", "Expendable", "Anti-Tank"],
-    "warbond": "dustDevils",
-    "id": "solosilo",
-    "svg": "Minimissilesilo.svg",
-    "antitank": true
+    "displayName": "K-9",
+    "tags": ["Backpack", "Arc"],
+    "warbond": "forceOfLaw",
+    "id": "guarddogarc",
+    "svg": "DroneStun.svg",
+    "antitank": false
   },
   {
-    "displayName": "Speargun",
-    "tags": ["Weapon", "Gas"],
-    "warbond": "dustDevils",
-    "id": "speargun",
-    "svg": "Speargun.svg",
+    "displayName": "Hot Dog",
+    "tags": ["Backpack", "Fire"],
+    "warbond": "pythonCommandos",
+    "id": "guarddogflames",
+    "svg": "guarddogflames.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Guard Dog",
+    "tags": ["Backpack", "Bullet"],
+    "warbond": "none",
+    "id": "ad334guarddog",
+    "svg": "SupportdroneMachinegun.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Rover",
+    "tags": ["Backpack", "Laser"],
+    "warbond": "none",
+    "id": "axlas5guarddogrover",
+    "svg": "axlas5guarddogrover.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Dog Breath",
+    "tags": ["Backpack", "Gas"],
+    "warbond": "chemicalAgents",
+    "id": "axtx13guarddogdogbreath",
+    "svg": "DroneGasProjector.svg",
     "antitank": false
   },
   {
@@ -696,6 +552,166 @@
     "antitank": false
   },
   {
+    "displayName": "Gunner FRV",
+    "tags": ["Vehicle", "Movement"],
+    "warbond": "none",
+    "id": "fastreconvehicle",
+    "svg": "fastreconvehicle.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Bastion MK XVI",
+    "tags": ["Vehicle"],
+    "warbond": "none",
+    "id": "bastiontank",
+    "svg": "Bastion.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Maelstrom",
+    "tags": ["Vehicle", "Anti-Tank"],
+    "warbond": "none",
+    "id": "td110maelstrom",
+    "svg": "TD110Maelstrom.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Emancipator Exosuit",
+    "tags": ["Vehicle", "Anti-Tank", "Exosuit", "Expendable"],
+    "warbond": "none",
+    "id": "exo49emancipatorexosuit",
+    "svg": "VehicleCombatwalkerobsidian.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Patriot Exosuit",
+    "tags": ["Vehicle", "Anti-Tank", "Exosuit", "Expendable"],
+    "warbond": "none",
+    "id": "exo45patriotexosuit",
+    "svg": "VehicleCombatwalker.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Breakthrough Exosuit",
+    "tags": ["Vehicle", "Expendable", "Anti-Tank", "Exosuit"],
+    "warbond": "exoExperts",
+    "id": "exo55breakthroughexosuit",
+    "svg": "VehicleCombatwalkerBreacher.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Lumberer Exosuit",
+    "tags": ["Vehicle", "Fire", "Anti-Tank", "Expendable", "Exosuit"],
+    "warbond": "exoExperts",
+    "id": "exo51lumbererexosuit",
+    "svg": "VehicleCombatwalkerLumberer.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Gatling Sentry",
+    "tags": ["Sentry", "Bullet"],
+    "warbond": "none",
+    "id": "gatlingsentry",
+    "svg": "TurretsGatling.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Machine Gun Sentry",
+    "tags": ["Sentry", "Bullet"],
+    "warbond": "none",
+    "id": "machinegunsentry",
+    "svg": "TurretsMachinegun.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Flame Sentry",
+    "tags": ["Sentry", "Fire"],
+    "warbond": "urbanLegends",
+    "id": "aflam40flamesentry",
+    "svg": "TurretFlamethrower.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Laser Sentry",
+    "tags": ["Sentry", "Laser"],
+    "warbond": "controlGroup",
+    "id": "lasersentry",
+    "svg": "lasersentry.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Rocket Sentry",
+    "tags": ["Sentry", "Explosive", "Anti-Tank"],
+    "warbond": "none",
+    "id": "rocketsentry",
+    "svg": "TurretsRocket.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "Autocannon Sentry",
+    "tags": ["Sentry", "Explosive", "Anti-Tank"],
+    "warbond": "none",
+    "id": "autocannonsentry",
+    "svg": "TurretsAutocannon.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "EMS Mortar Sentry",
+    "tags": ["Sentry", "Stun"],
+    "warbond": "none",
+    "id": "emsmortarsentry",
+    "svg": "TurretsMortarStaticfield.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Gas Mortar Sentry",
+    "tags": ["Sentry", "Gas"],
+    "warbond": "entrenchedDivision",
+    "id": "gasmortarsentry",
+    "svg": "TurretsGassentry.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Mortar Sentry",
+    "tags": ["Sentry"],
+    "warbond": "none",
+    "id": "mortarsentry",
+    "svg": "TurretsMortar.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Shield Generator Relay",
+    "tags": ["Emplacement"],
+    "warbond": "none",
+    "id": "shieldgeneratorrelay",
+    "svg": "EmplacementsEnergyshield.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Grenadier Battlement",
+    "tags": ["Emplacement", "Explosive"],
+    "warbond": "none",
+    "id": "grenadierbattlement",
+    "svg": "EmplacementsCoverwall.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Anti-Tank Emplacement",
+    "tags": ["Emplacement", "Explosive", "Anti-Tank"],
+    "warbond": "urbanLegends",
+    "id": "eat12antitankemplacement",
+    "svg": "EmplacementAntiTank.svg",
+    "antitank": true
+  },
+  {
+    "displayName": "HMG Emplacement",
+    "tags": ["Emplacement", "Bullet"],
+    "warbond": "none",
+    "id": "hmgemplacement",
+    "svg": "MannedMachinegun.svg",
+    "antitank": true
+  },
+  {
     "displayName": "Tesla Tower",
     "tags": ["Sentry", "Arc"],
     "warbond": "none",
@@ -704,27 +720,35 @@
     "antitank": false
   },
   {
-    "displayName": "Sterilizer",
-    "tags": ["Weapon", "Gas"],
-    "warbond": "chemicalAgents",
-    "id": "tx41sterilizer",
-    "svg": "WeaponChemGun.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "Warp Pack",
-    "tags": ["Backpack", "Movement"],
-    "warbond": "controlGroup",
-    "id": "warppack",
-    "svg": "SupportbackpackDisplacementBackpack.svg",
-    "antitank": false
-  },
-  {
-    "displayName": "W.A.S.P. Launcher",
-    "tags": ["Weapon", "Backpack", "Explosive"],
+    "displayName": "Anti-Tank Mines",
+    "tags": ["Emplacement", "Anti-Tank"],
     "warbond": "none",
-    "id": "wasplauncher",
-    "svg": "WeaponWaspSpear.svg",
+    "id": "antitankmines",
+    "svg": "EmplacementsAntitankmine.svg",
     "antitank": true
+  },
+  {
+    "displayName": "Gas Mines",
+    "tags": ["Emplacement", "Gas"],
+    "warbond": "none",
+    "id": "gasmines",
+    "svg": "gasmines.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Anti-Personnel Mines",
+    "tags": ["Emplacement"],
+    "warbond": "none",
+    "id": "antipersonnelminefield",
+    "svg": "EmplacementsMinedeployer.svg",
+    "antitank": false
+  },
+  {
+    "displayName": "Incendiary Mines",
+    "tags": ["Emplacement", "Fire"],
+    "warbond": "none",
+    "id": "incendiarymines",
+    "svg": "EmplacementsMinedeployerIncendiary.svg",
+    "antitank": false
   }
 ]

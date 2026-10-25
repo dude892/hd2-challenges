@@ -1,0 +1,22 @@
+.item-category-accordion-button {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.item-category-accordion-count {
+    grid-column: 2;
+    text-align: center;
+}
+
+.item-category-accordion-button::after {
+    justify-self: end;
+    margin-left: 0;
+}
+
+::deep .item-grid {
+    --item-card-width: 140px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--item-card-width)), var(--item-card-width)));
+    gap: 0.75rem;
+}

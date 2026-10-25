@@ -17,7 +17,13 @@ else
 {
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
-            <h1 class="text-light mb-0">Warpath: Redemption</h1>
+            <h1 class="text-light mb-0">
+                Warpath: Redemption
+                @if (_state.RunStarted && SaveLibrary.Library.CurrentSlot is { } currentSlot)
+                {
+                    <span class="fs-5 text-secondary">@currentSlot.Name</span>
+                }
+            </h1>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-light" @onclick="(() => _showSaveManager = true)">Save Slots</button>
@@ -42,8 +48,8 @@ else
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Run Settings</h4>
                     <div class="mb-3">
-                        <label class="form-label text-light">Difficulty</label>
-                        <select class="form-select bg-dark text-light border-secondary" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
+                        <label class="form-label text-light" for="redemption-difficulty">Difficulty</label>
+                        <select id="redemption-difficulty" class="form-select bg-dark text-light border-secondary" aria-label="Select campaign difficulty" value="@_state.Difficulty.Id" @onchange="OnRedemptionDifficultyChanged">
                             @foreach (var difficulty in RedemptionCatalog.Difficulties)
                             {
                                 <option value="@difficulty.Id">@difficulty.DisplayName</option>
@@ -55,7 +61,7 @@ else
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3">
+                    <div class="item-grid mt-3" data-item-count="@Catalog.GetAllWarbonds().Count">
                         @foreach (var warbond in Catalog.GetAllWarbonds())
                         {
                             var isSelected = _state.SelectedWarbonds.Contains(warbond);
@@ -69,18 +75,19 @@ else
             </div>
 
             <div class="col-xl-8">
-                <div class="section-card rounded p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="text-light mb-0">Starting Loadout Preview</h4>
-                        <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
-                    </div>
-                    <div class="item-grid mt-3">
-                        @foreach (var item in _state.StarterItems)
-                        {
-                            <ItemCard Item="item" Badge="Starter" />
-                        }
-                    </div>
-                </div>
+                <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.StarterItems)"
+                        AccessibleLabel="Starting loadout preview"
+                        ContainerClass="section-card rounded p-3"
+                        GridClass="mt-3"
+                        EmptyMessage="No starting items in this loadout."
+                        BadgeSelector="GetStarterBadge">
+                    <HeaderContent>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-light mb-0">Starting Loadout Preview</h4>
+                            <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
+                        </div>
+                    </HeaderContent>
+                </ItemGrid>
             </div>
         </div>
     }
@@ -93,7 +100,7 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Difficulty</small>
-                                <div class="fs-5 text-light">@_state.Difficulty.DisplayName</div>
+                                <div class="fs-5 text-light" role="status" aria-label="Selected difficulty">@_state.Difficulty.DisplayName</div>
                             </div>
                         </div>
                     </div>
@@ -103,7 +110,8 @@ else
                                 <small class="text-secondary">Operation</small>
                                 <div class="d-flex align-items-center gap-2">
                                     <img class="difficulty-icon" src="@($"svgs/difficulty/{_state.CurrentOperation.DifficultyIndex}.svg")" alt="" />
-                                    <div class="fs-5 text-light">@_state.CurrentOperation.DifficultyLabel</div>
+                                    <div class="fs-5 text-light" role="status" aria-label="Current operation"
+                                         data-operation-index="@_state.CurrentOperation.DifficultyIndex">@_state.CurrentOperation.DifficultyLabel</div>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +120,9 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Mission</small>
-                                <div class="fs-5 text-light">@_state.CurrentOperation.MissionLabel</div>
+                                  <div class="fs-5 text-light" role="status" aria-label="Current mission progress"
+                                      data-mission-number="@_state.CurrentOperation.MissionNumber"
+                                      data-mission-count="@_state.CurrentOperation.MissionCount">@_state.CurrentOperation.MissionLabel</div>
                             </div>
                         </div>
                     </div>
@@ -120,7 +130,8 @@ else
                         <div class="card bg-dark border-secondary h-100">
                             <div class="card-body">
                                 <small class="text-secondary">Failures</small>
-                                <div class="fs-5 text-light">@_state.MissionsFailed</div>
+                                <div class="fs-5 text-light" role="status" aria-label="Missions failed"
+                                     data-missions-failed="@_state.MissionsFailed">@_state.MissionsFailed</div>
                             </div>
                         </div>
                     </div>
@@ -128,7 +139,7 @@ else
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                             <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
                             <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
-                            <button class="btn btn-primary btn-lg btn-block" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
+                            <button class="btn btn-primary btn-lg btn-block" aria-label="View banned items" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
                 </div>
@@ -138,83 +149,54 @@ else
                         <h4 class="accordion-header">
                             <button class="accordion-button collapsed" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#equipment-collapse"
-                                    aria-expanded="false" aria-controls="equipment-collapse">
+                                    aria-label="Toggle acquired equipment" aria-expanded="false" aria-controls="equipment-collapse">
                                 <span class="d-flex align-items-baseline gap-3">
                                     <span>Equipment</span>
-                                    <span class="text-secondary small">@_state.AcquiredItems.Count() item(s)</span>
                                 </span>
                             </button>
                         </h4>
-                        <div id="equipment-collapse" class="accordion-collapse collapse">
+                        <div id="equipment-collapse" class="accordion-collapse collapse" role="region" aria-label="Acquired equipment">
                             <div class="accordion-body">
                                 <div class="d-flex flex-column gap-5">
                                     <div class="row gx-5 gy-3 align-items-start">
-                                        <div class="col-12 col-sm-auto">
-                                            <h5 class="text-light">Primaries</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Primaries.Count()">
-                                                @if (!_state.AcquiredItems.Primaries.Any())
-                                                {
-                                                    <div class="text-secondary small">No primary items acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in _state.AcquiredItems.Primaries)
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm">
-                                            <h5 class="text-light">Secondaries</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Secondaries.Count()">
-                                                @if (!_state.AcquiredItems.Secondaries.Any())
-                                                {
-                                                    <div class="text-secondary small">No secondary items acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in _state.AcquiredItems.Secondaries)
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
+                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries)"
+                                                  AccessibleLabel="Acquired primary items"
+                                                  ContainerClass="col-12 col-sm-auto"
+                                                  GridClass="run-item-grid equipment-content-item-grid"
+                                                  UseItemColumns="true"
+                                                  EmptyMessage="No primary items acquired."
+                                                  BadgeSelector="GetStarterBadge">
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Primaries.Label</h5></HeaderContent>
+                                        </ItemGrid>
+                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries)"
+                                                  AccessibleLabel="Acquired secondary items"
+                                                  ContainerClass="col-12 col-sm"
+                                                  GridClass="run-item-grid equipment-content-item-grid"
+                                                  UseItemColumns="true"
+                                                  EmptyMessage="No secondary items acquired."
+                                                  BadgeSelector="GetStarterBadge">
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Secondaries.Label</h5></HeaderContent>
+                                        </ItemGrid>
                                     </div>
                                     <div class="row gx-5 gy-3 align-items-start">
-                                        <div class="col-12 col-sm-auto">
-                                            <h5 class="text-light">Throwables</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Throwables.Count()">
-                                                @if (!_state.AcquiredItems.Throwables.Any())
-                                                {
-                                                    <div class="text-secondary small">No throwable items acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in _state.AcquiredItems.Throwables)
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm">
-                                            <h5 class="text-light">Armor Passives</h5>
-                                            <div class="item-grid run-item-grid equipment-content-item-grid" style="--equipment-card-count: @_state.AcquiredItems.Passives.Count()">
-                                                @if (!_state.AcquiredItems.Passives.Any())
-                                                {
-                                                    <div class="text-secondary small">No armor passives acquired.</div>
-                                                }
-                                                else
-                                                {
-                                                    foreach (GameItem item in _state.AcquiredItems.Passives)
-                                                    {
-                                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
+                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables)"
+                                                  AccessibleLabel="Acquired throwable items"
+                                                  ContainerClass="col-12 col-sm-auto"
+                                                  GridClass="run-item-grid equipment-content-item-grid"
+                                                  UseItemColumns="true"
+                                                  EmptyMessage="No throwable items acquired."
+                                                  BadgeSelector="GetStarterBadge">
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Throwables.Label</h5></HeaderContent>
+                                        </ItemGrid>
+                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives)"
+                                                  AccessibleLabel="Acquired armor passives"
+                                                  ContainerClass="col-12 col-sm"
+                                                  GridClass="run-item-grid equipment-content-item-grid"
+                                                  UseItemColumns="true"
+                                                  EmptyMessage="No armor passives acquired."
+                                                  BadgeSelector="GetStarterBadge">
+                                            <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Passives.Label</h5></HeaderContent>
+                                        </ItemGrid>
                                     </div>
                                 </div>
                             </div>
@@ -222,39 +204,33 @@ else
                     </div>
                 </div>
                 <div class="row g-3 mt-1">
-                    <div class="col-12 col-lg-9">
-                        <div class="section-card rounded p-3 h-100">
-                            <h5 class="text-light">Stratagems</h5>
-                            <div class="item-grid run-item-grid">
-                                @if (!_state.AcquiredItems.Stratagems.Any())
-                                {
-                                    <div class="text-secondary small">No stratagems acquired.</div>
-                                }
-                                else
-                                {
-                                    foreach (GameItem item in _state.AcquiredItems.Stratagems)
-                                    {
-                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-3">
-                        <div class="section-card rounded p-3 h-100">
-                            <h5 class="text-light">Boosters</h5>
-                            <div class="item-grid run-item-grid">
-                                @if (!_state.AcquiredItems.Boosters.Any())
-                                {
-                                    <div class="text-secondary small">No boosters acquired.</div>
-                                }
-                                else
-                                {
-                                    foreach (GameItem item in _state.AcquiredItems.Boosters)
-                                    {
-                                        <ItemCard Item="item" Badge="@(_state.StarterItems.ContainsItem(item) ? "Starter" : null)" />
-                                    }
-                                }
+                    <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems)"
+                              AccessibleLabel="Acquired stratagems"
+                              ContainerClass="col-12 col-lg section-card rounded p-3 h-100"
+                              GridClass="run-item-grid"
+                              EmptyMessage="No stratagems acquired."
+                              BadgeSelector="GetStarterBadge">
+                        <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Stratagems.Label</h5></HeaderContent>
+                    </ItemGrid>
+                    <div class="@($"col-12 col-lg-auto booster-accordion{(_showBoosterAccordion ? " expanded" : string.Empty)}")" data-bs-theme="dark">
+                        <div class="section-card rounded d-flex h-100 booster-accordion-container">
+                            <button class="booster-accordion-toggle" type="button"
+                                    aria-label="Toggle acquired boosters"
+                                    aria-expanded="@(_showBoosterAccordion ? "true" : "false")" aria-controls="boosters-collapse"
+                                    @onclick="() => _showBoosterAccordion = !_showBoosterAccordion">
+                                <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
+                                <span class="booster-accordion-label">
+                                    <span class="text-light">@_state.AcquiredItems.Boosters.Label</span>
+                                </span>
+                                <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
+                            </button>
+                            <div id="boosters-collapse" class="booster-accordion-content" role="region" aria-label="Acquired boosters" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
+                                <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters)"
+                                          AccessibleLabel="Acquired booster items"
+                                          ContainerClass="booster-accordion-content-inner p-3"
+                                          GridClass="run-item-grid"
+                                          EmptyMessage="No boosters acquired."
+                                          BadgeSelector="GetStarterBadge" />
                             </div>
                         </div>
                     </div>
@@ -272,8 +248,8 @@ else
                     {
                         <button type="button"
                                 class="mission-star-button @(_state.CurrentOperation.SelectedStars >= star ? "selected" : null)"
-                                aria-label="@star star@(star == 1 ? string.Empty : "s")"
-                                aria-pressed="@(_state.CurrentOperation.SelectedStars >= star)"
+                                aria-label="Set mission rating to @star star@(star == 1 ? string.Empty : "s")"
+                                aria-pressed="@(_state.CurrentOperation.SelectedStars >= star ? "true" : "false")"
                                 @onclick="() => { if(_state.CurrentOperation.SelectedStars == star) _state.CurrentOperation.SelectedStars = 0; else _state.CurrentOperation.SelectedStars = star; }">
                             @(_state.CurrentOperation.SelectedStars >= star ? "★" : "☆")
                         </button>
@@ -351,22 +327,12 @@ else
 
     <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="@(() => _showRewardModal = false)">
         <MainContent>
-            @if (_state.PendingRewardItems.Count == 0)
-            {
-                <p class="text-secondary mb-0">No rewards available.</p>
-            }
-            else
-            {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingRewardItems.Count}")">
-                    @foreach (var group in _state.PendingRewardItems.Categories)
-                    {
-                        @foreach (GameItem item in group)
-                        {
-                            <ItemCard Item="item" OnClick="@(() => ClaimRedemptionRewardAsync(item.Id))" />
-                        }
-                    }
-                </div>
-            }
+            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.PendingRewardItems)"
+                      AccessibleLabel="Reward choices"
+                      GridClass="justify-content-center"
+                      UseItemColumns="true"
+                      EmptyMessage="No rewards available."
+                      OnItemClick="item => ClaimRedemptionRewardAsync(item.Id)" />
         </MainContent>
         <FooterContent>
             @if (_state.PendingRewardItems.Count > 0)
@@ -378,40 +344,23 @@ else
 
     <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="@(() => _showPunishmentModal = false)">
         <MainContent>
-            @if (_state.PendingPunishmentItems.Count == 0)
-            {
-                <p class="text-secondary mb-0">No punishments available.</p>
-            }
-            else
-            {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.PendingPunishmentItems.Count}")">
-                    @foreach (var item in _state.PendingPunishmentItems)
-                    {
-                        <ItemCard Item="item" OnClick="@(() => ClaimRedemptionPunishmentAsync(item.Id))" />
-                    }
-                </div>
-            }
+            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems)"
+                      AccessibleLabel="Punishment choices"
+                      GridClass="justify-content-center"
+                      UseItemColumns="true"
+                      EmptyMessage="No punishments available."
+                      OnItemClick="item => ClaimRedemptionPunishmentAsync(item.Id)" />
         </MainContent>
     </Modal>
 
     <Modal Title="Banned Items" Open="@_showBannedItemsModal" CssClass="item-modal" OnClose="@(() => _showBannedItemsModal = false)">
         <MainContent>
-            @if (_state.BannedItems.Count == 0)
-            {
-                <p class="text-secondary mb-0">No banned items.</p>
-            }
-            else
-            {
-                <div class="item-grid justify-content-center" style="@($"--item-columns: {_state.BannedItems.Count}")">
-                    @foreach (var group in _state.BannedItems.GroupBy(item => item.Kind))
-                    {
-                        @foreach (var item in group)
-                        {
-                            <ItemCard Item="item" />
-                        }
-                    }
-                </div>
-            }
+            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.BannedItems)"
+                      AccessibleLabel="Banned items"
+                      GridClass="justify-content-center"
+                      UseItemColumns="true"
+                      MaxItemColumns="5"
+                      EmptyMessage="No banned items." />
         </MainContent>
     </Modal>
 
@@ -424,7 +373,7 @@ else
 
             <div class="mb-4">
                 <div class="text-secondary small mb-2">Warbonds</div>
-                <div class="item-grid">
+                <div class="item-grid" data-item-count="@_state.SelectedWarbonds.Count">
                     @foreach (var warbond in _state.SelectedWarbonds)
                     {
                         <WarbondCard Warbond="warbond" IsSelected="true" />
@@ -432,18 +381,19 @@ else
                 </div>
             </div>
 
-            <div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-secondary small">Starting loadout</div>
-                    <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
-                </div>
-                <div class="item-grid mt-3">
-                    @foreach (var item in _state.StarterItems)
-                    {
-                        <ItemCard Item="item" Badge="Starter" />
-                    }
-                </div>
-            </div>
+            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.StarterItems)"
+                      AccessibleLabel="Starting loadout"
+                      ContainerClass="mb-4"
+                      GridClass="mt-3"
+                      EmptyMessage="No starting items in this loadout."
+                      BadgeSelector="GetStarterBadge">
+                <HeaderContent>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-secondary small">Starting loadout</div>
+                        <span class="text-secondary">@_state.StarterItems.Count item(s)</span>
+                    </div>
+                </HeaderContent>
+            </ItemGrid>
         </MainContent>
     </Modal>
 
@@ -485,7 +435,7 @@ else
                 <p class="mb-0">Delete the current save "@slotToDelete.Name"? This cannot be undone.</p>
             </MainContent>
             <FooterContent>
-                <button class="btn btn-outline-light" @onclick="() => _slotToDelete = null">Cancel</button>
+                <button class="btn btn-outline-light" aria-label="Cancel save deletion" @onclick="() => _slotToDelete = null">Cancel</button>
                 <button class="btn btn-danger" @onclick="() => DeleteRedemptionSlotAsync(slotToDelete.Id)">Delete Save</button>
             </FooterContent>
         </Modal>
@@ -502,12 +452,16 @@ else
     private bool _showRunSettings;
     private bool _showSaveManager;
     private bool _showBannedItemsModal;
+    private bool _showBoosterAccordion;
     private SaveSlot<RedemptionStateDefinition>? _slotToDelete;
+
+    private string? GetStarterBadge(GameItem item) => _state.StarterItems.ContainsItem(item) ? "Starter" : null;
 
     protected override async Task OnInitializedAsync()
     {
         await RedemptionCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
+        _showBoosterAccordion = _state.AcquiredItems.Boosters.Any();
         _loaded = true;
     }
 
@@ -587,9 +541,16 @@ else
 
     private async Task ClaimRedemptionRewardAsync(string id)
     {
+        int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
         if (RewardService.ClaimReward(_state, id))
         {
             MissionService.RecordMissionRewardSelection(_state, id);
+
+            if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
+            {
+                _showBoosterAccordion = true;
+            }
+
             MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await SaveLibrary.PersistAsync(_state);

@@ -1,0 +1,16 @@
+.toast.is-dismissing {
+    animation: toast-fade-away 300ms ease forwards;
+}
+
+@keyframes toast-fade-away {
+    to {
+        opacity: 0;
+        transform: translateY(0.5rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast.is-dismissing {
+        animation-duration: 1ms;
+    }
+}

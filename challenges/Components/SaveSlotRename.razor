@@ -8,13 +8,13 @@
             <DataAnnotationsValidator />
             <div>
                 <label class="form-label text-light" for="@InputId">Slot name</label>
-                <input id="@InputId" class="form-control bg-dark text-light border-secondary" @bind="_editModel.Name" @bind:event="oninput" />
+                <input id="@InputId" class="form-control bg-dark text-light border-secondary" aria-label="New save slot name" @bind="_editModel.Name" @bind:event="oninput" />
                 <ValidationMessage For="@(() => _editModel.Name)" class="text-danger" />
             </div>
         </EditForm>
     </MainContent>
     <FooterContent>
-        <button class="btn btn-outline-light" @onclick="CloseModal">Cancel</button>
+        <button class="btn btn-outline-light" aria-label="Cancel save slot rename" @onclick="CloseModal">Cancel</button>
         <button class="btn btn-primary" type="submit" form="@FormId" disabled="@(!CanSave)">Save name</button>
     </FooterContent>
 </Modal>
