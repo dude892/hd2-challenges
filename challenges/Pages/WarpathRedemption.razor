@@ -457,15 +457,20 @@ else
             return;
         }
 
-        if (RewardService.EnsurePendingRewards(_state, stars))
-        {
-            await SaveLibrary.PersistAsync(_state);
-        }
+        bool pendingRewardsInitialized = RewardService.EnsurePendingRewards(_state, stars);
 
         if (_state.PendingRewardItems.Count == 0)
         {
+            MissionService.RecordMissionNoRewardAvailable(_state);
+            MissionService.AdvanceMission(_state);
+            await SaveLibrary.PersistAsync(_state);
             Toasts.Show("No rewards available.");
             return;
+        }
+
+        if (pendingRewardsInitialized)
+        {
+            await SaveLibrary.PersistAsync(_state);
         }
 
         _showRewardModal = true;

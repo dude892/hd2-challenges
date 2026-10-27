@@ -301,6 +301,22 @@ public sealed class RedemptionFlowTests
     }
 
     [Fact]
+    public async Task MissionServiceRecordsWhenNoRewardWasAvailable()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
+            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
+        RedemptionMissionService missions = new(context.Catalog);
+        missions.RecordMissionSuccess(state, 2);
+
+        missions.RecordMissionNoRewardAvailable(state);
+
+        MissionProgressEntry entry = Assert.Single(state.MissionHistory);
+        Assert.True(entry.NoRewardAvailable);
+        Assert.Null(entry.RewardItemId);
+    }
+
+    [Fact]
     public void MissionProgressEntrySerializesNewOutcomeFields()
     {
         JsonSerializerOptions options = new(JsonSerializerDefaults.Web);

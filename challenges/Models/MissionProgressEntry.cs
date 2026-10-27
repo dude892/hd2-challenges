@@ -12,7 +12,8 @@ public sealed record MissionProgressEntry
         int stars,
         string? rewardItemId = null,
         string? punishmentItemId = null,
-        List<string>? bannedItemIds = null)
+        List<string>? bannedItemIds = null,
+        bool noRewardAvailable = false)
     {
         OperationIndex = operationIndex;
         MissionNumber = missionNumber;
@@ -21,6 +22,7 @@ public sealed record MissionProgressEntry
         RewardItemId = rewardItemId;
         PunishmentItemId = punishmentItemId;
         BannedItemIds = bannedItemIds ?? [];
+        NoRewardAvailable = noRewardAvailable;
     }
 
     public int OperationIndex { get; init; }
@@ -30,4 +32,5 @@ public sealed record MissionProgressEntry
     public string? RewardItemId { get; init; }
     public string? PunishmentItemId { get; init; }
     public List<string> BannedItemIds { get; init; }
+    public bool NoRewardAvailable { get; init; }
 }

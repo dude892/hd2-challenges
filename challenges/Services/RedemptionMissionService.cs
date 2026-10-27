@@ -38,6 +38,14 @@ public sealed class RedemptionMissionService(CatalogService catalogService)
         }
     }
 
+    public void RecordMissionNoRewardAvailable(RedemptionState state)
+    {
+        if (state.MissionHistory.LastOrDefault() is { Succeeded: true, RewardItemId: null } entry)
+        {
+            state.MissionHistory[^1] = entry with { NoRewardAvailable = true };
+        }
+    }
+
     public void RecordMissionBannedItems(RedemptionState state, IEnumerable<string> bannedItemIds)
     {
         if (state.MissionHistory.LastOrDefault() is not { Succeeded: true } entry)

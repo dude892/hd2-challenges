@@ -226,16 +226,18 @@ public sealed class ComponentTests
     }
 
     [Theory]
-    [InlineData(true, false, false, "Reward", "text-success", "Mission reward")]
-    [InlineData(false, true, false, "Punishment", "text-danger", "Mission punishment")]
-    [InlineData(false, false, true, "Banned", "text-primary", "Mission banned items")]
-    [InlineData(false, false, false, "No Item Outcome", "text-warning", null)]
-    [InlineData(true, true, true, "Reward", "text-success", "Mission reward")]
-    [InlineData(false, true, true, "Punishment", "text-danger", "Mission punishment")]
+    [InlineData(true, false, false, false, "Reward", "text-success", "Mission reward")]
+    [InlineData(false, true, false, false, "Punishment", "text-danger", "Mission punishment")]
+    [InlineData(false, false, true, false, "Banned", "text-primary", "Mission banned items")]
+    [InlineData(false, false, false, false, "No Item Outcome", "text-warning", null)]
+    [InlineData(false, false, false, true, "No reward available", "text-warning", null)]
+    [InlineData(true, true, true, false, "Reward", "text-success", "Mission reward")]
+    [InlineData(false, true, true, false, "Punishment", "text-danger", "Mission punishment")]
     public async Task MissionHistoryTableRendersTheMatchingOutcomeAndAffectedItems(
         bool hasReward,
         bool hasPunishment,
         bool hasBannedItems,
+        bool noRewardAvailable,
         string expectedOutcome,
         string expectedCssClass,
         string? expectedAccessibleLabel)
@@ -251,7 +253,8 @@ public sealed class ComponentTests
             stars: 1,
             rewardItemId: hasReward ? items[0].Id : null,
             punishmentItemId: hasPunishment ? items[1].Id : null,
-            bannedItemIds: hasBannedItems ? [items[2].Id, items[3].Id] : []);
+            bannedItemIds: hasBannedItems ? [items[2].Id, items[3].Id] : [],
+            noRewardAvailable: noRewardAvailable);
 
         IRenderedComponent<MissionHistoryTable> component = context.Render<MissionHistoryTable>(parameters => parameters
             .Add(table => table.Entries, [entry]));

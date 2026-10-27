@@ -52,6 +52,7 @@
         { RewardItemId: not null } => ("Reward", "text-success", "Mission reward"),
         { PunishmentItemId: not null } => ("Punishment", "text-danger", "Mission punishment"),
         { BannedItemIds.Count: > 0 } => ("Banned", "text-primary", "Mission banned items"),
+        { NoRewardAvailable: true } => ("No reward available", "text-warning", string.Empty),
         _ => ("No Item Outcome", "text-warning", string.Empty)
     };
 

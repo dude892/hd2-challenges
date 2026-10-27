@@ -65,6 +65,56 @@ public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : Red
     }
 
     [Fact]
+    public async Task MissionAdvancesAndHistoryRecordsWhenNoRewardsAreAvailable()
+    {
+        RedemptionStateDefinition state = new()
+        {
+            DifficultyId = "normal",
+            OperationIndex = DefaultStartOperation.DifficultyIndex,
+            MissionNumber = 1,
+            BannedItemIds = Catalog.GetAllItems().Select(item => item.Id).ToList()
+        };
+        SaveExport<RedemptionStateDefinition> export = new()
+        {
+            Mode = "warpath-redemption",
+            Slot = new SaveSlot<RedemptionStateDefinition>
+            {
+                Name = "No Rewards Available",
+                State = state
+            }
+        };
+        string savePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.json");
+
+        try
+        {
+            await File.WriteAllTextAsync(savePath, JsonSerializer.Serialize(export, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+            await OpenSetupAsync();
+            await Modals.SaveSlots.OpenAsync();
+            await Modals.SaveSlots.ImportSaveInput.SetInputFilesAsync(savePath);
+            await Expect(ImportedSaveStatus).ToContainTextAsync("Imported slot No Rewards Available.");
+            await Modals.SaveSlots.CloseAsync();
+
+            await Modals.MissionComplete.OpenAsync();
+            await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
+            await Modals.MissionComplete.ContinueToRewardsButton.ClickAsync();
+
+            await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+            await Expect(Page.GetByText("No rewards available.", new() { Exact = true })).ToBeVisibleAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Mission Progress", Exact = true }).ClickAsync();
+            await Expect(Page.GetByText("No reward available", new() { Exact = true })).ToBeVisibleAsync();
+
+            await ReloadAsync();
+            await Expect(CurrentMissionProgress).ToHaveAttributeAsync("data-mission-number", "2");
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Mission Progress", Exact = true }).ClickAsync();
+            await Expect(Page.GetByText("No reward available", new() { Exact = true })).ToBeVisibleAsync();
+        }
+        finally
+        {
+            File.Delete(savePath);
+        }
+    }
+
+    [Fact]
     public async Task RenamingSaveSlotPersistsAfterReload()
     {
         await StartRunAsync();
