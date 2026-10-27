@@ -10,6 +10,101 @@ namespace Hd2Challenges.Tests;
 
 public sealed class ComponentTests
 {
+    private static RenderFragment CreateStatCards(params (string Label, string Value)[] cards) => builder =>
+    {
+        foreach (var card in cards)
+        {
+            builder.OpenComponent<StatCard>(0);
+            builder.AddAttribute(1, nameof(StatCard.Label), card.Label);
+            builder.AddAttribute(2, nameof(StatCard.ChildContent), (RenderFragment)(content => content.AddContent(0, card.Value)));
+            builder.CloseComponent();
+        }
+    };
+
+    [Fact]
+    public void StatCardRowRendersCardsAndCustomContentInTheSameRow()
+    {
+        using BunitContext context = new();
+        IRenderedComponent<StatCardRow> component = context.Render<StatCardRow>(parameters => parameters
+            .Add(row => row.CssClass, "mb-3 align-items-center")
+            .Add(row => row.ColumnClass, "col-md-2")
+            .Add(row => row.Cards, CreateStatCards(("Successes", "3"), ("Failures", "1")))
+            .Add(row => row.AdditionalContent, builder => builder.AddMarkupContent(0, "<div class='col-md-4'><button>Continue</button></div>")));
+
+        Assert.Equal(2, component.FindAll(".row.g-3.mb-3.align-items-center > .col-md-2 > .card").Count);
+        Assert.Equal(["Successes", "Failures"], component.FindAll(".card-body > .text-secondary").Select(label => label.TextContent));
+        Assert.Equal("Continue", component.Find(".row > .col-md-4 > button").TextContent);
+    }
+
+    [Fact]
+    public void StatCardRowUpdatesFromTheSuppliedCardsWithoutCustomContent()
+    {
+        using BunitContext context = new();
+        IRenderedComponent<StatCardRow> component = context.Render<StatCardRow>(parameters => parameters
+            .Add(row => row.Cards, CreateStatCards(("Successes", "3"))));
+
+        component.Render(parameters => parameters
+            .Add(row => row.Cards, CreateStatCards(("Stars Earned", "5"))));
+
+        Assert.Single(component.FindAll(".row > .col > .card"));
+        Assert.Equal("Stars Earned", component.Find(".card-body > .text-secondary").TextContent);
+        Assert.EndsWith("5", component.Find(".card-body").TextContent.Trim());
+    }
+
+    [Fact]
+    public void StatCardRowUpdatesTheColumnClassOfItsCards()
+    {
+        using BunitContext context = new();
+        IRenderedComponent<StatCardRow> component = context.Render<StatCardRow>(parameters => parameters
+            .Add(row => row.ColumnClass, "col-md-2")
+            .Add(row => row.Cards, CreateStatCards(("Successes", "3"), ("Failures", "1"))));
+
+        component.Render(parameters => parameters.Add(row => row.ColumnClass, "col-sm-4"));
+
+        Assert.Equal(2, component.FindAll(".row > .col-sm-4 > .card").Count);
+        Assert.Empty(component.FindAll(".col-md-2"));
+    }
+
+    [Fact]
+    public void StatCardRendersItsLabel()
+    {
+        using BunitContext context = new();
+        IRenderedComponent<StatCard> component = context.Render<StatCard>(parameters => parameters
+            .Add(card => card.Label, "Successes")
+            .AddChildContent("<div>3</div>"));
+
+        Assert.Equal("Successes", component.Find(".card-body > .text-secondary").TextContent);
+    }
+
+    [Fact]
+    public void StatCardAppliesSharedStylingToItsContentButNotItsLabel()
+    {
+        using BunitContext context = new();
+        IRenderedComponent<StatCard> component = context.Render<StatCard>(parameters => parameters
+            .Add(card => card.Label, "Successes")
+            .AddChildContent("3"));
+
+        Assert.Equal("3", component.Find(".card-body > .fs-5.text-light").TextContent.Trim());
+        IElement label = component.Find(".card-body > .text-secondary");
+        Assert.DoesNotContain("fs-5", label.ClassList);
+        Assert.DoesNotContain("text-light", label.ClassList);
+    }
+
+    [Fact]
+    public void StatCardPreservesCustomContentInsideItsStyledShell()
+    {
+        using BunitContext context = new();
+        IRenderedComponent<StatCard> component = context.Render<StatCard>(parameters => parameters
+            .Add(card => card.Label, "Operation")
+            .AddChildContent("<div><img src='operation.svg' alt='' /><span role='status' aria-label='Current operation' data-operation-index='2'>Operation label</span></div>"));
+
+        IElement status = component.Find(".card.bg-dark.border-secondary.h-100 > .card-body [role='status']");
+        Assert.Equal("Operation label", status.TextContent);
+        Assert.Equal("Current operation", status.GetAttribute("aria-label"));
+        Assert.Equal("2", status.GetAttribute("data-operation-index"));
+        Assert.Equal("operation.svg", component.Find(".card-body img").GetAttribute("src"));
+    }
+
     [Fact]
     public void WarbondCardReflectsSelection()
     {
@@ -128,6 +223,60 @@ public sealed class ComponentTests
         toasts.Show("Save completed.");
 
         Assert.Contains("Save completed.", component.Markup);
+    }
+
+    [Theory]
+    [InlineData(true, false, false, false, "Reward", "text-success", "Mission reward")]
+    [InlineData(false, true, false, false, "Punishment", "text-danger", "Mission punishment")]
+    [InlineData(false, false, true, false, "Banned", "text-primary", "Mission banned items")]
+    [InlineData(false, false, false, false, "No Item Outcome", "text-warning", null)]
+    [InlineData(false, false, false, true, "No reward available", "text-warning", null)]
+    [InlineData(true, true, true, false, "Reward", "text-success", "Mission reward")]
+    [InlineData(false, true, true, false, "Punishment", "text-danger", "Mission punishment")]
+    public async Task MissionHistoryTableRendersTheMatchingOutcomeAndAffectedItems(
+        bool hasReward,
+        bool hasPunishment,
+        bool hasBannedItems,
+        bool noRewardAvailable,
+        string expectedOutcome,
+        string expectedCssClass,
+        string? expectedAccessibleLabel)
+    {
+        using CatalogTestContext catalogContext = await CatalogTestContext.CreateAsync();
+        using BunitContext context = new();
+        context.Services.AddSingleton(catalogContext.Catalog);
+        GameItem[] items = catalogContext.Catalog.GetAllItems().Take(4).ToArray();
+        MissionProgressEntry entry = new(
+            operationIndex: 1,
+            missionNumber: 1,
+            succeeded: true,
+            stars: 1,
+            rewardItemId: hasReward ? items[0].Id : null,
+            punishmentItemId: hasPunishment ? items[1].Id : null,
+            bannedItemIds: hasBannedItems ? [items[2].Id, items[3].Id] : [],
+            noRewardAvailable: noRewardAvailable);
+
+        IRenderedComponent<MissionHistoryTable> component = context.Render<MissionHistoryTable>(parameters => parameters
+            .Add(table => table.Entries, [entry]));
+
+        IElement outcomeCell = component.FindAll("tbody tr td")[4];
+        Assert.Equal(expectedOutcome, outcomeCell.TextContent);
+        Assert.Contains(expectedCssClass, outcomeCell.ClassList);
+
+        string[] expectedItemIds = hasReward ? [items[0].Id]
+            : hasPunishment ? [items[1].Id]
+            : hasBannedItems ? [items[2].Id, items[3].Id]
+            : [];
+        Assert.Equal(expectedItemIds, component.FindAll("[data-item-id]").Select(card => card.GetAttribute("data-item-id")));
+        if (expectedAccessibleLabel is not null)
+        {
+            Assert.Equal(expectedAccessibleLabel, component.Find("[role='group']").GetAttribute("aria-label"));
+        }
+        else
+        {
+            Assert.Equal("No Items Affected", component.FindAll("tbody tr td")[5].TextContent);
+            Assert.Empty(component.FindComponents<ItemGrid>());
+        }
     }
 
     [Fact]

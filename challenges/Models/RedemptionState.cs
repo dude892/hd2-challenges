@@ -37,6 +37,7 @@ public sealed class RedemptionState
         CurrentOperation = resolveOperation(definition.OperationIndex, definition.MissionNumber);
         MissionsFailed = definition.MissionsFailed;
         RunCompleted = definition.RunCompleted;
+        MissionHistory.AddRange(definition.MissionHistory);
         _resolveStarterItems = resolveStarterItems;
         StarterItems = _resolveStarterItems(Difficulty, _selectedWarbonds);
     }
@@ -51,6 +52,7 @@ public sealed class RedemptionState
     public Operation CurrentOperation { get; set; }
     public int MissionsFailed { get; set; }
     public bool RunCompleted { get; set; }
+    public List<MissionProgressEntry> MissionHistory { get; } = [];
 
     public ItemSet StarterItems { get; private set; }
     public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
@@ -189,6 +191,7 @@ public sealed class RedemptionState
         MissionNumber = CurrentOperation.MissionNumber,
         MissionsFailed = MissionsFailed,
         RunCompleted = RunCompleted,
+        MissionHistory = [.. MissionHistory],
         SelectedWarbonds = [.. SelectedWarbonds.Select(item => item.Id)],
         AcquiredItemIds = [.. AcquiredItems.Select(item => item.Id)],
         BannedItemIds = [.. BannedItems.Select(item => item.Id)],

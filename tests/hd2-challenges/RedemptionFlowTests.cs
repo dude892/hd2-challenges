@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Hd2Challenges.Models;
 using Hd2Challenges.Services;
 
@@ -273,11 +274,65 @@ public sealed class RedemptionFlowTests
         state.CurrentOperation = context.Catalog.GetOperation(operationIndex + 2, 2);
         state.CurrentOperation.SelectedStars = 2;
 
-        missions.ApplyMissionFailure(state);
+        missions.ApplyMissionFailure(state, "test-item");
 
         Assert.Equal(1, state.MissionsFailed);
         Assert.Equal(1, state.CurrentOperation.MissionNumber);
         Assert.Equal(0, state.CurrentOperation.SelectedStars);
+        Assert.Equal("test-item", Assert.Single(state.MissionHistory).PunishmentItemId);
+    }
+
+    [Fact]
+    public async Task MissionServiceRecordsRewardAndBannedItemsOnSuccessfulMission()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
+            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
+        RedemptionMissionService missions = new(context.Catalog);
+        missions.RecordMissionSuccess(state, 2);
+
+        missions.RecordMissionRewardSelection(state, "reward-item");
+        missions.RecordMissionBannedItems(state, ["banned-one", "banned-two"]);
+
+        MissionProgressEntry entry = Assert.Single(state.MissionHistory);
+        Assert.Equal("reward-item", entry.RewardItemId);
+        Assert.Null(entry.PunishmentItemId);
+        Assert.Equal(["banned-one", "banned-two"], entry.BannedItemIds);
+    }
+
+    [Fact]
+    public async Task MissionServiceRecordsWhenNoRewardWasAvailable()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
+            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
+        RedemptionMissionService missions = new(context.Catalog);
+        missions.RecordMissionSuccess(state, 2);
+
+        missions.RecordMissionNoRewardAvailable(state);
+
+        MissionProgressEntry entry = Assert.Single(state.MissionHistory);
+        Assert.True(entry.NoRewardAvailable);
+        Assert.Null(entry.RewardItemId);
+    }
+
+    [Fact]
+    public void MissionProgressEntrySerializesNewOutcomeFields()
+    {
+        JsonSerializerOptions options = new(JsonSerializerDefaults.Web);
+        MissionProgressEntry entry = new(
+            3,
+            2,
+            true,
+            3,
+            rewardItemId: "reward-item",
+            bannedItemIds: ["banned-one", "banned-two"]);
+        string serialized = JsonSerializer.Serialize(entry, options);
+        MissionProgressEntry restored = Assert.IsType<MissionProgressEntry>(
+            JsonSerializer.Deserialize<MissionProgressEntry>(serialized, options));
+        Assert.DoesNotContain("selectedItemId", serialized, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("reward-item", restored.RewardItemId);
+        Assert.Equal(["banned-one", "banned-two"], restored.BannedItemIds);
     }
 
     [Fact]

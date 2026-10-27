@@ -68,6 +68,8 @@ public sealed class CatalogService(HttpClient httpClient)
         ];
     }
 
+    public GameItem GetItem(string id) => AllItemsSet.First(item => string.Equals(item.Id, id, StringComparison.OrdinalIgnoreCase));
+
     public ItemSet GetItemSet(IEnumerable<string> ids) => new(AllItemsSet.Where(item => ids.Contains(item.Id)));
 
     public ItemSet FilterAllItems(IEnumerable<ItemSet> itemSets)

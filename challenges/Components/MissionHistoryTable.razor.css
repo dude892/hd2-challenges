@@ -1,0 +1,4 @@
+::deep .mission-history-item-grid {
+    --run-item-card-width: 140px;
+    grid-template-columns: repeat(var(--item-columns), var(--run-item-card-width));
+}

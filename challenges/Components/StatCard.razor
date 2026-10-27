@@ -1,0 +1,16 @@
+<div class="@ColumnClass">
+    <div class="card bg-dark border-secondary h-100">
+        <div class="card-body">
+            <div class="text-secondary">@Label</div>
+            <div class="fs-5 text-light">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter(Name = "StatCardColumnClass")] public string ColumnClass { get; set; } = "col";
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
+}

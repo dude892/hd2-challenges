@@ -3,7 +3,7 @@
 ## Project Context
 
 - This is a Blazor WebAssembly application targeting .NET 10 for Helldivers 2 challenge tracking.
-- The website has now been deployed and is under active use, take care to maintain backward compatibility and avoid breaking changes.
+- The website is deployed to `main` and under active use. Preserve backward compatibility for behavior and data formats already shipped to `main`; changes that exist only on an unreleased feature branch do not need backward-compatibility support.
 - Keep changes focused and consistent with the existing C# and Razor patterns. Avoid introducing a server, database, API, or new persistence layer unless explicitly requested.
 - While the main focus of the app right now is on the "Warpath: Redemption" challenge tracking, the architecture should remain flexible enough to accommodate future expansions or additional challenge types.
 - Do not take the following instructions as exhaustive; they are meant to guide the development process and maintain consistency within the project, and should be adapted as needed for specific scenarios.
@@ -56,7 +56,7 @@ Keep service boundaries narrow: expose only the operations and data consumers ne
 - `WarpathRedemption.razor` loads the catalog first, resolves a `RedemptionStateDefinition` into a `RedemptionState`, and persists definitions back to browser local storage after state changes through `RedemptionSaveLibraryService`.
 - `RedemptionSaveLibraryService` uses local-storage key `blazor-warpath-redemption` and export mode `warpath-redemption`.
 - Imported and exported save files use the same definition-based representation. Keep runtime-only properties out of save DTOs and resolve IDs through `CatalogService` when loading.
-- The site is deployed and browser saves and exported files are user data. Treat changes to the local-storage key or save format as compatibility-sensitive: preserve existing data or provide an explicit migration/import path when changing the schema. Do not change the key or format casually.
+- Browser saves and exported files are user data. Treat changes to the local-storage key or save format as compatibility-sensitive when they affect formats already shipped to `main`: preserve existing data or provide an explicit migration/import path when changing the schema. In-progress feature-branch formats that have not shipped to `main` do not require migration support.
 
 ## Change Guidelines
 
