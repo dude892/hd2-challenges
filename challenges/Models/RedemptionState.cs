@@ -42,7 +42,7 @@ public sealed class RedemptionState
     }
 
     public bool RunStarted { get; set; } = true;
-    public RedemptionDifficulty Difficulty { get; }
+    public RedemptionDifficulty Difficulty { get; private set; }
     public IReadOnlySet<Warbond> SelectedWarbonds => _selectedWarbonds;
     public ItemSet BannedItems { get; } = new();
     public ItemSet AcquiredItems { get; } = new();
@@ -62,6 +62,18 @@ public sealed class RedemptionState
         AcquiredItems.AddItems(StarterItems);
     }
 
+    public void ChangeDifficulty(RedemptionDifficulty difficulty)
+    {
+        if (RunStarted)
+        {
+            throw new InvalidOperationException("Difficulty cannot be changed after the run has started.");
+        }
+
+        Difficulty = difficulty;
+        CurrentOperation = difficulty.StartOperation.Clone();
+        StarterItems = _resolveStarterItems(difficulty, _selectedWarbonds);
+    }
+
     public bool SetWarbondSelected(Warbond warbond, bool isSelected)
     {
         if (warbond.AlwaysEnabled)
@@ -69,9 +81,7 @@ public sealed class RedemptionState
             return false;
         }
 
-        bool changed = isSelected
-            ? _selectedWarbonds.Add(warbond)
-            : _selectedWarbonds.Remove(warbond);
+        bool changed = isSelected ? _selectedWarbonds.Add(warbond) : _selectedWarbonds.Remove(warbond);
 
         if (changed)
         {

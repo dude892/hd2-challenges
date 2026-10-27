@@ -32,6 +32,16 @@ internal sealed class CatalogTestContext : IDisposable
         return new CatalogTestContext(httpClient, catalog, redemptionCatalog);
     }
 
+    public async Task<RedemptionSessionService> CreateSessionAsync()
+    {
+        RedemptionSaveLibraryService saves = new(
+            new SaveLibraryService(new BrowserStorageService(new InMemoryJsRuntime())),
+            RedemptionCatalog, Catalog);
+        RedemptionSessionService session = new(RedemptionCatalog, saves);
+        await session.LoadAsync();
+        return session;
+    }
+
     public void Dispose() => _httpClient.Dispose();
 
     private sealed class CatalogDataHandler : HttpMessageHandler

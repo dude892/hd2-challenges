@@ -2,6 +2,7 @@
 @inject CatalogService Catalog
 @inject RedemptionCatalogService RedemptionCatalog
 @inject RedemptionSaveLibraryService SaveLibrary
+@inject RedemptionSessionService Session
 @inject FileExportService FileService
 @inject RedemptionMissionService MissionService
 @inject ToastService Toasts
@@ -40,7 +41,7 @@ else
         <div class="row g-4">
             <div class="col-xl-4 d-grid row-gap-3">
                 <div class="row">
-                    <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
+                    <button class="btn btn-success" @onclick="Session.BeginRunAsync">Begin Run</button>
                 </div>
 
                 <div class="row section-card rounded p-3">
@@ -66,7 +67,7 @@ else
                             <WarbondCard
                                 Warbond="warbond"
                                 IsSelected="isSelected"
-                                OnClick="@(() => _state.SetWarbondSelected(warbond, !isSelected))" />
+                                OnClick="@(() => Session.SetWarbondSelected(warbond, !isSelected))" />
                         }
                     </div>
                 </div>
@@ -334,7 +335,7 @@ else
 
     <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" CssClass="save-slot-modal" OnClose="@(() => _showSaveManager = false)">
         <HeaderButtons>
-            <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
+            <button class="btn btn-primary btn-sm" @onclick="Session.CreateSnapshotAsync" disabled="@(!_state.RunStarted)">Create Snapshot</button>
             <label class="btn btn-outline-light btn-sm mb-0">
                 Import Save
                 <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
@@ -378,7 +379,7 @@ else
 }
 
 @code {
-    private RedemptionState _state = default!;
+    private RedemptionState _state => Session.State;
     private bool _loaded;
     private bool _showMissionCompleteModal;
     private bool _showRewardModal;
@@ -393,7 +394,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _state = await SaveLibrary.LoadAsync();
+        await Session.LoadAsync();
         _showBoosterAccordion = _state.AcquiredItems.Boosters.Any();
         _loaded = true;
     }
@@ -402,8 +403,7 @@ else
     {
         if (args.Value is string difficulty)
         {
-            RedemptionDifficulty redemptionDifficulty = RedemptionCatalog.GetDifficulty(difficulty);
-            _state = RedemptionCatalog.CreateRedemptionSetupState(redemptionDifficulty, _state.SelectedWarbonds);
+            Session.ChangeDifficulty(difficulty);
             Toasts.Show($"{_state.Difficulty.DisplayName} loadout preview updated.");
         }
     }
@@ -428,13 +428,13 @@ else
     private async Task ConfirmRedemptionMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
-        MissionCompletionResult result = MissionService.CompleteMission(_state, stars);
+        MissionCompletionResult result = MissionService.CompleteMission(stars);
         if (result == MissionCompletionResult.Unavailable)
         {
             return;
         }
 
-        await SaveLibrary.PersistAsync(_state);
+        await Session.PersistAsync();
         if (result == MissionCompletionResult.ChallengeCompleted)
         {
             Toasts.Show("Challenge complete.");
@@ -457,9 +457,9 @@ else
             return;
         }
 
-        if (MissionService.PrepareMissionFailure(_state))
+        if (MissionService.PrepareMissionFailure())
         {
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
 
         if (_state.PendingPunishmentItems.Count == 0)
@@ -474,7 +474,7 @@ else
     private async Task ClaimRedemptionRewardAsync(string id)
     {
         int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
-        if (MissionService.ClaimMissionReward(_state, id))
+        if (MissionService.ClaimMissionReward(id))
         {
             if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
             {
@@ -482,31 +482,31 @@ else
             }
 
             _showRewardModal = false;
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
     }
 
     private async Task SkipAndBanRedemptionRewardsAsync()
     {
-        if (MissionService.SkipAndBanMissionRewards(_state))
+        if (MissionService.SkipAndBanMissionRewards())
         {
             _showRewardModal = false;
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
     }
 
     private async Task ClaimRedemptionPunishmentAsync(string id)
     {
-        if (MissionService.ClaimMissionPunishment(_state, id))
+        if (MissionService.ClaimMissionPunishment(id))
         {
             _showPunishmentModal = false;
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
     }
 
     private async Task RestartRedemptionRunAsync()
     {
-        _state = await SaveLibrary.RestartAsync(_state);
+        await Session.RestartAsync();
         Toasts.Show("Run reset. Review your settings before starting a new run.");
     }
 
@@ -520,7 +520,7 @@ else
 
     private async Task LoadRedemptionSlotAsync(Guid slotId)
     {
-        _state = await SaveLibrary.SelectSlotAsync(slotId);
+        await Session.SelectSlotAsync(slotId);
         var slot = SaveLibrary.GetSlot(slotId);
         Toasts.Show($"Save {slot?.Name} loaded.");
     }
@@ -540,7 +540,7 @@ else
     private async Task DeleteRedemptionSlotAsync(Guid slotId)
     {
         var slotToDelete = SaveLibrary.GetSlot(slotId);
-        (bool deleted, _state) = await SaveLibrary.DeleteSlotAsync(slotId, _state);
+        bool deleted = await Session.DeleteSlotAsync(slotId);
 
         _slotToDelete = null;
 
@@ -562,14 +562,13 @@ else
         await using Stream? stream = file.OpenReadStream(1024 * 1024);
         using StreamReader? reader = new StreamReader(stream);
         string? json = await reader.ReadToEndAsync();
-        (SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)? imported = await SaveLibrary.ImportAsync(json);
+        SaveSlot<RedemptionStateDefinition>? imported = await Session.ImportAsync(json);
         if (imported is null)
         {
             Toasts.Show("Invalid Warpath: Redemption save file.");
             return;
         }
 
-        _state = imported.Value.State;
-        Toasts.Show($"Imported slot {imported.Value.Slot.Name}.");
+        Toasts.Show($"Imported slot {imported.Name}.");
     }
 }

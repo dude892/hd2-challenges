@@ -2,95 +2,94 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class RedemptionMissionService(CatalogService catalogService, RedemptionRewardService rewards)
+public sealed class RedemptionMissionService(
+    CatalogService catalog,
+    RedemptionRewardService rewards,
+    RedemptionSessionService session)
 {
-    private CatalogService Catalog { get; } = catalogService;
+    private RedemptionState State => session.State;
+    public bool IsFinalMission => State.CurrentOperation.DifficultyIndex == catalog.LastOperationIndex && State.CurrentOperation.IsLastMission;
 
-    public MissionCompletionResult CompleteMission(RedemptionState state, int stars)
+    public MissionCompletionResult CompleteMission(int stars)
     {
-        if (!state.CanCompleteMission)
+        if (!State.CanCompleteMission)
         {
             return MissionCompletionResult.Unavailable;
         }
 
-        if (TryCompleteFinalMission(state))
+        if (TryCompleteFinalMission())
         {
             return MissionCompletionResult.ChallengeCompleted;
         }
 
-        rewards.EnsurePendingRewards(state, stars);
-        return state.PendingRewardItems.Count > 0
-            ? MissionCompletionResult.RewardsPending
-            : MissionCompletionResult.NoRewardsAvailable;
+        rewards.EnsurePendingRewards(stars);
+        return State.PendingRewardItems.Count > 0 ? MissionCompletionResult.RewardsPending : MissionCompletionResult.NoRewardsAvailable;
     }
 
-    public bool PrepareMissionFailure(RedemptionState state) =>
-        state.CanFailMission && rewards.EnsurePendingPunishments(state);
-
-    public bool ClaimMissionReward(RedemptionState state, string itemId)
+    public bool PrepareMissionFailure()
     {
-        if (!state.CanCompleteMission || !rewards.ClaimReward(state, itemId))
+        return State.CanFailMission && rewards.EnsurePendingPunishments();
+    }
+
+    public bool ClaimMissionReward(string itemId)
+    {
+        if (!State.CanCompleteMission || !rewards.ClaimReward(itemId))
         {
             return false;
         }
 
-        AdvanceMission(state);
+        AdvanceMission();
         return true;
     }
 
-    public bool SkipAndBanMissionRewards(RedemptionState state)
+    public bool SkipAndBanMissionRewards()
     {
-        if (!state.CanCompleteMission || !rewards.BanPendingRewards(state))
+        if (!State.CanCompleteMission || !rewards.BanPendingRewards())
         {
             return false;
         }
 
-        AdvanceMission(state);
+        AdvanceMission();
         return true;
     }
 
-    public bool ClaimMissionPunishment(RedemptionState state, string itemId)
+    public bool ClaimMissionPunishment(string itemId)
     {
-        if (!state.CanFailMission || !rewards.ClaimPunishment(state, itemId))
+        if (!State.CanFailMission || !rewards.ClaimPunishment(itemId))
         {
             return false;
         }
 
-        ApplyMissionFailure(state);
+        ApplyMissionFailure();
         return true;
     }
 
-    public void AdvanceMission(RedemptionState state)
+    public void AdvanceMission()
     {
-        if (state.CurrentOperation.MissionNumber < state.CurrentOperation.MissionCount)
+        if (State.CurrentOperation.MissionNumber < State.CurrentOperation.MissionCount)
         {
-            state.CurrentOperation.MissionNumber++;
+            State.CurrentOperation.MissionNumber++;
         }
-        else if (state.CurrentOperation.DifficultyIndex < Catalog.LastOperationIndex)
+        else if (State.CurrentOperation.DifficultyIndex < catalog.LastOperationIndex)
         {
-            state.CurrentOperation = Catalog.GetOperation(state.CurrentOperation.DifficultyIndex + 1);
+            State.CurrentOperation = catalog.GetOperation(State.CurrentOperation.DifficultyIndex + 1);
         }
     }
 
-    public void ApplyMissionFailure(RedemptionState state)
+    public void ApplyMissionFailure()
     {
-        state.MissionsFailed++;
-        state.CurrentOperation.MissionNumber = 1;
+        State.MissionsFailed++;
+        State.CurrentOperation.MissionNumber = 1;
     }
 
-    public bool IsFinalMission(RedemptionState state)
+    public bool TryCompleteFinalMission()
     {
-        return state.CurrentOperation.DifficultyIndex == Catalog.LastOperationIndex && state.CurrentOperation.IsLastMission;
-    }
-
-    public bool TryCompleteFinalMission(RedemptionState state)
-    {
-        if (!IsFinalMission(state))
+        if (!IsFinalMission)
         {
             return false;
         }
 
-        state.RunCompleted = true;
+        State.RunCompleted = true;
         return true;
     }
 }

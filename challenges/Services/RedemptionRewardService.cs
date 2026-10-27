@@ -2,94 +2,93 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class RedemptionRewardService(CatalogService catalogService)
+public sealed class RedemptionRewardService(CatalogService catalogService, RedemptionSessionService session)
 {
-    private CatalogService CatalogService { get; } = catalogService;
+    private RedemptionState State => session.State;
+    private bool IsHardFinale => State.CurrentOperation.DifficultyIndex == 5 && State.CurrentOperation.IsLastMission;
 
-    public ItemSet GetRewardPool(RedemptionState state) => 
-        CatalogService.GetItemsByWarbonds(state.SelectedWarbonds)
-            .RemoveItems([state.StarterItems, state.BannedItems, state.AcquiredItems]);
-    
-    private static bool IsHardFinale(RedemptionState state) => state.CurrentOperation.DifficultyIndex == 5 && state.CurrentOperation.IsLastMission;
+    public ItemSet GetRewardPool() => 
+        catalogService.GetItemsByWarbonds(State.SelectedWarbonds)
+            .RemoveItems([State.StarterItems, State.BannedItems, State.AcquiredItems]);
 
-    public bool EnsurePendingRewards(RedemptionState state, int selectedStars)
+    public bool EnsurePendingRewards(int selectedStars)
     {
-        if (state.PendingRewardItems.Count != 0)
+        if (State.PendingRewardItems.Count != 0)
         {
             return false;
         }
 
-        state.PendingRewardItems = RollRewardItems(state, selectedStars);
+        State.PendingRewardItems = RollRewardItems(selectedStars);
         return true;
     }
 
-    public bool ClaimReward(RedemptionState state, string id)
+    public bool ClaimReward(string id)
     {
-        GameItem? reward = state.PendingRewardItems.FirstOrDefault(item => item.Id == id);
+        GameItem? reward = State.PendingRewardItems.FirstOrDefault(item => item.Id == id);
         if (reward is null)
         {
             return false;
         }
 
-        state.AcquiredItems.AddItem(reward);
-        state.PendingRewardItems.Clear();
+        State.AcquiredItems.AddItem(reward);
+        State.PendingRewardItems.Clear();
         return true;
     }
 
-    public bool BanPendingRewards(RedemptionState state)
+    public bool BanPendingRewards()
     {
-        if (state.PendingRewardItems.Count == 0)
+        if (State.PendingRewardItems.Count == 0)
         {
             return false;
         }
 
-        state.BannedItems.AddItems(state.PendingRewardItems);
-        state.PendingRewardItems.Clear();
+        State.BannedItems.AddItems(State.PendingRewardItems);
+        State.PendingRewardItems.Clear();
         return true;
     }
 
-    public bool EnsurePendingPunishments(RedemptionState state)
+    public bool EnsurePendingPunishments()
     {
-        if (state.PendingPunishmentItems.Count != 0)
+        if (State.PendingPunishmentItems.Count != 0)
         {
             return false;
         }
 
-        var punishmentPool = state.AcquiredItems
-            .Where(item => !state.StarterItems.ContainsItem(item))
+        var punishmentPool = State.AcquiredItems
+            .Where(item => !State.StarterItems.ContainsItem(item))
             .OrderBy(_ => Random.Shared.Next())
             .Take(3);
-        state.PendingPunishmentItems = new ItemSet(punishmentPool);
+        State.PendingPunishmentItems = new ItemSet(punishmentPool);
         return true;
     }
 
-    public bool ClaimPunishment(RedemptionState state, string id)
+    public bool ClaimPunishment(string id)
     {
-        GameItem? punishment = state.PendingPunishmentItems.FirstOrDefault(item => item.Id == id);
+        GameItem? punishment = State.PendingPunishmentItems.FirstOrDefault(item => item.Id == id);
         if (punishment is null)
         {
             return false;
         }
 
-        state.AcquiredItems.RemoveItem(punishment);
-        state.BannedItems.RemoveItem(punishment);
-        state.PendingPunishmentItems.Clear();
+        State.AcquiredItems.RemoveItem(punishment);
+        State.BannedItems.RemoveItem(punishment);
+        State.PendingPunishmentItems.Clear();
         return true;
     }
 
-    public ItemSet RollRewardItems(RedemptionState state, int selectedStars)
+    public ItemSet RollRewardItems(int selectedStars)
     {
         int rewardQuantity = Math.Max(1, selectedStars - 1);
-        if (state.Difficulty.IsSuper)
+        if (State.Difficulty.IsSuper)
         {
             rewardQuantity--;
         }
 
         rewardQuantity = Math.Max(1, rewardQuantity);
 
-        var rewardPool = GetRewardPool(state);
+        var rewardPool = GetRewardPool();
 
-        rewardPool = IsHardFinale(state) ? new ItemSet(rewardPool.Where(item => item.Antitank)) : rewardPool;
+        rewardPool = IsHardFinale ? new ItemSet(rewardPool.Where(item => item.Antitank)) : rewardPool;
     
         if (rewardPool.Count == 0)
         {

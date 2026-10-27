@@ -236,11 +236,11 @@ public sealed class RedemptionFlowTests
     public async Task MissionServiceAdvancesToNextMissionAndResetsStars()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
         state.CurrentOperation.SelectedStars = 3;
-        missions.AdvanceMission(state);
+        missions.AdvanceMission();
         Assert.Equal(2, state.CurrentOperation.MissionNumber);
         Assert.Equal(0, state.CurrentOperation.SelectedStars);
     }
@@ -249,14 +249,14 @@ public sealed class RedemptionFlowTests
     public async Task MissionServiceAdvancesToNextOperationAfterLastMission()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
         int firstOperation = state.CurrentOperation.DifficultyIndex;
         int lastMission = context.Catalog.GetOperation(firstOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(firstOperation, lastMission);
 
-        missions.AdvanceMission(state);
+        missions.AdvanceMission();
 
         Assert.Equal(firstOperation + 1, state.CurrentOperation.DifficultyIndex);
         Assert.Equal(1, state.CurrentOperation.MissionNumber);
@@ -266,14 +266,14 @@ public sealed class RedemptionFlowTests
     public async Task MissionServiceFailureIncrementsCountAndResetsProgress()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
         int operationIndex = state.CurrentOperation.DifficultyIndex;
         state.CurrentOperation = context.Catalog.GetOperation(operationIndex + 2, 2);
         state.CurrentOperation.SelectedStars = 2;
 
-        missions.ApplyMissionFailure(state);
+        missions.ApplyMissionFailure();
 
         Assert.Equal(1, state.MissionsFailed);
         Assert.Equal(1, state.CurrentOperation.MissionNumber);
@@ -284,28 +284,28 @@ public sealed class RedemptionFlowTests
     public async Task MissionServiceIdentifiesOnlyTheFinalMissionAsFinal()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
 
-        Assert.False(missions.IsFinalMission(state));
+        Assert.False(missions.IsFinalMission);
 
         int finalOperation = context.Catalog.LastOperationIndex;
         int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
 
-        Assert.True(missions.IsFinalMission(state));
+        Assert.True(missions.IsFinalMission);
     }
 
     [Fact]
     public async Task MissionServiceDoesNotCompleteRunBeforeFinalMission()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
 
-        Assert.False(missions.TryCompleteFinalMission(state));
+        Assert.False(missions.TryCompleteFinalMission());
         Assert.False(state.RunCompleted);
     }
 
@@ -313,14 +313,14 @@ public sealed class RedemptionFlowTests
     public async Task MissionServiceCompletesRunOnFinalMission()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
         int finalOperation = context.Catalog.LastOperationIndex;
         int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
 
-        Assert.True(missions.TryCompleteFinalMission(state));
+        Assert.True(missions.TryCompleteFinalMission());
         Assert.True(state.RunCompleted);
     }
 
@@ -328,14 +328,14 @@ public sealed class RedemptionFlowTests
     public async Task MissionServiceDoesNotAdvancePastTheFinalOperation()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        RedemptionState state = session.State;
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog), session);
         int finalOperation = context.Catalog.LastOperationIndex;
         int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
 
-        missions.AdvanceMission(state);
+        missions.AdvanceMission();
 
         Assert.Equal(finalOperation, state.CurrentOperation.DifficultyIndex);
         Assert.Equal(finalMission, state.CurrentOperation.MissionNumber);

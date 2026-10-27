@@ -9,6 +9,52 @@ public sealed class RedemptionMissionWorkflowTests
         context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
 
+    private static async Task<(RedemptionState State, RedemptionMissionService Missions)> CreateMissionScenarioAsync(
+        CatalogTestContext context)
+    {
+        RedemptionSessionService session = await context.CreateSessionAsync();
+        return (session.State, new(context.Catalog, new(context.Catalog), session));
+    }
+
+    [Fact]
+    public async Task ChangingSetupDifficultyUpdatesOperationAndLoadout()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        RedemptionState state = CreateState(context);
+        RedemptionDifficulty difficulty = context.RedemptionCatalog.GetDifficulty("super");
+        HashSet<Warbond> selectedWarbonds = state.SelectedWarbonds.ToHashSet();
+
+        state.ChangeDifficulty(difficulty);
+
+        Assert.Same(difficulty, state.Difficulty);
+        Assert.Equal(difficulty.StartOperation.DifficultyIndex, state.CurrentOperation.DifficultyIndex);
+        Assert.Equal(difficulty.StartOperation.MissionNumber, state.CurrentOperation.MissionNumber);
+        Assert.NotSame(difficulty.StartOperation, state.CurrentOperation);
+        Assert.Equal(selectedWarbonds, state.SelectedWarbonds.ToHashSet());
+        Assert.Equal(context.RedemptionCatalog.GetStarterItems(difficulty, selectedWarbonds).ToHashSet(),
+            state.StarterItems.ToHashSet());
+        Assert.Equal(difficulty.Id, state.ToDefinition().DifficultyId);
+        Assert.False(state.RunStarted);
+    }
+
+    [Fact]
+    public async Task ChangingDifficultyAfterRunStartsFailsWithoutChangingState()
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
+        RedemptionState state = CreateState(context);
+        state.BeginRun();
+        RedemptionDifficulty previousDifficulty = state.Difficulty;
+        Operation previousOperation = state.CurrentOperation;
+        ItemSet previousStarterItems = state.StarterItems;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            state.ChangeDifficulty(context.RedemptionCatalog.GetDifficulty("super")));
+
+        Assert.Same(previousDifficulty, state.Difficulty);
+        Assert.Same(previousOperation, state.CurrentOperation);
+        Assert.Same(previousStarterItems, state.StarterItems);
+    }
+
     [Fact]
     public async Task BeginRunStartsTheRunWithItsStarterItems()
     {
@@ -39,12 +85,11 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task CompletingMissionOffersRewardsWithoutAdvancing()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         Operation operation = state.CurrentOperation.Clone();
         int stars = operation.MaxStars;
 
-        MissionCompletionResult result = missions.CompleteMission(state, stars);
+        MissionCompletionResult result = missions.CompleteMission(stars);
 
         Assert.Equal(MissionCompletionResult.RewardsPending, result);
         Assert.Equal(Math.Max(1, stars - 1), state.PendingRewardItems.Count);
@@ -56,12 +101,11 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task CompletingMissionPreservesExistingRewardChoices()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         GameItem reward = context.Catalog.GetAllItems().First();
         state.PendingRewardItems.AddItem(reward);
 
-        Assert.Equal(MissionCompletionResult.RewardsPending, missions.CompleteMission(state, 0));
+        Assert.Equal(MissionCompletionResult.RewardsPending, missions.CompleteMission(0));
         Assert.Equal(reward, Assert.Single(state.PendingRewardItems));
     }
 
@@ -69,12 +113,11 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task CompletingFinalMissionCompletesRunWithoutOfferingRewards()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         Operation finalOperation = context.Catalog.GetOperation(context.Catalog.LastOperationIndex);
         state.CurrentOperation = context.Catalog.GetOperation(finalOperation.DifficultyIndex, finalOperation.MissionCount);
 
-        MissionCompletionResult result = missions.CompleteMission(state, state.CurrentOperation.MaxStars);
+        MissionCompletionResult result = missions.CompleteMission(state.CurrentOperation.MaxStars);
 
         Assert.Equal(MissionCompletionResult.ChallengeCompleted, result);
         Assert.True(state.RunCompleted);
@@ -85,12 +128,11 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task CompletingMissionWithEmptyRewardPoolDoesNotAdvance()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         state.AcquiredItems.AddItems(context.Catalog.GetAllItems());
         Operation operation = state.CurrentOperation.Clone();
 
-        MissionCompletionResult result = missions.CompleteMission(state, operation.MaxStars);
+        MissionCompletionResult result = missions.CompleteMission(operation.MaxStars);
 
         Assert.Equal(MissionCompletionResult.NoRewardsAvailable, result);
         Assert.Empty(state.PendingRewardItems);
@@ -105,15 +147,14 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task CompletingUnavailableMissionDoesNotOfferRewards(bool runCompleted)
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         state.RunCompleted = runCompleted;
         if (!runCompleted)
         {
             state.PendingPunishmentItems.AddItem(context.Catalog.GetAllItems().First());
         }
 
-        Assert.Equal(MissionCompletionResult.Unavailable, missions.CompleteMission(state, state.CurrentOperation.MaxStars));
+        Assert.Equal(MissionCompletionResult.Unavailable, missions.CompleteMission(state.CurrentOperation.MaxStars));
         Assert.Empty(state.PendingRewardItems);
     }
 
@@ -123,8 +164,7 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task ResolvingRewardsAcquiresOrBansChoicesAndAdvances(bool banRewards)
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         GameItem reward = context.Catalog.GetAllItems().First(item => !state.StarterItems.ContainsItem(item));
         state.PendingRewardItems.AddItem(reward);
         int operationIndex = state.CurrentOperation.DifficultyIndex;
@@ -133,8 +173,8 @@ public sealed class RedemptionMissionWorkflowTests
         state.CurrentOperation.SelectedStars = state.CurrentOperation.MaxStars;
 
         bool resolved = banRewards
-            ? missions.SkipAndBanMissionRewards(state)
-            : missions.ClaimMissionReward(state, reward.Id);
+            ? missions.SkipAndBanMissionRewards()
+            : missions.ClaimMissionReward(reward.Id);
 
         Assert.True(resolved);
         Assert.Contains(reward, banRewards ? state.BannedItems : state.AcquiredItems);
@@ -148,13 +188,12 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task InvalidRewardSelectionDoesNotAdvanceOrClearChoices()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         GameItem reward = context.Catalog.GetAllItems().First();
         state.PendingRewardItems.AddItem(reward);
         Operation operation = state.CurrentOperation.Clone();
 
-        Assert.False(missions.ClaimMissionReward(state, "unknown-item"));
+        Assert.False(missions.ClaimMissionReward("unknown-item"));
         Assert.Equal(reward, Assert.Single(state.PendingRewardItems));
         Assert.Empty(state.AcquiredItems);
         Assert.Equal(operation.DifficultyIndex, state.CurrentOperation.DifficultyIndex);
@@ -165,11 +204,10 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task SkippingWithoutRewardsDoesNotAdvance()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         Operation operation = state.CurrentOperation.Clone();
 
-        Assert.False(missions.SkipAndBanMissionRewards(state));
+        Assert.False(missions.SkipAndBanMissionRewards());
         Assert.Equal(operation.DifficultyIndex, state.CurrentOperation.DifficultyIndex);
         Assert.Equal(operation.MissionNumber, state.CurrentOperation.MissionNumber);
     }
@@ -178,13 +216,12 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task PreparingFailureOffersAcquiredNonStarterItemsWithoutApplyingFailure()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         state.BeginRun();
         GameItem acquired = context.Catalog.GetAllItems().First(item => !state.StarterItems.ContainsItem(item));
         state.AcquiredItems.AddItem(acquired);
 
-        Assert.True(missions.PrepareMissionFailure(state));
+        Assert.True(missions.PrepareMissionFailure());
         Assert.Equal(acquired, Assert.Single(state.PendingPunishmentItems));
         Assert.Equal(0, state.MissionsFailed);
     }
@@ -193,12 +230,11 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task PreparingFailurePreservesExistingChoices()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         GameItem punishment = context.Catalog.GetAllItems().First();
         state.PendingPunishmentItems.AddItem(punishment);
 
-        Assert.False(missions.PrepareMissionFailure(state));
+        Assert.False(missions.PrepareMissionFailure());
         Assert.Equal(punishment, Assert.Single(state.PendingPunishmentItems));
     }
 
@@ -206,11 +242,10 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task PreparingFailureWithoutAcquiredRewardsDoesNotApplyFailure()
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         state.BeginRun();
 
-        missions.PrepareMissionFailure(state);
+        missions.PrepareMissionFailure();
 
         Assert.Empty(state.PendingPunishmentItems);
         Assert.Equal(0, state.MissionsFailed);
@@ -222,8 +257,7 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task PreparingUnavailableFailureDoesNotOfferPunishments(bool runCompleted)
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         state.AcquiredItems.AddItems(context.Catalog.GetAllItems());
         state.RunCompleted = runCompleted;
         if (!runCompleted)
@@ -231,7 +265,7 @@ public sealed class RedemptionMissionWorkflowTests
             state.PendingRewardItems.AddItem(context.Catalog.GetAllItems().First());
         }
 
-        Assert.False(missions.PrepareMissionFailure(state));
+        Assert.False(missions.PrepareMissionFailure());
         Assert.Empty(state.PendingPunishmentItems);
     }
 
@@ -241,8 +275,7 @@ public sealed class RedemptionMissionWorkflowTests
     public async Task PunishmentSelectionAppliesFailureOnlyForAPendingItem(bool validItem)
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = CreateState(context);
-        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
+        (RedemptionState state, RedemptionMissionService missions) = await CreateMissionScenarioAsync(context);
         GameItem punishment = context.Catalog.GetAllItems().First(item => !state.StarterItems.ContainsItem(item));
         state.AcquiredItems.AddItem(punishment);
         state.BannedItems.AddItem(punishment);
@@ -250,7 +283,7 @@ public sealed class RedemptionMissionWorkflowTests
         state.CurrentOperation = context.Catalog.GetOperation(state.CurrentOperation.DifficultyIndex, 2);
         Operation operation = state.CurrentOperation.Clone();
 
-        bool claimed = missions.ClaimMissionPunishment(state, validItem ? punishment.Id : "unknown-item");
+        bool claimed = missions.ClaimMissionPunishment(validItem ? punishment.Id : "unknown-item");
 
         Assert.Equal(validItem, claimed);
         Assert.Equal(validItem ? 1 : 0, state.MissionsFailed);
