@@ -1,0 +1,13 @@
+<div class="row g-3 @CssClass">
+    <CascadingValue Name="StatCardColumnClass" Value="ColumnClass">
+        @Cards
+    </CascadingValue>
+    @AdditionalContent
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string ColumnClass { get; set; } = "col";
+    [Parameter, EditorRequired] public RenderFragment Cards { get; set; } = default!;
+    [Parameter] public RenderFragment? AdditionalContent { get; set; }
+}

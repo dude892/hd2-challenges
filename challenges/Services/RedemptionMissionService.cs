@@ -18,24 +18,40 @@ public sealed class RedemptionMissionService(CatalogService catalogService)
         }
     }
 
-    public void ApplyMissionFailure(RedemptionState state, string selectedItemId)
+    public void ApplyMissionFailure(RedemptionState state, string punishmentItemId)
     {
         state.MissionHistory.Add(new(
             state.CurrentOperation.DifficultyIndex,
             state.CurrentOperation.MissionNumber,
             false,
             0,
-            selectedItemId));
+            punishmentItemId: punishmentItemId));
         state.MissionsFailed++;
         state.CurrentOperation.MissionNumber = 1;
     }
 
-    public void RecordMissionRewardSelection(RedemptionState state, string selectedItemId)
+    public void RecordMissionRewardSelection(RedemptionState state, string rewardItemId)
     {
-        if (state.MissionHistory.LastOrDefault() is { Succeeded: true, SelectedItemId: null } entry)
+        if (state.MissionHistory.LastOrDefault() is { Succeeded: true, RewardItemId: null } entry)
         {
-            state.MissionHistory[^1] = entry with { SelectedItemId = selectedItemId };
+            state.MissionHistory[^1] = entry with { RewardItemId = rewardItemId };
         }
+    }
+
+    public void RecordMissionBannedItems(RedemptionState state, IEnumerable<string> bannedItemIds)
+    {
+        if (state.MissionHistory.LastOrDefault() is not { Succeeded: true } entry)
+        {
+            return;
+        }
+
+        state.MissionHistory[^1] = entry with
+        {
+            BannedItemIds = entry.BannedItemIds
+                .Concat(bannedItemIds)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList()
+        };
     }
 
     public void RecordMissionSuccess(RedemptionState state, int stars)

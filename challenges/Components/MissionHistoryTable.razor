@@ -1,0 +1,84 @@
+@inject CatalogService Catalog
+
+<div class="table-responsive">
+    <table class="table table-dark table-striped align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Operation</th>
+                <th scope="col">Mission</th>
+                <th scope="col">Result</th>
+                <th scope="col">Stars</th>
+                <th scope="col">Item Outcome</th>
+                <th scope="col">Affected Item(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Entries.AsEnumerable().Reverse())
+            {
+                var outcome = GetItemOutcome(entry);
+                var affectedItems = GetAffectedItems(entry);
+                var stars = GetStars(entry); 
+
+                <tr>
+                    <td>@Catalog.GetOperation(entry.OperationIndex).DifficultyLabel</td>
+                    <td>@entry.MissionNumber</td>
+                    <td class="@(entry.Succeeded ? "text-success" : "text-danger")">@(entry.Succeeded ? "Success" : "Failure")</td>
+                    <td>@stars</td>
+                    <td class="@outcome.CssClass">@outcome.Label</td>
+                    @if (affectedItems.Count > 0)
+                    {
+                        <td>
+                            <ItemGrid Items="affectedItems"
+                                      AccessibleLabel="@outcome.AccessibleLabel"
+                                      GridClass="mission-history-item-grid"
+                                      UseItemColumns="true" />
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="text-warning">No Items Affected</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<MissionProgressEntry> Entries { get; set; } = default!;
+
+    private static (string Label, string CssClass, string AccessibleLabel) GetItemOutcome(MissionProgressEntry entry) => entry switch
+    {
+        { RewardItemId: not null } => ("Reward", "text-success", "Mission reward"),
+        { PunishmentItemId: not null } => ("Punishment", "text-danger", "Mission punishment"),
+        { BannedItemIds.Count: > 0 } => ("Banned", "text-primary", "Mission banned items"),
+        _ => ("No Item Outcome", "text-warning", string.Empty)
+    };
+
+    private IReadOnlyList<GameItem> GetAffectedItems(MissionProgressEntry entry) => entry switch
+    {
+        { RewardItemId: { } itemId } => [Catalog.GetItem(itemId)],
+        { PunishmentItemId: { } itemId } => [Catalog.GetItem(itemId)],
+        {
+            BannedItemIds.Count: > 0 } => Catalog.GetItemsInCatalogOrder(entry.BannedItemIds.Select(Catalog.GetItem)),
+        _ => []
+    };
+
+    private string GetStars(MissionProgressEntry entry)
+    {
+        var operation = Catalog.GetOperation(entry.OperationIndex);
+
+        if (!entry.Succeeded)
+        {
+            return "—";
+        }
+        else if (entry.Stars > operation.MaxStars)
+        {
+            return new string('★', operation.MaxStars);
+        }
+        else
+        {
+            return string.Concat(new string('★', entry.Stars), new string('☆', operation.MaxStars - entry.Stars));
+        }
+    }
+}
