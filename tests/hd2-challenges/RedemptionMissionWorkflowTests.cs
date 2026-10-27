@@ -13,7 +13,7 @@ public sealed class RedemptionMissionWorkflowTests
         CatalogTestContext context)
     {
         RedemptionSessionService session = await context.CreateSessionAsync();
-        return (session.State, new(context.Catalog, new(context.Catalog), session));
+        return (session.State, new(context.Catalog, new(context.Catalog, session), session));
     }
 
     [Fact]

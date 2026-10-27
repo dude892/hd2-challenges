@@ -2,10 +2,10 @@ using Hd2Challenges.Models;
 
 namespace Hd2Challenges.Services;
 
-public sealed class RedemptionSaveLibraryService(
-    SaveLibraryService saveLibrary,
-    RedemptionCatalogService redemptionCatalog,
-    CatalogService catalog)
+/// <summary>
+/// Manages save slots and definition-based persistence without constructing or mutating runtime runs.
+/// </summary>
+public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
 {
     private const string StorageKey = "blazor-warpath-redemption";
     private const string ExportMode = "warpath-redemption";
@@ -14,70 +14,59 @@ public sealed class RedemptionSaveLibraryService(
 
     private Task PersistAsync() => saveLibrary.PersistAsync(StorageKey, Library);
 
-    public async Task<RedemptionState> LoadAsync()
+    public async Task LoadAsync()
     {
-        await redemptionCatalog.EnsureLoadedAsync();
         Library = await saveLibrary.LoadAsync<RedemptionStateDefinition>(StorageKey) ?? new();
-
-        if (Library.CurrentSlotId is null || Library.CurrentSlot is null && Library.Slots.Count == 0)
-        {
-            Library.WorkingSlot = CreateWorkingSlot(redemptionCatalog.GetDifficulty("normal"), catalog.GetAllWarbonds());
-        }
-
-        return ResolveCurrentState();
     }
 
-    public async Task BeginRun(RedemptionState state)
+    public void SetWorkingSlot(RedemptionStateDefinition definition, string difficultyName)
+    {
+        Library.CurrentSlotId = null;
+        Library.WorkingSlot = CreateWorkingSlot(definition, difficultyName);
+    }
+
+    public async Task CommitWorkingSlotAsync(RedemptionStateDefinition definition, string difficultyName)
     {
         if (Library.WorkingSlot is null)
         {
             return;
         }
 
-        state.BeginRun();
-        Library.WorkingSlot.State = state.ToDefinition();
-        Library.WorkingSlot.Name = BuildSlotName(state);
+        Library.WorkingSlot.State = definition;
+        Library.WorkingSlot.Name = BuildSlotName(difficultyName);
         Library.CommitWorkingSlot();
         await PersistAsync();
     }
 
-    public async Task PersistAsync(RedemptionState state)
+    public async Task PersistAsync(RedemptionStateDefinition definition)
     {
         if (Library.CurrentSlot is null)
         {
             return;
         }
 
-        Library.CurrentSlot.State = state.ToDefinition();
+        Library.CurrentSlot.State = definition;
         Library.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
         await PersistAsync();
     }
 
-    public async Task<RedemptionState> RestartAsync(RedemptionState state)
+    public async Task ResetWorkingSlotAsync(RedemptionStateDefinition definition, string difficultyName)
     {
-        RedemptionState restartedState = redemptionCatalog.CreateRedemptionSetupState(state.Difficulty, state.SelectedWarbonds);
-        Library.CurrentSlotId = null;
-        Library.WorkingSlot = CreateWorkingSlot(restartedState);
+        SetWorkingSlot(definition, difficultyName);
         await PersistAsync();
-        return restartedState;
     }
 
-    public async Task CreateSnapshotAsync(RedemptionState state)
+    public async Task CreateSnapshotAsync(RedemptionStateDefinition definition, string difficultyName)
     {
-        if (!state.RunStarted)
-        {
-            return;
-        }
-
         SaveSlot<RedemptionStateDefinition> slot = new()
         {
-            Name = $"{BuildSlotName(state)} Snapshot",
-            State = state.ToDefinition(),
+            Name = $"{BuildSlotName(difficultyName)} Snapshot",
+            State = definition,
             UpdatedAt = DateTimeOffset.UtcNow
         };
 
         Library.AddSlot(slot);
-        await PersistAsync(state);
+        await PersistAsync();
     }
 
     public async Task<bool> RenameSlotAsync(Guid slotId, string? name)
@@ -91,26 +80,29 @@ public sealed class RedemptionSaveLibraryService(
         return true;
     }
 
-    public async Task<RedemptionState> SelectSlotAsync(Guid slotId)
+    public async Task<SaveSlot<RedemptionStateDefinition>> SelectSlotAsync(Guid slotId)
     {
+        SaveSlot<RedemptionStateDefinition> slot = Library.GetSlot(slotId)
+            ?? throw new InvalidOperationException($"Save slot '{slotId}' was not found.");
         Library.SelectSlot(slotId);
-        RedemptionState state = ResolveCurrentState();
         await PersistAsync();
-        return state;
+        return slot;
     }
 
-    public async Task<(bool Deleted, RedemptionState State)> DeleteSlotAsync(Guid slotId, RedemptionState state)
+    public async Task<bool> DeleteSlotAsync(
+        Guid slotId,
+        Func<RedemptionStateDefinition> replacementFactory,
+        string difficultyName)
     {
-        (bool deleted, bool createdReplacement) = Library.DeleteSlot(slotId, () => CreateWorkingSlot(state.Difficulty, state.SelectedWarbonds));
+        (bool deleted, _) = Library.DeleteSlot(slotId, () => CreateWorkingSlot(replacementFactory(), difficultyName));
 
         if (!deleted)
         {
-            return (false, state);
+            return false;
         }
 
-        RedemptionState resultingState = createdReplacement ? ResolveCurrentState() : state;
         await PersistAsync();
-        return (true, resultingState);
+        return true;
     }
 
     public SaveExport<RedemptionStateDefinition> CreateExport(Guid slotId)
@@ -119,7 +111,7 @@ public sealed class RedemptionSaveLibraryService(
         return saveLibrary.CreateExport(ExportMode, slot);
     }
 
-    public async Task<(SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)?> ImportAsync(string json)
+    public async Task<SaveSlot<RedemptionStateDefinition>?> ImportAsync(string json)
     {
         SaveSlot<RedemptionStateDefinition>? slot = saveLibrary.ImportSlot<RedemptionStateDefinition>(json, ExportMode);
         if (slot is null)
@@ -128,35 +120,17 @@ public sealed class RedemptionSaveLibraryService(
         }
 
         Library.AddSlot(slot);
-        RedemptionState state = ResolveCurrentState();
         await PersistAsync();
-        return (slot, state);
+        return slot;
     }
 
-    private RedemptionState ResolveCurrentState()
+    private static SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionStateDefinition definition, string difficultyName) => new()
     {
-        SaveSlot<RedemptionStateDefinition> slot = Library.CurrentSlot ?? Library.Slots.FirstOrDefault() ?? CreateWorkingSlot(redemptionCatalog.GetDifficulty("normal"), catalog.GetAllWarbonds());
-        if (ReferenceEquals(slot, Library.WorkingSlot))
-        {
-            RedemptionState setupState = redemptionCatalog.CreateRedemptionState(slot.State);
-            setupState.RunStarted = false;
-            return setupState;
-        }
-
-        Library.CurrentSlotId = slot.Id;
-        return redemptionCatalog.CreateRedemptionState(slot.State);
-    }
-
-    private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionDifficulty difficulty, IEnumerable<Warbond> selectedWarbonds) =>
-        CreateWorkingSlot(redemptionCatalog.CreateRedemptionSetupState(difficulty, selectedWarbonds));
-
-    private SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionState state) => new()
-    {
-        Name = BuildSlotName(state),
-        State = state.ToDefinition()
+        Name = BuildSlotName(difficultyName),
+        State = definition
     };
 
-    private static string BuildSlotName(RedemptionState state) => $"{state.Difficulty.DisplayName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
+    private static string BuildSlotName(string difficultyName) => $"{difficultyName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
 
     public SaveSlot<RedemptionStateDefinition>? GetSlot(Guid slotId) => Library.GetSlot(slotId);
 }

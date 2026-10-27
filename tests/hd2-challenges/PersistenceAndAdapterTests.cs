@@ -9,7 +9,7 @@ public sealed class PersistenceAndAdapterTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task RedemptionSaveLibraryLoadsCatalogBeforeResolvingState(bool hasSavedRun)
+    public async Task RedemptionSessionLoadsCatalogBeforeResolvingState(bool hasSavedRun)
     {
         using CatalogTestContext context = await CatalogTestContext.CreateAsync(loadCatalog: false);
         SaveLibraryService genericSaveLibrary = CreateSaveLibraryService();
@@ -20,10 +20,11 @@ public sealed class PersistenceAndAdapterTests
             await genericSaveLibrary.PersistAsync("blazor-warpath-redemption", library);
         }
 
-        RedemptionSaveLibraryService saveLibrary = new(
-            genericSaveLibrary, context.RedemptionCatalog, context.Catalog);
+        RedemptionSaveLibraryService saveLibrary = new(genericSaveLibrary);
+        RedemptionSessionService session = new(context.Catalog, context.RedemptionCatalog, saveLibrary);
 
-        RedemptionState state = await saveLibrary.LoadAsync();
+        await session.LoadAsync();
+        RedemptionState state = session.State;
 
         Assert.Equal(hasSavedRun, state.RunStarted);
         Assert.Same(context.RedemptionCatalog.GetDifficulty(state.Difficulty.Id), state.Difficulty);
@@ -121,10 +122,11 @@ public sealed class PersistenceAndAdapterTests
     }
 
     [Fact]
-    public async Task RedemptionSaveLibraryLoadsWorkingSetupSlot()
+    public async Task RedemptionSessionLoadsWorkingSetupSlot()
     {
         using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-        RedemptionState state = await context.SaveLibrary.LoadAsync();
+        await context.Session.LoadAsync();
+        RedemptionState state = context.Session.State;
 
         Assert.False(state.RunStarted);
         Assert.NotNull(context.SaveLibrary.Library.WorkingSlot);
@@ -133,23 +135,24 @@ public sealed class PersistenceAndAdapterTests
     }
 
         [Fact]
-        public async Task RedemptionSaveLibraryDoesNotCreateSnapshotBeforeRunStarts()
+        public async Task RedemptionSessionDoesNotCreateSnapshotBeforeRunStarts()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
+            await context.Session.LoadAsync();
 
-            await context.SaveLibrary.CreateSnapshotAsync(state);
+            await context.Session.CreateSnapshotAsync();
 
             Assert.Empty(context.SaveLibrary.Library.Slots);
         }
 
         [Fact]
-        public async Task RedemptionSaveLibraryBeginRunCommitsWorkingSlot()
+        public async Task RedemptionSessionBeginRunCommitsWorkingSlot()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
+            await context.Session.LoadAsync();
+            RedemptionState state = context.Session.State;
 
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.BeginRunAsync();
 
             Assert.True(state.RunStarted);
             Assert.True(state.AcquiredItems.ContainsItems(state.StarterItems));
@@ -161,12 +164,12 @@ public sealed class PersistenceAndAdapterTests
         public async Task RedemptionSaveLibraryCreatesSnapshotFromCurrentState()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            RedemptionState state = context.Session.State;
+            await context.Session.BeginRunAsync();
             state.MissionsFailed = 1;
-            await context.SaveLibrary.PersistAsync(state);
-
-            await context.SaveLibrary.CreateSnapshotAsync(state);
+            await context.Session.PersistAsync();
+            await context.Session.CreateSnapshotAsync();
 
             Assert.Equal(2, context.SaveLibrary.Library.Slots.Count);
             SaveSlot<RedemptionStateDefinition> snapshot = Assert.IsType<SaveSlot<RedemptionStateDefinition>>(
@@ -179,8 +182,8 @@ public sealed class PersistenceAndAdapterTests
         public async Task RedemptionSaveLibraryRenamesSlotAndRejectsBlankName()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            await context.Session.BeginRunAsync();
             Guid slotId = Assert.Single(context.SaveLibrary.Library.Slots).Id;
 
             Assert.True(await context.SaveLibrary.RenameSlotAsync(slotId, "  Campaign  "));
@@ -192,68 +195,73 @@ public sealed class PersistenceAndAdapterTests
         public async Task RedemptionSaveLibraryImportsExportAsNewSlot()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            RedemptionState state = context.Session.State;
+            await context.Session.BeginRunAsync();
             state.MissionsFailed = 1;
-            await context.SaveLibrary.PersistAsync(state);
+            await context.Session.PersistAsync();
             SaveSlot<RedemptionStateDefinition> original = Assert.Single(context.SaveLibrary.Library.Slots);
             string exportJson = JsonSerializer.Serialize(
                 context.SaveLibrary.CreateExport(original.Id), new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
-            (SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)? imported =
+            SaveSlot<RedemptionStateDefinition>? imported =
                 await context.SaveLibrary.ImportAsync(exportJson);
 
             Assert.NotNull(imported);
-            Assert.NotEqual(original.Id, imported.Value.Slot.Id);
-            Assert.Equal(original.Name, imported.Value.Slot.Name);
-            Assert.Equal(1, imported.Value.State.MissionsFailed);
+            Assert.NotEqual(original.Id, imported.Id);
+            Assert.Equal(original.Name, imported.Name);
+            Assert.Equal(1, imported.State.MissionsFailed);
             Assert.Equal(2, context.SaveLibrary.Library.Slots.Count);
         }
 
         [Fact]
-        public async Task RedemptionSaveLibrarySelectsSlotAndRestoresItsState()
+        public async Task RedemptionSessionSelectsSlotAndRestoresItsState()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            RedemptionState state = context.Session.State;
+            await context.Session.BeginRunAsync();
             Guid originalId = Assert.Single(context.SaveLibrary.Library.Slots).Id;
             state.MissionsFailed = 1;
-            await context.SaveLibrary.PersistAsync(state);
-            await context.SaveLibrary.CreateSnapshotAsync(state);
+            await context.Session.PersistAsync();
+            await context.Session.CreateSnapshotAsync();
 
-            RedemptionState selected = await context.SaveLibrary.SelectSlotAsync(originalId);
+            await context.Session.SelectSlotAsync(originalId);
+            RedemptionState selected = context.Session.State;
 
             Assert.Equal(1, selected.MissionsFailed);
             Assert.Equal(originalId, context.SaveLibrary.Library.CurrentSlotId);
         }
 
         [Fact]
-        public async Task RedemptionSaveLibraryDeletesNonCurrentSlotWithoutChangingSelectedState()
+        public async Task RedemptionSessionDeletesNonCurrentSlotWithoutChangingSelectedState()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            await context.Session.BeginRunAsync();
             Guid originalId = Assert.Single(context.SaveLibrary.Library.Slots).Id;
-            await context.SaveLibrary.CreateSnapshotAsync(state);
+            await context.Session.CreateSnapshotAsync();
             Guid snapshotId = context.SaveLibrary.Library.CurrentSlot!.Id;
-            RedemptionState selected = await context.SaveLibrary.SelectSlotAsync(snapshotId);
+            await context.Session.SelectSlotAsync(snapshotId);
+            RedemptionState selected = context.Session.State;
 
-            (bool deleted, RedemptionState unchanged) = await context.SaveLibrary.DeleteSlotAsync(originalId, selected);
+            bool deleted = await context.Session.DeleteSlotAsync(originalId);
 
             Assert.True(deleted);
-            Assert.Same(selected, unchanged);
+            Assert.Same(selected, context.Session.State);
             Assert.Single(context.SaveLibrary.Library.Slots);
         }
 
         [Fact]
-        public async Task RedemptionSaveLibraryDeletingCurrentSlotCreatesWorkingReplacement()
+        public async Task RedemptionSessionDeletingCurrentSlotCreatesWorkingReplacement()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            await context.Session.BeginRunAsync();
             Guid currentSlotId = Assert.Single(context.SaveLibrary.Library.Slots).Id;
 
-            (bool deleted, RedemptionState replacement) = await context.SaveLibrary.DeleteSlotAsync(currentSlotId, state);
+            bool deleted = await context.Session.DeleteSlotAsync(currentSlotId);
+            RedemptionState replacement = context.Session.State;
 
             Assert.True(deleted);
             Assert.False(replacement.RunStarted);
@@ -263,13 +271,14 @@ public sealed class PersistenceAndAdapterTests
         }
 
         [Fact]
-        public async Task RedemptionSaveLibraryRestartCreatesWorkingSetupState()
+        public async Task RedemptionSessionRestartCreatesWorkingSetupState()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
+            await context.Session.LoadAsync();
+            await context.Session.BeginRunAsync();
 
-            RedemptionState restarted = await context.SaveLibrary.RestartAsync(state);
+            await context.Session.RestartAsync();
+            RedemptionState restarted = context.Session.State;
 
             Assert.False(restarted.RunStarted);
             Assert.NotNull(context.SaveLibrary.Library.WorkingSlot);
@@ -280,14 +289,12 @@ public sealed class PersistenceAndAdapterTests
         public async Task RedemptionSaveLibraryReloadRestoresPersistedSlots()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            RedemptionState state = await context.SaveLibrary.LoadAsync();
-            await context.SaveLibrary.BeginRun(state);
-            RedemptionSaveLibraryService reloadedService = new(
-                context.GenericSaveLibrary, context.Catalog.RedemptionCatalog, context.Catalog.Catalog);
+            await context.Session.LoadAsync();
+            await context.Session.BeginRunAsync();
+            RedemptionSaveLibraryService reloadedService = new(context.GenericSaveLibrary);
 
-            RedemptionState reloaded = await reloadedService.LoadAsync();
+            await reloadedService.LoadAsync();
 
-            Assert.True(reloaded.RunStarted);
             Assert.Single(reloadedService.Library.Slots);
         }
 
@@ -295,9 +302,9 @@ public sealed class PersistenceAndAdapterTests
         public async Task InvalidRedemptionImportDoesNotChangeTheLibrary()
         {
             using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
-            await context.SaveLibrary.LoadAsync();
+            await context.Session.LoadAsync();
 
-            (SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)? imported =
+            SaveSlot<RedemptionStateDefinition>? imported =
                 await context.SaveLibrary.ImportAsync("{}");
 
             Assert.Null(imported);

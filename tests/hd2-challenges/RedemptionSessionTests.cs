@@ -7,7 +7,7 @@ namespace Hd2Challenges.Tests;
 public sealed class RedemptionSessionTests
 {
     private static RedemptionSessionService CreateSession(RedemptionSaveTestContext context) =>
-        new(context.Catalog.RedemptionCatalog, context.SaveLibrary);
+        new(context.Catalog.Catalog, context.Catalog.RedemptionCatalog, context.SaveLibrary);
 
     private static string SerializeExport(RedemptionSaveTestContext context, Guid slotId) =>
         JsonSerializer.Serialize(context.SaveLibrary.CreateExport(slotId),
@@ -27,7 +27,7 @@ public sealed class RedemptionSessionTests
     {
         using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
         RedemptionSessionService session = CreateSession(context);
-        RedemptionMissionService missions = new(context.Catalog.Catalog, new(context.Catalog.Catalog), session);
+        RedemptionMissionService missions = new(context.Catalog.Catalog, new(context.Catalog.Catalog, session), session);
 
         Assert.Throws<InvalidOperationException>(() => missions.CompleteMission(0));
     }
@@ -249,7 +249,7 @@ public sealed class RedemptionSessionTests
         await session.LoadAsync();
         await session.BeginRunAsync();
         RedemptionState previous = session.State;
-        RedemptionMissionService missions = new(context.Catalog.Catalog, new(context.Catalog.Catalog), session);
+        RedemptionMissionService missions = new(context.Catalog.Catalog, new(context.Catalog.Catalog, session), session);
         Guid slotId = context.SaveLibrary.Library.CurrentSlot!.Id;
 
         switch (replacement)
