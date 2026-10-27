@@ -6,6 +6,31 @@ namespace Hd2Challenges.Tests;
 
 public sealed class PersistenceAndAdapterTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RedemptionSaveLibraryLoadsCatalogBeforeResolvingState(bool hasSavedRun)
+    {
+        using CatalogTestContext context = await CatalogTestContext.CreateAsync(loadCatalog: false);
+        SaveLibraryService genericSaveLibrary = CreateSaveLibraryService();
+        if (hasSavedRun)
+        {
+            SaveLibrary<RedemptionStateDefinition> library = new();
+            library.AddSlot(CreateDefinitionSlot());
+            await genericSaveLibrary.PersistAsync("blazor-warpath-redemption", library);
+        }
+
+        RedemptionSaveLibraryService saveLibrary = new(
+            genericSaveLibrary, context.RedemptionCatalog, context.Catalog);
+
+        RedemptionState state = await saveLibrary.LoadAsync();
+
+        Assert.Equal(hasSavedRun, state.RunStarted);
+        Assert.Same(context.RedemptionCatalog.GetDifficulty(state.Difficulty.Id), state.Difficulty);
+        Assert.Equal(context.RedemptionCatalog.GetStarterItems(state.Difficulty, state.SelectedWarbonds).ToHashSet(),
+            state.StarterItems.ToHashSet());
+    }
+
     [Fact]
     public async Task BrowserStorageReturnsNullForMissingValues()
     {

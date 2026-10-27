@@ -16,6 +16,7 @@ public sealed class RedemptionSaveLibraryService(
 
     public async Task<RedemptionState> LoadAsync()
     {
+        await redemptionCatalog.EnsureLoadedAsync();
         Library = await saveLibrary.LoadAsync<RedemptionStateDefinition>(StorageKey) ?? new();
 
         if (Library.CurrentSlotId is null || Library.CurrentSlot is null && Library.Slots.Count == 0)
@@ -33,8 +34,7 @@ public sealed class RedemptionSaveLibraryService(
             return;
         }
 
-        state.RunStarted = true;
-        state.AcquiredItems.AddItems(state.StarterItems);
+        state.BeginRun();
         Library.WorkingSlot.State = state.ToDefinition();
         Library.WorkingSlot.Name = BuildSlotName(state);
         Library.CommitWorkingSlot();

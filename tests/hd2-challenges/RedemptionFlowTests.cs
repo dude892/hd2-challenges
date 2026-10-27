@@ -238,7 +238,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
         state.CurrentOperation.SelectedStars = 3;
         missions.AdvanceMission(state);
         Assert.Equal(2, state.CurrentOperation.MissionNumber);
@@ -251,7 +251,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
         int firstOperation = state.CurrentOperation.DifficultyIndex;
         int lastMission = context.Catalog.GetOperation(firstOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(firstOperation, lastMission);
@@ -268,7 +268,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
         int operationIndex = state.CurrentOperation.DifficultyIndex;
         state.CurrentOperation = context.Catalog.GetOperation(operationIndex + 2, 2);
         state.CurrentOperation.SelectedStars = 2;
@@ -286,7 +286,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
 
         Assert.False(missions.IsFinalMission(state));
 
@@ -303,7 +303,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
 
         Assert.False(missions.TryCompleteFinalMission(state));
         Assert.False(state.RunCompleted);
@@ -315,7 +315,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
         int finalOperation = context.Catalog.LastOperationIndex;
         int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
@@ -330,7 +330,7 @@ public sealed class RedemptionFlowTests
         using CatalogTestContext context = await CatalogTestContext.CreateAsync();
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
             context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
+        RedemptionMissionService missions = new(context.Catalog, new(context.Catalog));
         int finalOperation = context.Catalog.LastOperationIndex;
         int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
         state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);

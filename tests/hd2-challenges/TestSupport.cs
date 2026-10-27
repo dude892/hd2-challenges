@@ -17,7 +17,7 @@ internal sealed class CatalogTestContext : IDisposable
     public CatalogService Catalog { get; }
     public RedemptionCatalogService RedemptionCatalog { get; }
 
-    public static async Task<CatalogTestContext> CreateAsync()
+    public static async Task<CatalogTestContext> CreateAsync(bool loadCatalog = true)
     {
         HttpClient httpClient = new(new CatalogDataHandler())
         {
@@ -25,7 +25,10 @@ internal sealed class CatalogTestContext : IDisposable
         };
         CatalogService catalog = new(httpClient);
         RedemptionCatalogService redemptionCatalog = new(httpClient, catalog);
-        await redemptionCatalog.EnsureLoadedAsync();
+        if (loadCatalog)
+        {
+            await redemptionCatalog.EnsureLoadedAsync();
+        }
         return new CatalogTestContext(httpClient, catalog, redemptionCatalog);
     }
 

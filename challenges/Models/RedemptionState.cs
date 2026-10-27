@@ -56,6 +56,12 @@ public sealed class RedemptionState
     public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
     public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
 
+    public void BeginRun()
+    {
+        RunStarted = true;
+        AcquiredItems.AddItems(StarterItems);
+    }
+
     public bool SetWarbondSelected(Warbond warbond, bool isSelected)
     {
         if (warbond.AlwaysEnabled)

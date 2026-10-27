@@ -3,7 +3,6 @@
 @inject RedemptionCatalogService RedemptionCatalog
 @inject RedemptionSaveLibraryService SaveLibrary
 @inject FileExportService FileService
-@inject RedemptionRewardService RewardService
 @inject RedemptionMissionService MissionService
 @inject ToastService Toasts
 
@@ -394,7 +393,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await RedemptionCatalog.EnsureLoadedAsync();
         _state = await SaveLibrary.LoadAsync();
         _showBoosterAccordion = _state.AcquiredItems.Boosters.Any();
         _loaded = true;
@@ -412,7 +410,7 @@ else
 
     private Task BeginRedemptionMissionCompleteAsync()
     {
-        if (_state.PendingPunishmentItems.Count > 0)
+        if (!_state.CanCompleteMission)
         {
             return Task.CompletedTask;
         }
@@ -430,20 +428,20 @@ else
     private async Task ConfirmRedemptionMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
-        if (MissionService.TryCompleteFinalMission(_state))
+        MissionCompletionResult result = MissionService.CompleteMission(_state, stars);
+        if (result == MissionCompletionResult.Unavailable)
         {
-            await SaveLibrary.PersistAsync(_state);
-            
+            return;
+        }
+
+        await SaveLibrary.PersistAsync(_state);
+        if (result == MissionCompletionResult.ChallengeCompleted)
+        {
             Toasts.Show("Challenge complete.");
             return;
         }
 
-        if (RewardService.EnsurePendingRewards(_state, stars))
-        {
-            await SaveLibrary.PersistAsync(_state);
-        }
-
-        if (_state.PendingRewardItems.Count == 0)
+        if (result == MissionCompletionResult.NoRewardsAvailable)
         {
             Toasts.Show("No rewards available.");
             return;
@@ -454,12 +452,12 @@ else
 
     private async Task BeginRedemptionMissionFailureAsync()
     {
-        if (_state.PendingRewardItems.Count > 0)
+        if (!_state.CanFailMission)
         {
             return;
         }
 
-        if (RewardService.EnsurePendingPunishments(_state))
+        if (MissionService.PrepareMissionFailure(_state))
         {
             await SaveLibrary.PersistAsync(_state);
         }
@@ -476,14 +474,13 @@ else
     private async Task ClaimRedemptionRewardAsync(string id)
     {
         int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
-        if (RewardService.ClaimReward(_state, id))
+        if (MissionService.ClaimMissionReward(_state, id))
         {
             if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
             {
                 _showBoosterAccordion = true;
             }
 
-            MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await SaveLibrary.PersistAsync(_state);
         }
@@ -491,9 +488,8 @@ else
 
     private async Task SkipAndBanRedemptionRewardsAsync()
     {
-        if (RewardService.BanPendingRewards(_state))
+        if (MissionService.SkipAndBanMissionRewards(_state))
         {
-            MissionService.AdvanceMission(_state);
             _showRewardModal = false;
             await SaveLibrary.PersistAsync(_state);
         }
@@ -501,9 +497,8 @@ else
 
     private async Task ClaimRedemptionPunishmentAsync(string id)
     {
-        if (RewardService.ClaimPunishment(_state, id))
+        if (MissionService.ClaimMissionPunishment(_state, id))
         {
-            MissionService.ApplyMissionFailure(_state);
             _showPunishmentModal = false;
             await SaveLibrary.PersistAsync(_state);
         }
