@@ -122,7 +122,7 @@ public sealed class RedemptionMissionWorkflowTests
 
     [Theory]
     [InlineData("normal", 3, 2)]
-    [InlineData("super", 5, 3)]
+    [InlineData("super", 3, 1)]
     public async Task CompletingMissionUsesDifficultyAdjustedRewardQuantity(
         string difficultyId,
         int stars,
@@ -132,6 +132,7 @@ public sealed class RedemptionMissionWorkflowTests
         RedemptionSessionService session = await context.CreateSessionAsync();
         session.ChangeDifficulty(difficultyId);
         await session.BeginRunAsync();
+        Assert.InRange(stars, 0, session.State.CurrentOperation.MaxStars);
 
         MissionCompletionResult result = session.CompleteMission(stars);
 
@@ -168,19 +169,18 @@ public sealed class RedemptionMissionWorkflowTests
         await session.BeginRunAsync();
         ItemSet eligible = context.RedemptionCatalog.GetItemsByWarbonds([mandatory])
             .RemoveItems([session.State.StarterItems]);
-        GameItem acquired = eligible.First();
-        GameItem banned = eligible.First(item => !item.Equals(acquired));
-        session.State.AcquiredItems.AddItem(acquired);
+        GameItem expected = eligible.First();
+        GameItem banned = eligible.First(item => !item.Equals(expected));
         session.State.BannedItems.AddItem(banned);
+        session.State.AcquiredItems.AddItems(eligible.Clone().RemoveItem(expected).RemoveItem(banned));
 
-        MissionCompletionResult result = session.CompleteMission(session.State.CurrentOperation.MaxStars);
+        int stars = session.State.CurrentOperation.MaxStars;
+        Assert.True(stars >= 3, "This scenario must request at least two reward choices.");
+
+        MissionCompletionResult result = session.CompleteMission(stars);
 
         Assert.Equal(MissionCompletionResult.RewardsPending, result);
-        Assert.DoesNotContain(session.State.PendingRewardItems, session.State.StarterItems.ContainsItem);
-        Assert.DoesNotContain(acquired, session.State.PendingRewardItems);
-        Assert.DoesNotContain(banned, session.State.PendingRewardItems);
-        Assert.All(session.State.PendingRewardItems,
-            item => Assert.True(item.Warbond is null || session.State.SelectedWarbonds.Contains(item.Warbond)));
+        Assert.Equal(expected, Assert.Single(session.State.PendingRewardItems));
     }
 
     [Fact]
