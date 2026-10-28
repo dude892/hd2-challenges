@@ -29,7 +29,7 @@ else
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" aria-label="Open current run settings" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((Session.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), Session.CurrentRunSummary))">Download Summary</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((Session.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), Session.GetCurrentRunSummary()))">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>

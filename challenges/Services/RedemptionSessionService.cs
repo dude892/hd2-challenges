@@ -18,20 +18,14 @@ public sealed class RedemptionSessionService(
 
     public RedemptionState State { get { EnsureLoaded(); return _state; } }
 
-    public IReadOnlyList<SaveSlot<RedemptionStateDefinition>> Slots => saves.Library.Slots.AsReadOnly();
-    public SaveSlot<RedemptionStateDefinition>? CurrentSlot => saves.Library.CurrentSlot;
-    public bool HasWorkingSlot => saves.Library.WorkingSlot is not null;
-    public Guid? CurrentSlotId => CurrentSlot?.Id;
     public RunStatus CurrentRunStatus => CurrentSlot?.Status ?? RunStatus.InProgress;
     public bool CanCompleteMission => CurrentRunStatus == RunStatus.InProgress && State.PendingPunishmentItems.Count == 0;
     public bool CanFailMission => CurrentRunStatus == RunStatus.InProgress && State.PendingRewardItems.Count == 0;
-    public string CurrentRunSummary => CreateSummaryText();
 
-    public SaveSlot<RedemptionStateDefinition>? GetSlot(Guid slotId) => saves.GetSlot(slotId);
-
-    public Task<bool> RenameSlotAsync(Guid slotId, string? name) => saves.RenameSlotAsync(slotId, name);
-
-    public SaveExport<RedemptionStateDefinition> CreateExport(Guid slotId) => saves.CreateExport(slotId);
+    public SaveSlot<RedemptionStateDefinition>? CurrentSlot => saves.Library.CurrentSlot;
+    public Guid? CurrentSlotId => CurrentSlot?.Id;
+    public bool HasWorkingSlot => saves.Library.WorkingSlot is not null;
+    public IReadOnlyList<SaveSlot<RedemptionStateDefinition>> Slots => saves.Library.Slots.AsReadOnly();
 
     public async Task LoadAsync()
     {
@@ -59,6 +53,13 @@ public sealed class RedemptionSessionService(
 
     public bool SetWarbondSelected(Warbond warbond, bool selected) => State.SetWarbondSelected(warbond, selected);
 
+    public async Task RestartAsync()
+    {
+        RedemptionState setup = redemptionCatalog.CreateRedemptionSetupState(State.Difficulty, State.SelectedWarbonds);
+        await saves.ResetWorkingSlotAsync(setup.ToDefinition(), setup.Difficulty.DisplayName);
+        _state = setup;
+    }
+
     public async Task BeginRunAsync()
     {
         EnsureLoaded();
@@ -71,24 +72,17 @@ public sealed class RedemptionSessionService(
         await saves.CommitWorkingSlotAsync(State.ToDefinition(), State.Difficulty.DisplayName, CurrentRunStatus);
     }
 
-    public Task PersistAsync() => saves.PersistAsync(State.ToDefinition(), CurrentRunStatus);
-
-    public Task CreateSnapshotAsync() => State.RunStarted
-        ? saves.CreateSnapshotAsync(State.ToDefinition(), State.Difficulty.DisplayName, CurrentRunStatus)
-        : Task.CompletedTask;
-
     public void SetRunStatus(RunStatus status)
     {
         EnsureLoaded();
         saves.SetCurrentRunStatus(status);
     }
 
-    public async Task RestartAsync()
-    {
-        RedemptionState setup = redemptionCatalog.CreateRedemptionSetupState(State.Difficulty, State.SelectedWarbonds);
-        await saves.ResetWorkingSlotAsync(setup.ToDefinition(), setup.Difficulty.DisplayName);
-        _state = setup;
-    }
+    public Task PersistAsync() => saves.PersistAsync(State.ToDefinition(), CurrentRunStatus);
+
+    public Task CreateSnapshotAsync() => State.RunStarted
+        ? saves.CreateSnapshotAsync(State.ToDefinition(), State.Difficulty.DisplayName, CurrentRunStatus)
+        : Task.CompletedTask;
 
     public async Task SelectSlotAsync(Guid slotId)
     {
@@ -129,6 +123,12 @@ public sealed class RedemptionSessionService(
         return result;
     }
 
+    public SaveSlot<RedemptionStateDefinition>? GetSlot(Guid slotId) => saves.GetSlot(slotId);
+
+    public Task<bool> RenameSlotAsync(Guid slotId, string? name) => saves.RenameSlotAsync(slotId, name);
+
+    public SaveExport<RedemptionStateDefinition> CreateExport(Guid slotId) => saves.CreateExport(slotId);
+
     [MemberNotNull(nameof(_state))]
     private void EnsureLoaded()
     {
@@ -138,7 +138,7 @@ public sealed class RedemptionSessionService(
         }
     }
 
-    private string CreateSummaryText()
+    public string GetCurrentRunSummary()
     {
         int score = State.Difficulty.ScoreModifier - (State.MissionsFailed * 50);
         StringBuilder builder = new();
