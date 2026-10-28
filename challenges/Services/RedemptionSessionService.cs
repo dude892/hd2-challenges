@@ -1,3 +1,4 @@
+using System.Text;
 using System.Diagnostics.CodeAnalysis;
 using Hd2Challenges.Models;
 
@@ -15,14 +16,12 @@ public sealed class RedemptionSessionService(
 {
     private RedemptionState? _state;
 
-    public RedemptionState State
-    {
-        get
-        {
-            EnsureLoaded();
-            return _state;
-        }
-    }
+    public RedemptionState State { get { EnsureLoaded(); return _state; } }
+
+    public RunStatus CurrentRunStatus => saves.Library.CurrentSlot?.Status ?? RunStatus.InProgress;
+    public bool CanCompleteMission => CurrentRunStatus == RunStatus.InProgress && State.PendingPunishmentItems.Count == 0;
+    public bool CanFailMission => CurrentRunStatus == RunStatus.InProgress && State.PendingRewardItems.Count == 0;
+    public string CurrentRunSummary => CreateSummaryText();
 
     public async Task LoadAsync()
     {
@@ -59,14 +58,20 @@ public sealed class RedemptionSessionService(
         }
 
         State.BeginRun();
-        await saves.CommitWorkingSlotAsync(State.ToDefinition(), State.Difficulty.DisplayName);
+        await saves.CommitWorkingSlotAsync(State.ToDefinition(), State.Difficulty.DisplayName, CurrentRunStatus);
     }
 
-    public Task PersistAsync() => saves.PersistAsync(State.ToDefinition());
+    public Task PersistAsync() => saves.PersistAsync(State.ToDefinition(), CurrentRunStatus);
 
     public Task CreateSnapshotAsync() => State.RunStarted
-        ? saves.CreateSnapshotAsync(State.ToDefinition(), State.Difficulty.DisplayName)
+        ? saves.CreateSnapshotAsync(State.ToDefinition(), State.Difficulty.DisplayName, CurrentRunStatus)
         : Task.CompletedTask;
+
+    public void SetRunStatus(RunStatus status)
+    {
+        EnsureLoaded();
+        saves.SetCurrentRunStatus(status);
+    }
 
     public async Task RestartAsync()
     {
@@ -121,5 +126,93 @@ public sealed class RedemptionSessionService(
         {
             throw new InvalidOperationException("The Redemption session has not been loaded.");
         }
+    }
+
+    private string CreateSummaryText()
+    {
+        int score = State.Difficulty.ScoreModifier - (State.MissionsFailed * 50);
+        StringBuilder builder = new();
+
+        builder.AppendLine("Warpath: Redemption Summary");
+        builder.AppendLine("===========================");
+        builder.AppendLine();
+        builder.AppendLine($"Difficulty: {State.Difficulty.DisplayName}");
+
+        if (CurrentRunStatus == RunStatus.Completed)
+        {
+            builder.AppendLine("Run Completed");
+            builder.AppendLine($"Missions Failed: {State.MissionsFailed}");
+            builder.AppendLine($"Final Score: {score}");
+        }
+        else if (CurrentRunStatus == RunStatus.Failed)
+        {
+            builder.AppendLine("Run Failed");
+            builder.AppendLine($"Missions Failed: {State.MissionsFailed}");
+            builder.AppendLine($"Final Score: {score}");
+        }
+        else
+        {
+            builder.AppendLine($"Current Operation: {State.CurrentOperation.DifficultyLabel}, {State.CurrentOperation.MissionLabel}");
+            builder.AppendLine($"Missions Failed: {State.MissionsFailed}");
+            builder.AppendLine($"Current Score: {score}");
+        }
+
+        builder.AppendLine();
+        builder.AppendLine("Selected Warbonds:");
+        if (State.SelectedWarbonds.Count == 0)
+        {
+            builder.AppendLine("  - None");
+        }
+        else
+        {
+            foreach (var warbond in State.SelectedWarbonds.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
+            {
+                builder.AppendLine($"  - {warbond.DisplayName}");
+            }
+        }
+
+        builder.AppendLine();
+        AppendSummarySection(builder, "Banned Items:", State.BannedItems);
+        AppendSummarySection(builder, "Pending Rewards:", State.PendingRewardItems);
+        AppendSummarySection(builder, "Pending Punishments:", State.PendingPunishmentItems);
+
+        builder.AppendLine("Acquired Items:");
+        foreach (var category in State.AcquiredItems.Categories)
+        {
+            builder.AppendLine($"{category.Label}:");
+            if (category.Count == 0)
+            {
+                builder.AppendLine("  - None");
+            }
+            else
+            {
+                foreach (var item in category)
+                {
+                    builder.AppendLine($"  - {item.DisplayName}");
+                }
+            }
+
+            builder.AppendLine();
+        }
+
+        return builder.ToString();
+    }
+
+    private static void AppendSummarySection(StringBuilder builder, string heading, ItemSet items)
+    {
+        builder.AppendLine(heading);
+        if (items.Count == 0)
+        {
+            builder.AppendLine("  - None");
+            builder.AppendLine();
+            return;
+        }
+
+        foreach (var item in items.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
+        {
+            builder.AppendLine($"  - {item.DisplayName}");
+        }
+
+        builder.AppendLine();
     }
 }

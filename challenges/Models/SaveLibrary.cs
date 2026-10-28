@@ -2,11 +2,20 @@ using System.Text.Json.Serialization;
 
 namespace Hd2Challenges.Models;
 
+[JsonConverter(typeof(JsonStringEnumConverter<RunStatus>))]
+public enum RunStatus
+{
+    InProgress,
+    Completed,
+    Failed
+}
+
 public sealed class SaveSlot<TState>
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = string.Empty;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public RunStatus Status { get; set; }
     public TState State { get; set; } = default!;
 }
 

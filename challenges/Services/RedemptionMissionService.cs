@@ -12,7 +12,7 @@ public sealed class RedemptionMissionService(
 
     public MissionCompletionResult CompleteMission(int stars)
     {
-        if (!State.CanCompleteMission)
+        if (!session.CanCompleteMission)
         {
             return MissionCompletionResult.Unavailable;
         }
@@ -28,12 +28,12 @@ public sealed class RedemptionMissionService(
 
     public bool PrepareMissionFailure()
     {
-        return State.CanFailMission && rewards.EnsurePendingPunishments();
+        return session.CanFailMission && rewards.EnsurePendingPunishments();
     }
 
     public bool ClaimMissionReward(string itemId)
     {
-        if (!State.CanCompleteMission || !rewards.ClaimReward(itemId))
+        if (!session.CanCompleteMission || !rewards.ClaimReward(itemId))
         {
             return false;
         }
@@ -44,7 +44,7 @@ public sealed class RedemptionMissionService(
 
     public bool SkipAndBanMissionRewards()
     {
-        if (!State.CanCompleteMission || !rewards.BanPendingRewards())
+        if (!session.CanCompleteMission || !rewards.BanPendingRewards())
         {
             return false;
         }
@@ -55,7 +55,7 @@ public sealed class RedemptionMissionService(
 
     public bool ClaimMissionPunishment(string itemId)
     {
-        if (!State.CanFailMission || !rewards.ClaimPunishment(itemId))
+        if (!session.CanFailMission || !rewards.ClaimPunishment(itemId))
         {
             return false;
         }
@@ -89,7 +89,7 @@ public sealed class RedemptionMissionService(
             return false;
         }
 
-        State.RunCompleted = true;
+        session.SetRunStatus(RunStatus.Completed);
         return true;
     }
 }

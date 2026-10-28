@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Hd2Challenges.Models;
 
 public sealed class RedemptionState
@@ -36,7 +34,6 @@ public sealed class RedemptionState
         PendingPunishmentItems = resolveItemSet(definition.PendingPunishmentIds);
         CurrentOperation = resolveOperation(definition.OperationIndex, definition.MissionNumber);
         MissionsFailed = definition.MissionsFailed;
-        RunCompleted = definition.RunCompleted;
         _resolveStarterItems = resolveStarterItems;
         StarterItems = _resolveStarterItems(Difficulty, _selectedWarbonds);
     }
@@ -50,11 +47,8 @@ public sealed class RedemptionState
     public ItemSet PendingPunishmentItems { get; set; } = new();
     public Operation CurrentOperation { get; set; }
     public int MissionsFailed { get; set; }
-    public bool RunCompleted { get; set; }
 
     public ItemSet StarterItems { get; private set; }
-    public bool CanCompleteMission => !RunCompleted && PendingPunishmentItems.Count == 0;
-    public bool CanFailMission => !RunCompleted && PendingRewardItems.Count == 0;
 
     public void BeginRun()
     {
@@ -91,120 +85,12 @@ public sealed class RedemptionState
         return changed;
     }
 
-    public string SummaryText
-    {
-        get
-        {
-            int score = Difficulty.ScoreModifier - (MissionsFailed * 50);
-            StringBuilder builder = new();
-
-            builder.AppendLine("Warpath: Redemption Summary");
-            builder.AppendLine("===========================");
-            builder.AppendLine();
-            builder.AppendLine($"Difficulty: {Difficulty.DisplayName}");
-            
-            if (RunCompleted)
-            {
-                builder.AppendLine("Run Completed");
-                builder.AppendLine($"Missions Failed: {MissionsFailed}");
-                builder.AppendLine($"Final Score: {score}");
-            }
-            else
-            {
-                builder.AppendLine($"Current Operation: {CurrentOperation.DifficultyLabel}, {CurrentOperation.MissionLabel}");
-                builder.AppendLine($"Missions Failed: {MissionsFailed}");
-                builder.AppendLine($"Current Score: {score}");
-            }
-
-            builder.AppendLine();
-
-            builder.AppendLine("Selected Warbonds:");
-            if (SelectedWarbonds.Count == 0)
-            {
-                builder.AppendLine("  - None");
-            }
-            else
-            {
-                foreach (var warbond in SelectedWarbonds.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
-                {
-                    builder.AppendLine($"  - {warbond.DisplayName}");
-                }
-            }
-
-            builder.AppendLine();
-            builder.AppendLine("Banned Items:");
-            if (BannedItems.Count == 0)
-            {
-                builder.AppendLine("  - None");
-            }
-            else
-            {
-                foreach (var item in BannedItems.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
-                {
-                    builder.AppendLine($"  - {item.DisplayName}");
-                }
-            }
-
-            builder.AppendLine();
-            builder.AppendLine("Pending Rewards:");
-            if (PendingRewardItems.Count == 0)
-            {
-                builder.AppendLine("  - None");
-            }
-            else
-            {
-                foreach (var item in PendingRewardItems.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
-                {
-                    builder.AppendLine($"  - {item.DisplayName}");
-                }
-            }
-
-            builder.AppendLine();
-            builder.AppendLine("Pending Punishments:");
-            if (PendingPunishmentItems.Count == 0)
-            {
-                builder.AppendLine("  - None");
-            }
-            else
-            {
-                foreach (var item in PendingPunishmentItems.AllItems.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase))
-                {
-                    builder.AppendLine($"  - {item.DisplayName}");
-                }
-            }
-
-            builder.AppendLine();
-            builder.AppendLine("Acquired Items:");
-            foreach (var category in AcquiredItems.Categories)
-            {
-                builder.AppendLine($"{category.Label}:");
-
-                if (category.Count == 0)
-                {
-                    builder.AppendLine("  - None");
-                }
-                else
-                {
-                    foreach (var item in category)
-                    {
-                        builder.AppendLine($"  - {item.DisplayName}");
-                    }
-                }
-
-                builder.AppendLine();
-            }
-
-            return builder.ToString();
-        }
-    }
-
     public RedemptionStateDefinition ToDefinition() => new()
     {
         DifficultyId = Difficulty.Id,
         OperationIndex = CurrentOperation.DifficultyIndex,
         MissionNumber = CurrentOperation.MissionNumber,
         MissionsFailed = MissionsFailed,
-        RunCompleted = RunCompleted,
         SelectedWarbonds = [.. SelectedWarbonds.Select(item => item.Id)],
         AcquiredItemIds = [.. AcquiredItems.Select(item => item.Id)],
         BannedItemIds = [.. BannedItems.Select(item => item.Id)],

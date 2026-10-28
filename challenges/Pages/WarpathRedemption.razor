@@ -30,7 +30,7 @@ else
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" aria-label="Open current run settings" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), Session.CurrentRunSummary))">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
@@ -136,8 +136,8 @@ else
                     </div>
                     <div class="col-md-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!Session.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!Session.CanFailMission)">Mission Failed</button>
                             <button class="btn btn-primary btn-lg btn-block" aria-label="View banned items" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
@@ -410,7 +410,7 @@ else
 
     private Task BeginRedemptionMissionCompleteAsync()
     {
-        if (!_state.CanCompleteMission)
+        if (!Session.CanCompleteMission)
         {
             return Task.CompletedTask;
         }
@@ -452,7 +452,7 @@ else
 
     private async Task BeginRedemptionMissionFailureAsync()
     {
-        if (!_state.CanFailMission)
+        if (!Session.CanFailMission)
         {
             return;
         }
