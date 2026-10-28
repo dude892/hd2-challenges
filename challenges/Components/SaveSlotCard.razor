@@ -5,9 +5,13 @@
         <div>
             <div class="fw-semibold text-light">
                 @Slot.Name
-                @if (Slot.State is RedemptionStateDefinition { RunCompleted: true })
+                @if (Slot.Status == RunStatus.Completed)
                 {
                     <span class="badge bg-success ms-1">Completed</span>
+                }
+                else if (Slot.Status == RunStatus.Failed)
+                {
+                    <span class="badge bg-danger ms-1">Failed</span>
                 }
             </div>
             <div class="text-secondary small">@Slot.UpdatedAt.ToLocalTime()</div>

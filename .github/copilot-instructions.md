@@ -25,8 +25,7 @@ Services are registered as scoped services in `Program.cs` and should remain sma
 
 - `CatalogService` is the catalog boundary. It lazily loads the static JSON files through `HttpClient`, post-processes `GameItem` instances, and builds `AllItemsSet`. Use it for item, warbond, and operation lookup rather than loading catalog JSON from components.
 - `RedemptionCatalogService` loads `redemption-difficulties.json` and `redemption-starter-loadout.json`, resolves loadouts and runtime `RedemptionDifficulty` objects, and constructs `RedemptionState` instances.
-- `RedemptionMissionService` owns mission progression rules: advancing missions and operations, applying failures, setting progress, and detecting the final mission. It mutates a supplied `RedemptionState`.
-- `RedemptionRewardService` owns reward and punishment rules: calculating pools, rolling rewards, creating pending choices, claiming rewards, banning rewards, and removing punishments. It mutates a supplied `RedemptionState`.
+- `RedemptionSessionService` owns the active runtime state, run lifecycle, mission progression, rewards, punishments, and persistence coordination. Expose user-level workflow actions; keep reward selection and mission advancement helpers private and test their behavior through those actions.
 - `BrowserStorageService` is the local-storage adapter. It serializes values as JSON and calls `hd2App.getLocalStorage`, `setLocalStorage`, and `removeLocalStorage` through `IJSRuntime`.
 - `FileExportService` is the download adapter. It uses `hd2App.downloadFile` through `IJSRuntime` and provides JSON export helpers.
 

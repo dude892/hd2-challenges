@@ -1,10 +1,7 @@
 @page "/warpath-redemption"
-@inject CatalogService Catalog
 @inject RedemptionCatalogService RedemptionCatalog
-@inject RedemptionSaveLibraryService SaveLibrary
+@inject RedemptionSessionService Session
 @inject FileExportService FileService
-@inject RedemptionRewardService RewardService
-@inject RedemptionMissionService MissionService
 @inject ToastService Toasts
 
 <PageTitle>Warpath: Redemption</PageTitle>
@@ -19,7 +16,7 @@ else
         <div>
             <h1 class="text-light mb-0">
                 Warpath: Redemption
-                @if (_state.RunStarted && SaveLibrary.Library.CurrentSlot is { } currentSlot)
+                @if (_state.RunStarted && Session.CurrentSlot is { } currentSlot)
                 {
                     <span class="fs-5 text-secondary">@currentSlot.Name</span>
                 }
@@ -30,7 +27,7 @@ else
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" aria-label="Open current run settings" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), _state.SummaryText))">Download Summary</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((Session.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), Session.GetCurrentRunSummary()))">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
@@ -41,7 +38,7 @@ else
         <div class="row g-4">
             <div class="col-xl-4 d-grid row-gap-3">
                 <div class="row">
-                    <button class="btn btn-success" @onclick="async () => await SaveLibrary.BeginRun(_state)">Begin Run</button>
+                    <button class="btn btn-success" @onclick="Session.BeginRunAsync">Begin Run</button>
                 </div>
 
                 <div class="row section-card rounded p-3">
@@ -60,21 +57,21 @@ else
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3" data-item-count="@Catalog.GetAllWarbonds().Count">
-                        @foreach (var warbond in Catalog.GetAllWarbonds())
+                    <div class="item-grid mt-3" data-item-count="@RedemptionCatalog.GetAllWarbonds().Count">
+                        @foreach (var warbond in RedemptionCatalog.GetAllWarbonds())
                         {
                             var isSelected = _state.SelectedWarbonds.Contains(warbond);
                             <WarbondCard
                                 Warbond="warbond"
                                 IsSelected="isSelected"
-                                OnClick="@(() => _state.SetWarbondSelected(warbond, !isSelected))" />
+                                OnClick="@(() => Session.SetWarbondSelected(warbond, !isSelected))" />
                         }
                     </div>
                 </div>
             </div>
 
             <div class="col-xl-8">
-                <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.StarterItems)"
+                <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.StarterItems)"
                         AccessibleLabel="Starting loadout preview"
                         ContainerClass="section-card rounded p-3"
                         GridClass="mt-3"
@@ -136,8 +133,8 @@ else
                     </div>
                     <div class="col-md-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!_state.CanCompleteMission)">Mission Complete</button>
-                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!_state.CanFailMission)">Mission Failed</button>
+                            <button class="btn btn-success btn-lg btn-block" @onclick="BeginRedemptionMissionCompleteAsync" disabled="@(!Session.CanCompleteMission)">Mission Complete</button>
+                            <button class="btn btn-danger btn-lg btn-block" @onclick="BeginRedemptionMissionFailureAsync" disabled="@(!Session.CanFailMission)">Mission Failed</button>
                             <button class="btn btn-primary btn-lg btn-block" aria-label="View banned items" @onclick="(() => _showBannedItemsModal = true)" disabled="@(!_state.BannedItems.Any())">Banned Items</button>
                         </div>
                     </div>
@@ -158,7 +155,7 @@ else
                             <div class="accordion-body">
                                 <div class="d-flex flex-column gap-5">
                                     <div class="row gx-5 gy-3 align-items-start">
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries)"
                                                   AccessibleLabel="Acquired primary items"
                                                   ContainerClass="col-12 col-sm-auto"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -167,7 +164,7 @@ else
                                                   BadgeSelector="GetStarterBadge">
                                             <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Primaries.Label</h5></HeaderContent>
                                         </ItemGrid>
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries)"
                                                   AccessibleLabel="Acquired secondary items"
                                                   ContainerClass="col-12 col-sm"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -178,7 +175,7 @@ else
                                         </ItemGrid>
                                     </div>
                                     <div class="row gx-5 gy-3 align-items-start">
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables)"
                                                   AccessibleLabel="Acquired throwable items"
                                                   ContainerClass="col-12 col-sm-auto"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -187,7 +184,7 @@ else
                                                   BadgeSelector="GetStarterBadge">
                                             <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Throwables.Label</h5></HeaderContent>
                                         </ItemGrid>
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives)"
                                                   AccessibleLabel="Acquired armor passives"
                                                   ContainerClass="col-12 col-sm"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -203,7 +200,7 @@ else
                     </div>
                 </div>
                 <div class="row g-3 mt-1">
-                    <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems)"
+                    <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems)"
                               AccessibleLabel="Acquired stratagems"
                               ContainerClass="col-12 col-lg section-card rounded p-3 h-100"
                               GridClass="run-item-grid"
@@ -224,7 +221,7 @@ else
                                 <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                             </button>
                             <div id="boosters-collapse" class="booster-accordion-content" role="region" aria-label="Acquired boosters" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
-                                <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters)"
+                                <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters)"
                                           AccessibleLabel="Acquired booster items"
                                           ContainerClass="booster-accordion-content-inner p-3"
                                           GridClass="run-item-grid"
@@ -263,7 +260,7 @@ else
 
     <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="@(() => _showRewardModal = false)">
         <MainContent>
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.PendingRewardItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.PendingRewardItems)"
                       AccessibleLabel="Reward choices"
                       GridClass="justify-content-center"
                       UseItemColumns="true"
@@ -280,7 +277,7 @@ else
 
     <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="@(() => _showPunishmentModal = false)">
         <MainContent>
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems)"
                       AccessibleLabel="Punishment choices"
                       GridClass="justify-content-center"
                       UseItemColumns="true"
@@ -291,7 +288,7 @@ else
 
     <Modal Title="Banned Items" Open="@_showBannedItemsModal" CssClass="item-modal" OnClose="@(() => _showBannedItemsModal = false)">
         <MainContent>
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.BannedItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.BannedItems)"
                       AccessibleLabel="Banned items"
                       GridClass="justify-content-center"
                       UseItemColumns="true"
@@ -317,7 +314,7 @@ else
                 </div>
             </div>
 
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.StarterItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.StarterItems)"
                       AccessibleLabel="Starting loadout"
                       ContainerClass="mb-4"
                       GridClass="mt-3"
@@ -335,7 +332,7 @@ else
 
     <Modal Title="Warpath: Redemption Save Slots" Open="@_showSaveManager" CssClass="save-slot-modal" OnClose="@(() => _showSaveManager = false)">
         <HeaderButtons>
-            <button class="btn btn-primary btn-sm" @onclick="() => SaveLibrary.CreateSnapshotAsync(_state)" disabled="@(!_state.RunStarted)">Create Snapshot</button>
+            <button class="btn btn-primary btn-sm" @onclick="Session.CreateSnapshotAsync" disabled="@(!_state.RunStarted)">Create Snapshot</button>
             <label class="btn btn-outline-light btn-sm mb-0">
                 Import Save
                 <InputFile OnChange="ImportRedemptionSlotAsync" class="d-none" accept=".json" />
@@ -343,16 +340,16 @@ else
         </HeaderButtons>
         <MainContent>
             <div class="d-grid gap-2">
-                @if (SaveLibrary.Library.WorkingSlot is null && SaveLibrary.Library.CurrentSlot is not null)
+                @if (!Session.HasWorkingSlot && Session.CurrentSlot is { } currentSlot)
                 {
-                    <SaveSlotCard Slot="SaveLibrary.Library.CurrentSlot"
+                    <SaveSlotCard Slot="currentSlot"
                                   IsCurrent="true"
-                                  OnRename="name => RenameRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id, name)"
-                                  OnExport="() => ExportRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id)"
-                                  OnDelete="() => CheckDeleteRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id)" />
+                                  OnRename="name => RenameRedemptionSlotAsync(currentSlot.Id, name)"
+                                  OnExport="() => ExportRedemptionSlotAsync(currentSlot.Id)"
+                                  OnDelete="() => CheckDeleteRedemptionSlotAsync(currentSlot.Id)" />
                 }
 
-                @foreach (var slot in SaveLibrary.Library.Slots.Where(slot => slot.Id != SaveLibrary.Library.CurrentSlotId).OrderByDescending(slot => slot.UpdatedAt))
+                @foreach (var slot in Session.Slots.Where(slot => slot.Id != Session.CurrentSlotId).OrderByDescending(slot => slot.UpdatedAt))
                 {
                     <SaveSlotCard Slot="slot"
                                   OnRename="name => RenameRedemptionSlotAsync(slot.Id, name)"
@@ -379,7 +376,7 @@ else
 }
 
 @code {
-    private RedemptionState _state = default!;
+    private RedemptionState _state => Session.State;
     private bool _loaded;
     private bool _showMissionCompleteModal;
     private bool _showRewardModal;
@@ -394,8 +391,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await RedemptionCatalog.EnsureLoadedAsync();
-        _state = await SaveLibrary.LoadAsync();
+        await Session.LoadAsync();
         _showBoosterAccordion = _state.AcquiredItems.Boosters.Any();
         _loaded = true;
     }
@@ -404,15 +400,14 @@ else
     {
         if (args.Value is string difficulty)
         {
-            RedemptionDifficulty redemptionDifficulty = RedemptionCatalog.GetDifficulty(difficulty);
-            _state = RedemptionCatalog.CreateRedemptionSetupState(redemptionDifficulty, _state.SelectedWarbonds);
+            Session.ChangeDifficulty(difficulty);
             Toasts.Show($"{_state.Difficulty.DisplayName} loadout preview updated.");
         }
     }
 
     private Task BeginRedemptionMissionCompleteAsync()
     {
-        if (_state.PendingPunishmentItems.Count > 0)
+        if (!Session.CanCompleteMission)
         {
             return Task.CompletedTask;
         }
@@ -430,20 +425,20 @@ else
     private async Task ConfirmRedemptionMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
-        if (MissionService.TryCompleteFinalMission(_state))
+        MissionCompletionResult result = Session.CompleteMission(stars);
+        if (result == MissionCompletionResult.Unavailable)
         {
-            await SaveLibrary.PersistAsync(_state);
-            
+            return;
+        }
+
+        await Session.PersistAsync();
+        if (result == MissionCompletionResult.ChallengeCompleted)
+        {
             Toasts.Show("Challenge complete.");
             return;
         }
 
-        if (RewardService.EnsurePendingRewards(_state, stars))
-        {
-            await SaveLibrary.PersistAsync(_state);
-        }
-
-        if (_state.PendingRewardItems.Count == 0)
+        if (result == MissionCompletionResult.NoRewardsAvailable)
         {
             Toasts.Show("No rewards available.");
             return;
@@ -454,14 +449,14 @@ else
 
     private async Task BeginRedemptionMissionFailureAsync()
     {
-        if (_state.PendingRewardItems.Count > 0)
+        if (!Session.CanFailMission)
         {
             return;
         }
 
-        if (RewardService.EnsurePendingPunishments(_state))
+        if (Session.PrepareMissionFailure())
         {
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
 
         if (_state.PendingPunishmentItems.Count == 0)
@@ -476,48 +471,45 @@ else
     private async Task ClaimRedemptionRewardAsync(string id)
     {
         int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
-        if (RewardService.ClaimReward(_state, id))
+        if (Session.ClaimMissionReward(id))
         {
             if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
             {
                 _showBoosterAccordion = true;
             }
 
-            MissionService.AdvanceMission(_state);
             _showRewardModal = false;
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
     }
 
     private async Task SkipAndBanRedemptionRewardsAsync()
     {
-        if (RewardService.BanPendingRewards(_state))
+        if (Session.SkipAndBanMissionRewards())
         {
-            MissionService.AdvanceMission(_state);
             _showRewardModal = false;
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
     }
 
     private async Task ClaimRedemptionPunishmentAsync(string id)
     {
-        if (RewardService.ClaimPunishment(_state, id))
+        if (Session.ClaimMissionPunishment(id))
         {
-            MissionService.ApplyMissionFailure(_state);
             _showPunishmentModal = false;
-            await SaveLibrary.PersistAsync(_state);
+            await Session.PersistAsync();
         }
     }
 
     private async Task RestartRedemptionRunAsync()
     {
-        _state = await SaveLibrary.RestartAsync(_state);
+        await Session.RestartAsync();
         Toasts.Show("Run reset. Review your settings before starting a new run.");
     }
 
     private async Task RenameRedemptionSlotAsync(Guid slotId, string name)
     {
-        if (await SaveLibrary.RenameSlotAsync(slotId, name))
+        if (await Session.RenameSlotAsync(slotId, name))
         {
             Toasts.Show("Slot name saved.");
         }
@@ -525,16 +517,16 @@ else
 
     private async Task LoadRedemptionSlotAsync(Guid slotId)
     {
-        _state = await SaveLibrary.SelectSlotAsync(slotId);
-        var slot = SaveLibrary.GetSlot(slotId);
+        await Session.SelectSlotAsync(slotId);
+        var slot = Session.GetSlot(slotId);
         Toasts.Show($"Save {slot?.Name} loaded.");
     }
 
     private async Task CheckDeleteRedemptionSlotAsync(Guid slotId)
     {
-        if (slotId == SaveLibrary.Library.CurrentSlotId)
+        if (slotId == Session.CurrentSlotId)
         {
-            _slotToDelete = SaveLibrary.Library.CurrentSlot;
+            _slotToDelete = Session.CurrentSlot;
             
             return;
         }
@@ -544,8 +536,8 @@ else
 
     private async Task DeleteRedemptionSlotAsync(Guid slotId)
     {
-        var slotToDelete = SaveLibrary.GetSlot(slotId);
-        (bool deleted, _state) = await SaveLibrary.DeleteSlotAsync(slotId, _state);
+        var slotToDelete = Session.GetSlot(slotId);
+        bool deleted = await Session.DeleteSlotAsync(slotId);
 
         _slotToDelete = null;
 
@@ -557,8 +549,8 @@ else
 
     private async Task ExportRedemptionSlotAsync(Guid slotId)
     {
-        SaveSlot<RedemptionStateDefinition> slot = SaveLibrary.Library.Slots.First(entry => entry.Id == slotId);
-        await FileService.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
+        SaveSlot<RedemptionStateDefinition> slot = Session.Slots.First(entry => entry.Id == slotId);
+        await FileService.DownloadJsonAsync($"{(slot.Name)}.json", Session.CreateExport(slotId));
     }
 
     private async Task ImportRedemptionSlotAsync(InputFileChangeEventArgs args)
@@ -567,14 +559,13 @@ else
         await using Stream? stream = file.OpenReadStream(1024 * 1024);
         using StreamReader? reader = new StreamReader(stream);
         string? json = await reader.ReadToEndAsync();
-        (SaveSlot<RedemptionStateDefinition> Slot, RedemptionState State)? imported = await SaveLibrary.ImportAsync(json);
+        SaveSlot<RedemptionStateDefinition>? imported = await Session.ImportAsync(json);
         if (imported is null)
         {
             Toasts.Show("Invalid Warpath: Redemption save file.");
             return;
         }
 
-        _state = imported.Value.State;
-        Toasts.Show($"Imported slot {imported.Value.Slot.Name}.");
+        Toasts.Show($"Imported slot {imported.Name}.");
     }
 }

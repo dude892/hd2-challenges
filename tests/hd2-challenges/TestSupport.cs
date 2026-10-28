@@ -17,7 +17,7 @@ internal sealed class CatalogTestContext : IDisposable
     public CatalogService Catalog { get; }
     public RedemptionCatalogService RedemptionCatalog { get; }
 
-    public static async Task<CatalogTestContext> CreateAsync()
+    public static async Task<CatalogTestContext> CreateAsync(bool loadCatalog = true)
     {
         HttpClient httpClient = new(new CatalogDataHandler())
         {
@@ -25,8 +25,20 @@ internal sealed class CatalogTestContext : IDisposable
         };
         CatalogService catalog = new(httpClient);
         RedemptionCatalogService redemptionCatalog = new(httpClient, catalog);
-        await redemptionCatalog.EnsureLoadedAsync();
+        if (loadCatalog)
+        {
+            await redemptionCatalog.EnsureLoadedAsync();
+        }
         return new CatalogTestContext(httpClient, catalog, redemptionCatalog);
+    }
+
+    public async Task<RedemptionSessionService> CreateSessionAsync()
+    {
+        RedemptionSaveLibraryService saves = new(
+            new SaveLibraryService(new BrowserStorageService(new InMemoryJsRuntime())));
+        RedemptionSessionService session = new(RedemptionCatalog, saves);
+        await session.LoadAsync();
+        return session;
     }
 
     public void Dispose() => _httpClient.Dispose();
@@ -64,18 +76,19 @@ internal sealed class RedemptionSaveTestContext : IDisposable
         Catalog = catalogContext;
         GenericSaveLibrary = genericSaveLibrary;
         SaveLibrary = saveLibrary;
+        Session = new(catalogContext.RedemptionCatalog, saveLibrary);
     }
 
     public CatalogTestContext Catalog { get; }
     public SaveLibraryService GenericSaveLibrary { get; }
     public RedemptionSaveLibraryService SaveLibrary { get; }
+    public RedemptionSessionService Session { get; }
 
     public static async Task<RedemptionSaveTestContext> CreateAsync()
     {
         CatalogTestContext catalogContext = await CatalogTestContext.CreateAsync();
         SaveLibraryService genericSaveLibrary = new(new BrowserStorageService(new InMemoryJsRuntime()));
-        RedemptionSaveLibraryService saveLibrary = new(
-            genericSaveLibrary, catalogContext.RedemptionCatalog, catalogContext.Catalog);
+        RedemptionSaveLibraryService saveLibrary = new(genericSaveLibrary);
         return new RedemptionSaveTestContext(catalogContext, genericSaveLibrary, saveLibrary);
     }
 

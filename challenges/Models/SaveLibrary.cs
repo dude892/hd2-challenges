@@ -2,12 +2,21 @@ using System.Text.Json.Serialization;
 
 namespace Hd2Challenges.Models;
 
-public sealed class SaveSlot<TState>
+[JsonConverter(typeof(JsonStringEnumConverter<RunStatus>))]
+public enum RunStatus
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Name { get; set; } = string.Empty;
-    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
-    public TState State { get; set; } = default!;
+    InProgress,
+    Completed,
+    Failed
+}
+
+public sealed record SaveSlot<TState>
+{
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public string Name { get; init; } = string.Empty;
+    public DateTimeOffset UpdatedAt { get; init; } = DateTimeOffset.UtcNow;
+    public RunStatus Status { get; init; }
+    public TState State { get; init; } = default!;
 }
 
 public sealed class SaveLibrary<TState>
@@ -49,20 +58,38 @@ public sealed class SaveLibrary<TState>
 
     public bool RenameSlot(Guid slotId, string? name)
     {
-        var slot = Slots.FirstOrDefault(entry => entry.Id == slotId);
-        if (slot is null || string.IsNullOrWhiteSpace(name))
+        int slotIndex = Slots.FindIndex(entry => entry.Id == slotId);
+        if (slotIndex == -1 || string.IsNullOrWhiteSpace(name))
         {
             return false;
         }
 
+        SaveSlot<TState> slot = Slots[slotIndex];
         string normalizedName = name.Trim();
         if (slot.Name == normalizedName)
         {
             return false;
         }
 
-        slot.Name = normalizedName;
-        slot.UpdatedAt = DateTimeOffset.UtcNow;
+        Slots[slotIndex] = slot with { Name = normalizedName, UpdatedAt = DateTimeOffset.UtcNow };
+        return true;
+    }
+
+    public bool ReplaceSlot(SaveSlot<TState> slot)
+    {
+        if (WorkingSlot?.Id == slot.Id)
+        {
+            WorkingSlot = slot;
+            return true;
+        }
+
+        int slotIndex = Slots.FindIndex(entry => entry.Id == slot.Id);
+        if (slotIndex == -1)
+        {
+            return false;
+        }
+
+        Slots[slotIndex] = slot;
         return true;
     }
 
@@ -97,9 +124,9 @@ public sealed class SaveLibrary<TState>
     }
 }
 
-public sealed class SaveExport<TState>
+public sealed record SaveExport<TState>
 {
-    public int Version { get; set; } = 1;
-    public string Mode { get; set; } = string.Empty;
-    public SaveSlot<TState> Slot { get; set; } = default!;
+    public int Version { get; init; } = 1;
+    public string Mode { get; init; } = string.Empty;
+    public SaveSlot<TState> Slot { get; init; } = default!;
 }

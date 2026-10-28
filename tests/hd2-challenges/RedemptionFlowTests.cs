@@ -5,6 +5,29 @@ namespace Hd2Challenges.Tests;
 
 public sealed class RedemptionFlowTests
 {
+    private static (RedemptionState State, Warbond Optional, GameItem OptionalStarter) CreateWarbondSelectionScenario()
+    {
+        Warbond mandatory = new() { Id = "mandatory", AlwaysEnabled = true };
+        Warbond optional = new() { Id = "optional" };
+        GameItem optionalStarter = new(new GameItemDefinition { Id = "optional-starter" }, ItemKind.Primary, null);
+        RedemptionDifficulty difficulty = new(
+            new RedemptionDifficultyDefinition { Id = "test", DisplayName = "Test" },
+            _ => new ItemSet(),
+            _ => new Operation(new OperationDefinition { DisplayName = "Start", MissionCount = 1 }, 1));
+        RedemptionState state = new(difficulty, [mandatory], (_, selected) =>
+        {
+            ItemSet starterItems = new();
+            if (selected.Contains(optional))
+            {
+                starterItems.AddItem(optionalStarter);
+            }
+
+            return starterItems;
+        });
+
+        return (state, optional, optionalStarter);
+    }
+
     [Fact]
     public async Task CatalogLoadsItemsWithValidIdsAndKinds()
     {
@@ -189,7 +212,6 @@ public sealed class RedemptionFlowTests
         RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(difficulty, context.Catalog.GetAllWarbonds());
         state.CurrentOperation = context.Catalog.GetOperation(6, 2);
         state.MissionsFailed = 2;
-        state.RunCompleted = true;
         state.AcquiredItems.AddItems(state.StarterItems);
         state.PendingRewardItems.AddItem(context.Catalog.GetAllItems().First(item => !state.StarterItems.ContainsItem(item)));
 
@@ -200,7 +222,7 @@ public sealed class RedemptionFlowTests
         Assert.Equal(6, restored.CurrentOperation.DifficultyIndex);
         Assert.Equal(2, restored.CurrentOperation.MissionNumber);
         Assert.Equal(2, restored.MissionsFailed);
-        Assert.True(restored.RunCompleted);
+        Assert.True(restored.RunStarted);
         Assert.True(restored.AcquiredItems.ContainsItems(state.StarterItems));
         Assert.Equal(state.PendingRewardItems.Select(item => item.Id), restored.PendingRewardItems.Select(item => item.Id));
         Assert.Equal(state.SelectedWarbonds.Select(item => item.Id).ToHashSet(), restored.SelectedWarbonds.Select(item => item.Id).ToHashSet());
@@ -232,392 +254,4 @@ public sealed class RedemptionFlowTests
         Assert.DoesNotContain(optionalStarter, state.StarterItems);
     }
 
-    [Fact]
-    public async Task MissionServiceAdvancesToNextMissionAndResetsStars()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-        state.CurrentOperation.SelectedStars = 3;
-        missions.AdvanceMission(state);
-        Assert.Equal(2, state.CurrentOperation.MissionNumber);
-        Assert.Equal(0, state.CurrentOperation.SelectedStars);
-    }
-
-    [Fact]
-    public async Task MissionServiceAdvancesToNextOperationAfterLastMission()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-        int firstOperation = state.CurrentOperation.DifficultyIndex;
-        int lastMission = context.Catalog.GetOperation(firstOperation).MissionCount;
-        state.CurrentOperation = context.Catalog.GetOperation(firstOperation, lastMission);
-
-        missions.AdvanceMission(state);
-
-        Assert.Equal(firstOperation + 1, state.CurrentOperation.DifficultyIndex);
-        Assert.Equal(1, state.CurrentOperation.MissionNumber);
-    }
-
-    [Fact]
-    public async Task MissionServiceFailureIncrementsCountAndResetsProgress()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-        int operationIndex = state.CurrentOperation.DifficultyIndex;
-        state.CurrentOperation = context.Catalog.GetOperation(operationIndex + 2, 2);
-        state.CurrentOperation.SelectedStars = 2;
-
-        missions.ApplyMissionFailure(state);
-
-        Assert.Equal(1, state.MissionsFailed);
-        Assert.Equal(1, state.CurrentOperation.MissionNumber);
-        Assert.Equal(0, state.CurrentOperation.SelectedStars);
-    }
-
-    [Fact]
-    public async Task MissionServiceIdentifiesOnlyTheFinalMissionAsFinal()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-
-        Assert.False(missions.IsFinalMission(state));
-
-        int finalOperation = context.Catalog.LastOperationIndex;
-        int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
-        state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
-
-        Assert.True(missions.IsFinalMission(state));
-    }
-
-    [Fact]
-    public async Task MissionServiceDoesNotCompleteRunBeforeFinalMission()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-
-        Assert.False(missions.TryCompleteFinalMission(state));
-        Assert.False(state.RunCompleted);
-    }
-
-    [Fact]
-    public async Task MissionServiceCompletesRunOnFinalMission()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-        int finalOperation = context.Catalog.LastOperationIndex;
-        int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
-        state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
-
-        Assert.True(missions.TryCompleteFinalMission(state));
-        Assert.True(state.RunCompleted);
-    }
-
-    [Fact]
-    public async Task MissionServiceDoesNotAdvancePastTheFinalOperation()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionMissionService missions = new(context.Catalog);
-        int finalOperation = context.Catalog.LastOperationIndex;
-        int finalMission = context.Catalog.GetOperation(finalOperation).MissionCount;
-        state.CurrentOperation = context.Catalog.GetOperation(finalOperation, finalMission);
-
-        missions.AdvanceMission(state);
-
-        Assert.Equal(finalOperation, state.CurrentOperation.DifficultyIndex);
-        Assert.Equal(finalMission, state.CurrentOperation.MissionNumber);
-    }
-
-    [Fact]
-    public async Task RewardPoolExcludesStarterAcquiredBannedAndUnselectedItems()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        Warbond mandatory = Assert.Single(context.Catalog.GetAllWarbonds(), warbond => warbond.AlwaysEnabled);
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), [mandatory]);
-        RedemptionRewardService rewards = new(context.Catalog);
-        GameItem acquired = context.Catalog.GetAllItems().First(item => !state.StarterItems.ContainsItem(item));
-        GameItem banned = context.Catalog.GetAllItems().First(item =>
-            !state.StarterItems.ContainsItem(item) && !item.Equals(acquired));
-        state.AcquiredItems.AddItem(acquired);
-        state.BannedItems.AddItem(banned);
-
-        ItemSet pool = rewards.GetRewardPool(state);
-
-        Assert.NotEmpty(pool);
-        Assert.DoesNotContain(pool, state.StarterItems.ContainsItem);
-        Assert.DoesNotContain(pool, item => item.Equals(acquired));
-        Assert.DoesNotContain(pool, item => item.Equals(banned));
-        Assert.DoesNotContain(pool, item => item.Warbond is not null && !item.Warbond.AlwaysEnabled && !state.SelectedWarbonds.Contains(item.Warbond));
-    }
-
-    [Theory]
-    [InlineData("normal", 3, 2)]
-    [InlineData("super", 5, 3)]
-    public async Task RewardRollHonorsStarCountAndSuperDifficulty(string difficultyId, int stars, int expectedMaximum)
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty(difficultyId), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-
-        ItemSet rolled = rewards.RollRewardItems(state, stars);
-
-        Assert.InRange(rolled.Count, 1, expectedMaximum);
-        Assert.True(rewards.GetRewardPool(state).ContainsItems(rolled));
-    }
-
-    [Fact]
-    public async Task HardFinaleRewardRollOnlyOffersAntitankItems()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        state.CurrentOperation = context.Catalog.GetOperation(5, context.Catalog.GetOperation(5).MissionCount);
-        RedemptionRewardService rewards = new(context.Catalog);
-        ItemSet antitankPool = new(rewards.GetRewardPool(state).Where(item => item.Antitank));
-
-        ItemSet rolled = rewards.RollRewardItems(state, state.CurrentOperation.MaxStars);
-
-        Assert.NotEmpty(antitankPool);
-        Assert.NotEmpty(rolled);
-        Assert.All(rolled, item => Assert.True(item.Antitank));
-        Assert.True(antitankPool.ContainsItems(rolled));
-    }
-
-    [Fact]
-    public async Task PendingRewardClaimMovesItemToAcquiredItems()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-        GameItem reward = rewards.GetRewardPool(state).First();
-        state.PendingRewardItems.AddItem(reward);
-
-        Assert.False(rewards.ClaimReward(state, "not-a-reward"));
-        Assert.True(rewards.ClaimReward(state, reward.Id));
-        Assert.Contains(reward, state.AcquiredItems);
-        Assert.Empty(state.PendingRewardItems);
-    }
-
-    [Fact]
-    public async Task BanningPendingRewardsMovesItemsToBannedItems()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-        GameItem reward = rewards.GetRewardPool(state).First();
-        state.PendingRewardItems.AddItem(reward);
-
-        Assert.True(rewards.BanPendingRewards(state));
-        Assert.Contains(reward, state.BannedItems);
-        Assert.Empty(state.PendingRewardItems);
-        Assert.False(rewards.BanPendingRewards(state));
-    }
-
-    [Fact]
-    public async Task PendingRewardChoicesInitializeOnlyOnce()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-
-        Assert.True(rewards.EnsurePendingRewards(state, state.CurrentOperation.MaxStars));
-        Assert.NotEmpty(state.PendingRewardItems);
-        int pendingCount = state.PendingRewardItems.Count;
-
-        Assert.False(rewards.EnsurePendingRewards(state, 1));
-        Assert.Equal(pendingCount, state.PendingRewardItems.Count);
-    }
-
-    [Fact]
-    public async Task PendingRewardChoicesRemainEmptyWhenRewardPoolIsEmpty()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-        state.AcquiredItems.AddItems(context.Catalog.GetAllItems());
-
-        Assert.True(rewards.EnsurePendingRewards(state, 1));
-        Assert.Empty(state.PendingRewardItems);
-    }
-
-    [Fact]
-    public async Task PendingPunishmentsRemainEmptyWhenNoItemsAreAcquired()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-
-        Assert.True(rewards.EnsurePendingPunishments(state));
-        Assert.Empty(state.PendingPunishmentItems);
-    }
-
-    [Fact]
-    public async Task PunishmentSelectionIsBoundedToAcquiredItems()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-        ItemSet acquired = new(context.Catalog.GetAllItems().Take(5));
-        state.AcquiredItems.AddItems(acquired);
-
-        Assert.True(rewards.EnsurePendingPunishments(state));
-        Assert.InRange(state.PendingPunishmentItems.Count, 1, 3);
-        Assert.True(state.AcquiredItems.ContainsItems(state.PendingPunishmentItems));
-    }
-
-    [Fact]
-    public async Task PendingPunishmentChoicesInitializeOnlyOnce()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-        state.AcquiredItems.AddItems(new ItemSet(context.Catalog.GetAllItems().Take(5)));
-
-        Assert.True(rewards.EnsurePendingPunishments(state));
-        int pendingCount = state.PendingPunishmentItems.Count;
-
-        Assert.False(rewards.EnsurePendingPunishments(state));
-        Assert.Equal(pendingCount, state.PendingPunishmentItems.Count);
-    }
-
-    [Fact]
-    public async Task ClaimingPunishmentRemovesItFromAcquiredAndBannedItems()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        RedemptionRewardService rewards = new(context.Catalog);
-        GameItem punishment = context.Catalog.GetAllItems().First();
-        state.AcquiredItems.AddItem(punishment);
-        state.PendingPunishmentItems.AddItem(punishment);
-        state.BannedItems.AddItem(punishment);
-
-        Assert.False(rewards.ClaimPunishment(state, "not-a-punishment"));
-        Assert.True(rewards.ClaimPunishment(state, punishment.Id));
-        Assert.DoesNotContain(punishment, state.AcquiredItems);
-        Assert.DoesNotContain(punishment, state.BannedItems);
-        Assert.Empty(state.PendingPunishmentItems);
-    }
-
-    [Fact]
-    public async Task MissionCompletionAvailabilityTracksPendingChoicesAndCompletion()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        GameItem item = context.Catalog.GetAllItems().First();
-
-        Assert.True(state.CanCompleteMission);
-        state.PendingRewardItems.AddItem(item);
-        Assert.True(state.CanCompleteMission);
-        state.PendingRewardItems.Clear();
-        state.PendingPunishmentItems.AddItem(item);
-        Assert.False(state.CanCompleteMission);
-        state.PendingPunishmentItems.Clear();
-        state.RunCompleted = true;
-        Assert.False(state.CanCompleteMission);
-    }
-
-    [Fact]
-    public async Task MissionFailureAvailabilityTracksPendingChoicesAndCompletion()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            context.RedemptionCatalog.GetDifficulty("normal"), context.Catalog.GetAllWarbonds());
-        GameItem item = context.Catalog.GetAllItems().First();
-
-        Assert.True(state.CanFailMission);
-        state.PendingRewardItems.AddItem(item);
-        Assert.False(state.CanFailMission);
-        state.PendingRewardItems.Clear();
-        state.PendingPunishmentItems.AddItem(item);
-        Assert.True(state.CanFailMission);
-        state.PendingPunishmentItems.Clear();
-        state.RunCompleted = true;
-        Assert.False(state.CanFailMission);
-    }
-
-    [Fact]
-    public async Task SummaryReportsCurrentScoreAndSelectedWarbonds()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionDifficulty difficulty = context.RedemptionCatalog.GetDifficulty("normal");
-        Warbond mandatory = Assert.Single(context.Catalog.GetAllWarbonds(), warbond => warbond.AlwaysEnabled);
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(difficulty, [mandatory]);
-        state.MissionsFailed = 2;
-
-        Assert.Contains($"Current Score: {difficulty.ScoreModifier - 100}", state.SummaryText);
-        Assert.Contains(mandatory.DisplayName, state.SummaryText);
-        Assert.Contains(
-            string.Join(Environment.NewLine, new[]
-            {
-                "Acquired Items:",
-                "Stratagems:", "  - None", "",
-                "Primary Weapons:", "  - None", "",
-                "Secondary Weapons:", "  - None", "",
-                "Throwables:", "  - None", "",
-                "Armor Passives:", "  - None", "",
-                "Boosters:", "  - None"
-            }),
-            state.SummaryText);
-    }
-
-    [Fact]
-    public async Task SummaryReportsFinalScoreWhenRunIsCompleted()
-    {
-        using CatalogTestContext context = await CatalogTestContext.CreateAsync();
-        RedemptionDifficulty difficulty = context.RedemptionCatalog.GetDifficulty("normal");
-        RedemptionState state = context.RedemptionCatalog.CreateRedemptionSetupState(
-            difficulty, context.Catalog.GetAllWarbonds());
-        state.MissionsFailed = 2;
-        state.RunCompleted = true;
-
-        Assert.Contains($"Final Score: {difficulty.ScoreModifier - 100}", state.SummaryText);
-        Assert.Contains("Run Completed", state.SummaryText);
-    }
-
-    private static (RedemptionState State, Warbond Optional, GameItem OptionalStarter) CreateWarbondSelectionScenario()
-    {
-        Warbond mandatory = new() { Id = "mandatory", AlwaysEnabled = true };
-        Warbond optional = new() { Id = "optional" };
-        GameItem optionalStarter = new(new GameItemDefinition { Id = "optional-starter" }, ItemKind.Primary, null);
-        RedemptionDifficulty difficulty = new(
-            new RedemptionDifficultyDefinition { Id = "test", DisplayName = "Test" },
-            _ => new ItemSet(),
-            _ => new Operation(new OperationDefinition { DisplayName = "Start", MissionCount = 1 }, 1));
-        RedemptionState state = new(difficulty, [mandatory], (_, selected) =>
-        {
-            ItemSet starterItems = new();
-            if (selected.Contains(optional))
-            {
-                starterItems.AddItem(optionalStarter);
-            }
-
-            return starterItems;
-        });
-
-        return (state, optional, optionalStarter);
-    }
 }

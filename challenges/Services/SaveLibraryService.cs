@@ -24,8 +24,6 @@ public sealed class SaveLibraryService(BrowserStorageService storage)
             return null;
         }
 
-        slot.Id = Guid.NewGuid();
-        slot.UpdatedAt = DateTimeOffset.UtcNow;
-        return slot;
+        return slot with { Id = Guid.NewGuid(), UpdatedAt = DateTimeOffset.UtcNow };
     }
 }

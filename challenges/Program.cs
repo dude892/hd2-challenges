@@ -14,8 +14,7 @@ builder.Services.AddScoped<RedemptionCatalogService>();
 builder.Services.AddScoped<BrowserStorageService>();
 builder.Services.AddScoped<SaveLibraryService>();
 builder.Services.AddScoped<RedemptionSaveLibraryService>();
+builder.Services.AddScoped<RedemptionSessionService>();
 builder.Services.AddScoped<FileExportService>();
-builder.Services.AddScoped<RedemptionRewardService>();
-builder.Services.AddScoped<RedemptionMissionService>();
 
 await builder.Build().RunAsync();

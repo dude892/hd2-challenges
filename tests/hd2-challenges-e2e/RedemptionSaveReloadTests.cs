@@ -8,12 +8,62 @@ namespace Hd2Challenges.EndToEnd.Tests;
 [Collection(WarpathWebAppCollection.Name)]
 public sealed class RedemptionSaveReloadTests(WarpathWebAppFixture webApp) : RedemptionPageTest(webApp)
 {
+    private async Task AssertCompletedRunAsync(SaveObject save)
+    {
+        await Expect(Modals.MissionComplete.OpenButton).ToBeDisabledAsync();
+        await Expect(Modals.PunishmentOptions.OpenButton).ToBeDisabledAsync();
+        await Modals.SaveSlots.OpenAsync();
+        ILocator currentSlot = Modals.SaveSlots.Dialog.GetByRole(AriaRole.Group, new()
+        {
+            Name = $"Save slot: {save.Slot.Name}, current save",
+            Exact = true
+        });
+        await Expect(currentSlot).ToContainTextAsync("Completed");
+        await Modals.SaveSlots.CloseAsync();
+    }
+
     private async Task CompleteFirstMissionAndOpenRewardsAsync()
     {
         await Modals.MissionComplete.OpenAsync();
         await Modals.MissionComplete.ThreeStarsButton.ClickAsync();
         await Modals.RewardOptions.OpenAsync();
         await Expect(Modals.RewardOptions.Dialog).ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task CompletingFinalMissionPersistsCompletedRunStatus()
+    {
+        SaveObject save = RedemptionSaves.FinalOperationLastMission;
+        RedemptionState state = save.ResolveState(RedemptionCatalog);
+        Assert.Equal(RedemptionCatalog.LastOperationIndex, state.CurrentOperation.DifficultyIndex);
+        Assert.True(state.CurrentOperation.IsLastMission);
+        await ImportRunAsync(save);
+
+        await Modals.MissionComplete.OpenAsync();
+        await Modals.MissionComplete.FiveStarsButton.ClickAsync();
+        await Modals.MissionComplete.ContinueToRewardsButton.ClickAsync();
+
+        await Expect(Page.GetByRole(AriaRole.Status, new()
+        {
+            Name = "Challenge complete.",
+            Exact = true
+        })).ToBeVisibleAsync();
+        await AssertCompletedRunAsync(save);
+        await ReloadAsync();
+        await AssertCompletedRunAsync(save);
+    }
+
+    [Fact]
+    public async Task ImportingLegacyCompletedSavePersistsCompletedRunStatus()
+    {
+        SaveObject save = RedemptionSaves.LegacyCompleted;
+        Assert.True(save.Slot.State.RunCompleted);
+
+        await ImportRunAsync(save);
+
+        await AssertCompletedRunAsync(save);
+        await ReloadAsync();
+        await AssertCompletedRunAsync(save);
     }
 
     [Fact]
