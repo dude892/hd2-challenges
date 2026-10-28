@@ -18,10 +18,20 @@ public sealed class RedemptionSessionService(
 
     public RedemptionState State { get { EnsureLoaded(); return _state; } }
 
-    public RunStatus CurrentRunStatus => saves.Library.CurrentSlot?.Status ?? RunStatus.InProgress;
+    public IReadOnlyList<SaveSlot<RedemptionStateDefinition>> Slots => saves.Library.Slots.AsReadOnly();
+    public SaveSlot<RedemptionStateDefinition>? CurrentSlot => saves.Library.CurrentSlot;
+    public bool HasWorkingSlot => saves.Library.WorkingSlot is not null;
+    public Guid? CurrentSlotId => CurrentSlot?.Id;
+    public RunStatus CurrentRunStatus => CurrentSlot?.Status ?? RunStatus.InProgress;
     public bool CanCompleteMission => CurrentRunStatus == RunStatus.InProgress && State.PendingPunishmentItems.Count == 0;
     public bool CanFailMission => CurrentRunStatus == RunStatus.InProgress && State.PendingRewardItems.Count == 0;
     public string CurrentRunSummary => CreateSummaryText();
+
+    public SaveSlot<RedemptionStateDefinition>? GetSlot(Guid slotId) => saves.GetSlot(slotId);
+
+    public Task<bool> RenameSlotAsync(Guid slotId, string? name) => saves.RenameSlotAsync(slotId, name);
+
+    public SaveExport<RedemptionStateDefinition> CreateExport(Guid slotId) => saves.CreateExport(slotId);
 
     public async Task LoadAsync()
     {

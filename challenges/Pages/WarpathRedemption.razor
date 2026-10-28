@@ -1,7 +1,6 @@
 @page "/warpath-redemption"
 @inject CatalogService Catalog
 @inject RedemptionCatalogService RedemptionCatalog
-@inject RedemptionSaveLibraryService SaveLibrary
 @inject RedemptionSessionService Session
 @inject FileExportService FileService
 @inject RedemptionMissionService MissionService
@@ -19,7 +18,7 @@ else
         <div>
             <h1 class="text-light mb-0">
                 Warpath: Redemption
-                @if (_state.RunStarted && SaveLibrary.Library.CurrentSlot is { } currentSlot)
+                @if (_state.RunStarted && Session.CurrentSlot is { } currentSlot)
                 {
                     <span class="fs-5 text-secondary">@currentSlot.Name</span>
                 }
@@ -30,7 +29,7 @@ else
             @if (_state.RunStarted)
             {
                 <button class="btn btn-outline-light" aria-label="Open current run settings" @onclick="(() => _showRunSettings = true)">Run Settings</button>
-                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((SaveLibrary.Library.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), Session.CurrentRunSummary))">Download Summary</button>
+                <button class="btn btn-outline-primary" @onclick="@(async () => await FileService.DownloadTextAsync(((Session.CurrentSlot?.Name ?? "warpath-redemption-summary") + ".txt"), Session.CurrentRunSummary))">Download Summary</button>
                 <button class="btn btn-warning" @onclick="RestartRedemptionRunAsync">Start New Run</button>
             }
         </div>
@@ -343,16 +342,16 @@ else
         </HeaderButtons>
         <MainContent>
             <div class="d-grid gap-2">
-                @if (SaveLibrary.Library.WorkingSlot is null && SaveLibrary.Library.CurrentSlot is not null)
+                @if (!Session.HasWorkingSlot && Session.CurrentSlot is { } currentSlot)
                 {
-                    <SaveSlotCard Slot="SaveLibrary.Library.CurrentSlot"
+                    <SaveSlotCard Slot="currentSlot"
                                   IsCurrent="true"
-                                  OnRename="name => RenameRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id, name)"
-                                  OnExport="() => ExportRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id)"
-                                  OnDelete="() => CheckDeleteRedemptionSlotAsync(SaveLibrary.Library.CurrentSlot.Id)" />
+                                  OnRename="name => RenameRedemptionSlotAsync(currentSlot.Id, name)"
+                                  OnExport="() => ExportRedemptionSlotAsync(currentSlot.Id)"
+                                  OnDelete="() => CheckDeleteRedemptionSlotAsync(currentSlot.Id)" />
                 }
 
-                @foreach (var slot in SaveLibrary.Library.Slots.Where(slot => slot.Id != SaveLibrary.Library.CurrentSlotId).OrderByDescending(slot => slot.UpdatedAt))
+                @foreach (var slot in Session.Slots.Where(slot => slot.Id != Session.CurrentSlotId).OrderByDescending(slot => slot.UpdatedAt))
                 {
                     <SaveSlotCard Slot="slot"
                                   OnRename="name => RenameRedemptionSlotAsync(slot.Id, name)"
@@ -512,7 +511,7 @@ else
 
     private async Task RenameRedemptionSlotAsync(Guid slotId, string name)
     {
-        if (await SaveLibrary.RenameSlotAsync(slotId, name))
+        if (await Session.RenameSlotAsync(slotId, name))
         {
             Toasts.Show("Slot name saved.");
         }
@@ -521,15 +520,15 @@ else
     private async Task LoadRedemptionSlotAsync(Guid slotId)
     {
         await Session.SelectSlotAsync(slotId);
-        var slot = SaveLibrary.GetSlot(slotId);
+        var slot = Session.GetSlot(slotId);
         Toasts.Show($"Save {slot?.Name} loaded.");
     }
 
     private async Task CheckDeleteRedemptionSlotAsync(Guid slotId)
     {
-        if (slotId == SaveLibrary.Library.CurrentSlotId)
+        if (slotId == Session.CurrentSlotId)
         {
-            _slotToDelete = SaveLibrary.Library.CurrentSlot;
+            _slotToDelete = Session.CurrentSlot;
             
             return;
         }
@@ -539,7 +538,7 @@ else
 
     private async Task DeleteRedemptionSlotAsync(Guid slotId)
     {
-        var slotToDelete = SaveLibrary.GetSlot(slotId);
+        var slotToDelete = Session.GetSlot(slotId);
         bool deleted = await Session.DeleteSlotAsync(slotId);
 
         _slotToDelete = null;
@@ -552,8 +551,8 @@ else
 
     private async Task ExportRedemptionSlotAsync(Guid slotId)
     {
-        SaveSlot<RedemptionStateDefinition> slot = SaveLibrary.Library.Slots.First(entry => entry.Id == slotId);
-        await FileService.DownloadJsonAsync($"{(slot.Name)}.json", SaveLibrary.CreateExport(slotId));
+        SaveSlot<RedemptionStateDefinition> slot = Session.Slots.First(entry => entry.Id == slotId);
+        await FileService.DownloadJsonAsync($"{(slot.Name)}.json", Session.CreateExport(slotId));
     }
 
     private async Task ImportRedemptionSlotAsync(InputFileChangeEventArgs args)
