@@ -3,6 +3,8 @@ namespace Hd2Challenges.EndToEnd.Tests;
 internal static class RedemptionSaves
 {
     public static SaveObject AcquiredBooster => new("acquired-booster.json");
+    public static SaveObject FinalOperationLastMission => new("final-operation-last-mission.json");
+    public static SaveObject LegacyCompleted => new("legacy-completed.json");
     public static SaveObject PendingBoosterReward => new("pending-booster-reward.json");
     public static SaveObject OperationLastMission => new("operation-last-mission.json");
     public static SaveObject OperationIndex1 => new("operation-index-1.json");

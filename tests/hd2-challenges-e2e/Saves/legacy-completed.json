@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "mode": "warpath-redemption",
+  "slot": {
+    "id": "df99fe55-a962-4c34-9014-78d8fba4bd2a",
+    "name": "Legacy Completed Run",
+    "updatedAt": "2026-10-19T00:00:00+00:00",
+    "state": {
+      "difficultyId": "normal",
+      "operationIndex": 10,
+      "missionNumber": 3,
+      "missionsFailed": 1,
+      "runCompleted": true,
+      "selectedWarbonds": [],
+      "acquiredItemIds": [],
+      "bannedItemIds": [],
+      "pendingRewardIds": [],
+      "pendingPunishmentIds": []
+    }
+  }
+}

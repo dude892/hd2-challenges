@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "mode": "warpath-redemption",
+  "slot": {
+    "id": "8a14b1a5-5f3e-49d7-8bc9-1e6c0a94282d",
+    "name": "Final Mission Run",
+    "updatedAt": "2026-10-28T00:00:00+00:00",
+    "status": "InProgress",
+    "state": {
+      "difficultyId": "normal",
+      "operationIndex": 10,
+      "missionNumber": 3,
+      "missionsFailed": 0,
+      "selectedWarbonds": [],
+      "acquiredItemIds": [],
+      "bannedItemIds": [],
+      "pendingRewardIds": [],
+      "pendingPunishmentIds": []
+    }
+  }
+}
