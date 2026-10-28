@@ -18,9 +18,15 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
     {
         Library = await saveLibrary.LoadAsync<RedemptionStateDefinition>(StorageKey) ?? new();
         bool migrated = false;
-        foreach (SaveSlot<RedemptionStateDefinition> slot in Library.Slots)
+        for (int index = 0; index < Library.Slots.Count; index++)
         {
-            migrated |= MoveLegacyCompletionToSlot(slot);
+            SaveSlot<RedemptionStateDefinition> slot = Library.Slots[index];
+            SaveSlot<RedemptionStateDefinition> migratedSlot = MoveLegacyCompletionToSlot(slot);
+            if (migratedSlot != slot)
+            {
+                Library.Slots[index] = migratedSlot;
+                migrated = true;
+            }
         }
 
         if (migrated)
@@ -40,36 +46,42 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
         string difficultyName,
         RunStatus status = RunStatus.InProgress)
     {
-        if (Library.WorkingSlot is null)
+        if (Library.WorkingSlot is not { } workingSlot)
         {
             return;
         }
 
-        Library.WorkingSlot.State = ClearLegacyCompletion(definition);
-        Library.WorkingSlot.Status = definition.RunCompleted is true ? RunStatus.Completed : status;
-        Library.WorkingSlot.Name = BuildSlotName(difficultyName);
+        Library.WorkingSlot = workingSlot with
+        {
+            State = definition,
+            Status = status,
+            Name = BuildSlotName(difficultyName)
+        };
         Library.CommitWorkingSlot();
         await PersistAsync();
     }
 
     public async Task PersistAsync(RedemptionStateDefinition definition, RunStatus status = RunStatus.InProgress)
     {
-        if (Library.CurrentSlot is null)
+        if (Library.CurrentSlot is not { } currentSlot)
         {
             return;
         }
 
-        Library.CurrentSlot.State = ClearLegacyCompletion(definition);
-        Library.CurrentSlot.Status = definition.RunCompleted is true ? RunStatus.Completed : status;
-        Library.CurrentSlot.UpdatedAt = DateTimeOffset.UtcNow;
+        Library.ReplaceSlot(currentSlot with
+        {
+            State = definition,
+            Status = status,
+            UpdatedAt = DateTimeOffset.UtcNow
+        });
         await PersistAsync();
     }
 
     public void SetCurrentRunStatus(RunStatus status)
     {
-        if (Library.CurrentSlot is not null)
+        if (Library.CurrentSlot is { } currentSlot)
         {
-            Library.CurrentSlot.Status = status;
+            Library.ReplaceSlot(currentSlot with { Status = status });
         }
     }
 
@@ -87,9 +99,9 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
         SaveSlot<RedemptionStateDefinition> slot = new()
         {
             Name = $"{BuildSlotName(difficultyName)} Snapshot",
-            State = ClearLegacyCompletion(definition),
+            State = definition,
             UpdatedAt = DateTimeOffset.UtcNow,
-            Status = definition.RunCompleted is true ? RunStatus.Completed : status
+            Status = status
         };
 
         Library.AddSlot(slot);
@@ -146,7 +158,7 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
             return null;
         }
 
-        MoveLegacyCompletionToSlot(slot);
+        slot = MoveLegacyCompletionToSlot(slot);
         Library.AddSlot(slot);
         await PersistAsync();
         return slot;
@@ -155,29 +167,22 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
     private static SaveSlot<RedemptionStateDefinition> CreateWorkingSlot(RedemptionStateDefinition definition, string difficultyName) => new()
     {
         Name = BuildSlotName(difficultyName),
-        State = ClearLegacyCompletion(definition),
-        Status = definition.RunCompleted is true ? RunStatus.Completed : RunStatus.InProgress
+        State = definition,
+        Status = RunStatus.InProgress
     };
 
-    private static bool MoveLegacyCompletionToSlot(SaveSlot<RedemptionStateDefinition> slot)
+    private static SaveSlot<RedemptionStateDefinition> MoveLegacyCompletionToSlot(SaveSlot<RedemptionStateDefinition> slot)
     {
         if (slot.State?.RunCompleted is not { } legacyRunCompleted)
         {
-            return false;
+            return slot;
         }
 
-        if (legacyRunCompleted)
+        return slot with
         {
-            slot.Status = RunStatus.Completed;
-        }
-        slot.State = ClearLegacyCompletion(slot.State);
-        return true;
-    }
-
-    private static RedemptionStateDefinition ClearLegacyCompletion(RedemptionStateDefinition definition)
-    {
-        definition.RunCompleted = null;
-        return definition;
+            Status = legacyRunCompleted ? RunStatus.Completed : slot.Status,
+            State = slot.State with { RunCompleted = null }
+        };
     }
 
     private static string BuildSlotName(string difficultyName) => $"{difficultyName} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}";
