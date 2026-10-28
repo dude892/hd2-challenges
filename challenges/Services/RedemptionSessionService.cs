@@ -212,8 +212,11 @@ public sealed class RedemptionSessionService(
     public async Task SelectSlotAsync(Guid slotId)
     {
         EnsureLoaded();
-        SaveSlot<RedemptionStateDefinition> slot = await saves.SelectSlotAsync(slotId);
-        _state = redemptionCatalog.CreateRedemptionState(slot.State);
+        SaveSlot<RedemptionStateDefinition> slot = saves.GetSlot(slotId)
+            ?? throw new InvalidOperationException($"Save slot '{slotId}' was not found.");
+        RedemptionState selectedState = redemptionCatalog.CreateRedemptionState(slot.State);
+        await saves.SelectSlotAsync(slotId);
+        _state = selectedState;
     }
 
     public async Task<bool> DeleteSlotAsync(Guid slotId)
@@ -236,15 +239,17 @@ public sealed class RedemptionSessionService(
     public async Task<SaveSlot<RedemptionStateDefinition>?> ImportAsync(string json)
     {
         EnsureLoaded();
-        
-        var result = await saves.ImportAsync(json);
+
+        RedemptionState? importedState = null;
+        var result = await saves.ImportAsync(json, definition =>
+            importedState = redemptionCatalog.CreateRedemptionState(definition));
 
         if (result is null)
         {
             return null;
         }
 
-        _state = redemptionCatalog.CreateRedemptionState(result.State);
+        _state = importedState!;
         return result;
     }
 

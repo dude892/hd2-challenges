@@ -150,7 +150,9 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
         return saveLibrary.CreateExport(ExportMode, slot);
     }
 
-    public async Task<SaveSlot<RedemptionStateDefinition>?> ImportAsync(string json)
+    public async Task<SaveSlot<RedemptionStateDefinition>?> ImportAsync(
+        string json,
+        Action<RedemptionStateDefinition>? validateDefinition = null)
     {
         SaveSlot<RedemptionStateDefinition>? slot = saveLibrary.ImportSlot<RedemptionStateDefinition>(json, ExportMode);
         if (slot is null)
@@ -159,6 +161,7 @@ public sealed class RedemptionSaveLibraryService(SaveLibraryService saveLibrary)
         }
 
         slot = MoveLegacyCompletionToSlot(slot);
+        validateDefinition?.Invoke(slot.State);
         Library.AddSlot(slot);
         await PersistAsync();
         return slot;

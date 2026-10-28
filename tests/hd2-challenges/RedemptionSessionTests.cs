@@ -211,6 +211,59 @@ public sealed class RedemptionSessionTests
     }
 
     [Fact]
+    public async Task ImportingUnresolvableStatePreservesActiveStateAndSavedLibrary()
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+        await session.LoadAsync();
+        await session.BeginRunAsync();
+        RedemptionState previous = session.State;
+        Guid previousSlotId = session.CurrentSlotId!.Value;
+        string json = JsonSerializer.Serialize(
+            context.GenericSaveLibrary.CreateExport("warpath-redemption", new SaveSlot<RedemptionStateDefinition>
+            {
+                State = new RedemptionStateDefinition { DifficultyId = "unknown" }
+            }),
+            new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => session.ImportAsync(json));
+
+        Assert.Same(previous, session.State);
+        Assert.Equal(previousSlotId, session.CurrentSlotId);
+        Assert.Single(context.SaveLibrary.Library.Slots);
+        SaveLibrary<RedemptionStateDefinition>? persisted =
+            await context.GenericSaveLibrary.LoadAsync<RedemptionStateDefinition>("blazor-warpath-redemption");
+        Assert.Equal(previousSlotId, persisted!.CurrentSlotId);
+        Assert.Equal(previousSlotId, Assert.Single(persisted.Slots).Id);
+    }
+
+    [Fact]
+    public async Task SelectingUnresolvableStatePreservesActiveStateAndSavedSelection()
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+        await session.LoadAsync();
+        await session.BeginRunAsync();
+        RedemptionState previous = session.State;
+        Guid previousSlotId = session.CurrentSlotId!.Value;
+        SaveSlot<RedemptionStateDefinition> invalidSlot = new()
+        {
+            State = new RedemptionStateDefinition { DifficultyId = "unknown" }
+        };
+        context.SaveLibrary.Library.Slots.Add(invalidSlot);
+        await context.GenericSaveLibrary.PersistAsync("blazor-warpath-redemption", context.SaveLibrary.Library);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => session.SelectSlotAsync(invalidSlot.Id));
+
+        Assert.Same(previous, session.State);
+        Assert.Equal(previousSlotId, session.CurrentSlotId);
+        SaveLibrary<RedemptionStateDefinition>? persisted =
+            await context.GenericSaveLibrary.LoadAsync<RedemptionStateDefinition>("blazor-warpath-redemption");
+        Assert.Equal(previousSlotId, persisted!.CurrentSlotId);
+        Assert.Equal(2, persisted.Slots.Count);
+    }
+
+    [Fact]
     public async Task DeletingCurrentSlotReplacesActiveStateWithSetup()
     {
         using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
