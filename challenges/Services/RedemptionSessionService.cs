@@ -9,7 +9,6 @@ namespace Hd2Challenges.Services;
 /// and coordinates run lifecycle, mission progression, rewards, and persistence.
 /// </summary>
 public sealed class RedemptionSessionService(
-    CatalogService baseCatalog,
     RedemptionCatalogService redemptionCatalog,
     RedemptionSaveLibraryService saves)
 {
@@ -35,7 +34,7 @@ public sealed class RedemptionSessionService(
 
         if (saves.Library.CurrentSlotId is null || saves.Library.CurrentSlot is null && saves.Library.Slots.Count == 0)
         {
-            _state = redemptionCatalog.CreateRedemptionSetupState(redemptionCatalog.GetDifficulty("normal"), baseCatalog.GetAllWarbonds());
+            _state = redemptionCatalog.CreateRedemptionSetupState(redemptionCatalog.GetDifficulty("normal"), redemptionCatalog.GetAllWarbonds());
             saves.SetWorkingSlot(_state.ToDefinition(), _state.Difficulty.DisplayName);
             
             return;
@@ -86,7 +85,7 @@ public sealed class RedemptionSessionService(
             return MissionCompletionResult.Unavailable;
         }
 
-        if (State.CurrentOperation.DifficultyIndex == baseCatalog.LastOperationIndex && State.CurrentOperation.IsLastMission)
+        if (State.CurrentOperation.DifficultyIndex == redemptionCatalog.LastOperationIndex && State.CurrentOperation.IsLastMission)
         {
             SetRunStatus(RunStatus.Completed);
             return MissionCompletionResult.ChallengeCompleted;
@@ -174,9 +173,9 @@ public sealed class RedemptionSessionService(
         {
             State.CurrentOperation.MissionNumber++;
         }
-        else if (State.CurrentOperation.DifficultyIndex < baseCatalog.LastOperationIndex)
+        else if (State.CurrentOperation.DifficultyIndex < redemptionCatalog.LastOperationIndex)
         {
-            State.CurrentOperation = baseCatalog.GetOperation(State.CurrentOperation.DifficultyIndex + 1);
+            State.CurrentOperation = redemptionCatalog.GetOperation(State.CurrentOperation.DifficultyIndex + 1);
         }
     }
 
@@ -190,7 +189,7 @@ public sealed class RedemptionSessionService(
 
         rewardQuantity = Math.Max(1, rewardQuantity);
 
-        ItemSet rewardPool = baseCatalog.GetItemsByWarbonds(State.SelectedWarbonds)
+        ItemSet rewardPool = redemptionCatalog.GetItemsByWarbonds(State.SelectedWarbonds)
             .RemoveItems([State.StarterItems, State.BannedItems, State.AcquiredItems]);
         if (State.CurrentOperation.DifficultyIndex == HardFinaleOperationIndex && State.CurrentOperation.IsLastMission)
         {

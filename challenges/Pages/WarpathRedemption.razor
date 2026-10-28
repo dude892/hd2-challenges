@@ -1,5 +1,4 @@
 @page "/warpath-redemption"
-@inject CatalogService Catalog
 @inject RedemptionCatalogService RedemptionCatalog
 @inject RedemptionSessionService Session
 @inject FileExportService FileService
@@ -58,8 +57,8 @@ else
 
                 <div class="row section-card rounded p-3">
                     <h4 class="text-light">Warbonds</h4>
-                    <div class="item-grid mt-3" data-item-count="@Catalog.GetAllWarbonds().Count">
-                        @foreach (var warbond in Catalog.GetAllWarbonds())
+                    <div class="item-grid mt-3" data-item-count="@RedemptionCatalog.GetAllWarbonds().Count">
+                        @foreach (var warbond in RedemptionCatalog.GetAllWarbonds())
                         {
                             var isSelected = _state.SelectedWarbonds.Contains(warbond);
                             <WarbondCard
@@ -72,7 +71,7 @@ else
             </div>
 
             <div class="col-xl-8">
-                <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.StarterItems)"
+                <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.StarterItems)"
                         AccessibleLabel="Starting loadout preview"
                         ContainerClass="section-card rounded p-3"
                         GridClass="mt-3"
@@ -156,7 +155,7 @@ else
                             <div class="accordion-body">
                                 <div class="d-flex flex-column gap-5">
                                     <div class="row gx-5 gy-3 align-items-start">
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Primaries)"
                                                   AccessibleLabel="Acquired primary items"
                                                   ContainerClass="col-12 col-sm-auto"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -165,7 +164,7 @@ else
                                                   BadgeSelector="GetStarterBadge">
                                             <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Primaries.Label</h5></HeaderContent>
                                         </ItemGrid>
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Secondaries)"
                                                   AccessibleLabel="Acquired secondary items"
                                                   ContainerClass="col-12 col-sm"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -176,7 +175,7 @@ else
                                         </ItemGrid>
                                     </div>
                                     <div class="row gx-5 gy-3 align-items-start">
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Throwables)"
                                                   AccessibleLabel="Acquired throwable items"
                                                   ContainerClass="col-12 col-sm-auto"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -185,7 +184,7 @@ else
                                                   BadgeSelector="GetStarterBadge">
                                             <HeaderContent><h5 class="text-light">@_state.AcquiredItems.Throwables.Label</h5></HeaderContent>
                                         </ItemGrid>
-                                        <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives)"
+                                        <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Passives)"
                                                   AccessibleLabel="Acquired armor passives"
                                                   ContainerClass="col-12 col-sm"
                                                   GridClass="run-item-grid equipment-content-item-grid"
@@ -201,7 +200,7 @@ else
                     </div>
                 </div>
                 <div class="row g-3 mt-1">
-                    <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems)"
+                    <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Stratagems)"
                               AccessibleLabel="Acquired stratagems"
                               ContainerClass="col-12 col-lg section-card rounded p-3 h-100"
                               GridClass="run-item-grid"
@@ -222,7 +221,7 @@ else
                                 <img class="booster-accordion-svg" src="svgs/icon/chevron-@(_showBoosterAccordion ? "right" : "left").svg" />
                             </button>
                             <div id="boosters-collapse" class="booster-accordion-content" role="region" aria-label="Acquired boosters" aria-hidden="@(_showBoosterAccordion ? "false" : "true")">
-                                <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters)"
+                                <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.AcquiredItems.Boosters)"
                                           AccessibleLabel="Acquired booster items"
                                           ContainerClass="booster-accordion-content-inner p-3"
                                           GridClass="run-item-grid"
@@ -261,7 +260,7 @@ else
 
     <Modal Title="Reward Options" Open="@_showRewardModal" CssClass="item-modal" OnClose="@(() => _showRewardModal = false)">
         <MainContent>
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.PendingRewardItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.PendingRewardItems)"
                       AccessibleLabel="Reward choices"
                       GridClass="justify-content-center"
                       UseItemColumns="true"
@@ -278,7 +277,7 @@ else
 
     <Modal Title="Punishment Options" Open="@_showPunishmentModal" CssClass="item-modal" OnClose="@(() => _showPunishmentModal = false)">
         <MainContent>
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.PendingPunishmentItems)"
                       AccessibleLabel="Punishment choices"
                       GridClass="justify-content-center"
                       UseItemColumns="true"
@@ -289,7 +288,7 @@ else
 
     <Modal Title="Banned Items" Open="@_showBannedItemsModal" CssClass="item-modal" OnClose="@(() => _showBannedItemsModal = false)">
         <MainContent>
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.BannedItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.BannedItems)"
                       AccessibleLabel="Banned items"
                       GridClass="justify-content-center"
                       UseItemColumns="true"
@@ -315,7 +314,7 @@ else
                 </div>
             </div>
 
-            <ItemGrid Items="Catalog.GetItemsInCatalogOrder(_state.StarterItems)"
+            <ItemGrid Items="RedemptionCatalog.GetItemsInCatalogOrder(_state.StarterItems)"
                       AccessibleLabel="Starting loadout"
                       ContainerClass="mb-4"
                       GridClass="mt-3"
