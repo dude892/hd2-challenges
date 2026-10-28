@@ -3,7 +3,6 @@
 @inject RedemptionCatalogService RedemptionCatalog
 @inject RedemptionSessionService Session
 @inject FileExportService FileService
-@inject RedemptionMissionService MissionService
 @inject ToastService Toasts
 
 <PageTitle>Warpath: Redemption</PageTitle>
@@ -427,7 +426,7 @@ else
     private async Task ConfirmRedemptionMissionCompleteAsync(int stars)
     {
         _showMissionCompleteModal = false;
-        MissionCompletionResult result = MissionService.CompleteMission(stars);
+        MissionCompletionResult result = Session.CompleteMission(stars);
         if (result == MissionCompletionResult.Unavailable)
         {
             return;
@@ -456,7 +455,7 @@ else
             return;
         }
 
-        if (MissionService.PrepareMissionFailure())
+        if (Session.PrepareMissionFailure())
         {
             await Session.PersistAsync();
         }
@@ -473,7 +472,7 @@ else
     private async Task ClaimRedemptionRewardAsync(string id)
     {
         int acquiredBoosterCount = _state.AcquiredItems.Boosters.Count();
-        if (MissionService.ClaimMissionReward(id))
+        if (Session.ClaimMissionReward(id))
         {
             if (_state.AcquiredItems.Boosters.Count() > acquiredBoosterCount)
             {
@@ -487,7 +486,7 @@ else
 
     private async Task SkipAndBanRedemptionRewardsAsync()
     {
-        if (MissionService.SkipAndBanMissionRewards())
+        if (Session.SkipAndBanMissionRewards())
         {
             _showRewardModal = false;
             await Session.PersistAsync();
@@ -496,7 +495,7 @@ else
 
     private async Task ClaimRedemptionPunishmentAsync(string id)
     {
-        if (MissionService.ClaimMissionPunishment(id))
+        if (Session.ClaimMissionPunishment(id))
         {
             _showPunishmentModal = false;
             await Session.PersistAsync();

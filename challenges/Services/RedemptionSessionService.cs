@@ -6,14 +6,15 @@ namespace Hd2Challenges.Services;
 
 /// <summary>
 /// Owns the active runtime state, resolves saved definitions through the catalog,
-/// and coordinates run lifecycle and persistence.
-/// Mission rules and presentation remain outside the session.
+/// and coordinates run lifecycle, mission progression, rewards, and persistence.
 /// </summary>
 public sealed class RedemptionSessionService(
     CatalogService baseCatalog,
     RedemptionCatalogService redemptionCatalog,
     RedemptionSaveLibraryService saves)
 {
+    private const int HardFinaleOperationIndex = 5;
+    private const int MaximumPunishmentChoices = 3;
     private RedemptionState? _state;
 
     public RedemptionState State { get { EnsureLoaded(); return _state; } }
@@ -76,6 +77,131 @@ public sealed class RedemptionSessionService(
     {
         EnsureLoaded();
         saves.SetCurrentRunStatus(status);
+    }
+
+    public MissionCompletionResult CompleteMission(int stars)
+    {
+        if (!CanCompleteMission)
+        {
+            return MissionCompletionResult.Unavailable;
+        }
+
+        if (State.CurrentOperation.DifficultyIndex == baseCatalog.LastOperationIndex && State.CurrentOperation.IsLastMission)
+        {
+            SetRunStatus(RunStatus.Completed);
+            return MissionCompletionResult.ChallengeCompleted;
+        }
+
+        if (State.PendingRewardItems.Count == 0)
+        {
+            State.PendingRewardItems = RollRewardItems(stars);
+        }
+
+        return State.PendingRewardItems.Count > 0 ? MissionCompletionResult.RewardsPending : MissionCompletionResult.NoRewardsAvailable;
+    }
+
+    public bool PrepareMissionFailure()
+    {
+        if (!CanFailMission || State.PendingPunishmentItems.Count != 0)
+        {
+            return false;
+        }
+
+        var punishmentPool = State.AcquiredItems
+            .Where(item => !State.StarterItems.ContainsItem(item))
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(MaximumPunishmentChoices);
+        State.PendingPunishmentItems = new ItemSet(punishmentPool);
+        return true;
+    }
+
+    public bool ClaimMissionReward(string itemId)
+    {
+        if (!CanCompleteMission)
+        {
+            return false;
+        }
+
+        GameItem? reward = State.PendingRewardItems.FirstOrDefault(item => item.Id == itemId);
+        if (reward is null)
+        {
+            return false;
+        }
+
+        State.AcquiredItems.AddItem(reward);
+        State.PendingRewardItems.Clear();
+        AdvanceMission();
+        return true;
+    }
+
+    public bool SkipAndBanMissionRewards()
+    {
+        if (!CanCompleteMission || State.PendingRewardItems.Count == 0)
+        {
+            return false;
+        }
+
+        State.BannedItems.AddItems(State.PendingRewardItems);
+        State.PendingRewardItems.Clear();
+        AdvanceMission();
+        return true;
+    }
+
+    public bool ClaimMissionPunishment(string itemId)
+    {
+        if (!CanFailMission)
+        {
+            return false;
+        }
+
+        GameItem? punishment = State.PendingPunishmentItems.FirstOrDefault(item => item.Id == itemId);
+        if (punishment is null)
+        {
+            return false;
+        }
+
+        State.AcquiredItems.RemoveItem(punishment);
+        State.BannedItems.RemoveItem(punishment);
+        State.PendingPunishmentItems.Clear();
+        State.MissionsFailed++;
+        State.CurrentOperation.MissionNumber = 1;
+        return true;
+    }
+
+    private void AdvanceMission()
+    {
+        if (State.CurrentOperation.MissionNumber < State.CurrentOperation.MissionCount)
+        {
+            State.CurrentOperation.MissionNumber++;
+        }
+        else if (State.CurrentOperation.DifficultyIndex < baseCatalog.LastOperationIndex)
+        {
+            State.CurrentOperation = baseCatalog.GetOperation(State.CurrentOperation.DifficultyIndex + 1);
+        }
+    }
+
+    private ItemSet RollRewardItems(int selectedStars)
+    {
+        int rewardQuantity = Math.Max(1, selectedStars - 1);
+        if (State.Difficulty.IsSuper)
+        {
+            rewardQuantity--;
+        }
+
+        rewardQuantity = Math.Max(1, rewardQuantity);
+
+        ItemSet rewardPool = baseCatalog.GetItemsByWarbonds(State.SelectedWarbonds)
+            .RemoveItems([State.StarterItems, State.BannedItems, State.AcquiredItems]);
+        if (State.CurrentOperation.DifficultyIndex == HardFinaleOperationIndex && State.CurrentOperation.IsLastMission)
+        {
+            rewardPool = new ItemSet(rewardPool.Where(item => item.Antitank));
+        }
+
+        return new ItemSet(
+            rewardPool.AllItems
+                .DistinctBy(item => item.Id)
+                .OrderBy(_ => Random.Shared.Next())
+                .Take(rewardQuantity));
     }
 
     public Task PersistAsync() => saves.PersistAsync(State.ToDefinition(), CurrentRunStatus);
