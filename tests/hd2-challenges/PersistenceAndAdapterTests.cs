@@ -6,6 +6,15 @@ namespace Hd2Challenges.Tests;
 
 public sealed class PersistenceAndAdapterTests
 {
+    private static SaveLibraryService CreateSaveLibraryService() =>
+        new(new BrowserStorageService(new InMemoryJsRuntime()));
+
+    private static SaveSlot<RedemptionStateDefinition> CreateDefinitionSlot() => new()
+    {
+        Name = "campaign",
+        State = new RedemptionStateDefinition { DifficultyId = "super", MissionsFailed = 2 }
+    };
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -21,7 +30,7 @@ public sealed class PersistenceAndAdapterTests
         }
 
         RedemptionSaveLibraryService saveLibrary = new(genericSaveLibrary);
-        RedemptionSessionService session = new(context.Catalog, context.RedemptionCatalog, saveLibrary);
+        RedemptionSessionService session = new(context.RedemptionCatalog, saveLibrary);
 
         await session.LoadAsync();
         RedemptionState state = session.State;
@@ -318,7 +327,7 @@ public sealed class PersistenceAndAdapterTests
             InMemoryJsRuntime jsRuntime = new();
             FileExportService exports = new(jsRuntime);
 
-            await exports.DownloadTextAsync("summary:campaign.txt", "summary");
+            await exports.DownloadTextAsync("summary/campaign.txt", "summary");
 
             var download = Assert.Single(jsRuntime.Downloads);
             Assert.Equal("summary-campaign.txt", download.FileName);
@@ -332,7 +341,7 @@ public sealed class PersistenceAndAdapterTests
             InMemoryJsRuntime jsRuntime = new();
             FileExportService exports = new(jsRuntime);
 
-            await exports.DownloadJsonAsync("campaign:save.json", new { Id = "run-1" });
+            await exports.DownloadJsonAsync("campaign/save.json", new { Id = "run-1" });
 
             var download = Assert.Single(jsRuntime.Downloads);
             Assert.Equal("campaign-save.json", download.FileName);
@@ -395,12 +404,4 @@ public sealed class PersistenceAndAdapterTests
             Assert.Equal(1, changedCount);
         }
 
-        private static SaveLibraryService CreateSaveLibraryService() =>
-            new(new BrowserStorageService(new InMemoryJsRuntime()));
-
-        private static SaveSlot<RedemptionStateDefinition> CreateDefinitionSlot() => new()
-        {
-            Name = "campaign",
-            State = new RedemptionStateDefinition { DifficultyId = "super", MissionsFailed = 2 }
-        };
     }

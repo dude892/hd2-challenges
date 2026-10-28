@@ -161,7 +161,7 @@ public sealed class ModelTests
         library.CommitWorkingSlot();
 
         Assert.True(library.RenameSlot(working.Id, "  Renamed  "));
-        Assert.Equal("Renamed", working.Name);
+        Assert.Equal("Renamed", library.CurrentSlot!.Name);
     }
 
     [Fact]

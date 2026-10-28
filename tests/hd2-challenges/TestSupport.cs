@@ -36,7 +36,7 @@ internal sealed class CatalogTestContext : IDisposable
     {
         RedemptionSaveLibraryService saves = new(
             new SaveLibraryService(new BrowserStorageService(new InMemoryJsRuntime())));
-        RedemptionSessionService session = new(Catalog, RedemptionCatalog, saves);
+        RedemptionSessionService session = new(RedemptionCatalog, saves);
         await session.LoadAsync();
         return session;
     }
@@ -76,7 +76,7 @@ internal sealed class RedemptionSaveTestContext : IDisposable
         Catalog = catalogContext;
         GenericSaveLibrary = genericSaveLibrary;
         SaveLibrary = saveLibrary;
-        Session = new(catalogContext.Catalog, catalogContext.RedemptionCatalog, saveLibrary);
+        Session = new(catalogContext.RedemptionCatalog, saveLibrary);
     }
 
     public CatalogTestContext Catalog { get; }

@@ -10,6 +10,34 @@ namespace Hd2Challenges.Tests;
 
 public sealed class ComponentTests
 {
+    [Theory]
+    [InlineData(RunStatus.InProgress, null)]
+    [InlineData(RunStatus.Completed, "Completed")]
+    [InlineData(RunStatus.Failed, "Failed")]
+    public void SaveSlotCardReflectsRunStatus(RunStatus status, string? expectedBadge)
+    {
+        using BunitContext context = new();
+        SaveSlot<RedemptionStateDefinition> slot = new()
+        {
+            Name = "Campaign",
+            Status = status,
+            State = new()
+        };
+
+        IRenderedComponent<SaveSlotCard> component = context.Render<SaveSlotCard>(parameters => parameters
+            .Add(card => card.Slot, slot));
+
+        IReadOnlyList<IElement> badges = component.FindAll(".badge");
+        if (expectedBadge is null)
+        {
+            Assert.Empty(badges);
+        }
+        else
+        {
+            Assert.Equal(expectedBadge, Assert.Single(badges).TextContent);
+        }
+    }
+
     [Fact]
     public void WarbondCardReflectsSelection()
     {

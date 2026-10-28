@@ -7,7 +7,7 @@ namespace Hd2Challenges.Tests;
 public sealed class RedemptionSessionTests
 {
     private static RedemptionSessionService CreateSession(RedemptionSaveTestContext context) =>
-        new(context.Catalog.Catalog, context.Catalog.RedemptionCatalog, context.SaveLibrary);
+        new(context.Catalog.RedemptionCatalog, context.SaveLibrary);
 
     private static string SerializeExport(RedemptionSaveTestContext context, Guid slotId) =>
         JsonSerializer.Serialize(context.SaveLibrary.CreateExport(slotId),
@@ -27,9 +27,8 @@ public sealed class RedemptionSessionTests
     {
         using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
         RedemptionSessionService session = CreateSession(context);
-        RedemptionMissionService missions = new(context.Catalog.Catalog, new(context.Catalog.Catalog, session), session);
 
-        Assert.Throws<InvalidOperationException>(() => missions.CompleteMission(0));
+        Assert.Throws<InvalidOperationException>(() => session.CompleteMission(0));
     }
 
     [Fact]
@@ -45,12 +44,25 @@ public sealed class RedemptionSessionTests
     }
 
     [Fact]
+    public async Task LoadingSelectsAllWarbondsExposedByRedemptionCatalog()
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+
+        await session.LoadAsync();
+
+        Assert.True(context.Catalog.RedemptionCatalog.GetAllWarbonds()
+            .SetEquals(session.State.SelectedWarbonds));
+    }
+
+    [Fact]
     public async Task ChangingDifficultyUpdatesSetupAndPreservesWarbondSelection()
     {
         using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
         RedemptionSessionService session = CreateSession(context);
         await session.LoadAsync();
-        Warbond optional = context.Catalog.Catalog.GetAllWarbonds().First(warbond => !warbond.AlwaysEnabled);
+        Warbond optional = context.Catalog.RedemptionCatalog.GetAllWarbonds()
+            .First(warbond => !warbond.AlwaysEnabled);
         session.SetWarbondSelected(optional, false);
         RedemptionState previous = session.State;
         HashSet<Warbond> selectedWarbonds = previous.SelectedWarbonds.ToHashSet();
@@ -71,7 +83,8 @@ public sealed class RedemptionSessionTests
         using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
         RedemptionSessionService session = CreateSession(context);
         await session.LoadAsync();
-        Warbond optional = context.Catalog.Catalog.GetAllWarbonds().First(warbond => !warbond.AlwaysEnabled);
+        Warbond optional = context.Catalog.RedemptionCatalog.GetAllWarbonds()
+            .First(warbond => !warbond.AlwaysEnabled);
 
         Assert.True(session.SetWarbondSelected(optional, false));
         Assert.DoesNotContain(optional, session.State.SelectedWarbonds);
@@ -109,6 +122,21 @@ public sealed class RedemptionSessionTests
         await session.LoadAsync();
 
         Assert.Equal(2, session.State.MissionsFailed);
+    }
+
+    [Fact]
+    public async Task PersistingSavesRunStatusForReload()
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+        await session.LoadAsync();
+        await session.BeginRunAsync();
+        session.SetRunStatus(RunStatus.Failed);
+
+        await session.PersistAsync();
+        await session.LoadAsync();
+
+        Assert.Equal(RunStatus.Failed, session.CurrentRunStatus);
     }
 
     [Fact]
@@ -235,6 +263,62 @@ public sealed class RedemptionSessionTests
         Assert.Equal(2, context.SaveLibrary.Library.CurrentSlot!.State.MissionsFailed);
     }
 
+    [Fact]
+    public async Task SnapshotPreservesCurrentRunStatus()
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+        await session.LoadAsync();
+        await session.BeginRunAsync();
+        session.SetRunStatus(RunStatus.Failed);
+
+        await session.CreateSnapshotAsync();
+
+        Assert.Equal(RunStatus.Failed, context.SaveLibrary.Library.CurrentSlot!.Status);
+    }
+
+    [Theory]
+    [InlineData(RunStatus.InProgress, "Current Score:", "Current Operation:")]
+    [InlineData(RunStatus.Completed, "Final Score:", "Run Completed")]
+    [InlineData(RunStatus.Failed, "Final Score:", "Run Failed")]
+    public async Task SummaryReflectsCurrentRunStatus(
+        RunStatus status,
+        string scoreLabel,
+        string statusLabel)
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+        await session.LoadAsync();
+        await session.BeginRunAsync();
+        session.State.MissionsFailed = 2;
+        session.SetRunStatus(status);
+
+        string summary = session.GetCurrentRunSummary();
+
+        Assert.Contains(statusLabel, summary);
+        Assert.Contains($"{scoreLabel} {session.State.Difficulty.ScoreModifier - 100}", summary);
+    }
+
+    [Fact]
+    public async Task SummaryIncludesSelectionsAndRuntimeItemCollections()
+    {
+        using RedemptionSaveTestContext context = await RedemptionSaveTestContext.CreateAsync();
+        RedemptionSessionService session = CreateSession(context);
+        await session.LoadAsync();
+        Warbond selected = session.State.SelectedWarbonds.First();
+        GameItem banned = context.Catalog.Catalog.GetAllItems()
+            .First(item => !session.State.StarterItems.ContainsItem(item));
+        session.State.BannedItems.AddItem(banned);
+
+        string summary = session.GetCurrentRunSummary();
+
+        Assert.Contains(selected.DisplayName, summary);
+        Assert.Contains(banned.DisplayName, summary);
+        Assert.Contains("Pending Rewards:", summary);
+        Assert.Contains("Pending Punishments:", summary);
+        Assert.Contains("Acquired Items:", summary);
+    }
+
     [Theory]
     [InlineData("difficulty")]
     [InlineData("restart")]
@@ -249,7 +333,6 @@ public sealed class RedemptionSessionTests
         await session.LoadAsync();
         await session.BeginRunAsync();
         RedemptionState previous = session.State;
-        RedemptionMissionService missions = new(context.Catalog.Catalog, new(context.Catalog.Catalog, session), session);
         Guid slotId = context.SaveLibrary.Library.CurrentSlot!.Id;
 
         switch (replacement)
@@ -282,7 +365,7 @@ public sealed class RedemptionSessionTests
             .First(item => !session.State.StarterItems.ContainsItem(item));
         session.State.PendingRewardItems.AddItem(reward);
 
-        Assert.True(missions.ClaimMissionReward(reward.Id));
+        Assert.True(session.ClaimMissionReward(reward.Id));
         Assert.Contains(reward, session.State.AcquiredItems);
         Assert.DoesNotContain(reward, previous.AcquiredItems);
         Assert.Empty(session.State.PendingRewardItems);
