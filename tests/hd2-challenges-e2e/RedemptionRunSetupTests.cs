@@ -31,6 +31,17 @@ public sealed class RedemptionRunSetupTests(WarpathWebAppFixture webApp) : Redem
         }
     }
 
+    [Fact]
+    public async Task EquipmentStartsExpanded()
+    {
+        await StartRunAsync();
+        ILocator toggle = Page.GetByRole(AriaRole.Button, new() { Name = "Toggle acquired equipment", Exact = true });
+        ILocator equipment = Page.GetByRole(AriaRole.Region, new() { Name = "Acquired equipment", Exact = true });
+
+        await Expect(toggle).ToHaveAttributeAsync("aria-expanded", "true");
+        await Expect(equipment).ToBeVisibleAsync();
+    }
+
     [Theory]
     [InlineData("normal")]
     [InlineData("solo")]
